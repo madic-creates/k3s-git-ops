@@ -1,0 +1,74 @@
+---
+- name: Waiting until k3s service is running
+  ansible.builtin.service_facts:
+  register: k3s_service_facts_server
+  until: k3s_service_facts_server.ansible_facts.services['k3s.service'].state == 'running'
+  retries: 20
+  delay: 2
+
+- name: Removing cluster-init from startup
+  ansible.builtin.lineinfile:
+    path: /etc/rancher/k3s/config.yaml
+    regexp: ".*cluster-init.*"
+    state: absent
+
+- name: Copying kubeconfig
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "0600"
+    owner: 1000
+    group: 1000
+    remote_src: true
+  with_items:
+    - { src: /etc/rancher/k3s/k3s.yaml, dest: /root/.kube/config }
+
+- name: Installing | K3S Server
+  when: "'k3s_control_plane' in group_names"
+  block:
+    - name: K3S Server | Downloading kubeconfig
+      ansible.builtin.fetch:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        mode: "0600"
+        owner: 1000
+        group: 1000
+        remote_src: true
+        flat: true
+      with_items:
+        - {
+            src: /etc/rancher/k3s/k3s.yaml,
+            dest: "../shared/{{ groups['k3s_control_plane'][0] }}/",
+          }
+
+    - name: Replacing IP in k3s.yaml with "{{ K3S_IP_ADDRESS }}"
+      ansible.builtin.replace:
+        path: "{{ lookup('env', 'PWD') }}/shared/{{ groups['k3s_control_plane'][0] }}/k3s.yaml"
+        regexp: "127.0.0.1"
+        replace: "{{ K3S_IP_ADDRESS }}"
+      become: false
+      delegate_to: localhost
+
+    - name: K3S Server | Waiting for Kubernetes API
+      ansible.builtin.wait_for:
+        host: "{{ K3S_IP_ADDRESS }}"
+        port: 6443
+        delay: 5
+        timeout: 300
+
+    - name: K3S Server | Deploying ArgoCD
+      when: K3S_DEPLOY_ARGOCD|bool
+      block:
+        - name: K3S Server | Templating kubeconfig with kustomize
+          kubernetes.core.k8s:
+            kubeconfig: "{{ lookup('env', 'PWD') }}/shared/{{ groups['k3s_control_plane'][0] }}/k3s.yaml"
+            resource_definition: "{{ lookup('pipe', 'kubectl kustomize ' + lookup('env', 'PWD') + '/apps/argo-cd --enable-helm') }}"
+          become: false
+          delegate_to: localhost
+
+        - name: K3S Server | Templating kubeconfig apps with kustomize
+          kubernetes.core.k8s:
+            kubeconfig: "{{ lookup('env', 'PWD') }}/shared/{{ groups['k3s_control_plane'][0] }}/k3s.yaml"
+            resource_definition: "{{ lookup('pipe', 'kubectl kustomize ' + lookup('env', 'PWD') + '/apps/argo-cd-apps --enable-helm') }}"
+          become: false
+          delegate_to: localhost

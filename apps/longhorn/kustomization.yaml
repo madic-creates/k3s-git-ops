@@ -1,0 +1,46 @@
+---
+helmCharts:
+  - name: longhorn
+    repo: https://charts.longhorn.io
+    version: 1.7.1
+    releaseName: longhorn
+    namespace: longhorn
+    valuesInline:
+      defaultSettings:
+        backupTarget: s3://k3s-at-home-01@eu-central-2/
+        backupTargetCredentialSecret: wasabi-secret
+        orphanAutoDeletion: true
+      longhornUI:
+        replicas: 1
+      longhornConversionWebhook:
+        replicas: 1
+      longhornAdmissionWebhook:
+        replicas: 1
+      longhornRecoveryBackend:
+        replicas: 1
+      persistence:
+        reclaimPolicy: Retain
+      preUpgradeChecker:
+        jobEnabled: false
+
+resources:
+  - namespace.yaml
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "15"
+
+patches:
+  - target:
+      version: v1
+      kind: ConfigMap
+      name: longhorn-storageclass
+    patch: |-
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: longhorn-storageclass
+        annotations:
+          storageclass.kubernetes.io/is-default-class: "true"
+
+generators:
+  - kustomize-secret-generator.yaml

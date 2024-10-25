@@ -1,0 +1,21 @@
+---
+resources:
+  - namespace.yaml
+  - k8s.ingress.enc.yaml
+
+namespace: cloudflare
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "3"
+
+helmCharts:
+  - name: cloudflare-tunnel-ingress-controller
+    repo: https://helm.strrl.dev
+    version: 0.0.14
+    releaseName: cloudflare-tunnel-ingress-controller
+    namespace: cloudflare
+    includeCRDs: true
+    valuesFile: values.yaml
+
+generators:
+  - kustomize-secret-generator.yaml

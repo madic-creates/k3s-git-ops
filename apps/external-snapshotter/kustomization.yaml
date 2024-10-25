@@ -1,0 +1,16 @@
+---
+# Required for CSI Snapshot support in longhorn
+#
+# Longhorn has a hard version dependency on the snapshotter so use supported snapshotter version:
+# https://longhorn.io/docs/1.7.2/snapshots-and-backups/csi-snapshot-support/enable-csi-snapshot-support/
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: kube-system
+
+resources:
+  - https://github.com/kubernetes-csi/external-snapshotter/client/config/crd/?ref=v6.3.4
+  - https://github.com/kubernetes-csi/external-snapshotter/deploy/kubernetes/snapshot-controller/?ref=v6.3.4
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "14"

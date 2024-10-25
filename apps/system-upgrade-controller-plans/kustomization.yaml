@@ -1,0 +1,9 @@
+---
+# Plans for system-upgrade-controller need do be defined separately because CRDs for plans are created dynamically by system-upgrade-controller
+# https://github.com/rancher/system-upgrade-controller/issues/172
+
+resources:
+  - plans.yaml
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "96"

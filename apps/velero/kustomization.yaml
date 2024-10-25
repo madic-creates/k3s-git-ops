@@ -1,0 +1,74 @@
+---
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "17"
+
+helmCharts:
+  - name: velero
+    repo: https://vmware-tanzu.github.io/helm-charts
+    version: 7.2.1
+    releaseName: velero
+    namespace: longhorn
+    includeCRDs: true
+    valuesInline:
+      revisionHistoryLimit: 2
+      deployNodeAgent: true
+      features: EnableCSI
+      snapshotsEnabled: true
+      configuration:
+        uploaderType: kopia
+        garbageCollectionFrequency: 24h
+        defaultBackupTTL: 72h
+        defaultBackupStorageLocation: wasabi-velero-fra
+        backupStorageLocation:
+          - name: wasabi-velero-fra
+            provider: aws
+            bucket: velero-fra
+            prefix: k3s-at-home
+            credential:
+              # Name of the secret. Default: velero
+              name: velero
+              key: wasabi
+            config:
+              region: eu-central-2
+              s3ForcePathStyle: true
+              s3Url: https://s3.eu-central-2.wasabisys.com
+        volumeSnapshotLocation:
+          - name: wasabi-velero-fra
+            provider: aws
+            bucket: velero-fra
+            prefix: k3s-at-home
+            credential:
+              name: velero
+              key: wasabi
+            config:
+              region: eu-central-2
+              s3ForcePathStyle: true
+              s3Url: https://s3.eu-central-2.wasabisys.com
+      initContainers:
+        - name: velero-plugin-for-aws
+          image: velero/velero-plugin-for-aws:v1.10.1
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - mountPath: /target
+              name: plugins
+      schedules:
+        daily-backup:
+          disabled: true
+          schedule: "0 0 * * *"
+          useOwnerReferencesInBackup: false
+          template:
+            ttl: "72h"
+            volumeSnapshotLocations:
+              - wasabi-velero-fra
+            storageLocation: wasabi-velero-fra
+            includedNamespaces:
+              #- "*"
+              - dns
+            excludedNamespaces:
+              - default
+              - kube-system
+              - kube-public
+              - kube-node-lease
+
+generators:
+  - kustomize-secret-generator.yaml

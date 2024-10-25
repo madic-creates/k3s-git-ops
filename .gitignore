@@ -1,0 +1,13 @@
+charts/
+.vagrant/
+.envrc
+inventory
+shared/*
+!shared/.gitkeep
+site/
+.cache/
+apps/argo-cd-apps/argocd.secret.yaml
+.decrypted~*.yaml
+ansible/vars/*
+!ansible/vars/example.yaml
+!ansible/vars/vagrant.yaml

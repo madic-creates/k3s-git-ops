@@ -1,0 +1,21 @@
+---
+resources:
+  - k8s.namespace.yaml
+  - k8s.longhorn-monitoring.yaml
+  - ks8.grafana-dashboards.kubernetes-event-exporter.yaml
+  - ks8.grafana-dashboards.pi-hole-exporter.yaml
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "16"
+
+helmCharts:
+  - name: kube-prometheus-stack
+    repo: https://prometheus-community.github.io/helm-charts
+    version: 65.3.1
+    releaseName: kube-prometheus-stack
+    namespace: monitoring
+    includeCRDs: true
+    valuesFile: values.yaml
+
+generators:
+  - kustomize-secret-generator.yaml

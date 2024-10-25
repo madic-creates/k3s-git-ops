@@ -1,0 +1,60 @@
+---
+namespace: argocd
+resources:
+  - 00-kubevip-cloud-controller.yaml
+  - 00-kubevip-ha.yaml
+  - 01-certmanager.yaml
+  #- 02-certmanager-netcup.yaml
+  - 02-reflector.yaml
+  #- 03-cloudflare-tunnel-ingress-controller.yaml
+  - 03-traefik.yaml
+  - 08-mariadb.yaml
+  - 11-lldap.yaml
+  - 09-redis.yaml
+  - 10-authelia.yaml
+  - 12-pihole.yaml
+  - 14-external-snapshotter.yaml
+  - 15-longhorn.yaml
+  #- 16-checkmk.yaml
+  - 16-monitoring.yaml
+  - 16-ntfy-alertmanager.yaml
+  - 17-monitoring-loki.yaml
+  - 17-velero.yaml
+  - 17-velero-ui.yaml
+  - 20-csi-smb.yaml
+  - 24-intel-gpu.yaml
+  - 30-emby.yaml
+  - 31-nextpvr.yaml
+  - 40-paperless-ngx.yaml
+  #- 70-descheduler.yaml
+  - 80-whoami.yaml
+  - 86-kube-doom.yaml
+  - 90-gethomepage.yaml
+  #- 90-goldilocks.yaml
+  #- 91-vpa.yaml
+  - 96-system-upgrade-controller-plans.yaml
+  - 96-system-upgrade-controller.yaml
+  - 97-argocd-configmanagementplugins.yaml
+  - 98-argocd.yaml
+  - 99-argocd-apps.yaml
+  - 99-debug-container.yaml
+  #- argocd.secret.yaml
+
+# One way to encrypt repoURL
+# The value is stored in an encrypted kubernetes secret and kustomize
+# Uses the value after decrypting it
+replacements:
+  - source:
+      kind: Secret
+      version: v1
+      name: argocd-repo-url
+      namespace: argocd
+      fieldPath: stringData.url
+    targets:
+      - select:
+          kind: Application
+        fieldPaths:
+          - spec.source.repoURL
+
+generators:
+  - kustomize-secret-generator.yaml

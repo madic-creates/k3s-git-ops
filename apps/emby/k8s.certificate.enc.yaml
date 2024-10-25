@@ -1,0 +1,91 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+    name: emby-certificate
+    namespace: media
+    annotations:
+        kustomize.config.k8s.io/needs-hash: "false"
+        kustomize.config.k8s.io/behavior: merge
+spec:
+    secretName: emby-certificate-pkcs12
+    issuerRef:
+        name: cloudflare-issuer-production
+        kind: ClusterIssuer
+    commonName: ENC[AES256_GCM,data:A02U9E9ArSaD/JD2dx9PD5o=,iv:7XdF6Zt4HN88jPkukFIkaGch+gg5otQrhnBnlxj6yzw=,tag:6jBtLtMMfKCJCu7jDxwZ3w==,type:str]
+    dnsNames:
+        - ENC[AES256_GCM,data:jWn5uVIU5VY8YsdWMFzc3qY=,iv:4KyEfURm/kqbcSAZFscZTFe5qknR8cMHPSDubUkHA3U=,tag:Lc7lI9bHm7JPWGyuPjm9GA==,type:str]
+    keystores:
+        pkcs12:
+            create: true
+            passwordSecretRef:
+                name: emby-certificate-secret
+                key: pkcs12-password-secret
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBqU1p3Q005U01scFhMWnEr
+            YzVYMit5bzlYYVd5UURnM0o5d0JTVVZjV0FBCnlTTjFtOU53aittQnRreVFMSjU5
+            R05oTlppREFuMGVyMUh4bUxoeVRHakEKLS0tIFlKTmFSUm1PT0U4VW9HNXRMb1B0
+            UG12aEF6VzI4bUJBeDB1RG9YZTZ2ZE0KajaH0iHG13JE6AXzo4DC9xubUbxYmR/w
+            AWELJKmYgVdO3hHuMAI0dv43YU6HQQ7hMmRXY/Nbszo2fEeugTqcWQ==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAvWjIvdldiaGFyTUhpaXIz
+            VlRrU2QrYnZNanJObkJBd3o1WnY0NkV1NGlVCjNzblBEcnhDaUQrbkdnY1R2dnRM
+            QmMxUUFQZkoyNXFudTkyc2NBUy9hV0kKLS0tIGI5ZDFYWUs2dWxhWmJ2SG1CSytl
+            STVGcU5lOFRyNUJTSW1kbzRrS29uMHcKHWEFXcCoCG3/ZUiPfG0i3qdwxZ/ypzc9
+            8ZMk+Mg1l5GOInr5fZgQKVrlHetumED8ceWGLMtpXACGZ3Hx6l+psQ==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-09-21T10:20:41Z"
+    mac: ENC[AES256_GCM,data:pwLqYFFgAsEeqb4MUQDiYWxcpRXm+p6F2ivrKxdA981WdLg/RvCl/LeaBJAcKwqyEScjgsCeu/V3AB4snPv9VwZePukAquysFr4slQk/Pj1BHGizC3t8swki9BpJ3cJg4a4hF+jYlgu93s2HbDMPcle9zD7Y5Hq3Tgj0SJftQ2o=,iv:1ZAV9fY6aKNHN94sLLBA5lxMM7TLr12n335z96XVrEE=,tag:TBi6Skkk+MnkKq8vkSn2LQ==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|clientSecret|argocdServerAdminPassword|oidc.config|commonName|literals)$
+    version: 3.9.0
+---
+apiVersion: v1
+kind: Secret
+metadata:
+    name: emby-certificate-secret
+    namespace: media
+    annotations:
+        kustomize.config.k8s.io/needs-hash: "false"
+        kustomize.config.k8s.io/behavior: merge
+stringData:
+    pkcs12-password-secret: ENC[AES256_GCM,data:1ih1ehHpj5O1PgK++ONRJrZc4XLeWWkW4P/qwJV7uKY=,iv:Z6mKidyeezLKXpu/msS+h6Fotk3l2jUVccDoWn+LWlU=,tag:vWGCGactY3SLS1CfoBiGwA==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBqU1p3Q005U01scFhMWnEr
+            YzVYMit5bzlYYVd5UURnM0o5d0JTVVZjV0FBCnlTTjFtOU53aittQnRreVFMSjU5
+            R05oTlppREFuMGVyMUh4bUxoeVRHakEKLS0tIFlKTmFSUm1PT0U4VW9HNXRMb1B0
+            UG12aEF6VzI4bUJBeDB1RG9YZTZ2ZE0KajaH0iHG13JE6AXzo4DC9xubUbxYmR/w
+            AWELJKmYgVdO3hHuMAI0dv43YU6HQQ7hMmRXY/Nbszo2fEeugTqcWQ==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAvWjIvdldiaGFyTUhpaXIz
+            VlRrU2QrYnZNanJObkJBd3o1WnY0NkV1NGlVCjNzblBEcnhDaUQrbkdnY1R2dnRM
+            QmMxUUFQZkoyNXFudTkyc2NBUy9hV0kKLS0tIGI5ZDFYWUs2dWxhWmJ2SG1CSytl
+            STVGcU5lOFRyNUJTSW1kbzRrS29uMHcKHWEFXcCoCG3/ZUiPfG0i3qdwxZ/ypzc9
+            8ZMk+Mg1l5GOInr5fZgQKVrlHetumED8ceWGLMtpXACGZ3Hx6l+psQ==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-09-21T10:20:41Z"
+    mac: ENC[AES256_GCM,data:pwLqYFFgAsEeqb4MUQDiYWxcpRXm+p6F2ivrKxdA981WdLg/RvCl/LeaBJAcKwqyEScjgsCeu/V3AB4snPv9VwZePukAquysFr4slQk/Pj1BHGizC3t8swki9BpJ3cJg4a4hF+jYlgu93s2HbDMPcle9zD7Y5Hq3Tgj0SJftQ2o=,iv:1ZAV9fY6aKNHN94sLLBA5lxMM7TLr12n335z96XVrEE=,tag:TBi6Skkk+MnkKq8vkSn2LQ==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|clientSecret|argocdServerAdminPassword|oidc.config|commonName|literals)$
+    version: 3.9.0

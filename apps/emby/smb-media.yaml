@@ -1,0 +1,134 @@
+# video
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: smb-pv-video
+  namespace: media
+spec:
+  storageClassName: "smb"
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - dir_mode=0770
+    - file_mode=0660
+    - vers=3.1.1
+    - nobrl
+    - mfsymlinks
+    - cache=none
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: smb-video-1
+    volumeAttributes:
+      source: //192.168.1.45/Video
+    nodeStageSecretRef:
+      name: smb-creds
+      namespace: csi-smb-provisioner
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: smb-pvc-video
+  namespace: media
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi
+  volumeName: smb-pv-video
+  storageClassName: "smb"
+
+# music
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: smb-pv-music
+  namespace: media
+spec:
+  storageClassName: "smb"
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - dir_mode=0770
+    - file_mode=0660
+    - vers=3.1.1
+    - nobrl
+    - mfsymlinks
+    - cache=none
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: smb-music-1
+    volumeAttributes:
+      source: //192.168.1.45/Music
+    nodeStageSecretRef:
+      name: smb-creds
+      namespace: csi-smb-provisioner
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: smb-pvc-music
+  namespace: media
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi
+  volumeName: smb-pv-music
+  storageClassName: "smb"
+
+# photo
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: smb-pv-photo
+  namespace: media
+spec:
+  storageClassName: "smb"
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - dir_mode=0770
+    - file_mode=0660
+    - vers=3.1.1
+    - nobrl
+    - mfsymlinks
+    - cache=none
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: smb-photo-1
+    volumeAttributes:
+      source: //192.168.1.45/Photo
+    nodeStageSecretRef:
+      name: smb-creds
+      namespace: csi-smb-provisioner
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: smb-pvc-photo
+  namespace: media
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi
+  volumeName: smb-pv-photo
+  storageClassName: "smb"

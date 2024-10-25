@@ -1,0 +1,11 @@
+---
+- name: RedHat | Copying server-ca.crt to /etc/pki/ca-trust/source/anchors/
+  ansible.builtin.copy:
+    src: ./shared/{{ groups['k3s_control_plane'][0] }}/server-ca.crt
+    dest: /etc/pki/ca-trust/source/anchors/
+    mode: "0644"
+  register: redhat_ca_cert
+
+- name: RedHat | Updating CA trust
+  ansible.builtin.command: update-ca-trust extract
+  when: redhat_ca_cert.changed

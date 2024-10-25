@@ -1,0 +1,49 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+    name: wildcard-netcup-production-01
+    namespace: certmanager
+spec:
+    secretName: wildcard-netcup-production-01
+    issuerRef:
+        name: netcup-issuer-production
+        kind: ClusterIssuer
+    commonName: ENC[AES256_GCM,data:rYB99Stj+IkAqdWfknU8enrX,iv:gPUCTXK/k7wrREd7kRJA3W5/vfMoX9WRNr6V1meg8d0=,tag:VEMME/I+Ks/NQLSAQJn8Gw==,type:str]
+    dnsNames:
+        - ENC[AES256_GCM,data:N9cgYr5wKbPzV+9rtqpm6MVu,iv:dmGm31hTylBYA7YGx0epJdevkydjtxuLwFneyzjgtO4=,tag:MmLUIr4nf0EE5hm82gJ7dg==,type:str]
+    secretTemplate:
+        annotations:
+            reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
+            #reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "certmanager" # Control destination namespaces
+            # Auto create reflection for matching namespaces
+            reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
+            #reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: "dev,staging,prod" # Control auto-reflection namespaces
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAra0dleVpkMC9DWDNrM2Vx
+            dnlMWUdwUUZHalp2bnNYaHI0UmIxL3hUMjJnCmhpUmhQRW1qM1FYa0hQOE11QTZV
+            MTFDRitkelM3MXVKT2pjaXBOOWZQVHcKLS0tIGVCRVYwRlBzaUFleXBMb0RtU2R5
+            aWszSkJab29LM21hT2I4SFNUQ2RhWFUKl39Hww3hB5Yvb6mPa4auOsSy48RP8VMy
+            XZp1lCE4Lm2zr0iNVkfnjgu4wiKldg8keSVvfWz1YSchRRnOL3HOrQ==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBQWVd3c2xoRWlRbENxaUI2
+            YW1XQnBLQjZTVDJPN2k4RHZIMnBxajlTdTFvCllaUFVtNjFTRFlmYnc1VnFIVUhz
+            SzF2czBqc21CTjZQTFhINWczZi9CNzgKLS0tIGpFSFR4UXE1d0FUMU10NDJXb0wy
+            Ukk3RkREclVnNFY3VzN5UXVYYzREREEKvJGgxMJ2p+mabJsayOhLU58Jh4vlhsLi
+            uq5n/5uJqM/m1UZj7FPEB0ROq0saIGBU9VivzcG8GNBVDU09vnQLpA==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-25T12:35:50Z"
+    mac: ENC[AES256_GCM,data:sJj0GezJvb4orTEQLJ5yEjF8aQV6mkhPGL6W07Cd8AmKZoIlxith+zzkt7ZPML81OeX/+QwHg8mfAu721e4LmY1/h/uvfHRCK64+38nnDVImEg4cDAloN6Zu00hcaP4RpbVv2iZPd2VOtgL2nihR8bm3WUSj8WMINGe3VcqZJps=,iv:o4FdX8zsMtHDSbd5SgBRrFEagalwLazY8h5mg29ngMw=,tag:9Tk05XEG4GFBLTCJCXeihQ==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients)$
+    version: 3.9.0

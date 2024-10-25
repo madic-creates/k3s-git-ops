@@ -1,0 +1,51 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: dhcphelper
+  name: dhcphelper
+  namespace: dns
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: dhcphelper
+  replicas: 1
+  revisionHistoryLimit: 2
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: dhcphelper
+    spec:
+      containers:
+        - name: dhcphelper
+          image: homeall/dhcphelper:latest
+          env:
+            - name: IP
+              value: "192.168.1.232"
+            - name: TZ
+              value: "Europe/Berlin"
+          securityContext:
+            capabilities:
+              add:
+                - NET_ADMIN
+          resources:
+            limits:
+              cpu: 100m
+              memory: 32Mi
+            requests:
+              cpu: 100m
+              memory: 32Mi
+      hostNetwork: true
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values:
+                      - pihole
+              topologyKey: "kubernetes.io/hostname"
+  strategy:
+    type: Recreate

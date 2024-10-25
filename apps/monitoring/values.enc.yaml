@@ -1,0 +1,349 @@
+prometheusOperator:
+    revisionHistoryLimit: 2
+alertmanager:
+    enabled: true
+    ingress:
+        enabled: true
+        ingressClassName: traefik
+        annotations:
+            traefik.ingress.kubernetes.io/router.entrypoints: websecure
+            traefik.ingress.kubernetes.io/router.tls: "true"
+            traefik.ingress.kubernetes.io/router.middlewares: authelia-forwardauth-authelia@kubernetescrd
+        hosts:
+            - ENC[AES256_GCM,data:l86hXht4MgMWMtzZ3u1PNDibJsWMX/EOplfsozs=,iv:pFNZIpHT4hO6+jbn1WjBb8TdgvGkzPaOodDyA4SmuIk=,tag:UqwkqGmClWC0hVxeL/KpIA==,type:str]
+        tls:
+            - secretName: wildcard-cloudflare-production-01
+              hosts:
+                - ENC[AES256_GCM,data:amlOoiFtzM1kUUGCcjum4NCI87AIUwr41VogEyM=,iv:b6yAX5GHx/mOz5wrqDoqDqaOqdGp+Cy9eDzt7kotQrU=,tag:tu3Gq48vmks7poerrjGQfw==,type:str]
+    alertmanagerSpec:
+        # PVC configuration
+        storage:
+            volumeClaimTemplate:
+                spec:
+                    storageClassName: longhorn
+                    accessModes:
+                        - ReadWriteOnce
+                    resources:
+                        requests:
+                            storage: 1Gi
+    config:
+        global:
+            resolve_timeout: 5m
+        inhibit_rules:
+            - source_matchers:
+                - severity = critical
+              target_matchers:
+                - severity =~ warning|info
+              equal:
+                - namespace
+                - alertname
+            - source_matchers:
+                - severity = warning
+              target_matchers:
+                - severity = info
+              equal:
+                - namespace
+                - alertname
+            - source_matchers:
+                - alertname = InfoInhibitor
+              target_matchers:
+                - severity = info
+              equal:
+                - namespace
+            - target_matchers:
+                - alertname = InfoInhibitor
+        route:
+            group_by:
+                - namespace
+            group_wait: 30s
+            group_interval: 5m
+            repeat_interval: 1h
+            receiver: ntfy
+            routes:
+                - receiver: ntfy
+                  repeat_interval: 6h
+                  matchers:
+                    - alertname = "Watchdog"
+        receivers:
+            - name: ntfy
+              webhook_configs:
+                - url: ENC[AES256_GCM,data:3PF9RLcZUQBrAKNgg5u5XV+5VDz2HANISLWujIYZtefpXZYEYQoe6RKmRgjcKMri8rYZmGtHV14DpA==,iv:/3jPca4+lW+9qbMVf2TPe25J69lfo9THD+ZCwQIc3wM=,tag:RGof6Bdke46BRQqenxgH+g==,type:str]
+                  http_config:
+                    basic_auth:
+                        username: ENC[AES256_GCM,data:rVubAVny+RcW9GtGOKWrVLu1OepimQmS,iv:OaNoWx6vWtaJJM68h+QhmE1TJu8rua5hIeDDUbyewlk=,tag:T5NJL2XtiolwQDhy2WUr1g==,type:str]
+                        password: ENC[AES256_GCM,data:sAFbrFH+6bg+rdRoHFNnePUBiSvGadzY,iv:rK52vNLdq1IvSSYzguJhREWWJwcL46xg+Sft/QRBsr4=,tag:5jwP9j9YihEYNU9ffUMWhQ==,type:str]
+        templates:
+            - /etc/alertmanager/config/*.tmpl
+prometheus:
+    prometheusSpec:
+        retention: 45d
+        retentionSize: 25GB
+        # By default, Prometheus only discovers PodMonitors and ServiceMonitors within its namespace.
+        # Settings this to false disables the behaviour.
+        podMonitorSelectorNilUsesHelmValues: false
+        serviceMonitorSelectorNilUsesHelmValues: false
+        #containers:
+        #  - name: prometheus
+        #    startupProbe:
+        #      failureThreshold: 500
+        # Resources request and limits
+        resources:
+            requests:
+                cpu: 500m
+                memory: 2Gi
+            limits:
+                cpu: 1000m
+                memory: 6Gi
+        # PVC configuration
+        storageSpec:
+            volumeClaimTemplate:
+                spec:
+                    storageClassName: longhorn
+                    accessModes:
+                        - ReadWriteOnce
+                    resources:
+                        requests:
+                            storage: 30Gi
+# In K3S, these services are not deployed as pods but are part of the k3s binary
+# Do not use the vip because there are node specific metrics
+kubeEtcd:
+    enabled: true
+    endpoints:
+        - 192.168.1.21
+        - 192.168.1.22
+        - 192.168.1.23
+kubeControllerManager:
+    enabled: true
+    endpoints:
+        - 192.168.1.21
+        - 192.168.1.22
+        - 192.168.1.23
+    service:
+        enabled: true
+        port: 10257
+        targetPort: 10257
+    serviceMonitor:
+        enabled: true
+        https: true
+        insecureSkipVerify: true
+kubeScheduler:
+    enabled: true
+    endpoints:
+        - 192.168.1.21
+        - 192.168.1.22
+        - 192.168.1.23
+    service:
+        enabled: true
+        port: 10259
+        targetPort: 10259
+    serviceMonitor:
+        enabled: true
+        https: true
+        insecureSkipVerify: true
+kubeProxy:
+    enabled: true
+    endpoints:
+        - 192.168.1.21
+        - 192.168.1.22
+        - 192.168.1.23
+    service:
+        enabled: true
+        port: 10249
+        targetPort: 10249
+grafana:
+    revisionHistoryLimit: 2
+    assertNoLeakedSecrets: false
+    deploymentStrategy:
+        type: Recreate
+    # Admin user password
+    adminPassword: ENC[AES256_GCM,data:7q7aQIPwOfWnhEEF5fyy7QHlNWVueiFXYGpGFQybShs=,iv:qTLiZ9FOLrzOhJQklSiRZcK7PqD6KrMWho7PiKG2/bs=,tag:QGkxF86TVesOjtqt0rLFDw==,type:str]
+    sidecar:
+        dashboards:
+            provider:
+                allowUiUpdates: true
+        resources:
+            limits:
+                cpu: 100m
+                memory: 100Mi
+            requests:
+                cpu: 50m
+                memory: 50Mi
+    initChownData:
+        resources:
+            limits:
+                cpu: 100m
+                memory: 100Mi
+            requests:
+                cpu: 50m
+                memory: 50Mi
+    downloadDashboards:
+        resources:
+            limits:
+                cpu: 100m
+                memory: 100Mi
+            requests:
+                cpu: 50m
+                memory: 50Mi
+    persistence:
+        enabled: true
+        type: pvc
+        existingClaim: longhorn-pvc-grafana
+    # List of grafana plugins to be installed
+    plugins:
+        - grafana-piechart-panel
+        #- "https://github.com/Checkmk/grafana-checkmk-datasource/releases/download/v3.3.0/tribe-29-checkmk-datasource-3.3.0.zip"
+        - grafana-worldmap-panel
+        - sni-thruk-datasource
+    # ServiceMonitor label and job relabel
+    #serviceMonitor:
+    #  labels:
+    #    release: kube-prometheus-stack
+    #  relabelings:
+    #    # Replace job value
+    #    - sourceLabels:
+    #        - __address__
+    #      action: replace
+    #      targetLabel: job
+    #      replacement: grafana
+    datasources:
+        datasources.yaml:
+            apiVersion: 1
+            datasources:
+                - name: Loki
+                  type: loki
+                  access: proxy
+                  basicAuth: false
+                  url: ENC[AES256_GCM,data:DKMW6lIkVwjiNmkV/rTQwfJ6QJ85rLeTA4H76gHx+VrZwQ==,iv:D2aAVUrajXQ6OduYBlPB9BrbLdnTdMooOtvvqwQBC7k=,tag:2Dy91+I8xDvNze3JK4acVg==,type:str]
+                  jsonData:
+                    maxLines: 1000
+    # Required for the dashboards configuration
+    dashboardProviders:
+        dashboardproviders.yaml:
+            apiVersion: 1
+            providers:
+                - name: default
+                  orgId: 1
+                  folder: null
+                  type: file
+                  disableDeletion: false
+                  editable: true
+                  options:
+                    path: /var/lib/grafana/dashboards/default
+    dashboards:
+        default:
+            # https://grafana.com/grafana/dashboards/13639-logs-app/
+            #logs-app:
+            #  gnetId: 13639
+            #  revison: 2
+            #  datasource: Loki
+            # https://grafana.com/grafana/dashboards/13332-kube-state-metrics-v2/
+            #kube-state-metrics-v2:
+            #  gnetId: 13332
+            #  revison: 12
+            #  datasource: Prometheus
+            # https://grafana.com/grafana/dashboards/15757-kubernetes-views-global/
+            kubernetes-views-global:
+                gnetId: 15760
+                revison: 32
+                datasource: Prometheus
+            # https://grafana.com/grafana/dashboards/15760-kubernetes-views-pods/
+            kubernetes-views-pods:
+                gnetId: 15757
+                revison: 42
+                datasource: Prometheus
+            # https://grafana.com/grafana/dashboards/15759-kubernetes-views-nodes/
+            kubernetes-views-nodes:
+                gnetId: 15759
+                revison: 32
+                datasource: Prometheus
+            # https://grafana.com/grafana/dashboards/15758-kubernetes-views-namespaces/
+            kubernetes-views-namespaces:
+                gnetId: 15758
+                revison: 39
+                datasource: Prometheus
+                # https://grafana.com/grafana/dashboards/17882-kubernetes-event-exporter/
+                #kubernetes-event-exporter:
+                #  gnetId: 17882
+                #  revison: 2
+                #  datasource: null
+                # https://grafana.com/grafana/dashboards/10176-pi-hole-exporter/
+                #pihole-exporter:
+                #  gnetId: 10176
+                #  revison: 3
+                #  datasource: Prometheus
+    resources:
+        limits:
+            cpu: 100m
+            memory: 128Mi
+        requests:
+            cpu: 100m
+            memory: 128Mi
+    grafana.ini:
+        auth:
+            oauth_allow_insecure_email_lookup: true
+            disable_login_form: true
+        server:
+            root_url: ENC[AES256_GCM,data:RyPefzppvHXkIhmsPK7S+USGDLPQ7lJtQmkEWm8QUk0=,iv:kds6yRHFtkIkw7TsJ+CxRwVPSsrNdFz2jUtRDW1t5+o=,tag:wOEmrf5FtykXVPuSSWqzwA==,type:str]
+        auth.generic_oauth:
+            enabled: true
+            name: Authelia
+            icon: signin
+            client_id: grafana
+            client_secret: ENC[AES256_GCM,data:+TKuGYzdBNJXafcC6X+s+mPqcAi3DVL4MfSl+m1JzEc=,iv:oQXWRGy/GXnWZXNSgGgKsBBiWgPWijOek2EuA8apIBk=,tag:AshIkLIEhDHcmrUtYIcZkQ==,type:str]
+            scopes: openid profile email groups
+            empty_scopes: false
+            auth_url: ENC[AES256_GCM,data:9ANXIccE6sSCLQFqde9eaXckTrnfvG8iQjKh0t+iiVAulMV/2YBsE1YQgL3ogLzLV9Cx0Q==,iv:uXdVFmT2F7+vwLtSHXh+DgmcEbeYPEZKDwFffOSHfZI=,tag:M+xUJxMK6SJQB/Z2AxhriA==,type:str]
+            token_url: http://authelia.authelia.svc.cluster.local/api/oidc/token
+            api_url: ENC[AES256_GCM,data:Ln1JSZTiBUAx2y6OMTEqGtCtZ54xW0yu5CHSc1MEzF73L2Gh3TnaT1gX2XKIPow=,iv:fG5wwmEbPZOqOezV8YagSximshl47sotPpKfuP4UdEo=,tag:BdSBG3Iney8DaUtJCCBYrA==,type:str]
+            login_attribute_path: preferred_username
+            groups_attribute_path: groups
+            role_attribute_path: contains(groups[*], 'GrafanaAdmin') && 'GrafanaAdmin' || contains(groups[*], 'admin') && 'Admin' || contains(groups[*], 'editor') && 'Editor' || contains(groups[*], 'viewer') && 'Viewer'
+            role_attribute_strict: true
+            name_attribute_path: name
+            use_pkce: true
+            tls_skip_verify_insecure: true
+            allow_assign_grafana_admin: true
+        auth.proxy:
+            enabled: false
+            header_name: Remote-User
+            header_property: username
+            auto_sign_up: true
+            headers: Groups:Remote-Group
+            enable_login_token: false
+prometheus-node-exporter:
+    resources:
+        limits:
+            cpu: 200m
+            memory: 50Mi
+        requests:
+            cpu: 100m
+            memory: 30Mi
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBnZ2VGTmNnQnI4K1BVWkhv
+            b3ZLVzJ2R2NjMzNZL1FKdnRQVUpQNExidkFBCkJ6VWRKTERhYkdxODBQaHJvRzU3
+            dGdPeHdTL3RoYTE0RDd6QWErckNWM00KLS0tIFIxQURxSmpzTnJ2WVNaMjJCWnlF
+            dGcxRW40V1R4QnVGUS91UzFScTJycW8KLqy7fnoVdF61B0EndUp2PhdiYV8HuYgR
+            9z9wyiK3Yapn+5tMBDheKB8FDzM7KFgzUSckOXXldY0ahtsMbflyDA==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBDUmV0OE1KQlIvd2x3QUFD
+            c1RPVHFZL0p2SFBKcFRPeHdRMy83YnVYNUM0Cjh5M0hkR0VHTHA1WmlpaDcyUUlp
+            a003ZzhwTjlSdUhtL09iY1NMekxZOTgKLS0tIGN6OXRkRkdhTGRXUnZraFY2L3ZC
+            aWJVQzkvemJYZS9Ed3Q5ckwwR0g3VTAKM/lC8aLmdCgX1wI0n4g0ibBzK3N76gzD
+            6LnmDsvMtzUFk53ri+Ck6yEFMvk0y5h3UB73DD9BJ7N93wzZ3XU6cw==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-25T05:32:05Z"
+    mac: ENC[AES256_GCM,data:OhpdpmdyjUdqa3lgolC/mCP6GbJY7esVDtobDRzycg8Mbo/geJdK7q4T/DgzCDxBx5ASPuh4dANnMs71x561pFxlim8OKY+9KFDbKwKVPdboIhbmv7TWFtxabKl5NJ7J/9AIqbkqQ84Y+MyR+CeUTBvYCIp22ekZ4OHICgNLiSE=,iv:tzigfzHyJ6hnWsu7rQv6hUOywEdMLC5sCIU5s3CTpQs=,tag:UTEggzXySaUQIbR65B5Fiw==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url)$
+    version: 3.9.1

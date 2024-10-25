@@ -1,0 +1,37 @@
+---
+on:
+  # Allows manual/automated ad-hoc trigger
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: "Override default log level"
+        required: false
+        default: "info"
+        type: string
+      overrideSchedule:
+        description: "Override all schedules"
+        required: false
+        default: "false"
+        type: string
+  schedule:
+    - cron: "30 5,17 * * *"
+
+jobs:
+  renovate:
+    name: Renovate
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout master branch of this repository
+      - name: Checkout
+        uses: actions/checkout@master
+      # Don't waste time starting Renovate if JSON is invalid
+      #- name: Validate Renovate JSON
+      #  run: jq type .github/renovate.json
+      - name: Run Renovate
+        uses: docker://renovate/renovate:latest
+        env:
+          RENOVATE_REPOSITORIES: $GITEA_REPOSITORY
+          RENOVATE_TOKEN: ${{ secrets.RENOVATE_TOKEN }}
+          RENOVATE_AUTOMERGE: false
+          RENOVATE_ENDPOINT: ${{ secrets.API_URL }}
+          RENOVATE_PLATFORM: gitea

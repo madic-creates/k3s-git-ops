@@ -1,0 +1,10 @@
+---
+resources:
+  - ../../infrastructure/kubevip
+
+configMapGenerator:
+  - name: kubevip
+    namespace: kube-system
+    behavior: replace
+    literals:
+      - cidr-global=192.168.33.241-192.168.33.250

@@ -1,0 +1,138 @@
+image:
+    repository: pihole/pihole
+    tag: 2024.07.0
+    pullPolicy: IfNotPresent
+serviceDns:
+    mixedService: true
+    annotations:
+        kube-vip.io/loadbalancerIPs: 192.168.1.232
+    # type LoadBalancer with externalTrafficPolicy Local
+    # requires 192.168.1.232 on the same node as the pod
+    type: LoadBalancer
+    #externalTrafficPolicy: Cluster
+    #type: ClusterIP
+serviceDhcp:
+    annotations:
+        kube-vip.io/loadbalancerIPs: 192.168.1.232
+    type: LoadBalancer
+virtualHost: ENC[AES256_GCM,data:+Vw4g9rmcnDsZ740CEXLJPMdLOHrzhA=,iv:QBV6sqxNl5IpP/+INiQ2y0hLKRnt3XiESA5RD1fkJJs=,tag:yaD603/Vwd2ZEB4bDy79bA==,type:str]
+ingress:
+    enabled: true
+    ingressClassName: traefik
+    hosts:
+        - ENC[AES256_GCM,data:NWNfVzgpxyTzwiluRpOgEvv8Cccagsc=,iv:r4vePufyAUuetZphZZVvnriEn0xUKqt4SxV5X1MQ4Hg=,tag:jQsQfw0g9G4xRfnolNwfrQ==,type:str]
+    tls:
+        - secretName: wildcard-cloudflare-production-01
+          hosts:
+            - ENC[AES256_GCM,data:XuLb+bTFf04yDXxTXVxFxqR/6tmVU1U=,iv:TPG/Dga8O52geyHwhT6z+e4reNZzg+38stG5SW2pyac=,tag:2ZLGBzcPETOeRFzA/oGCVw==,type:str]
+    annotations:
+        traefik.ingress.kubernetes.io/router.entrypoints: websecure
+        traefik.ingress.kubernetes.io/router.tls: "true"
+        traefik.ingress.kubernetes.io/router.middlewares: authelia-forwardauth-authelia@kubernetescrd
+resources:
+    limits:
+        cpu: 1000m
+        memory: 256Mi
+    requests:
+        cpu: 100m
+        memory: 128Mi
+extraEnvVars:
+    TZ: Europe/Berlin
+    FTLCONF_LOCAL_IPV4: 192.168.1.232
+    DNSSEC: true
+    DNS_BOGUS_PRIV: true
+    DNS_FQDN_REQUIRED: true
+    DHCP_START: 192.168.1.50
+    DHCP_END: 192.168.1.200
+    DHCP_ROUTER: 192.168.1.1
+    DHCP_LEASETIME: 12
+    PIHOLE_DOMAIN: ENC[AES256_GCM,data:7foz3GTxsW2dtDVo,iv:SCOGHfPUaJWcuRtQBEILQQPjbS8YkasaxfbNeD/IdyE=,tag:KIzqACJAR7lDNjybvnujkQ==,type:str]
+    DHCP_rapid_commit: true
+    WEBUIBOXEDLAYOUT: traditional
+DNS1: 127.0.0.1:5053
+# Not required because secured via authelia oidc
+admin:
+    enabled: false
+doh:
+    enabled: true
+    pullPolicy: IfNotPresent
+    envVars:
+        TUNNEL_DNS_UPSTREAM: ENC[AES256_GCM,data:rqO6TcPPVKUxk8l0CACpgnB/D6HoFet3qH9bhcRD8FlkyUVz,iv:PIkg65TxKCBHSlJ9KOZzdsu4BW93dxkvkqnyr9h82Dk=,tag:c9lol+sXTsgcnB4MnCLB5g==,type:str]
+dnsmasq:
+    # Contains internal wildcard domains:
+    # - address=/.example.com/192.168.1.45
+    # - 'address=/.example.com/::'
+    # - address=/.k8s.example.com/192.168.1.231
+    # - 'address=/.k8s.example.com/::'
+    customDnsEntries:
+        - ENC[AES256_GCM,data:akfV3KOP3cpDLbqewxGHYdbla42CF0+fg7X3wUgP6d5HtX0=,iv:Cknmm9TdNt7JE3i9LxEsuBXiIsXm2cx0n3bK0e7bapE=,tag:oCWJIaZOTeQONdbwB1eaLQ==,type:str]
+        - ENC[AES256_GCM,data:A9pHLmTf0zPXO+04H83fF9ox2s7GCmCUeg==,iv:R++07b39G3feEQkELYmaiFFr3XS4k0/EyM9nVMB2tJE=,tag:4M/qT9T5Dfz9DvQ19VkCSw==,type:str]
+        - ENC[AES256_GCM,data:tI9VaOaT//DMhqt9J1UaY8T5gwDIMzQgPqksC9APpKsduAQRmZCN+Q==,iv:F2BDm9tsF0E/pnPUXhZGXc0T02uB1ro/q4991g3nEJs=,tag:x4fEmWiyNqzDN0u1jv9RJA==,type:str]
+        - ENC[AES256_GCM,data:ApEKkgvFEoHFd4VaBlKY75IxWDP0J66Gvt8OAxA=,iv:kV0e9L7Me94G7kuchxiFytW/G2ZR6uU/36dHgD34lqk=,tag:EYqwYjbDptojYHd9lnSjAQ==,type:str]
+    customSettings:
+        - dhcp-option=252,"\n"
+        - dhcp-option=vendor:MSFT,2,1i
+        # DNS
+        - dhcp-option=6,192.168.1.232,192.168.1.1
+        # NTP
+        - dhcp-option=42,192.168.1.1
+        - dhcp-range=::,ra-names
+        - server=/geekbundle.org/192.168.1.1
+        - ptr-record=1.1.168.192.in-addr.arpa.,"despair"
+        # TFTP Boot
+        - dhcp-match=set:ipxe,175
+        - dhcp-boot=tag:!ipxe,ipxe.pxe,dns01,192.168.1.11
+        - dhcp-match=set:efi-x86_64,option:client-arch,7
+        - dhcp-boot=tag:efi-x86_64,ipxe.efi,dns01,192.168.1.11
+        - dhcp-boot=http://192.168.1.45:8043/boot.ipxe
+        # HTTP Boot
+        #- dhcp-match=set:efi-x86_64_http,option:vendor-class-identifier,0,10
+        #- dhcp-boot=tag:efi-x86_64_http,"http://192.168.1.45:8043/ipxe.efi"
+        #- dhcp-boot=tag:!ipxe,"http://192.168.1.45:8043/ipxe.pxe"
+# Not required. We're running a dhcp relay via host network.
+#hostNetwork: "true"
+capabilities:
+    add:
+        - NET_ADMIN
+persistentVolumeClaim:
+    enabled: true
+    storageClass: longhorn
+    size: "10737418240"
+#affinity:
+#  nodeAffinity:
+#    requiredDuringSchedulingIgnoredDuringExecution:
+#      nodeSelectorTerms:
+#        - matchExpressions:
+#            - key: kubernetes.io/hostname
+#              operator: In
+#              values:
+#                - node03
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBGelZCTHVhUW5KZHBFaGxR
+            b2huQ0JldSsrdnBlTlMxb2xiVzJVaVB5OWhzCjNuL29JTTMyRlhLT01qSGhlaWF1
+            KytlNW12c05mVmFQRzdiVHRDanpNWkkKLS0tIDV6VlM0R3NHMnJwUktXNDZJZWk0
+            aGNWejhOUCs0TUZOQ0dEeWJCbnB2UVEKXFjvPMCy75myk3IgoDTUKtTduwfq0Vus
+            yfJjhmcgtqLGEQXdbFjKIarzdyBSe5mma0Wk5T+DlOaM0w3f78uN+A==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBCSFVrNWlmd2cvZ3o0UUNp
+            U2IvWjZxeW1KL1hyNW5nTnVWWUNYemM5SUUwCmpza3JvdjU4WjFUUTJyZjRiejlu
+            MjdoY1dPR1RYUnFkYkxVR3VqalcvVWMKLS0tIEF4UG5EYUFsSGNZeExKRlVyaVRQ
+            R0w1V1dFME9uaDNpOXNvM2JSVU1nencKvT3hkm+hoTsFEjHwfDWrPkyiAH9Htx6M
+            WzKyhCGz66Bo7q5FpRvRLmZWIRKkK6/+QDF4BlGS+ZYFeBLT38W8Xw==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-25T11:30:30Z"
+    mac: ENC[AES256_GCM,data:vfKif3w/xMUIqSZE+b5jLDB7cxcz+62gde/Q9puGqDq73qS8CuhBGfkmUODCtQgCNauyXsAOIQtqNP59Qorx5V8qJzlez4uAGq2xC4k+82jdOfqr6cnGUOGPTTkH2lEInWvdFlc/K7LJWXHZCgTOZnmoG/BJ/sPr9VtpUgaNwr0=,iv:a8jLULGwUvYjfbXO8eCvOiNs3Vq/qh2gWfMQlKp6Vgg=,tag:aiyYnJu+S+9lf9SflmvQQw==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients)$
+    version: 3.9.1

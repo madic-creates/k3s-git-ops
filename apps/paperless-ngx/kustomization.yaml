@@ -1,0 +1,45 @@
+---
+resources:
+  - namespace.yaml
+  - k8s.smb.yaml
+
+namespace: paper
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "40"
+
+helmCharts:
+  - name: paperless
+    repo: https://charts.pascaliske.dev
+    version: 5.1.1
+    releaseName: paperless
+    namespace: paper
+    includeCRDs: true
+    valuesFile: values.yaml
+
+patches:
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: paperless
+    patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: paperless
+        namespace: paper
+      spec:
+        revisionHistoryLimit: 2
+        strategy:
+          type: Recreate
+        template:
+          spec:
+            containers:
+              - name: paperless
+                envFrom:
+                  - secretRef:
+                      name: paperless-env-secrets
+
+generators:
+  - kustomize-secret-generator.yaml

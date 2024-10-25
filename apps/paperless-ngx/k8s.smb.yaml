@@ -1,0 +1,230 @@
+## Data
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: smb-pv-container-paperless-data
+  namespace: paper
+spec:
+  storageClassName: "smb"
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - dir_mode=0770
+    - file_mode=0660
+    - vers=3.1.1
+    - nobrl
+    - mfsymlinks
+    - cache=none
+    - uid=1000
+    - gid=1000
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: smb-container-paperless-data-1
+    volumeAttributes:
+      source: //192.168.1.45/container/paperless/data
+    nodeStageSecretRef:
+      name: smb-creds
+      namespace: csi-smb-provisioner
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: smb-pvc-container-paperless-data
+  namespace: paper
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+  volumeName: smb-pv-container-paperless-data
+  storageClassName: "smb"
+## Documents
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: smb-pv-documents
+  namespace: paper
+spec:
+  storageClassName: "smb"
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - dir_mode=0770
+    - file_mode=0660
+    - vers=3.1.1
+    - nobrl
+    - mfsymlinks
+    - cache=none
+    - uid=1000
+    - gid=1000
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: smb-documents-1
+    volumeAttributes:
+      source: //192.168.1.45/Documents
+    nodeStageSecretRef:
+      name: smb-creds
+      namespace: csi-smb-provisioner
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: smb-pvc-documents
+  namespace: paper
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi
+  volumeName: smb-pv-documents
+  storageClassName: "smb"
+## Media
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: smb-pv-container-paperless-media
+  namespace: paper
+spec:
+  storageClassName: "smb"
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - dir_mode=0770
+    - file_mode=0660
+    - vers=3.1.1
+    - nobrl
+    - mfsymlinks
+    - cache=none
+    - uid=1000
+    - gid=1000
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: smb-container-paperless-media-1
+    volumeAttributes:
+      source: //192.168.1.45/container/paperless/media
+    nodeStageSecretRef:
+      name: smb-creds
+      namespace: csi-smb-provisioner
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: smb-pvc-container-paperless-media
+  namespace: paper
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi
+  volumeName: smb-pv-container-paperless-media
+  storageClassName: "smb"
+## Export
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: smb-pv-container-paperless-export
+  namespace: paper
+spec:
+  storageClassName: "smb"
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - dir_mode=0770
+    - file_mode=0660
+    - vers=3.1.1
+    - nobrl
+    - mfsymlinks
+    - cache=none
+    - uid=1000
+    - gid=1000
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: smb-container-paperless-export-1
+    volumeAttributes:
+      source: //192.168.1.45/container/paperless/export
+    nodeStageSecretRef:
+      name: smb-creds
+      namespace: csi-smb-provisioner
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: smb-pvc-container-paperless-export
+  namespace: paper
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi
+  volumeName: smb-pv-container-paperless-export
+  storageClassName: "smb"
+## Trash
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: smb-pv-container-paperless-trash
+  namespace: paper
+spec:
+  storageClassName: "smb"
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - dir_mode=0770
+    - file_mode=0660
+    - vers=3.1.1
+    - nobrl
+    - mfsymlinks
+    - cache=none
+    - uid=1000
+    - gid=1000
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: smb-container-paperless-trash-1
+    volumeAttributes:
+      source: //192.168.1.45/container/paperless/trash
+    nodeStageSecretRef:
+      name: smb-creds
+      namespace: csi-smb-provisioner
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: smb-pvc-container-paperless-trash
+  namespace: paper
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi
+  volumeName: smb-pv-container-paperless-trash
+  storageClassName: "smb"

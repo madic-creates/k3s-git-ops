@@ -1,0 +1,63 @@
+---
+## Traefik http https redirect
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: redirect
+  namespace: traefik
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+## Block requests to traefik pilot
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: blockiframe
+  namespace: traefik
+spec:
+  headers:
+    customResponseHeaders:
+      Content-Security-Policy: "frame-src none;"
+---
+## Cluster internal expose prometheus metrics
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik-metrics
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/instance: traefik
+    app.kubernetes.io/name: traefik-metrics
+spec:
+  type: ClusterIP
+  ports:
+    - name: metrics
+      port: 9100
+      targetPort: metrics
+      protocol: TCP
+  selector:
+    app.kubernetes.io/instance: traefik-kube-system
+    app.kubernetes.io/name: traefik
+---
+## Traefik dashboard
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik-dashboard
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/instance: traefik
+    app.kubernetes.io/name: traefik-dashboard
+spec:
+  type: ClusterIP
+  ports:
+    - name: traefik
+      port: 9000
+      targetPort: traefik
+      protocol: TCP
+  selector:
+    app.kubernetes.io/instance: traefik-kube-system
+    app.kubernetes.io/name: traefik
+

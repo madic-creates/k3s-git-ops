@@ -1,0 +1,16 @@
+---
+resources:
+  #- https://raw.githubusercontent.com/kube-vip/kube-vip-cloud-provider/main/manifest/kube-vip-cloud-controller.yaml
+  - k8s.kube-vip-cloud-controller.yaml
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "0"
+
+configMapGenerator:
+  - name: kubevip
+    namespace: kube-system
+    literals:
+      - cidr-global=192.168.1.231-192.168.1.239
+    # Without this option, kustomize would append a hash to the ConfigMap. However, kubevip requires a ConfigMap named kubevip.
+    options:
+      disableNameSuffixHash: true

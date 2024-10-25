@@ -1,0 +1,6 @@
+---
+resources:
+  - k8s.netshoot.yaml
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "99"

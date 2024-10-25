@@ -1,0 +1,115 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name: paperless-root
+    namespace: paper
+    annotations:
+        # HTTPS entrypoint enabled
+        traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+        # TLS enabled
+        traefik.ingress.kubernetes.io/router.tls: "true"
+        traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect@kubernetescrd, authelia-forwardauth-authelia@kubernetescrd
+spec:
+    ingressClassName: traefik
+    tls:
+        - hosts:
+            - ENC[AES256_GCM,data:ywmoDzQkjjEUOXrP6bBLFVjFT5geHnbFKMk=,iv:9RwfJ/4CKp4mpkBYuIRuDx6dQUXixzmKjQU6glAiZ4w=,tag:ojHnvaduGTLHyszBUeacKg==,type:str]
+          secretName: wildcard-cloudflare-production-01
+    rules:
+        - host: ENC[AES256_GCM,data:8BDk6is1P8h93mpLiT2kZYxMqwHbHyBcx+s=,iv:GV1zQg7FrXPRzVWySkHH7JELaQw6m8Qd0DzcFA7IfOo=,tag:87Fq/ZmI8/AbmFcdAS6lJw==,type:str]
+          http:
+            paths:
+                - path: /
+                  pathType: Prefix
+                  backend:
+                    service:
+                        name: paperless
+                        port:
+                            number: 8000
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBsWHRaVmtFT3lyZ1oxa1Nh
+            R3hKQzNaZHg2VW9pWjFoeEdJQVNncENJN0IwCkNjNzIvRjJGd01UL3BQUVRDYXlD
+            ZDlzbVJFdFltOWZjM05vZVdIc0dXMTQKLS0tIERiemZZTWpvT3pRWDdyblkwN3JJ
+            eDJTQldjQmFXa2QxWUFxQWlUNU9CV2sKEh0afQqPoUwwqiwLNfDj/vV0BgtjZPvD
+            hmihJzmLKpOfrGhpTgasujCQdieGLhMkPjyQlMwioIiaBDWEe3llTQ==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBOSzZsNkRmQjBhNjlETlNh
+            WjhSZW5IUlZlMko1K2VGbDFHbnpJbVVKUFRFCkNtQkNjK3NXSXJOS1c3UjJZaGRp
+            OENHWW85L3VhcVM3ZHIxY1BEbHduZkkKLS0tIFhvOHF3SnVoa2VmMXFrWEJuTy9M
+            cHFwNUZQSWRQUWk1S1JzY1hQN1RoWEUKOtBsd2kydQ1wWsvDIWld7xobiUJVuHQV
+            ev2Dk83jiiyy/UieC/qUx5iZWh2sV8BHANGSW4POHq7ubxEJ5aLPyQ==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-25T06:49:21Z"
+    mac: ENC[AES256_GCM,data:LZIUKduj3Ws34W+LQwQL5wO1y/1Joc3Jo0w8LUdvz+M9ZXPn/hAZELMgDCPwPwOe1CfIhg7L5vK4jfP/CtXoCBzz9jl3O4djely/3oD4qEpsDcfLy5aKBLHl1xYMA5cahhwSpTzfFnzoagmIZxx0vbQDKMk1zB2OapUp+wXvD00=,iv:pnSHMJbbYaTldSGh+aCjP3K3Izd7fA9Sg0nBx/UHOoI=,tag:3xO7O/47EYOQUEFq/sIHAQ==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url)$
+    version: 3.9.0
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name: paperless-api
+    namespace: paper
+    annotations:
+        # HTTPS entrypoint enabled
+        traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+        # TLS enabled
+        traefik.ingress.kubernetes.io/router.tls: "true"
+        traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect@kubernetescrd
+spec:
+    ingressClassName: traefik
+    tls:
+        - hosts:
+            - ENC[AES256_GCM,data:b0JouA9USlmbGNMmju09nvy3LyO0Ocx7r+I=,iv:eSpq5eZ5rIuscBzn3llV3+PW6lmTh66DaeCKF+CH3pQ=,tag:vCE6z84kPoNjxccQhT0LLg==,type:str]
+          secretName: wildcard-cloudflare-production-01
+    rules:
+        - host: ENC[AES256_GCM,data:KBjfTbLz9of9UGepiVX3a6oMzSYfS3RV9Fc=,iv:j0A8zkyrikIxEUpXRF2awbXkWwcPssODaY4XTHGfsLI=,tag:TsJnnAklF1AaFXVQHGUoSw==,type:str]
+          http:
+            paths:
+                - path: /api
+                  pathType: Prefix
+                  backend:
+                    service:
+                        name: paperless
+                        port:
+                            number: 8000
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBsWHRaVmtFT3lyZ1oxa1Nh
+            R3hKQzNaZHg2VW9pWjFoeEdJQVNncENJN0IwCkNjNzIvRjJGd01UL3BQUVRDYXlD
+            ZDlzbVJFdFltOWZjM05vZVdIc0dXMTQKLS0tIERiemZZTWpvT3pRWDdyblkwN3JJ
+            eDJTQldjQmFXa2QxWUFxQWlUNU9CV2sKEh0afQqPoUwwqiwLNfDj/vV0BgtjZPvD
+            hmihJzmLKpOfrGhpTgasujCQdieGLhMkPjyQlMwioIiaBDWEe3llTQ==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBOSzZsNkRmQjBhNjlETlNh
+            WjhSZW5IUlZlMko1K2VGbDFHbnpJbVVKUFRFCkNtQkNjK3NXSXJOS1c3UjJZaGRp
+            OENHWW85L3VhcVM3ZHIxY1BEbHduZkkKLS0tIFhvOHF3SnVoa2VmMXFrWEJuTy9M
+            cHFwNUZQSWRQUWk1S1JzY1hQN1RoWEUKOtBsd2kydQ1wWsvDIWld7xobiUJVuHQV
+            ev2Dk83jiiyy/UieC/qUx5iZWh2sV8BHANGSW4POHq7ubxEJ5aLPyQ==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-25T06:49:21Z"
+    mac: ENC[AES256_GCM,data:LZIUKduj3Ws34W+LQwQL5wO1y/1Joc3Jo0w8LUdvz+M9ZXPn/hAZELMgDCPwPwOe1CfIhg7L5vK4jfP/CtXoCBzz9jl3O4djely/3oD4qEpsDcfLy5aKBLHl1xYMA5cahhwSpTzfFnzoagmIZxx0vbQDKMk1zB2OapUp+wXvD00=,iv:pnSHMJbbYaTldSGh+aCjP3K3Izd7fA9Sg0nBx/UHOoI=,tag:3xO7O/47EYOQUEFq/sIHAQ==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url)$
+    version: 3.9.0

@@ -1,0 +1,247 @@
+# Solving API issue.
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+    name: svc-longhorn-headers
+    namespace: longhorn
+spec:
+    headers:
+        customRequestHeaders:
+            X-Forwarded-Proto: https
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBrTWNSU1o4WXJLK3pJQWNj
+            Q1FQcWkwVVJTOWt0Z2UyOEVuemxZMWVFL1ZzClVHYlVDb1pWaTVNVXB6REtKV0d3
+            d3ZmQU1tU3gxR3haejBWUlFWcUk0Nm8KLS0tIExNM3FzZU81clJuT25SZnRoL3hm
+            OGZGK1NvcnhMWGpNM2FCNjZZSlRXMVkK4ePQrZcd1PW+h21DvFQI827nGnHtE3Ho
+            xhxX3fQsGD8bXEk2SbERxG9v5LEPhnVqeNdW4xGCn3FDlyUsKPX77w==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBXK2hYbDJnQjVhZ296T2JK
+            ekFPRm9mckd6VURhUUk2UTF1M1FvREVRWkNnCmxvMjQrS2pvdDVKL2s0ZDk2Uytw
+            d1Z2MFcvZnVGeWJyK2szVkJtUnIxUEEKLS0tIHBSUkF6QzIxc3phOGRHZFhvSDQ5
+            Q2hPQXFzV216MkRaM0l0emcrM0JoL3MKXXCx2ko8nsCExACoF/4oJXUhq6LdtULo
+            g9qS9hphFTl0puqfjg8VBQxFR4x283dkjC+4onDEMwr/EOff3jPoQw==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-25T05:20:37Z"
+    mac: ENC[AES256_GCM,data:eotrovM+pD5NAU82P1X0nJxCWGN65DLVGGr3eddVDlF8t3uClLfTWrFNOPHJ6Ke1s8yxh1oDhc2n0dNvl6yB7ncnDTNhJjQhDP0AzhXG0EQDgEO4hQfm/XXdwLzZv3OvqZW9auip3Dc1bmxqLsIUV2X9PnmghISPjTSq+h6Uc9E=,iv:PzpYm+ThstOnJV775sl9tU/RRbWpo2PbYDL9JM8DTDU=,tag:MudgSfOyX0aU4bi2QZTBEg==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId)$
+    version: 3.9.0
+---
+# HTTPS Ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name: longhorn
+    namespace: longhorn
+    annotations:
+        # HTTPS as entry point
+        traefik.ingress.kubernetes.io/router.entrypoints: websecure
+        # Enable TLS
+        traefik.ingress.kubernetes.io/router.tls: "true"
+        # Use Basic Auth Midleware configured
+        traefik.ingress.kubernetes.io/router.middlewares: longhorn-svc-longhorn-headers@kubernetescrd, authelia-forwardauth-authelia@kubernetescrd
+        # Enable cert-manager to create automatically the SSL certificate and store in Secret
+        #cert-manager.io/cluster-issuer: netcup-issuer-staging
+        #cert-manager.io/cluster-issuer: ca-issuer
+spec:
+    tls:
+        - hosts:
+            - ENC[AES256_GCM,data:bOtoGyvSwC3dO1z+qVmc4kU2RnsFea6U,iv:ruIiprR3iWauIt/lkv6om9iJPSdy+AObHHeIK8cPV8Y=,tag:CfFUbZ6d8Ma25IvK2zwcxw==,type:str]
+          secretName: wildcard-cloudflare-production-01
+    rules:
+        - host: ENC[AES256_GCM,data:EC/YNSqaUbhRis+9pV/fD96TTPkN5Rum,iv:lN9meXo17OSCSmJgCGKM5YggrCbvFVvat+1/pPfZ9Jo=,tag:SpVEX8Y34dSLQQMY/+xrtw==,type:str]
+          http:
+            paths:
+                - path: /
+                  pathType: Prefix
+                  backend:
+                    service:
+                        name: longhorn-frontend
+                        port:
+                            number: 80
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBrTWNSU1o4WXJLK3pJQWNj
+            Q1FQcWkwVVJTOWt0Z2UyOEVuemxZMWVFL1ZzClVHYlVDb1pWaTVNVXB6REtKV0d3
+            d3ZmQU1tU3gxR3haejBWUlFWcUk0Nm8KLS0tIExNM3FzZU81clJuT25SZnRoL3hm
+            OGZGK1NvcnhMWGpNM2FCNjZZSlRXMVkK4ePQrZcd1PW+h21DvFQI827nGnHtE3Ho
+            xhxX3fQsGD8bXEk2SbERxG9v5LEPhnVqeNdW4xGCn3FDlyUsKPX77w==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBXK2hYbDJnQjVhZ296T2JK
+            ekFPRm9mckd6VURhUUk2UTF1M1FvREVRWkNnCmxvMjQrS2pvdDVKL2s0ZDk2Uytw
+            d1Z2MFcvZnVGeWJyK2szVkJtUnIxUEEKLS0tIHBSUkF6QzIxc3phOGRHZFhvSDQ5
+            Q2hPQXFzV216MkRaM0l0emcrM0JoL3MKXXCx2ko8nsCExACoF/4oJXUhq6LdtULo
+            g9qS9hphFTl0puqfjg8VBQxFR4x283dkjC+4onDEMwr/EOff3jPoQw==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-25T05:20:37Z"
+    mac: ENC[AES256_GCM,data:eotrovM+pD5NAU82P1X0nJxCWGN65DLVGGr3eddVDlF8t3uClLfTWrFNOPHJ6Ke1s8yxh1oDhc2n0dNvl6yB7ncnDTNhJjQhDP0AzhXG0EQDgEO4hQfm/XXdwLzZv3OvqZW9auip3Dc1bmxqLsIUV2X9PnmghISPjTSq+h6Uc9E=,iv:PzpYm+ThstOnJV775sl9tU/RRbWpo2PbYDL9JM8DTDU=,tag:MudgSfOyX0aU4bi2QZTBEg==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId)$
+    version: 3.9.0
+---
+# Wasabi Credentials
+# Uses the following endpoint: https://s3.eu-central-2.wasabisys.com
+apiVersion: v1
+kind: Secret
+metadata:
+    name: wasabi-secret
+    namespace: longhorn
+type: Opaque
+data:
+    AWS_ACCESS_KEY_ID: ENC[AES256_GCM,data:JUklynF1DRIfgOTVRkOeaGy/nTbC3XnBWNimWA==,iv:SPRk/VnTw6sJfQaga6vVDsrHw+H5Q1DfUqmlHWz02pI=,tag:BJVM43ZWJYOEuohZ2jXe7g==,type:str]
+    AWS_SECRET_ACCESS_KEY: ENC[AES256_GCM,data:PkNxYcyR2i0g8n1/gnIniGqH+Ylig01seXuQZTUTIg5GjiA8+ulSPjhG2+8BtI0Ty9ChKbEKJUc=,iv:DqCIjOq9eerIV7jGIvlBJ3uphoru1lvKG8IGs69sRkg=,tag:BwpM+3oWqIERQaqYD8qwqA==,type:str]
+    AWS_ENDPOINTS: ENC[AES256_GCM,data:ecUUHvwNqbyPj0eXlAsiJ362ITBuDfSXwj0tTvitQdqXE539ioOkpBwlrVyP+qE/GY6rHQ==,iv:LQm1H2F6Bbo8lh5F+Ci62V/EmlyUjQi8+zHnzhGEuWk=,tag:xLPFtROFH5n7MVhad70AlQ==,type:str]
+# Daily Backup
+#---
+#apiVersion: longhorn.io/v1beta1
+#kind: RecurringJob
+#metadata:
+#  name: backup
+#  namespace: longhorn
+#spec:
+#  cron: "0 4 * * *"
+#  task: "backup"
+#  groups:
+#    - default
+#  retain: 2
+#  concurrency: 2
+#  labels:
+#    type: "full"
+#    schedule: "daily"
+# Trim Filesystem
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBrTWNSU1o4WXJLK3pJQWNj
+            Q1FQcWkwVVJTOWt0Z2UyOEVuemxZMWVFL1ZzClVHYlVDb1pWaTVNVXB6REtKV0d3
+            d3ZmQU1tU3gxR3haejBWUlFWcUk0Nm8KLS0tIExNM3FzZU81clJuT25SZnRoL3hm
+            OGZGK1NvcnhMWGpNM2FCNjZZSlRXMVkK4ePQrZcd1PW+h21DvFQI827nGnHtE3Ho
+            xhxX3fQsGD8bXEk2SbERxG9v5LEPhnVqeNdW4xGCn3FDlyUsKPX77w==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBXK2hYbDJnQjVhZ296T2JK
+            ekFPRm9mckd6VURhUUk2UTF1M1FvREVRWkNnCmxvMjQrS2pvdDVKL2s0ZDk2Uytw
+            d1Z2MFcvZnVGeWJyK2szVkJtUnIxUEEKLS0tIHBSUkF6QzIxc3phOGRHZFhvSDQ5
+            Q2hPQXFzV216MkRaM0l0emcrM0JoL3MKXXCx2ko8nsCExACoF/4oJXUhq6LdtULo
+            g9qS9hphFTl0puqfjg8VBQxFR4x283dkjC+4onDEMwr/EOff3jPoQw==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-25T05:20:37Z"
+    mac: ENC[AES256_GCM,data:eotrovM+pD5NAU82P1X0nJxCWGN65DLVGGr3eddVDlF8t3uClLfTWrFNOPHJ6Ke1s8yxh1oDhc2n0dNvl6yB7ncnDTNhJjQhDP0AzhXG0EQDgEO4hQfm/XXdwLzZv3OvqZW9auip3Dc1bmxqLsIUV2X9PnmghISPjTSq+h6Uc9E=,iv:PzpYm+ThstOnJV775sl9tU/RRbWpo2PbYDL9JM8DTDU=,tag:MudgSfOyX0aU4bi2QZTBEg==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId)$
+    version: 3.9.0
+---
+apiVersion: longhorn.io/v1beta1
+kind: RecurringJob
+metadata:
+    name: trim-filesystem
+    namespace: longhorn
+spec:
+    cron: 0 6 * * *
+    task: filesystem-trim
+    groups:
+        - default
+    #retain: 2
+    concurrency: 1
+    labels:
+        type: trim
+        schedule: daily
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBrTWNSU1o4WXJLK3pJQWNj
+            Q1FQcWkwVVJTOWt0Z2UyOEVuemxZMWVFL1ZzClVHYlVDb1pWaTVNVXB6REtKV0d3
+            d3ZmQU1tU3gxR3haejBWUlFWcUk0Nm8KLS0tIExNM3FzZU81clJuT25SZnRoL3hm
+            OGZGK1NvcnhMWGpNM2FCNjZZSlRXMVkK4ePQrZcd1PW+h21DvFQI827nGnHtE3Ho
+            xhxX3fQsGD8bXEk2SbERxG9v5LEPhnVqeNdW4xGCn3FDlyUsKPX77w==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBXK2hYbDJnQjVhZ296T2JK
+            ekFPRm9mckd6VURhUUk2UTF1M1FvREVRWkNnCmxvMjQrS2pvdDVKL2s0ZDk2Uytw
+            d1Z2MFcvZnVGeWJyK2szVkJtUnIxUEEKLS0tIHBSUkF6QzIxc3phOGRHZFhvSDQ5
+            Q2hPQXFzV216MkRaM0l0emcrM0JoL3MKXXCx2ko8nsCExACoF/4oJXUhq6LdtULo
+            g9qS9hphFTl0puqfjg8VBQxFR4x283dkjC+4onDEMwr/EOff3jPoQw==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-25T05:20:37Z"
+    mac: ENC[AES256_GCM,data:eotrovM+pD5NAU82P1X0nJxCWGN65DLVGGr3eddVDlF8t3uClLfTWrFNOPHJ6Ke1s8yxh1oDhc2n0dNvl6yB7ncnDTNhJjQhDP0AzhXG0EQDgEO4hQfm/XXdwLzZv3OvqZW9auip3Dc1bmxqLsIUV2X9PnmghISPjTSq+h6Uc9E=,iv:PzpYm+ThstOnJV775sl9tU/RRbWpo2PbYDL9JM8DTDU=,tag:MudgSfOyX0aU4bi2QZTBEg==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId)$
+    version: 3.9.0
+---
+# CSI VolumeSnapshot Associated With Longhorn Backup
+kind: VolumeSnapshotClass
+apiVersion: snapshot.storage.k8s.io/v1
+metadata:
+    name: longhorn-vsc-backup
+    labels:
+        velero.io/csi-volumesnapshot-class: "true"
+driver: driver.longhorn.io
+deletionPolicy: Delete
+parameters:
+    type: bak
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBrTWNSU1o4WXJLK3pJQWNj
+            Q1FQcWkwVVJTOWt0Z2UyOEVuemxZMWVFL1ZzClVHYlVDb1pWaTVNVXB6REtKV0d3
+            d3ZmQU1tU3gxR3haejBWUlFWcUk0Nm8KLS0tIExNM3FzZU81clJuT25SZnRoL3hm
+            OGZGK1NvcnhMWGpNM2FCNjZZSlRXMVkK4ePQrZcd1PW+h21DvFQI827nGnHtE3Ho
+            xhxX3fQsGD8bXEk2SbERxG9v5LEPhnVqeNdW4xGCn3FDlyUsKPX77w==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBXK2hYbDJnQjVhZ296T2JK
+            ekFPRm9mckd6VURhUUk2UTF1M1FvREVRWkNnCmxvMjQrS2pvdDVKL2s0ZDk2Uytw
+            d1Z2MFcvZnVGeWJyK2szVkJtUnIxUEEKLS0tIHBSUkF6QzIxc3phOGRHZFhvSDQ5
+            Q2hPQXFzV216MkRaM0l0emcrM0JoL3MKXXCx2ko8nsCExACoF/4oJXUhq6LdtULo
+            g9qS9hphFTl0puqfjg8VBQxFR4x283dkjC+4onDEMwr/EOff3jPoQw==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-25T05:20:37Z"
+    mac: ENC[AES256_GCM,data:eotrovM+pD5NAU82P1X0nJxCWGN65DLVGGr3eddVDlF8t3uClLfTWrFNOPHJ6Ke1s8yxh1oDhc2n0dNvl6yB7ncnDTNhJjQhDP0AzhXG0EQDgEO4hQfm/XXdwLzZv3OvqZW9auip3Dc1bmxqLsIUV2X9PnmghISPjTSq+h6Uc9E=,iv:PzpYm+ThstOnJV775sl9tU/RRbWpo2PbYDL9JM8DTDU=,tag:MudgSfOyX0aU4bi2QZTBEg==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId)$
+    version: 3.9.0

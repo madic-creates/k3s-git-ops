@@ -1,0 +1,57 @@
+---
+resources:
+  - traefik-config.yaml
+  - namespace.yaml
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "3"
+
+helmCharts:
+  - name: traefik
+    repo: https://traefik.github.io/charts
+    version: 27.0.2
+    releaseName: traefik
+    namespace: kube-system
+    includeCRDs: true
+    valuesInline:
+      #core:
+      #  defaultRuleSyntax: v2
+      deployment:
+        kind: DaemonSet
+      service:
+        ipFamilyPolicy: PreferDualStack
+        spec:
+          externalTrafficPolicy: Local
+      #ports:
+      #  dns:
+      #    port: 53
+      #    expose: false
+      #    exposedPort: 53
+      #    protocol: UDP
+      image:
+        pullPolicy: IfNotPresent
+      priorityClassName: "system-cluster-critical"
+      tolerations:
+        - key: "CriticalAddonsOnly"
+          operator: "Exists"
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
+          effect: "NoSchedule"
+        - key: "node-role.kubernetes.io/master"
+          operator: "Exists"
+          effect: "NoSchedule"
+      # Required so that traefik gets the correct ip address for the ingress objects
+      # https://github.com/argoproj/argo-cd/issues/1704#issuecomment-904741817
+      # https://doc.traefik.io/traefik/providers/kubernetes-ingress/#publishedservice
+      providers:
+        kubernetesIngress:
+          publishedService:
+            enabled: true
+      additionalArguments:
+        - "--api=true"
+        - "--api.insecure=true"
+        - "--entryPoints.web.proxyProtocol.insecure"
+        - "--entryPoints.web.forwardedHeaders.insecure"
+
+generators:
+  - kustomize-secret-generator.yaml

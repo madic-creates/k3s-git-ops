@@ -1,0 +1,89 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pihole-exporter
+    release: pihole-exporter
+  name: pihole-exporter
+  namespace: dns
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: pihole-exporter
+      release: pihole-exporter
+  template:
+    metadata:
+      labels:
+        app: pihole-exporter
+        release: pihole-exporter
+    spec:
+      containers:
+        - env:
+            - name: PIHOLE_HOSTNAME
+              value: pihole-web.dns
+            #- name: PIHOLE_PASSWORD
+            #  valueFrom:
+            #    secretKeyRef:
+            #      key: password
+            #      name: pihole-admin
+            - name: INTERVAL
+              value: 60s
+            - name: PORT
+              value: "9617"
+          # https://github.com/eko/pihole-exporter
+          image: ekofr/pihole-exporter:v0.4.0
+          imagePullPolicy: IfNotPresent
+          name: pihole-exporter
+          ports:
+            - containerPort: 9617
+              name: pihole-exporter
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 5Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pihole-exporter
+  namespace: dns
+  labels:
+    app: pihole-exporter
+spec:
+  type: ClusterIP
+  ports:
+    - name: pihole-exporter
+      port: 9617
+      targetPort: pihole-exporter
+      protocol: TCP
+  selector:
+    app: pihole-exporter
+    release: pihole-exporter
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: pihole-exporter
+  namespace: dns
+spec:
+  endpoints:
+    - interval: 1m
+      path: /metrics
+      port: pihole-exporter
+      scheme: http
+  jobLabel: app
+  namespaceSelector:
+    matchNames:
+      - dns
+  sampleLimit: 1000
+  selector:
+    matchLabels:
+      app: pihole-exporter
+      release: pihole-exporter

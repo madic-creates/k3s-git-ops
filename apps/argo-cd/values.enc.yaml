@@ -1,0 +1,237 @@
+fullnameOverride: argocd
+dex:
+    enabled: false
+configs:
+    params:
+        server.insecure: true
+    repositories:
+        #argo-cd:
+        #    type: helm
+        #    name: argo-cd
+        #    url: https://argoproj.github.io/argo-helm
+        argo-cd:
+            type: helm
+            name: argo-cd
+            url: ENC[AES256_GCM,data:PJl7p1mvTn9bDNuRGbQ3k/FC8BzTsyX+8YYy8WtaNulnblPn,iv:F2m23uhXmM1m95QxmpwYAFgDJ+NMvYQmy503MCzCPVc=,tag:2DEqb5ciwKH5fpcn1A6S1g==,type:str]
+    credentialTemplates:
+        # Git credentials
+        #git-ops-dev:
+        #  url: https://path.to/repository
+        #  username: git@example.com
+        #  password: OnlySecureWithExclamationMark!
+        git-ops-dev:
+            url: ENC[AES256_GCM,data:kJUR0r3yDZSFMlAh+AwsOF3tVoHsc8PszRWb2n86p8R7,iv:yaO9xWj1uCmoq3lXPy8fLjIoHJYfFmbGn5MuZoBoHdE=,tag:VVD0sCCDpbcZr94uJThuwA==,type:str]
+            username: ENC[AES256_GCM,data:kKrucr9N1Xk144Uck5Kt6jMepuM=,iv:1YMhSqf0as5fe5JS+6yS9dalPaUN/NPY8tEXK0EXoC0=,tag:YjGVwfW/RRFs9D2SH1NM/w==,type:str]
+            password: ENC[AES256_GCM,data:0Vkom2dGORR43mdLndvHjayCDSRutugHy3tPPrY+kgrp2uVDwFCfww==,iv:eSfj97QMmP7iXGQFQ8DZOuNOXqdX4NXHiyasR0QpJAo=,tag:cZ08sC7dUHPdlUmuWgZp9g==,type:str]
+    cm:
+        admin.enabled: true
+        kustomize.buildOptions: --enable-helm --enable-alpha-plugins --enable-exec
+        url: ENC[AES256_GCM,data:jroKniWmgvikNCJw3V8kqwx793E0yQxn4SDn/4xXYQ==,iv:/3JRz8Z2ONrg4IZ64Q9LN+t8PsHsy6eyQ9vbaK0DDt8=,tag:1U37sYL4IEZ8gRuElhX/Eg==,type:str]
+        # Enable ArgoCD sync waves between apps in Kubernetes
+        # https://argo-cd.readthedocs.io/en/stable/operator-manual/health/#argocd-app
+        resource.customizations.health.argoproj.io_Application: |
+            hs = {}
+            hs.status = "Progressing"
+            hs.message = ""
+            if obj.status ~= nil then
+              if obj.status.health ~= nil then
+                hs.status = obj.status.health.status
+                if obj.status.health.message ~= nil then
+                  hs.message = obj.status.health.message
+                end
+              end
+            end
+            return hs
+        # Required to ignore caBundle Webhook Changes done by kube-prometheus stack
+        resource.customizations.ignoreDifferences.admissionregistration.k8s.io_MutatingWebhookConfiguration: |
+            jqPathExpressions:
+            - '.webhooks[]?.clientConfig.caBundle'
+        resource.customizations.ignoreDifferences.admissionregistration.k8s.io_ValidatingWebhookConfiguration: |
+            jqPathExpressions:
+            - '.webhooks[]?.clientConfig.caBundle'
+        #oidc.config: |
+        #  name: Authelia
+        #  issuer: https://PUBLIC-AUTHELIA-URL
+        #  clientID: argocd
+        #  clientSecret: OIDC_CLIENT_SECRET
+        #  cliClientID: argocd-cli
+        #  requestedScopes:
+        #    - openid
+        #    - profile
+        #    - groups
+        #    - email
+        oidc.config: ENC[AES256_GCM,data:sOmZ33+7hTGOot/uCs8DQDbDRO5HR+jlFYguQgA0Ql/qI7BjYzO3ti1CzqXqKgBzpMsycVKJgUCFuRZ1VXGsq/OOixyPRKWYi7YlvipcAu57hmb95cYe4+QokRtB2tl7BQctEfS1P5YrQCbF7sIeKW8fujY/pbctWt5BYe1n1OTfVwdHFYOyCtmm+4OifcubKXquAS+9L8D5SnPRz2KjBPRWfPWdp4PSE6wVMNz8Gkab1HgHNWtsq103bFfejMwIs5gU1YW9GlDmbcaSc71G5eBirHngNJ7Df0/X+Vl/D4Au45HBRjY3PG5B,iv:KUH95XqPf4RoVQJC/7n59/SldVRN3PycqPdt4uRfbDk=,tag:w/hrGe58qX6VjKgVLLNV1Q==,type:str]
+    rbac:
+        policy.csv: |
+            p, role:org-admin, applications, *, */*, allow
+            p, role:org-admin, clusters, get, *, allow
+            p, role:org-admin, repositories, *, *, allow
+            p, role:org-admin, logs, get, *, allow
+            p, role:org-admin, exec, create, */*, allow
+            g, argocd-org-admin, role:org-admin
+    secret:
+        # htpasswd -nbBC 10 "" $ARGO_PWD | tr -d ':\n' | sed 's/$2y/$2a/'
+        argocdServerAdminPassword: ENC[AES256_GCM,data:ZZKlCTQmNW0PqbFKWNuikaxWO5yq3vMy5JMwEgEPPYWWP7KqKXExv08bAIVow8wKLISewk06wN8j+4nz,iv:AdHeDoyfhv9zk3auDdDTo67PqUgaGd3uKYFX1l0ClXo=,tag:mrUt8OFQBSEf/e90ymuatg==,type:str]
+        argocdServerAdminPasswordMtime: "2024-05-13T08:32:44Z"
+server:
+    ingress:
+        enabled: true
+        ingressClassName: traefik
+        annotations:
+            #cert-manager.io/cluster-issuer: netcup-issuer-staging
+            #cert-manager.io/cluster-issuer: ca-issuer
+            traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
+        hostname: ENC[AES256_GCM,data:EWKZFvr8CGqitbbndhD0KRe+HX9TZmU=,iv:O/wrpowN4TQWZeJrPNawqwnaWSamIQSGg6ZAOjHDrZ0=,tag:5jB4FfPExEqYUleyZeJNug==,type:str]
+        extraTls:
+            - hosts:
+                - ENC[AES256_GCM,data:xe7gOVHqkyOvh5i53dIn/+PE7y68S6c=,iv:2mfY9i1CQIkKt3DyQKHwsRZuGb1x0rdbJrN+z8yc6Q0=,tag:9fG4rmdnVi3N0eCDbPUz5g==,type:str]
+              secretName: wildcard-cloudflare-production-01
+repoServer:
+    # Use init containers to configure custom tooling
+    # https://argoproj.github.io/argo-cd/operator-manual/custom_tools/
+    volumes:
+        - name: custom-tools
+          emptyDir: {}
+        - name: sops-age
+          secret:
+            secretName: sops-age
+        - name: cmp-tmp
+          emptyDir: {}
+        - name: cmp-sops-plugin
+          configMap:
+            name: argocd-cmp-sops-plugin
+    initContainers:
+        - name: install-ksops
+          # https://github.com/viaduct-ai/kustomize-sops/releases
+          image: viaductoss/ksops:v4.3.2
+          command:
+            - /bin/sh
+            - -c
+          args:
+            - echo "Installing KSOPS..."; cp ksops /custom-tools/; cp kustomize /custom-tools/; echo "Done.";
+          volumeMounts:
+            - mountPath: /custom-tools
+              name: custom-tools
+        - name: install-sops
+          # https://github.com/getsops/sops/pkgs/container/sops/versions?filters%5Bversion_type%5D=tagged
+          image: ghcr.io/getsops/sops:v3.9.1-alpine
+          command:
+            - /bin/sh
+            - -c
+          args:
+            - echo "Installing SOPS..."; cp /usr/local/bin/sops /custom-tools/; echo "Done.";
+          volumeMounts:
+            - mountPath: /custom-tools
+              name: custom-tools
+        - name: install-helm
+          # https://hub.docker.com/r/alpine/helm/tags
+          image: alpine/helm:3.16.2
+          command:
+            - /bin/sh
+            - -c
+          args:
+            - echo "Installing helm..."; cp /usr/bin/helm /custom-tools/; echo "Done.";
+          volumeMounts:
+            - mountPath: /custom-tools
+              name: custom-tools
+    extraContainers:
+        - name: cmp-sops-plugin
+          command:
+            - /var/run/argocd/argocd-cmp-server
+          # https://hub.docker.com/_/alpine/tags
+          image: alpine:3.20.3
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 999
+          volumeMounts:
+            - mountPath: /var/run/argocd
+              name: var-files
+            - mountPath: /home/argocd/cmp-server/plugins
+              name: plugins
+            - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+              subPath: plugin.yaml
+              name: cmp-sops-plugin
+            # Starting with v2.4, do NOT mount the same tmp volume as the repo-server container. The filesystem separation helps mitigate path traversal attacks.
+            - mountPath: /tmp
+              name: cmp-tmp
+            - mountPath: /usr/local/bin/kustomize
+              name: custom-tools
+              subPath: kustomize
+            - mountPath: /usr/local/bin/ksops
+              name: custom-tools
+              subPath: ksops
+            - mountPath: /usr/local/bin/sops
+              name: custom-tools
+              subPath: sops
+            - mountPath: /usr/local/bin/helm
+              name: custom-tools
+              subPath: helm
+            - mountPath: /.config/sops/age
+              name: sops-age
+              readOnly: true
+    volumeMounts:
+        # ksops packages it's own kustomize binary with ksops integration and overrides the argocd kustomize binary
+        - mountPath: /usr/local/bin/kustomize
+          name: custom-tools
+          subPath: kustomize
+        - mountPath: /usr/local/bin/ksops
+          name: custom-tools
+          subPath: ksops
+        - mountPath: /usr/local/bin/sops
+          name: custom-tools
+          subPath: sops
+        - mountPath: /.config/sops/age
+          name: sops-age
+          readOnly: true
+    env:
+        - name: SOPS_AGE_KEY_FILE
+          value: /.config/sops/age/keys.txt
+# The application controller needs limits because it quickly gets out of control when checking the configured resources.
+controller:
+    resources:
+        limits:
+            cpu: 1024m
+            memory: 1024Mi
+        requests:
+            cpu: 250m
+            memory: 256Mi
+    affinity:
+        podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchExpressions:
+                        - key: app.kubernetes.io/name
+                          operator: In
+                          values:
+                            - emby
+                  topologyKey: kubernetes.io/hostname
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBsRTJTS0swRHl6YVBMNFZW
+            dUJVQkhtbVllSU1CY0xtMG5JMXc2WUZxeFNnCjJJL1N2c3drK1g1cU5IZ0oxdGxv
+            Y0JBc2NrejluMUFQVzhqaUdnWFdUM00KLS0tIDFadzVGNHJOSi8yTHdEL2hNTlBs
+            cUhLOHR1NmljTTZQWXBmdGhmUUVXUFEKJKBTqhoSfvQXkeZUq6N9nhLbWVTkj375
+            7o6YWZJ7oV2og8qE5u8eHvM8IsUGQsrameLs6YYLZxZ3haiGNeeb1w==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB6NGlQM2hCcnlzWHE5NEx6
+            M2trL0NjSzMrVTVtckwzL3dWTnlIWjVZR1JVCnl6aTBkSVBWaWdGQ0laTk9FN0NG
+            aHp4U2JmVms5UmdGVHFoMkQ5VVpCNkkKLS0tIDMrdE1ocWtXYW01aE5wUXhiUkhm
+            MkxxQ2tHZ3lFeU1zOWNIR2tyeWtoNFEKExPKO1Y7/v4BIDFO6Sk98DvU8TeF74pV
+            YwAgvSeay1gJ6Qk0vCByptZS7QgSe4yND77LJo8Oiw2gtSm/OID9SQ==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-24T13:59:53Z"
+    mac: ENC[AES256_GCM,data:wk6nNjQDpEzDRbvOV3BLEL+iFsMjEcIx3EUzmvd9i3JRJrl182d6oMnH/G+ZjMXt8ND08G1mMkwKQQzRBVt8J7V4tUoKzQ1wDkAEyX8F5HCht32jrV8AFlAIcGMP8QbGvd2wesjg5WLVRqcJvT9+yeW7D35MPHVQIKgD4c3bUQI=,iv:cMZ96/HapWfvrKzpIVcmRBp1lMQLWckn3rTpQxZPipQ=,tag:DJ8Nzgnnbdp8Y2oLzv4mRg==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|clientSecret|argocdServerAdminPassword|oidc.config|commonName|literals)$
+    version: 3.9.0

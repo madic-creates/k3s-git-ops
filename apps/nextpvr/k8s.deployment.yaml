@@ -1,0 +1,43 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextpvr
+  namespace: media
+  labels:
+    app: nextpvr
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: nextpvr
+  template:
+    metadata:
+      labels:
+        app: nextpvr
+    spec:
+      hostNetwork: true
+      containers:
+        - name: nextpvr
+          image: nextpvr/nextpvr_amd64:latest
+          volumeMounts:
+            - name: config-vol
+              mountPath: /config
+            - mountPath: /vol_raidz1/video
+              name: video
+          #resources:
+          #  limits:
+          #    gpu.intel.com/i915: "1"
+          #  requests:
+          #    gpu.intel.com/i915: "1"
+      restartPolicy: Always
+      volumes:
+        - name: config-vol
+          persistentVolumeClaim:
+            claimName: longhorn-pvc-nextpvr-config
+        - name: video
+          persistentVolumeClaim:
+            claimName: smb-pvc-video

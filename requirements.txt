@@ -1,0 +1,10 @@
+# python venv requirements for mkdocs
+## https://www.mkdocs.org/
+mkdocs==1.6.1
+## https://github.com/squidfunk/mkdocs-material
+mkdocs-material==9.5.42
+mkdocs-material[imaging]
+## https://github.com/timvink/mkdocs-git-revision-date-localized-plugin
+mkdocs-git-revision-date-localized-plugin==1.2.9
+## https://github.com/byrnereese/mkdocs-minify-plugin
+mkdocs-minify-plugin==0.8.0

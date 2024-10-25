@@ -1,0 +1,71 @@
+---
+K3S_IP_ADDRESS: 192.168.33.10
+K3S_VIP: 192.168.33.9
+K3S_TOKEN: VAGRANT
+K3S_SERVER_CONFIG:
+  - name: config.yaml
+    content: |
+      write-kubeconfig-mode: "0644"
+      disable:
+        - "servicelb"
+        - "local-storage"
+      kube-controller-manager-arg: "bind-address=0.0.0.0"
+      kube-proxy-arg: "metrics-bind-address=0.0.0.0"
+      kube-scheduler-arg: "bind-address=0.0.0.0"
+      kubelet-arg: "config=/etc/rancher/k3s/kubelet.config"
+      cluster-init: true
+K3S_WORKER_CONFIG:
+  - name: config.yaml
+    content: |
+      disable:
+        - "servicelb"
+        - "local-storage"
+      kubelet-arg: "config=/etc/rancher/k3s/kubelet.config"
+
+#--flannel-backend 'wireguard-native'
+#--flannel-iface 'wg0'
+
+# https://github.com/derailed/k9s/releases
+K3S_K9S_VERSION: v0.32.4
+
+K3S_DEPLOY_ARGOCD: false
+
+K3S_REGISTRIES:
+  - name: registries.yaml
+    content: |
+      # This configures a local caching registry as a mirror for all docker.io hosted images to prevent rate limiting.
+      # Currently running official registry as caching mirror.
+      # Potential replacement to cache from every container registry: https://github.com/rpardini/docker-registry-proxy
+      mirrors:
+        docker.io:
+          endpoint:
+            - http://192.168.1.45:5000
+
+K3S_KUBELET:
+  - name: kubelet.config
+    content: |
+      apiVersion: kubelet.config.k8s.io/v1beta1
+      kind: KubeletConfiguration
+
+      ## Enables kubelet to gracefully evict pods during a node shutdown
+      ## https://kubernetes.io/blog/2021/04/21/graceful-node-shutdown-beta/
+      shutdownGracePeriod: 30s
+      shutdownGracePeriodCriticalPods: 10s
+
+## KubeVIP
+### https://kube-vip.io/
+### https://github.com/kube-vip/kube-vip/releases
+K3S_KUBEVIP_VERSION: v0.7.2
+K3S_KUBEVIP_ARGS: >-
+  vip
+  /kube-vip
+  manifest
+  daemonset
+  --interface {{ ansible_default_ipv4.interface }}
+  --address {{ K3S_VIP }}
+  --inCluster
+  --taint
+  --controlplane
+  --services
+  --arp
+  --leaderElection

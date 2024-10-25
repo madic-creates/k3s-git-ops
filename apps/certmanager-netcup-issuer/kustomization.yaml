@@ -1,0 +1,64 @@
+---
+# Deploy Cert-Manager using Helm
+helmCharts:
+  - name: cert-manager-webhook-netcup
+    repo: https://aellwein.github.io/cert-manager-webhook-netcup/charts/
+    version: 1.0.25
+    releaseName: cert-manager-webhook-netcup
+    namespace: certmanager
+    includeCRDs: true
+    valuesInline:
+      certManager:
+        namespace: certmanager
+        serviceAccountName: cert-manager
+
+namespace: certmanager
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "2"
+
+patches:
+  # Fixed expected duration format
+  - target:
+      group: cert-manager.io
+      version: v1
+      kind: Certificate
+      name: cert-manager-webhook-netcup-webhook-tls
+    patch: |-
+      apiVersion: cert-manager.io/v1
+      kind: Certificate
+      metadata:
+        name: cert-manager-webhook-netcup-webhook-tls
+        namespace: certmanager
+      spec:
+        duration: 8760h0m0s
+  # Fixed expected duration format
+  - target:
+      group: cert-manager.io
+      version: v1
+      kind: Certificate
+      name: cert-manager-webhook-netcup-ca
+    patch: |-
+      apiVersion: cert-manager.io/v1
+      kind: Certificate
+      metadata:
+        name: cert-manager-webhook-netcup-ca
+        namespace: certmanager
+      spec:
+        duration: 43800h0m0s
+
+# Die kustomize Option namespace überschreibt alle, auch vorhandene, namespace Konfiguration.
+# Dieses RoleBinding muss aber in den namespace kube-system und nicht certmanager
+patchesJson6902:
+  - target:
+      group: rbac.authorization.k8s.io
+      version: v1
+      kind: RoleBinding
+      name: cert-manager-webhook-netcup:webhook-authentication-reader
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: kube-system
+
+generators:
+  - kustomize-secret-generator.yaml

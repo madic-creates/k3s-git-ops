@@ -1,0 +1,13 @@
+---
+- name: Arch | Installing | K3S Server ca
+  ansible.builtin.copy:
+    src: ../shared/{{ groups['k3s_control_plane'][0] }}/server-ca.crt
+    dest: /etc/ca-certificates/trust-source/anchors/
+    owner: root
+    group: root
+    mode: "0644"
+  register: arch_ca_cert
+
+- name: Arch | Installing | K3S Server ca import
+  ansible.builtin.command: /usr/bin/trust extract-compat
+  when: arch_ca_cert.changed

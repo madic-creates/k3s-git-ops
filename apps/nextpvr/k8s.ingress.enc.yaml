@@ -1,0 +1,59 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name: nextpvr
+    namespace: media
+    labels:
+        app: nextpvr
+    annotations:
+        # HTTPS entrypoint enabled
+        traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+        # TLS enabled
+        traefik.ingress.kubernetes.io/router.tls: "true"
+        traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect@kubernetescrd, authelia-forwardauth-authelia@kubernetescrd
+spec:
+    ingressClassName: traefik
+    tls:
+        - hosts:
+            - ENC[AES256_GCM,data:K/uKfqp2CMHLHolAALifwLBciCKMXLtE,iv:H9SSIL6hu4YMdF5o8Z+AWHd/Se+Ny/GgCwPGbxCi9Ko=,tag:QR7Nj1fQnklmsgzLrySGUQ==,type:str]
+          secretName: wildcard-cloudflare-production-01
+    rules:
+        - host: ENC[AES256_GCM,data:KvAUfmzUUafOU2ATsd9sJAoaHN887Qg2,iv:eL+SPMUfOpozxQZ36E1taJSVE6UTsCgt+M5DRVyAIzE=,tag:MdaXDPCULXNmkpCNFQVsQw==,type:str]
+          http:
+            paths:
+                - path: /
+                  pathType: Prefix
+                  backend:
+                    service:
+                        name: nextpvr
+                        port:
+                            number: 8866
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBOUTJvTElVdzIvTkFmSW44
+            TmVNeEliK1N6K29YNUJzVzVacjA3cG1tTVUwCnlRdXpud3M4NmQvSE1KZE1BK2lj
+            WDAwRkdSb0dWVDJUOTZNaWhHWXV0WnMKLS0tIDZseFlUL3VLWlI5UEpDMDF0MHJi
+            NnNjcUhZaU9PRUQ3K2hhRlg5RzU1TEUKwgNQPwu9/2k2yySMZrpnaSq4BYSLglaQ
+            3R3zuvLNwVoptjL0fKub9/23CU7NBwcDET3AEZDNSZKQrlwfm/Pp8A==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB0azBiOGpoOU5WczZuM0VK
+            Y1JYdzF3eG1ZMTB0d0pPN1lDZkVyd3BFS0NrCmFoakF1QVpxbyszdzhsdmV5R0Fw
+            azZKZHFJUHhXdXhQSHVBUllERjl1eEUKLS0tIGR4dEwvUVdQSjRyUmV6MW8rNW9H
+            SERlODdNNTF5R01ISmxlc0UvTm5aczQKgI2qgeV4ZhcSIt7GM98wSH3lM255U3P+
+            FoOsHd1zCvGM8oQatkvEDF41TBX+9KzAf8PWRAWV4EzE8l2H8V96GQ==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-25T06:47:23Z"
+    mac: ENC[AES256_GCM,data:XegNFQ8FNLt12qF4jvSxHkkCrYaaG3PCGCOASPfpp6L9Edpc8o64L/ZNaofQJfUocGDBFpXNcSkqy1SiLxh3141rAFy8kn3GCfuKLQij+tse46ZAhCb/GGtBZe5XPD3LOEdk4m4g+7BDvaUa0LQxKBp770htZu/3c7SiiZv/qI4=,iv:Z/kemsHiZDUCBKi0SgvEbHqYCacP7+s3crQeSmLmFkM=,tag:ph7yDYvSLr7wKda/vMIpdg==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url)$
+    version: 3.9.0

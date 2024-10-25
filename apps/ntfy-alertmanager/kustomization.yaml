@@ -1,0 +1,6 @@
+---
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "16"
+
+generators:
+  - kustomize-secret-generator.yaml

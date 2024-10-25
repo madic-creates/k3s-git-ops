@@ -1,0 +1,48 @@
+clusterCollector:
+    ingress:
+        enabled: true
+        className: traefik
+        annotations:
+            traefik.ingress.kubernetes.io/router.entrypoints: websecure
+            traefik.ingress.kubernetes.io/router.tls: "true"
+            traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect@kubernetescrd
+            kustomize.config.k8s.io/behavior: merge
+            kustomize.config.k8s.io/needs-hash: "false"
+        hosts:
+            - host: ENC[AES256_GCM,data:xO2yDT6ogGujXFNM0/mIAgvpeRxPusny0tF7T7lARWQwgS5cLL/2SasX,iv:quQHbWoDnlF3S3/iGQmBtllkO0nxqyWw17ZwND6DItY=,tag:FhkO3S4a0LW3QPe9Oi+DNQ==,type:str]
+              paths:
+                - path: ENC[AES256_GCM,data:+g==,iv:2k7uEShUlCikWm5fP0rXSaZEmjm62QuS4l8mXJ6MlPI=,tag:cz8BQEURcMPng31iPlmAGA==,type:str]
+                  pathType: ENC[AES256_GCM,data:4K1J2+F+,iv:cVMjjGWj83SE0lkpPxHoxxG4zCQQ04Sye4HVsdimuyk=,tag:xy164WbWskYuQ3PL3okspw==,type:str]
+        tls:
+            - secretName: wildcard-cloudflare-production-01
+              hosts:
+                - ENC[AES256_GCM,data:MqhBFG5zo9aKyLY/XW9q5ylHyRiHr52jxSNZUW5WERQsaSshgSbyMNnd,iv:4GnmdQvbLR1FymgQGDaqiCy+gY7Us0uh4ZqKkd1xsas=,tag:3+GeiaebJk/25xrrVrkRuA==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBXdDVtdFdvWG9xcVJzMDZ1
+            NGRuN05KZWN2d0FWMUZoT0xSL2g2NEpnbDFJCmVZTFFnc0pRamhaVzZ2dThEN0c3
+            cUNvdlpNelZnMzg5OG9ubGVaSXRBejQKLS0tIHhRK1ZkQzludGxVLzdlakdvRGp6
+            VWdPUTBxUUhRTmJlWTR1dnpKUEdHencKzoOgVuOGo8HSPKxiWp+oDMlQxkHxn58Z
+            UWV5Dhg3S3azOC8+wPiHZEucWO8vNViY1BVS5m8lO+zs6Oi7Rd3Q6Q==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB4ZjNsUXNpQmhVb1M1YVZj
+            NlBlbVl5MnRDTjBJeE5OTlRRSGNSSnBDeG0wCmNlK0d1WGJ5UzI5OXg5bmNCTXlw
+            NTcwNnJMc1ZhOFc2d3JMN285em5ESTQKLS0tIHcrQUFPaTQ4TFRaSFhLamEzbjNG
+            aG1Ka3Rvb3g1bkdOVmNuMFRrU3JHeWcKutByh3OXdY1xyIb6bWphJADEtcLgY6y9
+            7D6Mh8iP55C6OqkXD7jvudz+bKs/JCr4yq69ITKqsMGFiaEwnICHOw==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-05-31T21:08:52Z"
+    mac: ENC[AES256_GCM,data:nN/njNNrigc3vVQ/L3LKJOZGOHExFmy6KS9B/ZIQwuJBNTWDRVva7MK0Pv8iHn2K5eoq50nKujOKzjSw2O+pQ19DDiIsQ73YjtD+V9BlFIYS+aWEcg4vpIOMi/zBbPPS1Nr6LYUiO0xa6vGCDZusJq8DBPmBQja80l+56yOcgu0=,iv:ZKHZgG4hgTl4xMf6m/ecqBF1nWmbqDjkuXFIDX8WSa8=,tag:fvgjxsudbMVwCeFHb/RHwg==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|clientSecret|argocdServerAdminPassword|oidc.config|commonName|literals)$
+    version: 3.8.1

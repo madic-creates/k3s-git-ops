@@ -1,0 +1,19 @@
+---
+## Required for certmanager dns01RecursiveNameservers config
+apiVersion: v1
+kind: Service
+metadata:
+  name: cloudflared-doh
+  namespace: dns
+  labels:
+    app: cloudflared
+spec:
+  type: ClusterIP
+  ports:
+    - name: cloudflared-doh
+      port: 5053
+      targetPort: cloudflared-udp
+      protocol: UDP
+  selector:
+    app: pihole
+    release: pihole

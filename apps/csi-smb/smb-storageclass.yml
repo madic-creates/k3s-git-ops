@@ -1,0 +1,22 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: smb
+provisioner: smb.csi.k8s.io
+parameters:
+  source: "//192.168.1.45/Container"
+  # if csi.storage.k8s.io/provisioner-secret is provided, will create a sub directory
+  # with PV name under source
+  csi.storage.k8s.io/provisioner-secret-name: "smb-creds"
+  csi.storage.k8s.io/provisioner-secret-namespace: "csi-smb-provisioner"
+  csi.storage.k8s.io/node-stage-secret-name: "smb-creds"
+  csi.storage.k8s.io/node-stage-secret-namespace: "csi-smb-provisioner"
+reclaimPolicy: Retain # available values: Delete, Retain
+volumeBindingMode: Immediate
+mountOptions:
+  - dir_mode=0775
+  - file_mode=0664
+  - vers=3.1.1
+  - nobrl
+  - mfsymlinks
+  - cache=none

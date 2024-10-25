@@ -1,0 +1,115 @@
+# HTTPS Ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name: prometheus
+    namespace: monitoring
+    annotations:
+        # HTTPS as entry point
+        traefik.ingress.kubernetes.io/router.entrypoints: websecure
+        # Enable TLS
+        traefik.ingress.kubernetes.io/router.tls: "true"
+        traefik.ingress.kubernetes.io/router.middlewares: authelia-forwardauth-authelia@kubernetescrd
+spec:
+    tls:
+        - hosts:
+            - ENC[AES256_GCM,data:hoz7x7foo7x5DWpMAeZ42eKtOeSeX0NP7LA/,iv:olGN8+pGwk8L9Q1qCfDJRjg0fQGWqTvb2LUHsScTdHM=,tag:jPfhGWBzOn9zO7qt/YjIYw==,type:str]
+          secretName: wildcard-cloudflare-production-01
+    rules:
+        - host: ENC[AES256_GCM,data:x+vAE0/tsUI8U0HAft+bbR0OId+1UBgRnvrD,iv:8Y3c9vZbonFs0f9lTwEkxXHx11DOySNiNs8XvcevKB0=,tag:BMFs/dmuDLrZ2jhlngTUqg==,type:str]
+          http:
+            paths:
+                - path: /
+                  pathType: Prefix
+                  backend:
+                    service:
+                        name: kube-prometheus-stack-prometheus
+                        port:
+                            number: 9090
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBneXFkNldzZFVUd09xWkxn
+            Q1pCbUlWdE9lZ0NBRk4xc01ycnBia1BGVUdRCklGb2Nzd1U5eFBzR3UwNGsrcm9l
+            KzNsdjFpUEc5LzB0N0gxZlZvQkxndzgKLS0tIFFkSmJSK0NYa1o4b2czUDJGZHBM
+            MHFBTHhpSCtNZ2V5UVlpQjNtelBSdW8KKzHjWoaBJp6u+Ugj/zpY7zdjPc2onhV0
+            OT0geDXzkdHZFeRVl72c35XHGyFanhri4EGnNB3Sej4S8iqt7qk9fw==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBmY2FTODJ4WFlHQkxFdTlX
+            VndyS0UyOG9XZmVaclFUTC85dWRVbHBmNngwCnZmclQ0ZEpYSkV1UFhqVnRiWjBB
+            b1lSMlBzRUplZ2lZT2xBWWFRQ25qMEUKLS0tIGlhaE9VNndVelpWSS9IbkZsa0ZQ
+            eUQxNnpkSlY4WitJVGNVdWYzamRBelEKP55vOFsqSWbROplMZt/xq4SFZcNrOWxm
+            ANJRF1aNmvugqFvnKxoPOChOuw6+AtdDduLIWARe8qC+ddEzmBQPxw==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-25T05:27:23Z"
+    mac: ENC[AES256_GCM,data:bEnJw18Lg+djq3VNqYZgSw7gLaFj8g+cifCIh+dzussKfWLuiCHo9L2jacO3WlPgbrXraFelj8GkT4jyZdiExmG/AdhXZ0mUaPKv/kwXYU5WDylefHrrpbazaOW5l9qDg2NwjNaztOZDJe76rZx+1d4V0Y1KRP75WMimwWCWBBY=,iv:v7vF4QymV+6vEJ1HT0Mi0lrCqLFXGShNI3tc5Hnv24M=,tag:85QNuLJnrBPbnrxTY+hpww==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword)$
+    version: 3.9.0
+---
+# HTTPS Ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name: grafana
+    namespace: monitoring
+    annotations:
+        # HTTPS as entry point
+        traefik.ingress.kubernetes.io/router.entrypoints: websecure
+        # Enable TLS
+        traefik.ingress.kubernetes.io/router.tls: "true"
+        #traefik.ingress.kubernetes.io/router.middlewares: authelia-forwardauth-authelia@kubernetescrd
+spec:
+    tls:
+        - hosts:
+            - ENC[AES256_GCM,data:FV1XT0/IsX8oCv6qx0nC+sPmb1TItykk,iv:OwzPjxTEYf1mWtJ36hy4VK6Flf7yEEOzOoptisiz1SQ=,tag:UQ47e+/wEiMu1DtyUF1eyA==,type:str]
+          secretName: wildcard-cloudflare-production-01
+    rules:
+        - host: ENC[AES256_GCM,data:bm50hVCX89SM/9DbDf7QNkuPa8t3jhs3,iv:Sm2YI4IMctwM2VaJ5whdp8/NZQElgcg1lBcyv2yJPmk=,tag:0VADYFCoZ59nMUH0lg1uVg==,type:str]
+          http:
+            paths:
+                - path: /
+                  pathType: Prefix
+                  backend:
+                    service:
+                        name: kube-prometheus-stack-grafana
+                        port:
+                            number: 80
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBneXFkNldzZFVUd09xWkxn
+            Q1pCbUlWdE9lZ0NBRk4xc01ycnBia1BGVUdRCklGb2Nzd1U5eFBzR3UwNGsrcm9l
+            KzNsdjFpUEc5LzB0N0gxZlZvQkxndzgKLS0tIFFkSmJSK0NYa1o4b2czUDJGZHBM
+            MHFBTHhpSCtNZ2V5UVlpQjNtelBSdW8KKzHjWoaBJp6u+Ugj/zpY7zdjPc2onhV0
+            OT0geDXzkdHZFeRVl72c35XHGyFanhri4EGnNB3Sej4S8iqt7qk9fw==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBmY2FTODJ4WFlHQkxFdTlX
+            VndyS0UyOG9XZmVaclFUTC85dWRVbHBmNngwCnZmclQ0ZEpYSkV1UFhqVnRiWjBB
+            b1lSMlBzRUplZ2lZT2xBWWFRQ25qMEUKLS0tIGlhaE9VNndVelpWSS9IbkZsa0ZQ
+            eUQxNnpkSlY4WitJVGNVdWYzamRBelEKP55vOFsqSWbROplMZt/xq4SFZcNrOWxm
+            ANJRF1aNmvugqFvnKxoPOChOuw6+AtdDduLIWARe8qC+ddEzmBQPxw==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-25T05:27:23Z"
+    mac: ENC[AES256_GCM,data:bEnJw18Lg+djq3VNqYZgSw7gLaFj8g+cifCIh+dzussKfWLuiCHo9L2jacO3WlPgbrXraFelj8GkT4jyZdiExmG/AdhXZ0mUaPKv/kwXYU5WDylefHrrpbazaOW5l9qDg2NwjNaztOZDJe76rZx+1d4V0Y1KRP75WMimwWCWBBY=,iv:v7vF4QymV+6vEJ1HT0Mi0lrCqLFXGShNI3tc5Hnv24M=,tag:85QNuLJnrBPbnrxTY+hpww==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword)$
+    version: 3.9.0

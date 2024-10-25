@@ -1,0 +1,81 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    lldap: https://github.com/lldap/lldap
+    k8s: https://github.com/Evantage-WS/lldap-kubernetes
+  labels:
+    app: lldap
+  name: lldap
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lldap
+  revisionHistoryLimit: 2
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        lldap: https://github.com/lldap/lldap
+        k8s: https://github.com/Evantage-WS/lldap-kubernetes
+      labels:
+        app: lldap
+    spec:
+      containers:
+        - env:
+            - name: GID
+              value: "1001"
+            - name: LLDAP_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: lldap-credentials
+                  key: lldap-jwt-secret
+            - name: LLDAP_LDAP_BASE_DN
+              valueFrom:
+                secretKeyRef:
+                  name: lldap-credentials
+                  key: base-dn
+            - name: LLDAP_LDAP_USER_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: lldap-credentials
+                  key: lldap-ldap-user-pass
+            - name: LLDAP_KEY_SEED
+              valueFrom:
+                secretKeyRef:
+                  name: lldap-credentials
+                  key: lldap-ldap-key-seed
+            - name: LLDAP_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: lldap-credentials
+                  key: lldap-database-credentials
+            - name: TZ
+              value: Europe/Berlin
+            - name: UID
+              value: "1001"
+            - name: GID
+              value: "1001"
+            - name: LLDAP_IGNORED_USER_ATTRIBUTES
+              value: '[ "sAMAccountName" ]'
+          # https://github.com/lldap/lldap/pkgs/container/lldap
+          image: ghcr.io/lldap/lldap:2024-10-24-alpine
+          name: lldap
+          ports:
+            # LDAP
+            - containerPort: 3890
+            # LDAPS
+            - containerPort: 6360
+            # Web frontend
+            - containerPort: 17170
+          #volumeMounts:
+          #  - mountPath: /data
+          #    name: lldap-data
+      restartPolicy: Always
+      #volumes:
+      #  - name: lldap-data
+      #    persistentVolumeClaim:
+      #      claimName: lldap-data

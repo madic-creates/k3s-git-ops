@@ -1,0 +1,15 @@
+---
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "16"
+
+resources:
+  - namespace.yaml
+
+helmCharts:
+  - name: checkmk
+    repo: https://checkmk.github.io/checkmk_kube_agent
+    version: 1.6.0
+    releaseName: checkmk
+    namespace: checkmk
+    includeCRDs: true
+    valuesFile: values.yaml

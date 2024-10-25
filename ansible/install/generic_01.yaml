@@ -1,0 +1,137 @@
+---
+- name: Longhorn | enabling iscsid
+  ansible.builtin.systemd:
+    state: started
+    name: iscsid.service
+    enabled: true
+
+- name: Disabling firewalld and stoping its service
+  ansible.builtin.systemd:
+    name: firewalld
+    state: stopped
+    enabled: false
+  register: result_systemd_stop
+  failed_when: "result_systemd_stop is failed and 'Could not find the requested service' not in result_systemd_stop.msg"
+
+- name: Disabling SELinux
+  when: ansible_selinux.status == "enabled"
+  block:
+    - name: Disabling SELinux
+      ansible.posix.selinux:
+        policy: targeted
+        state: permissive
+
+    - name: Deactivating SELinux on boot
+      ansible.builtin.lineinfile:
+        path: /etc/selinux/config
+        regexp: "^SELINUX=.*$"
+        line: "SELINUX=disabled"
+
+# Required for kubectl port-forwarding
+- name: Adding 127.0.0.1 localhost to hosts file
+  ansible.builtin.lineinfile:
+    dest: /etc/hosts
+    line: "127.0.0.1 localhost"
+    state: present
+    backup: true
+    insertbefore: BOF
+
+- name: Get service facts
+  ansible.builtin.service_facts:
+
+- name: Generic | Configure systemd-resolved to manage /etc/resolv.conf
+  when: (ansible_facts.services['systemd-resolved.service']['status'] == 'enabled')
+  block:
+    - name: Generic | Check if /etc/resolv.conf exists
+      ansible.builtin.stat:
+        path: /etc/resolv.conf
+      register: resolv_conf
+
+    - name: Generic | Backup /etc/resolv.conf to /etc/resolv.conf.bak
+      ansible.builtin.copy:
+        src: /etc/resolv.conf
+        dest: /etc/resolv.conf.bak
+      when: resolv_conf.stat.exists
+
+    - name: Generic | Deleting /etc/resolv.conf
+      ansible.builtin.file:
+        path: /etc/resolv.conf
+        state: absent
+      when: resolv_conf.stat.exists
+
+    - name: Generic | Link systemd-resolved to resolv.conf
+      ansible.builtin.file:
+        src: /run/systemd/resolve/stub-resolv.conf
+        dest: /etc/resolv.conf
+        state: link
+      when: not ansible_check_mode
+
+- name: Creating directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  with_items:
+    - /etc/rancher/k3s
+    - /root/.kube
+
+- name: Copying k3s configurations to /etc/rancher/k3s/
+  ansible.builtin.copy:
+    content: "{{ item.content }}"
+    dest: "/etc/rancher/k3s/{{ item.name }}"
+    owner: root
+    group: root
+    mode: "0644"
+  # Do not display in ansible output
+  no_log: true
+  with_items:
+    - "{{ K3S_REGISTRIES }}"
+    - "{{ K3S_KUBELET }}"
+    - "{{ K3S_SERVER_CONFIG}}"
+    - "{{ K3S_WORKER_CONFIG}}"
+
+- name: Downloading K3S installation script
+  ansible.builtin.get_url:
+    url: https://get.k3s.io
+    dest: /tmp/k3s_install.sh
+    mode: "0750"
+
+- name: Installing | K3S Control Plane
+  when: "'k3s_control_plane' in group_names"
+  block:
+    - name: K3S Server | Creating local config directory
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        # owner: "{{ ansible_user_id }}"
+        # group: "{{ ansible_user_id }}"
+        # mode: "0755"
+      become: false
+      delegate_to: localhost
+      with_items:
+        - ../shared/{{ groups['k3s_control_plane'][0] }}
+
+    - name: K3S Server | Installing
+      ansible.builtin.command: "/tmp/k3s_install.sh"
+      environment:
+        K3S_TOKEN: "{{ K3S_TOKEN }}"
+      changed_when: true
+
+    - name: K3S Server | Fetching ca certificate
+      ansible.builtin.fetch:
+        src: /var/lib/rancher/k3s/server/tls/server-ca.crt
+        dest: ../shared/{{ groups['k3s_control_plane'][0] }}/
+        flat: true
+      run_once: true
+
+- name: Installing | K3S Worker
+  when: "'k3s_worker' in group_names"
+  block:
+    - name: K3S Worker | Installing
+      ansible.builtin.command: "/tmp/k3s_install.sh"
+      environment:
+        K3S_TOKEN: "{{ K3S_TOKEN }}"
+        K3S_URL: "https://{{ K3S_IP_ADDRESS }}:6443"
+      changed_when: true

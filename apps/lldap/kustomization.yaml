@@ -1,0 +1,14 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: authelia
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "11"
+
+resources:
+  - k8s.lldap-deployment.yaml
+  - k8s.lldap-service.yaml
+
+generators:
+  - kustomize-secret-generator.yaml

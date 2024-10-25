@@ -1,0 +1,100 @@
+---
+# Project information
+site_name: Madic | Home GitOps
+site_description: A mono repository for my home infrastructure and Kubernetes cluster which tries to adhere to Infrastructure as Code (IaC) and GitOps practices
+site_author: Michael Neese
+site_url: https://madic-.github.io/git-ops/
+
+# https://github.com/rogerrum/k8s-gitops/
+
+# Repository
+repo_name: madic/git-ops
+repo_url: https://github.com/madic-/git-ops
+edit_uri: "edit/main/docs/"
+
+theme:
+  name: material
+  icon:
+    repo: fontawesome/brands/github-alt
+  language: en
+  features:
+    - navigation.sections
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+
+docs_dir: ./docs
+
+# Customization
+#extra_css:
+#  - extra.css
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/madic-
+    - icon: fontawesome/brands/mastodon
+      link: https://chaos.social/@Madic
+    - icon: fontawesome/brands/wordpress
+      link: https://www.geekbundle.org
+
+# Plugins
+plugins:
+  - privacy
+  - social
+  - search:
+      lang: en
+  - git-revision-date-localized:
+      enable_creation_date: true
+  - minify:
+      minify_html: true
+
+# Extensions
+markdown_extensions:
+  - admonition
+  - attr_list
+  - toc:
+      permalink: true
+  - pymdownx.superfences
+  - pymdownx.tabbed
+
+# Navigation structure
+nav:
+  - Introduction: index.md
+  - Installation: install.md
+  - Applications:
+      - Argo-CD: argocd.md
+      - Authentication: auth.md
+      - Backup: backup.md
+      - Cert-Manager: certmanager.md
+      - Databases: databases.md
+      - Kube DOOM: kubedoom.md
+      - LoadBalancer: loadbalancer.md
+      - Monitoring: monitoring.md
+      - Reflector: reflector.md
+      - Secret Management: secretmanagement.md
+      - Storage: storage.md
+      - Updates: updates.md
+  - Tools:
+      - Helm: helm.md
+      - Secrets: secrets.md
+      - MKDocs: mkdocs.md
+      - Pre-Commit-Hooks: pre-commit-hooks.md
+      - Test Environment: testenv.md

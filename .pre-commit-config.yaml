@@ -1,0 +1,29 @@
+---
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      # Trims trailing whitespace.
+      - id: trailing-whitespace
+      # Makes sure files end in a newline and only a newline.
+      - id: end-of-file-fixer
+      # Replaces or checks mixed line ending.
+      - id: mixed-line-ending
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.5.5
+    hooks:
+      # Replace CRLF end-lines by LF ones before committing
+      - id: remove-crlf
+      # Replace tabs by whitespaces before committing
+      - id: remove-tabs
+        args: [--whitespaces-count, "2"]
+  - repo: https://github.com/sirosen/fix-smartquotes
+    rev: 0.2.0
+    hooks:
+      # Find and replace smartquote characters with the standard ascii " and ' characters
+      - id: fix-smartquotes
+  - repo: https://github.com/k8s-at-home/sops-pre-commit
+    rev: v2.1.1
+    hooks:
+      # Check for unencrypted Kubernetes secrets in manifest files
+      - id: forbid-secrets

@@ -1,0 +1,25 @@
+---
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "17"
+
+helmCharts:
+  - name: loki
+    repo: https://grafana.github.io/helm-charts
+    version: 6.18.0
+    releaseName: loki
+    namespace: monitoring
+    includeCRDs: true
+    valuesFile: values.yaml
+  - name: promtail
+    repo: https://grafana.github.io/helm-charts
+    version: 6.16.6
+    releaseName: promtail
+    namespace: monitoring
+    includeCRDs: true
+  - name: kubernetes-event-exporter
+    repo: https://charts.bitnami.com/bitnami
+    version: 3.2.14
+    releaseName: kubernetes-event-exporter
+    namespace: monitoring
+    includeCRDs: true
+    valuesFile: values.event-exporter.yaml

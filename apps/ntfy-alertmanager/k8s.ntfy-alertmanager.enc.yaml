@@ -1,0 +1,164 @@
+# https://hub.xenrox.net/~xenrox/ntfy-alertmanager/
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: ntfy-alertmanager
+    namespace: monitoring
+spec:
+    replicas: 1
+    revisionHistoryLimit: 2
+    selector:
+        matchLabels:
+            app: ntfy-alertmanager
+    template:
+        metadata:
+            labels:
+                app: ntfy-alertmanager
+        spec:
+            containers:
+                - name: ntfy-alertmanager
+                  image: xenrox/ntfy-alertmanager:0.3.0
+                  imagePullPolicy: IfNotPresent
+                  ports:
+                    - containerPort: 8080
+                  resources:
+                    limits:
+                        memory: 128Mi
+                        cpu: 500m
+                    requests:
+                        memory: 64Mi
+                        cpu: 250m
+                  volumeMounts:
+                    - name: config-volume
+                      mountPath: /etc/ntfy-alertmanager/config
+                      subPath: config-file
+            volumes:
+                - name: config-volume
+                  configMap:
+                    name: ntfy-alertmanager-config
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAyMjJPM1NBdVc2SGtSNlZU
+            RVUwcEFkY3hjZExGQk1vUFdXSHJuZmZIblRNCllCSklRcklkeWI3aVdsbEZpYzdQ
+            Mk1mVnBYemdZSlJ1dm40ODJYY1kwUHcKLS0tIGlMTUdkQVErc0FGRVhwYVBOSTF5
+            RDZrTENEWXVON0grMTdjc2xTSjRlUmMKUDSW6eb2EKz2zZtDzYdN8XaHhg9ytYyk
+            jX/zc7aSsEASSsPORMLgUN88ximiqzVHGY0tNOozfRYcy2B4nIutsw==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBxL2RsK1k5Z2QvcEwxQ3JL
+            Q1pNNVlseHpZVW1jRERURGtLbXZJRjd6VkdJCmJZTE1HekY5ZU12NVc0R2lGdVhP
+            eUFleEpnV2tWNmNFaC9xT0dUWkk3NjAKLS0tIGNBVmdYdE9lWUxwWmxJeTh4bk5h
+            c0pCVzRSZXZDbEQ4UDdMNHlLTVJQSlkKm3qD2e1MhZ2Fxp0JNN7dLXqZuS4xmSjZ
+            /PgLIzSYIzAhniWtvnaEjRtBA9X8tgp+kKqsdPTF5Q0DfQfqUqLTPQ==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-25T06:04:29Z"
+    mac: ENC[AES256_GCM,data:SD2/Qr+UpPwcDReX2xQ3UtioIfKjF/EIT9W80LMbE0tOy5lsyDFgKE5nahZOxEyTLjeHia29oM68NauwtfZshBWrA9EKTddQ8yF0e1zqa5SJF6m7mxatptdgQfLLe4cEs3fgC78vm/a1mSv/Vphy54Eo6nt0FtknyN1u5UPegKo=,iv:o+LdYqpPdPUirtev4LAeU+s16fj7fOf1UfFe0eW+oiU=,tag:3ENN+r3nBy7bvGtM8p+N2A==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url)$
+    version: 3.9.0
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: ntfy-alertmanager
+    namespace: monitoring
+spec:
+    type: ClusterIP
+    ports:
+        - port: 8080
+          targetPort: 8080
+    selector:
+        app: ntfy-alertmanager
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAyMjJPM1NBdVc2SGtSNlZU
+            RVUwcEFkY3hjZExGQk1vUFdXSHJuZmZIblRNCllCSklRcklkeWI3aVdsbEZpYzdQ
+            Mk1mVnBYemdZSlJ1dm40ODJYY1kwUHcKLS0tIGlMTUdkQVErc0FGRVhwYVBOSTF5
+            RDZrTENEWXVON0grMTdjc2xTSjRlUmMKUDSW6eb2EKz2zZtDzYdN8XaHhg9ytYyk
+            jX/zc7aSsEASSsPORMLgUN88ximiqzVHGY0tNOozfRYcy2B4nIutsw==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBxL2RsK1k5Z2QvcEwxQ3JL
+            Q1pNNVlseHpZVW1jRERURGtLbXZJRjd6VkdJCmJZTE1HekY5ZU12NVc0R2lGdVhP
+            eUFleEpnV2tWNmNFaC9xT0dUWkk3NjAKLS0tIGNBVmdYdE9lWUxwWmxJeTh4bk5h
+            c0pCVzRSZXZDbEQ4UDdMNHlLTVJQSlkKm3qD2e1MhZ2Fxp0JNN7dLXqZuS4xmSjZ
+            /PgLIzSYIzAhniWtvnaEjRtBA9X8tgp+kKqsdPTF5Q0DfQfqUqLTPQ==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-25T06:04:29Z"
+    mac: ENC[AES256_GCM,data:SD2/Qr+UpPwcDReX2xQ3UtioIfKjF/EIT9W80LMbE0tOy5lsyDFgKE5nahZOxEyTLjeHia29oM68NauwtfZshBWrA9EKTddQ8yF0e1zqa5SJF6m7mxatptdgQfLLe4cEs3fgC78vm/a1mSv/Vphy54Eo6nt0FtknyN1u5UPegKo=,iv:o+LdYqpPdPUirtev4LAeU+s16fj7fOf1UfFe0eW+oiU=,tag:3ENN+r3nBy7bvGtM8p+N2A==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url)$
+    version: 3.9.0
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name: ntfy-alertmanager
+    namespace: monitoring
+    annotations:
+        traefik.ingress.kubernetes.io/router.entrypoints: websecure
+        traefik.ingress.kubernetes.io/router.tls: "true"
+        #traefik.ingress.kubernetes.io/router.middlewares: authelia-forwardauth-authelia@kubernetescrd
+spec:
+    tls:
+        - hosts:
+            - ENC[AES256_GCM,data:rlHbTLIVoTl4YrA0QPgaYQWs8zVpqjUiNerzbQrtJwOhHQ==,iv:pmdgGipdDZWqQvbrlUrMN2tTxj/oj0LZUnMON+UTgE0=,tag:JJHkI/+n8H4DJdD3KVvMHA==,type:str]
+          secretName: wildcard-cloudflare-production-01
+    rules:
+        - host: ENC[AES256_GCM,data:IveQg++TtlH87JCXHMWQ1SDdHDz5+Vgw6I/+d0FsfQV2cw==,iv:ZWDQOGjx/nbNo6uKxXxiIJxtD3kRdgryaVpfOa4gp40=,tag:zzB+2vfTuFLowDab5rZLRw==,type:str]
+          http:
+            paths:
+                - path: /
+                  pathType: Prefix
+                  backend:
+                    service:
+                        name: ntfy-alertmanager
+                        port:
+                            number: 8080
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAyMjJPM1NBdVc2SGtSNlZU
+            RVUwcEFkY3hjZExGQk1vUFdXSHJuZmZIblRNCllCSklRcklkeWI3aVdsbEZpYzdQ
+            Mk1mVnBYemdZSlJ1dm40ODJYY1kwUHcKLS0tIGlMTUdkQVErc0FGRVhwYVBOSTF5
+            RDZrTENEWXVON0grMTdjc2xTSjRlUmMKUDSW6eb2EKz2zZtDzYdN8XaHhg9ytYyk
+            jX/zc7aSsEASSsPORMLgUN88ximiqzVHGY0tNOozfRYcy2B4nIutsw==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBxL2RsK1k5Z2QvcEwxQ3JL
+            Q1pNNVlseHpZVW1jRERURGtLbXZJRjd6VkdJCmJZTE1HekY5ZU12NVc0R2lGdVhP
+            eUFleEpnV2tWNmNFaC9xT0dUWkk3NjAKLS0tIGNBVmdYdE9lWUxwWmxJeTh4bk5h
+            c0pCVzRSZXZDbEQ4UDdMNHlLTVJQSlkKm3qD2e1MhZ2Fxp0JNN7dLXqZuS4xmSjZ
+            /PgLIzSYIzAhniWtvnaEjRtBA9X8tgp+kKqsdPTF5Q0DfQfqUqLTPQ==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-25T06:04:29Z"
+    mac: ENC[AES256_GCM,data:SD2/Qr+UpPwcDReX2xQ3UtioIfKjF/EIT9W80LMbE0tOy5lsyDFgKE5nahZOxEyTLjeHia29oM68NauwtfZshBWrA9EKTddQ8yF0e1zqa5SJF6m7mxatptdgQfLLe4cEs3fgC78vm/a1mSv/Vphy54Eo6nt0FtknyN1u5UPegKo=,iv:o+LdYqpPdPUirtev4LAeU+s16fj7fOf1UfFe0eW+oiU=,tag:3ENN+r3nBy7bvGtM8p+N2A==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url)$
+    version: 3.9.0

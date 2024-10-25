@@ -1,0 +1,52 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+    name: wildcard-cloudflare-production-01
+    namespace: certmanager
+    annotations:
+        kustomize.config.k8s.io/behavior: replace
+        kustomize.config.k8s.io/needs-hash: "false"
+spec:
+    secretName: wildcard-cloudflare-production-01
+    issuerRef:
+        name: cloudflare-issuer-production
+        kind: ClusterIssuer
+    commonName: ENC[AES256_GCM,data:/7MvzV0+TkzfOWs6lVqdBM5n,iv:v4LbPVD1fG8UTeohHU0gwqu/TN66ypfCuqBxQ0PImaY=,tag:GurzH6J08vDhmKn6FzplYg==,type:str]
+    dnsNames:
+        - ENC[AES256_GCM,data:Bg/PHbxLZc/Tp/WApAeuCvD7,iv:6o91Y2X5Dvk5r4yJEl6h+qI+zUy9oOCiU8lq8EZDeIQ=,tag:3NJ4GXChICqPko1Noj2C8w==,type:str]
+    secretTemplate:
+        annotations:
+            reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
+            #reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "certmanager" # Control destination namespaces
+            # Auto create reflection for matching namespaces
+            reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
+            #reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: "dev,staging,prod" # Control auto-reflection namespaces
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB0Q0NmRDBHQVdsVW54WFpm
+            b3p5UktzMHFyUGV3MlJRN0RIN3QwSGs0dVJjCjBuZG5NY216Zkdiand5WW5PZ01X
+            eFNpZithbkVRdG8vRlR0d3kxSWgyRVkKLS0tIFNNeWRyRXZ6eGRxU2xDUUZ2dmwv
+            ajFEWGxGVEN3WHBFWURBbmdaMXAvRVkK1P7KtJC6GpP+awrQTBKZzHemm5QfrsSF
+            w77oFMsja+Anj9r+WESHYGR/R5fy+/cdqU5ZVQpKTqyzw58kMUcSqw==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAxRmxYZC9JUGIrNGhvMHhl
+            N0E5YWVhYkptVlVUNDdld3V4VC9GMG5UM1M0CnVVWjVld0liSmNFRERDVGsrYytD
+            VTEvM3VTM0pZREpBVEIzQjArVFhONlkKLS0tIGhFcjEyZXViU0h4bzgzQVY4c2JO
+            NDNqTnd4VWtNY3FGMktPVHBVZGhDc1EKfmoq4zm+3N7IlTdRfz2lLmSK9dGsRpjf
+            XONvgJ8oI66nUATKT1n9uuN7c72XVCmqkpftiIB+R+Wlv71n5DUYYA==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-09-21T15:28:45Z"
+    mac: ENC[AES256_GCM,data:Dko7n0DTBFdp6rfCpKQYlo1qFasVwRYR2xTgtIgLZwaL64zBtJU/L4qsZJECsy6dmVEhk+gf/DSR/wmVT0Ov25auLlBpp+7deC2YWdtqd+6+78LY6JjphElX7JRyF8sESnsLVdsJwvkzP9zBHjwQ4lXpQjjVQlgKh37UxMRrkbA=,iv:txk3DMgWElNDuRCbpdggtnPGbnPJJrOdjVXJ5ZCUSJ8=,tag:1pAQTZXFxs6zndz3wdbHNQ==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|clientSecret|argocdServerAdminPassword|oidc.config|commonName|literals)$
+    version: 3.9.0

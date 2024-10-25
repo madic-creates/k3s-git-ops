@@ -1,0 +1,33 @@
+cloudflare:
+    accountId: ENC[AES256_GCM,data:lxjip9sMsKbRNNf+HyCjnOA+GEbUZZbwcHPiDGlD8Ik=,iv:NIvbjTpWaymsqzOa/BnhnlkqXG/fRSGnMBuI6RsZExU=,tag:QaED2ww+dG6DUnVp8Nxd8A==,type:str]
+    apiToken: ENC[AES256_GCM,data:RQQlC01CpB2Qdu50PJXHEL9PRG94YV7WTjawXCOfYZDOvAoEZZOzqg==,iv:j0w/SYVCqrw+XAqEGqmEpjON8/I98HS+O3yzAXg756w=,tag:Xb6Lq4qPlAxiJRlZNpgIlA==,type:str]
+    tunnelName: k3s
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBHT3gxdVlmM1FRRlpFck12
+            U1U4YXNPU0RvcXlISFRrNmd5b3p3VmVLb1FBClJ1WmNoQVJvcmgxUW1UTitDZVNM
+            d1ZlU2RNYUQ3OUFqQXZmYXVlOHJac3MKLS0tIFB5K3FuejhFQU9obzRHZ2J1c2ti
+            a0lVOXQ2d0FpbGhFcldEUGs1cEsyNVEKqdIYy2LZm1GgGwHmur1aAFZxPXU+sJo2
+            8ENTc37g28HsaKBRao4ewJHrpSrt3c1ngsln4/l9uJBPx97CFJVP7w==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBCV0xXYTVuU0RPbmVOZ1l2
+            bWhXSUYwNk9YMlk4Q3llUEEwZExVZGw0WkU4CkNleFEvZ2RBMElzU281Yk1NUENq
+            T2VRenU4Vks1cCtsZlJrWFJSQnl0MVEKLS0tIFhuNjViUjJta3NvTHYwSUkxa2h4
+            TFdxV3JsUjFUTU13eG8zTXVHS1BHSGMKJhnGoshVxVlj7badpXgIJnwZV2W18l9r
+            nkR/XezT2pqYPmvUCQrHgLPSjSLGWt1NkT/MU/qcW6K8CMukuPcAOg==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-24T17:46:55Z"
+    mac: ENC[AES256_GCM,data:1lYLXvoelVQzpobxWCr/KKY+XCdRO1XHa8gt8YPHokamWepxtiPWI2RWKRAOJ8wmBILlqIC9I2emKqi4duL7iGhCnWBWNz7LGFVyUvYjztrzYKj6/2Q0E0SbuZ7p70R17ZS0vAeATM2LTMa0p8QbxVVb4g0ia7zKK8RBLNqEFdA=,iv:6TNtpDyAjKhm1ZbjV4csZkxZftpFzjRE6mrT76Cvc+o=,tag:0F4DUDkvvgU3+TKkThhbRQ==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId)$
+    version: 3.9.1

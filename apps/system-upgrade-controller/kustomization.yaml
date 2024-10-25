@@ -1,0 +1,9 @@
+---
+# https://github.com/rancher/system-upgrade-controller/releases
+
+resources:
+  - https://github.com/rancher/system-upgrade-controller/releases/download/v0.14.2/system-upgrade-controller.yaml
+  - https://github.com/rancher/system-upgrade-controller/releases/download/v0.14.2/crd.yaml
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "96"

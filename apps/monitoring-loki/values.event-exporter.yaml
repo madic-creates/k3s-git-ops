@@ -1,0 +1,12 @@
+config:
+  logLevel: info
+  receivers:
+    - name: "dump"
+      file:
+        path: "/dev/stdout"
+        layout: {}
+    - name: "loki"
+      loki:
+        #streamLabels:
+        #  foo: bar
+        url: http://loki-gateway/loki/api/v1/push

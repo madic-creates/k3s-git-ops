@@ -1,0 +1,59 @@
+{
+  "extends": [
+    "config:recommended"
+  ],
+  "assignees": ["madic"],
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "kubernetes": {
+    "fileMatch": [
+      "apps\/.+\/k8s\\..*\\.yaml$"
+    ]
+  },
+  "automerge": true,
+  "automergeType": "branch",
+  "ignoreTests": true,
+  "major": {
+    "automerge": false
+  },
+  "minor": {
+    "automerge": true
+  },
+  "patch": {
+    "automerge": true
+  },
+  "packageRules": [
+    {
+      "matchFileNames": [
+        "apps/mariadb",
+        "apps/traefik",
+        "apps/monitoring",
+        "apps/kubevip-ha"
+      ],
+      "automerge": false
+    },
+    {
+      "matchDatasources": [
+        "helm"
+      ],
+      "matchPackageNames": [
+        "longhorn"
+      ],
+      "minimumReleaseAge": "14 days",
+      "automerge": false
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": [
+        "apps\/.+\/kustomization\\.yaml$"
+      ],
+      "matchStrings": [
+        "repository: (?<depName>.*)\\s.*tag: (?<currentValue>.*)"
+      ],
+      "datasourceTemplate": "docker"
+    }
+  ],
+  "minimumReleaseAge": "5 days",
+  "internalChecksFilter": "strict"
+}

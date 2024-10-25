@@ -1,0 +1,45 @@
+---
+# Deploy Cert-Manager using Helm
+helmCharts:
+  - name: cert-manager
+    repo: https://charts.jetstack.io
+    version: v1.16.1
+    releaseName: cert-manager
+    namespace: certmanager
+    valuesInline:
+      # CertManager CRD installation is managed by a helm option and cannot be installed with the kustomize option includeCRDs: true
+      crds:
+        enabled: true
+        keep: true
+      #image:
+      #  pullPolicy: IfNotPresent
+      dns01RecursiveNameserversOnly: true
+      dns01RecursiveNameservers: "9.9.9.9:53,1.1.1.1:53"
+      #dns01RecursiveNameservers: "cloudflared-doh.dns.svc.cluster.local:5053"
+      global:
+        revisionHistoryLimit: 3
+
+resources:
+  - k8s.namespace.yaml
+  - k8s.cloudflare_issuer.enc.yaml
+  - k8s.wildcard.enc.yaml
+  - k8s.secrets.enc.yaml
+
+#configurations:
+#  - kustomizeconfig.yaml
+
+#secretGenerator:
+#  - name: cloudflare-api-token
+#    namespace: certmanager
+#    # Bug. nameReference does not update secret name when secretGenerator creates the secret in a namespace other than default
+#    # https://github.com/kubernetes-sigs/kustomize/issues/5504
+#    options:
+#      disableNameSuffixHash: true
+#    literals:
+#      - api-token=
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "1"
+
+generators:
+  - kustomize-secret-generator.yaml

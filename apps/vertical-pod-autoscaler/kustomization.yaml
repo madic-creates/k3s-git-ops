@@ -1,0 +1,12 @@
+---
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "91"
+
+helmCharts:
+  - name: vpa
+    repo: https://charts.fairwinds.com/stable
+    version: 4.6.0
+    releaseName: vpa
+    namespace: goldilocks
+    includeCRDs: true
+    #valuesInline:

@@ -1,0 +1,22 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cmp-sops-plugin
+  namespace: argocd
+data:
+  plugin.yaml: |
+    ---
+    apiVersion: argoproj.io/v1alpha1
+    kind: ConfigManagementPlugin
+    metadata:
+      name: cmp-sops-decrypt
+    spec:
+      version: v1.0
+      generate:
+        command: [sh, -c]
+        args:
+          - sops --decrypt --input-type yaml --output-type yaml values.enc.yaml > values.yaml;
+            kustomize build --enable-helm --enable-alpha-plugins --enable-exec .
+      discover:
+        fileName: "values.enc.yaml"

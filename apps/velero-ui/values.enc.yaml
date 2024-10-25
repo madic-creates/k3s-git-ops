@@ -1,0 +1,105 @@
+global:
+    veleroNamespace: longhorn
+    # kubernetesClusterDomain: my-cluster
+    # agentMode: false
+    clusterName: k3s-at-home
+apiConfig:
+    # To generate a fixed secure random secret key use the command: openssl rand -hex 32
+    securityTokenKey: ENC[AES256_GCM,data:w8cJ7MzZxE+s1qE9M/GjtPftP1uovABVYnAftC9+GQTewOcb/NWJ9PvFGURD/njboluL+ys6mbqpSt62uN426Q==,iv:BxVJ4tDYf9tpu5JYgxuoA3An5F4+uBMAFGySXRm6yQY=,tag:Y6aqs39zx/FkmYYBrz1lFQ==,type:str]
+    awsAccessKeyId: ENC[AES256_GCM,data:exQ0vJgmaDnPNLo7Y4AfEP22JU8=,iv:msODJlGn/nFJ5ughwBsirFR5VsGrEYKfKsQdb55dlNU=,tag:MRRLTWnSLnqT8MEHyP2OuQ==,type:str]
+    awsSecretAccessKey: ENC[AES256_GCM,data:rutUec1wUCdCqHXkH8OhFjoixNp8DoG2wVJ4nLi+EzLtxHD9ZUkZ3g==,iv:9hwj7eWYf+TOsuAUoGWONU34uRObemMixuNmvaZub9s=,tag:n7GL0pdHFA9AWSHNSwm+sA==,type:str]
+    # debugLevel: debug
+    veleroCliVersion: v1.14.1
+    # apiTokenExpirationMin: "30"
+    # apiTokenRefreshExpirationDays: "7"
+    #storage:
+    #    enabled: false
+    #    storageClassName: <your-storage-class-name>
+    defaultAdminUsername: admin
+    defaultAdminPassword: ENC[AES256_GCM,data:wQAEhDbThfHLHiR2EGg8VCvKWEc1bIgHbqz4OVXF93AsuvFLmkpFAFp9Xp6BW3eKktEZCU/u94V+6g4hLhMp1Q==,iv:NNJCAX1+Vw4tCxfph/XiKE4niXmGKolLrWdi75WlyQ8=,tag:KukJgADQ+JEM+Ma9Eyc6TQ==,type:str]
+# Nodeport
+uiNp:
+    enabled: false
+    # any ip address of your cluster
+    ip: 10.10.0.100
+    apiPort: "30001"
+    uiPort: "30002"
+# Ingress
+uiIngress:
+    enabled: true
+    ingressClassName: traefik
+    metadata:
+        annotations:
+            traefik.ingress.kubernetes.io/router.entrypoints: websecure
+            traefik.ingress.kubernetes.io/router.tls: "true"
+            #traefik.ingress.kubernetes.io/router.middlewares: authelia-forwardauth-authelia@kubernetescrd
+    spec:
+        hosts:
+            - ENC[AES256_GCM,data:xdf/hmEGmAwLrXTvNqkHIsIgdBGFUwo=,iv:Lai9DeDkvp2cd6F6A5ouqVcDIoGGOsIvpJSC627Po0I=,tag:cxVvNE8rH/e45CSvI0TTrg==,type:str]
+        tls:
+            - secretName: wildcard-cloudflare-production-01
+              hosts:
+                - ENC[AES256_GCM,data:Ul4Fqw0FSEcLBKyOSAMqA08u2HVFVXY=,iv:I2UdfdKWyoDajJSg5LXb/pNtxZbTLsMbgxW0tJL9pao=,tag:Xk17ReHDZgfw8uACfW22/Q==,type:str]
+# Watchdog Cron
+report:
+    schedule: 0 8 * * *
+# Watchdog Daemon
+watchdogConfig:
+    # config
+    k8SInclusterMode: "True"
+    k8sVeleroNamespace: longhorn
+    #processClusterName: <your-cluster-name>
+    # processCycleSec: 300
+    # expiresDaysWarning: 29
+    notificationSkipCompleted: "False"
+    # notificationSkipInProgress: "True"
+    # notificationSkipRemoved: "True"
+    # notificationSkipDeleting: "True"
+    # email
+    emailEnable: "False"
+    emailAccount: <your-email>
+    emailPassword: <your-password>
+    emailRecipients: ENC[AES256_GCM,data:ksSknjbOVeFDS+dVh9B/0MvWo4TLg1pk,iv:SilN+Wi4ytYn+NvWoCiRdSaJ5UJukWBXdawSK1Kp0pA=,tag:FjfVy8ANFJrNHgnZpw9yBQ==,type:str]
+    emailSmtpPort: 25
+    emailSmtpServer: 192.168.1.45
+    # slack
+    slackEnable: "False"
+    slackChannel: <channel-id>
+    slackToken: <token>
+    # telegram
+    telegramEnable: "False"
+    telegramChatId: <telegram-chat-id>
+    telegramToken: <telegram-token>
+    # experimental: true
+    # exNextPublicVeleroApiName2: "your-cluster-name-2"
+    # exNextPublicVeleroApiUrl2: "https://your-url-api-2/api"
+    # exNextPublicVeleroApiWs2: "wss://your-url-api-2"
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBwV255RE9OSTBqRHdQbit3
+            VE9vamZpUXdBQTUyQzhscHZqU1hJVFgxMGw4CklBUW5Vd1hXYnM0VDUzUk9EN0xj
+            cTlaa0p0SVpGZHBXdHB4NlpjYWRDZm8KLS0tIHRUOUlKOS84WUpaUjRhVGZuSEt5
+            djMzRWszbnVkRmpFR3IzM0RSb2xtdW8Kye0RK/ycFjCAqs9/toCm5DAU8B7a83IJ
+            5hrd5iHzZ2m5zdzP2DbANDtQDY2PPPsnY8X1tJIIlkUrq7YYAAaO0Q==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB1K3F1SWtadmlKaWlOQVVH
+            bzI0THV6NkdLVjhXZkEwc21JRHkraTBCdFRVClVwa2NXOVRaM3VHdVRaSUttSUEz
+            MDZBNXZZSjU3bGc5SDlza2V3S0NTY2sKLS0tIEpJaHEyTUJ3cDEvcU0xTFBzenlu
+            TmpRTC80aGRrMkJnd25SVFpNSUdaZ0kKCrikQk1GErvX1IPVDMRKXVDkjTYiHDNB
+            iys63jKqFu9U/VE60Zy6zANK2hjtrXSLS/Vhp9rUGwA6jjXxoztU8Q==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-25T10:22:34Z"
+    mac: ENC[AES256_GCM,data:TcnoygCifpw9jFw9piNIFir91MUEPaMOYECg4sClXAGhNxDFb9CZZRrVfAGtg2LsQaJTRyCIJb+mCCNtrUHBWkW9ivmvh1irt/oFWqYmp/l1DmmblLvqpLzXhKQ+RxPOyZ0cSqAwDrFCWx4jwh1Q7KeuULWYxOE1153AC+SJAYw=,iv:0xnIWhh5mEQIk04y7ru3r/or3OjiWa2lDy167jW3gxk=,tag:ZivDqrbZsdghJyuEDFbpTQ==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|securityTokenKey|emailRecipients)$
+    version: 3.9.1

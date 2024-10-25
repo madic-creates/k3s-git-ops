@@ -1,0 +1,42 @@
+architecture: standalone
+auth:
+    enabled: false
+    password: ENC[AES256_GCM,data:jEq3tKqX0w4nZ1T7kunXBa4iDL8sI3EL,iv:5Gk9gs5Tusgx5/XlA/tveNGvPNETrq7nEx8WsTYTO0w=,tag:bI0bKNsV1Ly9aHF19qdPTw==,type:str]
+master:
+    persistence:
+        enabled: true
+        storageClass: longhorn
+        size: 8Gi
+    persistentVolumeClaimRetentionPolicy:
+        enabled: true
+        whenScaled: Retain
+        whenDeleted: Retain
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBGbFdjUTFoU0lHOXczakU4
+            V1ZwbmZ2M2VGYTUyVnlCV0pnOWZPOG5DeEZJCkFqaFpSRU0wWlRXblV4ajdWTE00
+            VjlJSUhZaDFGbUx5RWQ3amprdURSYTAKLS0tIGQrbC9qZ3VvMSsrMGloTjFxb283
+            cGRYV215NE1VUEJ0WmtuUHVyK2g1cHcKFaFu28w+ZCcYw6bAMrn9+YWYplAMvT9M
+            27jBiLkzlutQBblBtTiCQpDWYF+Ft64jwv/TaxZwP6BhFulqLItrsA==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBDRlNLUVpST21PT1J6WUlt
+            V0M5ei9tbVNqVnJTRUZ6ZVZrT3ZWQk13ZndnCisyeHdSQXozdkk3QTlhcE0rM3hP
+            ZGsrc0duYTc5dVd0VzF4cjVrQ0luR1kKLS0tIDVzN0w0c2lFNXpOb3diem9FZWVB
+            WHZGZ1lZZnZrYmpUY3JXRHREdkFjMVUKwcRxR6POv0YFs1YHIpuwbIPSwAaqoy5W
+            c71jdNLPVYm19lYEhI7JrFYN1AJgSnupLh//0Nil1sWHZvHoYf6P+A==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-25T09:49:35Z"
+    mac: ENC[AES256_GCM,data:rhmV5AKMUJhB30KSt7Nh6rmk2CNIlS+1rG+3ixNH+WDvBMctsZdyYmscWt2MaVJ/x77cKtkIlgzjIENzR9co5DseqmfX/XpPDwkLG3Ca4UptmsCYSpzY8N+NeJNLkF0x/rFFLd0vdUXYlWjcOO6q5UcfagMEErWOrU+Sl/LOxaY=,iv:mXXTXUD3U/0Gdkv/dHXPnPVowenv7NkBuCr7ar4v1WA=,tag:DvgGTaLqd3fQMgXOFLkA/g==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url)$
+    version: 3.9.0

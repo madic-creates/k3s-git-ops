@@ -1,0 +1,8 @@
+---
+## Required for kustomize to find and replace the generated secret in the ClusterIssuer
+nameReference:
+  - kind: Secret
+    fieldSpecs:
+      - kind: ClusterIssuer
+        group: cert-manager.io
+        path: spec/acme/solvers/dns01/cloudflare/apiTokenSecretRef/name

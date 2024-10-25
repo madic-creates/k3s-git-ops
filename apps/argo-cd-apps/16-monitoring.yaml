@@ -1,0 +1,27 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: 16-monitoring
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "16"
+spec:
+  project: default
+  source:
+    repoURL: "example.com"
+    path: apps/monitoring
+    targetRevision: HEAD
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: default
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+      # https://www.arthurkoziel.com/fixing-argocd-crd-too-long-error/
+      - ServerSideApply=true
+    automated:
+      prune: true
+      selfHeal: true

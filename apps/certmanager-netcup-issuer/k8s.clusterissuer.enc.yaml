@@ -1,0 +1,264 @@
+## CA Certificate
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+    name: picluster-ca
+    namespace: certmanager
+spec:
+    isCA: true
+    commonName: ENC[AES256_GCM,data:fSP6RFEMUeW2QI03,iv:83O9N9O8YoVBLE+PUd22u+RqMYDZAzNepuMKuFvZ1I8=,tag:YUCxrUxbBoBlLp0a8MxISw==,type:str]
+    secretName: root-secret
+    privateKey:
+        algorithm: ECDSA
+        size: 256
+    issuerRef:
+        name: self-signed-issuer
+        kind: ClusterIssuer
+        group: cert-manager.io
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBVdVpPQkdGVTR1K2oxR1Zo
+            d3B6NFpOcGhqT0VURjZ5Vk1TamxEVEptU25BCmhSR0grbWs5cVd2d1YyMFV5N05O
+            cGVXL2VRR1o5Qkdoc0FqWE9nK01HNjAKLS0tIG1HbjVqOHRmSWFPRTFES0hNZUF0
+            NVN3L0Q5bkU3ZFdDYzdsKzh6OUIrdlUKGciCnQ7SkeiLF3Udb4Y2Q4igyUz7KR51
+            TYn2oy6KThzXHgoF+gvWFuh6cHfwEsyI5/ar+R8aj/AFIqEs0HpqpA==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB4KzNPNEptNEhLMERld1NR
+            aWlZNXRySmNXTDZraDczTzFDSkUzNjE0Z0JjCnRGcEc4UlVhRVRxSXBXclFPRGFh
+            eG0yUExCYnhHQjFFODVkQ044WmVVbkkKLS0tIExFTEFlNnFWM2p3WVdudEk2NXVr
+            OHhGM2xRZW9VN29La2xRaXJKelFsd3MKq2hZQgnFcg+0H+mfNnCqDFXZH3JHfADd
+            poczAcijGigFxwdMEJJ1+VgNosmTOt462e+ZJJtQlw/wlMK9dd1Xjg==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-24T17:38:04Z"
+    mac: ENC[AES256_GCM,data:VilRI87/jF7tIWbK3b7SXlLUAkqvJAxFEhQbv6HN2CHCDo8p6NX8UtobyZ0nEvV/DEPqhDQwsbcHeEr4Ndjqde7YXs8cNpk6VD5+XgQ54CvMmv6wAz/bHpcgUt+A0ETTzjlE8p6E8oWucTn+JQ789G+wrky146o1HHuJWRfvHkM=,iv:1Enk4zFjo62pTmkq8OEudi3r6u7OdPqqDpaodYq9gCc=,tag:hkwN6meeqf06YCHNk1fWvQ==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword)$
+    version: 3.9.1
+---
+## Allow to use CA Certificate for new certificates
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+    name: ca-issuer
+    namespace: certmanager
+spec:
+    ca:
+        secretName: root-secret
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBVdVpPQkdGVTR1K2oxR1Zo
+            d3B6NFpOcGhqT0VURjZ5Vk1TamxEVEptU25BCmhSR0grbWs5cVd2d1YyMFV5N05O
+            cGVXL2VRR1o5Qkdoc0FqWE9nK01HNjAKLS0tIG1HbjVqOHRmSWFPRTFES0hNZUF0
+            NVN3L0Q5bkU3ZFdDYzdsKzh6OUIrdlUKGciCnQ7SkeiLF3Udb4Y2Q4igyUz7KR51
+            TYn2oy6KThzXHgoF+gvWFuh6cHfwEsyI5/ar+R8aj/AFIqEs0HpqpA==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB4KzNPNEptNEhLMERld1NR
+            aWlZNXRySmNXTDZraDczTzFDSkUzNjE0Z0JjCnRGcEc4UlVhRVRxSXBXclFPRGFh
+            eG0yUExCYnhHQjFFODVkQ044WmVVbkkKLS0tIExFTEFlNnFWM2p3WVdudEk2NXVr
+            OHhGM2xRZW9VN29La2xRaXJKelFsd3MKq2hZQgnFcg+0H+mfNnCqDFXZH3JHfADd
+            poczAcijGigFxwdMEJJ1+VgNosmTOt462e+ZJJtQlw/wlMK9dd1Xjg==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-24T17:38:04Z"
+    mac: ENC[AES256_GCM,data:VilRI87/jF7tIWbK3b7SXlLUAkqvJAxFEhQbv6HN2CHCDo8p6NX8UtobyZ0nEvV/DEPqhDQwsbcHeEr4Ndjqde7YXs8cNpk6VD5+XgQ54CvMmv6wAz/bHpcgUt+A0ETTzjlE8p6E8oWucTn+JQ789G+wrky146o1HHuJWRfvHkM=,iv:1Enk4zFjo62pTmkq8OEudi3r6u7OdPqqDpaodYq9gCc=,tag:hkwN6meeqf06YCHNk1fWvQ==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword)$
+    version: 3.9.1
+---
+## Don't know
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+    name: self-signed-issuer
+    namespace: certmanager
+spec:
+    selfSigned: {}
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBVdVpPQkdGVTR1K2oxR1Zo
+            d3B6NFpOcGhqT0VURjZ5Vk1TamxEVEptU25BCmhSR0grbWs5cVd2d1YyMFV5N05O
+            cGVXL2VRR1o5Qkdoc0FqWE9nK01HNjAKLS0tIG1HbjVqOHRmSWFPRTFES0hNZUF0
+            NVN3L0Q5bkU3ZFdDYzdsKzh6OUIrdlUKGciCnQ7SkeiLF3Udb4Y2Q4igyUz7KR51
+            TYn2oy6KThzXHgoF+gvWFuh6cHfwEsyI5/ar+R8aj/AFIqEs0HpqpA==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB4KzNPNEptNEhLMERld1NR
+            aWlZNXRySmNXTDZraDczTzFDSkUzNjE0Z0JjCnRGcEc4UlVhRVRxSXBXclFPRGFh
+            eG0yUExCYnhHQjFFODVkQ044WmVVbkkKLS0tIExFTEFlNnFWM2p3WVdudEk2NXVr
+            OHhGM2xRZW9VN29La2xRaXJKelFsd3MKq2hZQgnFcg+0H+mfNnCqDFXZH3JHfADd
+            poczAcijGigFxwdMEJJ1+VgNosmTOt462e+ZJJtQlw/wlMK9dd1Xjg==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-24T17:38:04Z"
+    mac: ENC[AES256_GCM,data:VilRI87/jF7tIWbK3b7SXlLUAkqvJAxFEhQbv6HN2CHCDo8p6NX8UtobyZ0nEvV/DEPqhDQwsbcHeEr4Ndjqde7YXs8cNpk6VD5+XgQ54CvMmv6wAz/bHpcgUt+A0ETTzjlE8p6E8oWucTn+JQ789G+wrky146o1HHuJWRfvHkM=,iv:1Enk4zFjo62pTmkq8OEudi3r6u7OdPqqDpaodYq9gCc=,tag:hkwN6meeqf06YCHNk1fWvQ==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword)$
+    version: 3.9.1
+---
+## Netcup login
+apiVersion: v1
+kind: Secret
+metadata:
+    name: netcup-secret
+    namespace: certmanager
+type: Opaque
+stringData:
+    customer-number: ENC[AES256_GCM,data:RF1bRpQ=,iv:4FZsRpDWwW2vSyU4tAOktFDdKImiWSKXL1N10QC/f+k=,tag:qBchfj7INltLJk82nT1Sew==,type:str]
+    api-key: ENC[AES256_GCM,data:acDEhlS4NKfFyAdiXWi41Bdrp/ZFAJWRNE4eiOlyqFFAB/+wOR4oSgoBIiPax32CJls=,iv:gHEBmzrL/IvC4XuYL9bmSDr7tx7pWNlh4HUjlnkJstk=,tag:MnRut9amzEw6qBmD8hxZog==,type:str]
+    api-password: ENC[AES256_GCM,data:nR61PfYDLcsSUZ8wRWc65iVmzPCPq/Dy0mOusk/vwh4By0UshCtjt1buDpcynJKXWOA=,iv:70QhtRREtunn8sUulgvkd9pSl7TtBzOmpCLNqJeUePs=,tag:TZNsTr6dVMB3uKDSAGme+w==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBVdVpPQkdGVTR1K2oxR1Zo
+            d3B6NFpOcGhqT0VURjZ5Vk1TamxEVEptU25BCmhSR0grbWs5cVd2d1YyMFV5N05O
+            cGVXL2VRR1o5Qkdoc0FqWE9nK01HNjAKLS0tIG1HbjVqOHRmSWFPRTFES0hNZUF0
+            NVN3L0Q5bkU3ZFdDYzdsKzh6OUIrdlUKGciCnQ7SkeiLF3Udb4Y2Q4igyUz7KR51
+            TYn2oy6KThzXHgoF+gvWFuh6cHfwEsyI5/ar+R8aj/AFIqEs0HpqpA==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB4KzNPNEptNEhLMERld1NR
+            aWlZNXRySmNXTDZraDczTzFDSkUzNjE0Z0JjCnRGcEc4UlVhRVRxSXBXclFPRGFh
+            eG0yUExCYnhHQjFFODVkQ044WmVVbkkKLS0tIExFTEFlNnFWM2p3WVdudEk2NXVr
+            OHhGM2xRZW9VN29La2xRaXJKelFsd3MKq2hZQgnFcg+0H+mfNnCqDFXZH3JHfADd
+            poczAcijGigFxwdMEJJ1+VgNosmTOt462e+ZJJtQlw/wlMK9dd1Xjg==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-24T17:38:04Z"
+    mac: ENC[AES256_GCM,data:VilRI87/jF7tIWbK3b7SXlLUAkqvJAxFEhQbv6HN2CHCDo8p6NX8UtobyZ0nEvV/DEPqhDQwsbcHeEr4Ndjqde7YXs8cNpk6VD5+XgQ54CvMmv6wAz/bHpcgUt+A0ETTzjlE8p6E8oWucTn+JQ789G+wrky146o1HHuJWRfvHkM=,iv:1Enk4zFjo62pTmkq8OEudi3r6u7OdPqqDpaodYq9gCc=,tag:hkwN6meeqf06YCHNk1fWvQ==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword)$
+    version: 3.9.1
+---
+## Netcup dns issuer staging
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+    name: netcup-issuer-staging
+    namespace: certmanager
+spec:
+    acme:
+        email: ENC[AES256_GCM,data:OVWIPFLsZ6++Q1hXDrXsLQjzq8IdiOfR,iv:NSJ2hBbk9eYxHEC40tBYpF9p0VH4f/qEef/+O+UDcRY=,tag:DDMpnDo+iVr/QHatjB0wOg==,type:str]
+        server: https://acme-staging-v02.api.letsencrypt.org/directory
+        privateKeySecretRef:
+            name: netcup-le-secret
+        solvers:
+            - dns01:
+                webhook:
+                    groupName: com.netcup.webhook
+                    solverName: netcup
+                    config:
+                        secretRef: netcup-secret
+                        secretNamespace: certmanager
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBVdVpPQkdGVTR1K2oxR1Zo
+            d3B6NFpOcGhqT0VURjZ5Vk1TamxEVEptU25BCmhSR0grbWs5cVd2d1YyMFV5N05O
+            cGVXL2VRR1o5Qkdoc0FqWE9nK01HNjAKLS0tIG1HbjVqOHRmSWFPRTFES0hNZUF0
+            NVN3L0Q5bkU3ZFdDYzdsKzh6OUIrdlUKGciCnQ7SkeiLF3Udb4Y2Q4igyUz7KR51
+            TYn2oy6KThzXHgoF+gvWFuh6cHfwEsyI5/ar+R8aj/AFIqEs0HpqpA==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB4KzNPNEptNEhLMERld1NR
+            aWlZNXRySmNXTDZraDczTzFDSkUzNjE0Z0JjCnRGcEc4UlVhRVRxSXBXclFPRGFh
+            eG0yUExCYnhHQjFFODVkQ044WmVVbkkKLS0tIExFTEFlNnFWM2p3WVdudEk2NXVr
+            OHhGM2xRZW9VN29La2xRaXJKelFsd3MKq2hZQgnFcg+0H+mfNnCqDFXZH3JHfADd
+            poczAcijGigFxwdMEJJ1+VgNosmTOt462e+ZJJtQlw/wlMK9dd1Xjg==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-24T17:38:04Z"
+    mac: ENC[AES256_GCM,data:VilRI87/jF7tIWbK3b7SXlLUAkqvJAxFEhQbv6HN2CHCDo8p6NX8UtobyZ0nEvV/DEPqhDQwsbcHeEr4Ndjqde7YXs8cNpk6VD5+XgQ54CvMmv6wAz/bHpcgUt+A0ETTzjlE8p6E8oWucTn+JQ789G+wrky146o1HHuJWRfvHkM=,iv:1Enk4zFjo62pTmkq8OEudi3r6u7OdPqqDpaodYq9gCc=,tag:hkwN6meeqf06YCHNk1fWvQ==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword)$
+    version: 3.9.1
+---
+## Netcup dns issuer production
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+    name: netcup-issuer-production
+    namespace: certmanager
+spec:
+    acme:
+        email: ENC[AES256_GCM,data:PlgijFpeupIML6a7Na1mpRXf6CY088KH,iv:AAHuBib5omKo1SOpJsux6Tzn9EsmT65/nJXlGnc15dU=,tag:TAVxcx5+3HGJmYPbwcCEig==,type:str]
+        server: https://acme-v02.api.letsencrypt.org/directory
+        privateKeySecretRef:
+            name: netcup-le-secret
+        solvers:
+            - dns01:
+                webhook:
+                    groupName: com.netcup.webhook
+                    solverName: netcup
+                    config:
+                        secretRef: netcup-secret
+                        secretNamespace: certmanager
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBVdVpPQkdGVTR1K2oxR1Zo
+            d3B6NFpOcGhqT0VURjZ5Vk1TamxEVEptU25BCmhSR0grbWs5cVd2d1YyMFV5N05O
+            cGVXL2VRR1o5Qkdoc0FqWE9nK01HNjAKLS0tIG1HbjVqOHRmSWFPRTFES0hNZUF0
+            NVN3L0Q5bkU3ZFdDYzdsKzh6OUIrdlUKGciCnQ7SkeiLF3Udb4Y2Q4igyUz7KR51
+            TYn2oy6KThzXHgoF+gvWFuh6cHfwEsyI5/ar+R8aj/AFIqEs0HpqpA==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB4KzNPNEptNEhLMERld1NR
+            aWlZNXRySmNXTDZraDczTzFDSkUzNjE0Z0JjCnRGcEc4UlVhRVRxSXBXclFPRGFh
+            eG0yUExCYnhHQjFFODVkQ044WmVVbkkKLS0tIExFTEFlNnFWM2p3WVdudEk2NXVr
+            OHhGM2xRZW9VN29La2xRaXJKelFsd3MKq2hZQgnFcg+0H+mfNnCqDFXZH3JHfADd
+            poczAcijGigFxwdMEJJ1+VgNosmTOt462e+ZJJtQlw/wlMK9dd1Xjg==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-24T17:38:04Z"
+    mac: ENC[AES256_GCM,data:VilRI87/jF7tIWbK3b7SXlLUAkqvJAxFEhQbv6HN2CHCDo8p6NX8UtobyZ0nEvV/DEPqhDQwsbcHeEr4Ndjqde7YXs8cNpk6VD5+XgQ54CvMmv6wAz/bHpcgUt+A0ETTzjlE8p6E8oWucTn+JQ789G+wrky146o1HHuJWRfvHkM=,iv:1Enk4zFjo62pTmkq8OEudi3r6u7OdPqqDpaodYq9gCc=,tag:hkwN6meeqf06YCHNk1fWvQ==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword)$
+    version: 3.9.1

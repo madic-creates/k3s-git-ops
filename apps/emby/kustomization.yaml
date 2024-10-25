@@ -1,0 +1,96 @@
+---
+resources:
+  - namespace.yaml
+  - smb-media.yaml
+  - longhorn-media.yaml
+  - k8s.certificate.enc.yaml
+  - autorestart.yaml
+
+namespace: media
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "30"
+
+helmCharts:
+  - name: emby
+    repo: https://k8s-at-home.com/charts/
+    version: 3.4.2
+    releaseName: emby
+    namespace: media
+    includeCRDs: true
+    valuesInline:
+      controller:
+        replicas: 1
+      env:
+        TZ: Europe/Berlin
+        UID: "0"
+        GID: "0"
+      image:
+        repository: emby/embyserver
+        tag: 4.9.0.30
+        pullPolicy: IfNotPresent
+      resources:
+        requests:
+          gpu.intel.com/i915: 1
+          memory: "4Gi"
+          cpu: "1"
+        limits:
+          gpu.intel.com/i915: 1
+          memory: "12Gi"
+          # Units in mCPU. 6000m ~ 6 CPU
+          cpu: "6000m"
+      strategy:
+        type: Recreate
+      service:
+        main:
+          type: LoadBalancer
+          annotations:
+            kube-vip.io/loadbalancerIPs: 192.168.1.233
+          externalTrafficPolicy: Local
+          ports:
+            http:
+              nodePort: 8096
+            https:
+              nodePort: 8920
+      persistence:
+        config:
+          enabled: true
+          mountPath: /config
+          existingClaim: longhorn-pvc-emby
+          retain: true
+        video:
+          enabled: true
+          mountPath: /vol_raidz1/video
+          existingClaim: smb-pvc-video
+          retain: true
+        music:
+          enabled: true
+          mountPath: /vol_raidz1/music
+          existingClaim: smb-pvc-music
+          retain: true
+        photo:
+          enabled: true
+          mountPath: /vol_raidz1/photo
+          existingClaim: smb-pvc-photo
+          retain: true
+        emby-certificate-secret:
+          enabled: true
+          name: emby-certificate-pkcs12
+          type: secret
+          item: keystore.p12
+          mountPath: /etc/ssl/certs/certificate
+          readOnly: true
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values:
+                      - argocd-application-controller
+                      - jellyfin
+              topologyKey: "kubernetes.io/hostname"
+
+generators:
+  - kustomize-secret-generator.yaml

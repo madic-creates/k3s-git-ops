@@ -1,0 +1,58 @@
+---
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "70"
+
+helmCharts:
+  - name: descheduler
+    repo: https://kubernetes-sigs.github.io/descheduler/
+    version: 0.31.0
+    releaseName: descheduler
+    namespace: kube-system
+    includeCRDs: true
+    valuesInline:
+      kind: Deployment
+      deschedulingInterval: 2m
+      cmdOptions:
+        v: 3
+      deschedulerPolicy:
+        profiles:
+          - name: default
+            pluginConfig:
+              - name: DefaultEvictor
+                args:
+                  ignorePvcPods: false
+                  evictLocalStoragePods: true
+              - name: RemoveDuplicates
+              - name: RemovePodsHavingTooManyRestarts
+                args:
+                  podRestartThreshold: 5
+                  includingInitContainers: true
+              - name: RemovePodsViolatingNodeAffinity
+                args:
+                  nodeAffinityType:
+                  - requiredDuringSchedulingIgnoredDuringExecution
+              - name: RemovePodsViolatingNodeTaints
+              - name: RemovePodsViolatingInterPodAntiAffinity
+              - name: RemovePodsViolatingTopologySpreadConstraint
+              - name: LowNodeUtilization
+                args:
+                  thresholds:
+                    cpu: 30
+                    memory: 30
+                    pods: 30
+                  targetThresholds:
+                    cpu: 70
+                    memory: 70
+                    pods: 70
+            plugins:
+              balance:
+                enabled:
+                  - RemoveDuplicates
+                  - RemovePodsViolatingTopologySpreadConstraint
+                  - LowNodeUtilization
+              deschedule:
+                enabled:
+                  - RemovePodsHavingTooManyRestarts
+                  - RemovePodsViolatingNodeTaints
+                  - RemovePodsViolatingNodeAffinity
+                  - RemovePodsViolatingInterPodAntiAffinity

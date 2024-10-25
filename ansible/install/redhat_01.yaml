@@ -1,0 +1,35 @@
+---
+- name: RedHat | Installing Packages
+  ansible.builtin.dnf:
+    name:
+      - nano
+      - qemu-guest-agent
+      - htop
+      - iscsi-initiator-utils
+    state: present
+
+- name: RedHat | k9s | Creating directory
+  ansible.builtin.file:
+    path: "/opt/k9s_{{ K3S_K9S_VERSION }}.linux-amd64"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: RedHat | Downloading k9s
+  ansible.builtin.unarchive:
+    src: "https://github.com/derailed/k9s/releases/download/{{ K3S_K9S_VERSION }}/k9s_Linux_amd64.tar.gz"
+    dest: "/opt/k9s_{{ K3S_K9S_VERSION }}.linux-amd64"
+    remote_src: true
+  args:
+    creates: /opt/k9s_{{ K3S_K9S_VERSION }}.linux-amd64/k9s
+  register: k9s_download
+
+- name: RedHat | Linking k9s binaries to /usr/local/sbin
+  ansible.builtin.file:
+    src: /opt/k9s_{{ K3S_K9S_VERSION }}.linux-amd64/k9s
+    dest: /usr/local/sbin/k9s
+    owner: root
+    group: root
+    state: link
+  when: k9s_download.changed

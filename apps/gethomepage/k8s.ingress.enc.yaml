@@ -1,0 +1,64 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name: homepage
+    namespace: default
+    labels:
+        app.kubernetes.io/name: homepage
+    annotations:
+        # HTTPS entrypoint enabled
+        traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+        # TLS enabled
+        traefik.ingress.kubernetes.io/router.tls: "true"
+        traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect@kubernetescrd
+        #gethomepage.dev/description: Dynamically Detected Homepage
+        #gethomepage.dev/enabled: "true"
+        #gethomepage.dev/group: Cluster Management
+        #gethomepage.dev/icon: homepage.png
+        #gethomepage.dev/name: Homepage
+spec:
+    ingressClassName: traefik
+    tls:
+        - hosts:
+            - ENC[AES256_GCM,data:w3r3AXulTrQ1UY243IlXCkZxgQuS,iv:O3FKyWWtYLrFrAF+nrUy7iZGy7sVbgTgZPqeYy/w7+E=,tag:NGL7sTuhFNShSk5oL0NiPw==,type:str]
+          secretName: wildcard-cloudflare-production-01
+    rules:
+        - host: ENC[AES256_GCM,data:A93cCDHX7e5lVJs1xkiR70KvNwFU,iv:Nv+qpCPigVhs+pR3Ynu2kKH6yW471WHY58VcOgqUwYo=,tag:oIRkOQ30FhfJBgcn8FfE0Q==,type:str]
+          http:
+            paths:
+                - path: /
+                  pathType: Prefix
+                  backend:
+                    service:
+                        name: homepage
+                        port:
+                            number: 3000
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBndENHYlR1bSt4aTZUT3ls
+            OUpVY0xKVE1nWENPVUh2cmdCR0dUazlCUzNVCkgxVHBSQkdxd3Z1SXN5Sy8xRmdE
+            R1gyY3gxZ0ZkWllMcW0rQlBFZjNXNG8KLS0tIEV6cEJUUmdpOXF2aDBJbHZaUG1T
+            RVdzMlRwdVc0Q0JMZ21mUSttaGhEZlUKK8m5Y/Li0t8noZJGfImL/5lS81XpeOL5
+            PkXvWcmCv0sx4KGjsKu9xD9cpxigTrOce18+SukqzfFExLrwHiGCQg==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBGb0xJL29BNTF1WUJJcWQ4
+            clFtc3U3Tm5sUFMrc0thdFpMNWJVY25ERGdvClkzZnk3NTlVWUJCazVLbWE4VDJV
+            K0N2aG9wdmJydGQ0cHdzSmhhdG0ra0EKLS0tICtzdzRNNE5na3JpMTdEd2wvMW1J
+            SkhFVFExUVIreWtmdkhHclF0S3VPeEUKARsO5b2OuUcowxaZ84/nOefktOdlfFtX
+            wH5AA1lmcTtdYc6YcrLnrTD6KXimVMoT++SP1UvOKGlg1LKBEE9+Jw==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-24T18:08:47Z"
+    mac: ENC[AES256_GCM,data:wCa/zwpFxzU/gFjQ+xIaVknAJdDpWRFz9UmJejHfjHVjhlH8uQZFCVYNxZill/nR2Wk/Ov2sp5A6ZL432FotapwGomR0EgF/43r7oqnLVHa4ASif96OtF+XjQ6vKtYeU3epMv/J3oP535EYpHsBk8ukAC0rcGbJDq59BjWjJBZU=,iv:rnm92Y4JX1VwabwI33GvOcNy8T0MSFUYrBsVqtcmjSQ=,tag:66uO3GZKG3670Rly5b1FiA==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId)$
+    version: 3.9.1

@@ -1,0 +1,60 @@
+deploymentMode: SingleBinary
+loki:
+    auth_enabled: false
+    commonConfig:
+        replication_factor: 1
+    storage:
+        type: filesystem
+    schemaConfig:
+        configs:
+            - from: "2024-01-01"
+              store: tsdb
+              index:
+                prefix: loki_index_
+                period: 24h
+              # we're storing on filesystem so there's no real persistence here.
+              object_store: filesystem
+              schema: v13
+singleBinary:
+    replicas: 1
+read:
+    replicas: 0
+backend:
+    replicas: 0
+write:
+    replicas: 0
+monitoring:
+    dashboards:
+        enabled: true
+        namespace: monitoring
+    serviceMonitor:
+        enabled: true
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBXSnRnUzNmc0swVEhyVEtS
+            RENwQ2cyNlRRZkQrejIyQWpnQW1WMFhNWHg4ClUrMWxualVzbzNYOHROUENpUTlF
+            bUQzYlpWb3E1WFgveHhkL1VzRzA5QUkKLS0tIHFlYm9VYlAwZ3hodjBUbFZ0ajhr
+            T2ZQZEZOejhlOFVlellIN3ZucHFyU0UKaqSLsvqpEm5JzCGTBSZHbVY+TYNJ/9WR
+            ia1rr4QaIYaStTura4ydcrT5aiWUuJAJQeo+NI28UvLrTIE2OBfMLg==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSByZzVjT1hhZWhxWVQxc2RR
+            akhrUjJxZ3RUZVBZaXVUVTJiRlJNTjRBdmk4ClZ6QzJWamNURGh3T0p4S00rWm9Y
+            WXV5T2g5akdyQUF5RldBUmdUbXpoR28KLS0tIEo3aFIwVWdialdyMkRWbytkWVFi
+            N3ZHN0pTQ0lROWYwUzV6UmNaNmtqcWMKHSrjQX9cxnGh7kCU3E0xmOM6LZiAG9JO
+            295h72+lL3Sin35TkdgFQKRNNJW4ZfT78CyAhCoDr9R9Bz1LeRhIyw==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-19T11:11:34Z"
+    mac: ENC[AES256_GCM,data:JeeudCruhVJGDBL0k1maen2aPemRqr8a/6Nps7/08s0t/cCeofVv+gKV7Ei/A89GDhmAxQx22Fij0R2wtGQYubuLrmNbdupeKbZ0+YDbeAAbTJGQ8emxKdiIpdW+tGZv47c5s1Q7TrLRqMbkvQmH3d8B9udJKhz/TQihWPeE2wE=,iv:wwyxLo/bo1aHLWL7wW9rBf9xJi4ktChqxt9SoKfqTSE=,tag:LnwxWaut3mbK0/xGEBhP1w==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|clientSecret|argocdServerAdminPassword|oidc.config|commonName|literals)$
+    version: 3.9.0

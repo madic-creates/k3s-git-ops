@@ -1,0 +1,9 @@
+---
+- name: Arch | Installing Packages
+  community.general.pacman:
+    name:
+      - nano
+      # - qemu-guest-agent
+      - htop
+      - open-iscsi
+      - k9s

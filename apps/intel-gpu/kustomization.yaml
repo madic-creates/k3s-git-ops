@@ -1,0 +1,28 @@
+---
+resources:
+  - namespace.yaml
+
+namespace: intel
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "24"
+
+helmCharts:
+  - name: intel-gpu-plugin
+    repo: https://k8s-at-home.com/charts/
+    version: 4.4.2
+    releaseName: intel-gpu-plugin
+    namespace: intel
+    includeCRDs: true
+    valuesInline:
+      image:
+        # https://hub.docker.com/r/intel/intel-gpu-plugin/tags
+        repository: intel/intel-gpu-plugin
+        tag: 0.31.1
+      resources:
+        requests:
+          memory: "105m"
+          cpu: "15m"
+        limits:
+          memory: "1Gi"
+          cpu: "1"

@@ -1,0 +1,50 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name: ingress-to-traefik-ingress
+    namespace: kube-system
+    annotations:
+        cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: https
+        cloudflare-tunnel-ingress-controller.strrl.dev/proxy-ssl-verify: "off"
+spec:
+    ingressClassName: cloudflare-tunnel
+    rules:
+        - host: ENC[AES256_GCM,data:TvTFdoVCnDo7KV3tfKSIk68t,iv:JF/IXmnXOmvh6UW1jaBZnyEpBFny6/ykxZyyC23jaQg=,tag:n5W6uRx90qMDOlP48qn6vA==,type:str]
+          http:
+            paths:
+                - backend:
+                    service:
+                        name: traefik
+                        port:
+                            number: 443
+                  path: /
+                  pathType: Prefix
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBoOURxdFNWcCswc0pQakg2
+            UE9kUEFsaTdUR1U3d2dJMVZRQ3VlUUtWRENNCnFzK0kvQU54YXhkTmcvbGx0a0Fj
+            bHBSSGJGREFLdG1xQ0tUdFZ1UXREOWcKLS0tIERlY1BWeVRZWUNYTWUzaGkxa28w
+            OWw1NisyeEs1YkllZHpYcmdOdjI3VEEKD5lJuaqVZVMuDTlf6KGWwAcFGRX281JR
+            BQI0lU1V5UPtE17y3eoDcf3tF5r9thqVKK4qZD2Hz5lp2yDJJ5BfgQ==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBCak5UWEJDK2xLaXYybWxN
+            V0h6ejZVY3B4eGlzS0JrTlVrTmM1Rk1ycGk0CmtMZjJvNENaYmdwMndRbVlPMm1z
+            K1VIQkphSHU1aDlLd09WN2xYZU53OEUKLS0tIG1CTkFXNERXTkpiMWJKVDVuMjlp
+            Slh2U1B4bElmbnp4SVZhcjJISDlHTjAKH+FsEQ6dirb+6WU7l5FasfnqrTiQJNfQ
+            3OJXRnR6sHNe/XLNuHtZEm3W9/0vfH+GencTsSuuzP1DN8ILHbIoVg==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-24T17:43:48Z"
+    mac: ENC[AES256_GCM,data:VvcH/h96G7NdKFxXjDRj5KmXGb96Z/SEoMrwz/+mRxkWy7RdOKxdYG5ZnW0w/9aD03uv2iy2R+/8sfPKDeeMkl6G6yiFQAWwVuuXIU7OyeeaLaFPl4qLYjzU0rMS+m8HgaIUITvDF/hC89NpDRZKlnR99X36RFOciNAovh/zDc4=,iv:cbSlq5hpxGXvmJzdJXX3Uau7qs8guT8gwz+tHxynK5o=,tag:AIGef/5gE0hU3bGzZZ2o+w==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword)$
+    version: 3.9.0

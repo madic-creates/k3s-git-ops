@@ -1,0 +1,15 @@
+---
+namespace: reflector
+
+helmCharts:
+  - name: reflector
+    repo: https://emberstack.github.io/helm-charts
+    version: 7.1.288
+    releaseName: reflector
+    namespace: reflector
+
+resources:
+  - namespace.yaml
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "2"

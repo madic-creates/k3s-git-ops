@@ -1,0 +1,56 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: whoami
+  labels:
+    goldilocks.fairwinds.com/enabled: "true"
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: whoami-server
+  namespace: whoami
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: whoami
+  namespace: whoami
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: whoami
+  template:
+    metadata:
+      labels:
+        app: whoami
+    spec:
+      serviceAccount: whoami-server
+      containers:
+        - name: whoami
+          image: traefik/whoami:v1.10.3
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: 15m
+              memory: 105M
+            limits:
+              cpu: 15m
+              memory: 105M
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: whoami
+  namespace: whoami
+  labels:
+    app: whoami
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      name: whoami
+  selector:
+    app: whoami
