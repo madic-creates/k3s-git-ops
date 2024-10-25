@@ -44,17 +44,17 @@ resources:
 # The value is stored in an encrypted kubernetes secret and kustomize
 # Uses the value after decrypting it
 replacements:
-  - source:
-      kind: Secret
-      version: v1
-      name: argocd-repo-url-private
-      namespace: argocd
-      fieldPath: stringData.url
-    targets:
-      - select:
-          kind: Application
-        fieldPaths:
-          - spec.source.repoURL
+  #  - source:
+  #      kind: Secret
+  #      version: v1
+  #      name: argocd-repo-url-private
+  #      namespace: argocd
+  #      fieldPath: stringData.url
+  #    targets:
+  #      - select:
+  #          kind: Application
+  #        fieldPaths:
+  #          - spec.source.repoURL
   - source:
       kind: Secret
       version: v1
@@ -64,7 +64,6 @@ replacements:
     targets:
       - select:
           kind: Application
-          name: 99-debug-container
         fieldPaths:
           - spec.source.repoURL
 
