@@ -14,7 +14,7 @@ on:
 jobs:
   publish-docs:
     permissions:
-      contents: read
+      contents: write
       pages: write
     runs-on: ubuntu-latest
     # Don't run job on pull requests from forks
