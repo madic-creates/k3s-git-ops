@@ -23,6 +23,10 @@ configs:
             url: ENC[AES256_GCM,data:kJUR0r3yDZSFMlAh+AwsOF3tVoHsc8PszRWb2n86p8R7,iv:yaO9xWj1uCmoq3lXPy8fLjIoHJYfFmbGn5MuZoBoHdE=,tag:VVD0sCCDpbcZr94uJThuwA==,type:str]
             username: ENC[AES256_GCM,data:kKrucr9N1Xk144Uck5Kt6jMepuM=,iv:1YMhSqf0as5fe5JS+6yS9dalPaUN/NPY8tEXK0EXoC0=,tag:YjGVwfW/RRFs9D2SH1NM/w==,type:str]
             password: ENC[AES256_GCM,data:0Vkom2dGORR43mdLndvHjayCDSRutugHy3tPPrY+kgrp2uVDwFCfww==,iv:eSfj97QMmP7iXGQFQ8DZOuNOXqdX4NXHiyasR0QpJAo=,tag:cZ08sC7dUHPdlUmuWgZp9g==,type:str]
+        k3s-git-ops:
+            url: ENC[AES256_GCM,data:K7iMDBaU4PD47PwMpbk9Hv7w8SAra9DvyDU6i+xhf5FjWsUNuQ==,iv:0uyUaJ6Xuzv+JKUfNTvBCQ4PRH3lETn/GjvqHquBXrs=,tag:BEiDdKSfTqBn8F7sy8E04w==,type:str]
+            username: ENC[AES256_GCM,data:xXweeZq2,iv:/IHtAyhAoaQnCWTM088+KcrRYo4vmgM8SgZbULyQFmA=,tag:1BltNAkX6lZvHmUm0WfZIQ==,type:str]
+            password: ENC[AES256_GCM,data:6adyjSuVdWQMs4f7KDRZrHxS5iQLXqsqRbIe/12kSQNHLtvZ+1BHLdmpiHbqw5DV9Me95mx8lsCLUInMEjBEFV0cIaYxEHV5R67YAnJZ4pvm6DtKrw0p6lFJwhYD,iv:gdblcf24v4oYEINyQR0kgwVHTRgm3YzQdCzhIIRvZAU=,tag:vOyBJm5mgDco1GLNqJk/Ig==,type:str]
     cm:
         admin.enabled: true
         kustomize.buildOptions: --enable-helm --enable-alpha-plugins --enable-exec
@@ -230,8 +234,8 @@ sops:
             MkxxQ2tHZ3lFeU1zOWNIR2tyeWtoNFEKExPKO1Y7/v4BIDFO6Sk98DvU8TeF74pV
             YwAgvSeay1gJ6Qk0vCByptZS7QgSe4yND77LJo8Oiw2gtSm/OID9SQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-10-24T13:59:53Z"
-    mac: ENC[AES256_GCM,data:wk6nNjQDpEzDRbvOV3BLEL+iFsMjEcIx3EUzmvd9i3JRJrl182d6oMnH/G+ZjMXt8ND08G1mMkwKQQzRBVt8J7V4tUoKzQ1wDkAEyX8F5HCht32jrV8AFlAIcGMP8QbGvd2wesjg5WLVRqcJvT9+yeW7D35MPHVQIKgD4c3bUQI=,iv:cMZ96/HapWfvrKzpIVcmRBp1lMQLWckn3rTpQxZPipQ=,tag:DJ8Nzgnnbdp8Y2oLzv4mRg==,type:str]
+    lastmodified: "2024-10-25T20:50:53Z"
+    mac: ENC[AES256_GCM,data:HJGQnX7G1cCzNkNN6KAy1ATMpIVtIB+J4l5TIGEVUGUTkF77LKsAqQxW/jUkX7X8oPalgChfcSoZl8HkDbEOA7U/C7Aibkc2u7gdIjmYxzucAcb34qvkCbI6q9ftu/gxpEonQ++v4ha4DHVcuIGxdgR1nFtUTWBxu1V/r2O29Mo=,iv:1yMjqoFjbevEs21qqBXv1tbd6ZQDwvTCU4O3mCruVOE=,tag:K3NgewOGa7j9md5qhykJCA==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|clientSecret|argocdServerAdminPassword|oidc.config|commonName|literals)$
     version: 3.9.0
