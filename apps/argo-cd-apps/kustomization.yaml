@@ -47,7 +47,7 @@ replacements:
   - source:
       kind: Secret
       version: v1
-      name: argocd-repo-url
+      name: argocd-repo-url-private
       namespace: argocd
       fieldPath: stringData.url
     targets:
