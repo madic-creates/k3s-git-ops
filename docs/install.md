@@ -54,13 +54,13 @@ kubectl kustomize apps/argo-cd --enable-helm | kubectl apply -f -
 kubectl kustomize apps/overlays/vagrant | kubectl apply -f -
 ```
 
-ArgoCD Login Passwort für den Benutzer admin:
+Get the ArgoCD Login password for the admin user:
 
 ```shell
 kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
 ```
 
-ArgoCD Entfernen
+Remove ArgoCD
 
 ```shell
 kubectl kustomize bootstrap --enable-helm | kubectl delete -f -

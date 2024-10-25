@@ -6,19 +6,21 @@
 
 ## KubeVIP
 
-KubeVIP kommt in zwei Varianten zum Einsatz:
+KubeVIP is used in two variants:
 
-- HA für Kubernetes API
+- HA for Kubernetes API
 - LoadBalancer Provider (cloud-controller)
 
-### HA für Kubernetes API
+### HA for Kubernetes API
 
-Mit Hilfe eines Daemonset wird ein kube-vip pod gestartet, der per ARP eine virtuelle IP (VIP) verwaltet.
-Mehr Informationen: https://kube-vip.io/docs/installation/daemonset/
+A kube-vip pod is launched using a DaemonSet to manage a virtual IP (VIP) via ARP.
+More information: https://kube-vip.io/docs/installation/daemonset/
 
 Github Releases: https://github.com/kube-vip/kube-vip/releases
 
-#### KubeVIP aktualisieren:
+#### Updating KubeVIP
+
+Updating the manifests for the ArgoCD app in apps/kubevip-ha
 
 Docker
 
@@ -57,9 +59,8 @@ export KVVERSION=v0.6.4
   --enableNodeLabeling
 ```
 
-Das damit erstellte Manifest nach apps/kubevi-ha/kubevip.yaml kopieren und die creationTimestamps und den status entfernen.
+Copy the manifest created to apps/kubevi-ha/kubevip.yaml and remove the creationTimestamps and the status.
 
 ## KubeVIP
 
-KubeVIP wird per ansible installiert weil ein Kubernetes Manifest während der Installaton erstellt werden muss.
-Das kann kustomize nicht. Jede weitere Konfiguration übernimmt dann wieder kustomize.
+KubeVIP is installed via Ansible because a Kubernetes manifest needs to be created during installation, which kustomize cannot do. Any further configuration is then handled by kustomize.

@@ -2,10 +2,10 @@
 
 ## Redis
 
-Datenbank 1 für authelia.
-Datenbank 2 für paperless.
+Database 1 for authelia.
+Database 2 for paperless.
 
-Alle Keys einer Datenbank ausgeben:
+Get all keys from a database:
 
 ```bash
 redis-cli -n 1 KEYS '*'
@@ -18,9 +18,9 @@ redis-cli GET server:name
 
 ## MariaDB
 
-Neue Datenbank erstellen
+Create new database
 
-In die shell vom MariaDB Container:
+Execute in the shell of the MariaDB Container:
 
 ```bash
 mariadb -u root -p
@@ -34,13 +34,13 @@ SHOW databases;
 SHOW GRANTS FOR 'authelia'@'host';
 ```
 
-Datenbank erstellen:
+Create database:
 
 ```sql
 CREATE DATABASE authelia;
 ```
 
-User mit Passwort:
+User with password:
 
 ```sql
 CREATE USER 'authelia'@'%' IDENTIFIED BY 'zQMNYwDhhuyRsWzK7rzQhJ2NEzVFvgop9sMcJfmPpem9JEcuwE24rd9RYwYsb2SS';
@@ -48,7 +48,7 @@ GRANT ALL PRIVILEGES ON authelia.* TO 'authelia'@'%';
 FLUSH PRIVILEGES;
 ```
 
-User ohne Passwort, mit Netzwerkeinschränkung:
+User without password, but only allowed from specific networks:
 
 ```sql
 CREATE USER 'authelia'@'10.42.0.0/255.255.0.0';
@@ -56,7 +56,7 @@ GRANT ALL PRIVILEGES ON authelia.* TO 'authelia'@'10.42.0.0/255.255.0.0';
 FLUSH PRIVILEGES;
 ```
 
-User löschen:
+Delete user:
 
 ```sql
 DROP USER 'authelia'@'%';
