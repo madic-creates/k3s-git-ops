@@ -55,6 +55,18 @@ replacements:
           kind: Application
         fieldPaths:
           - spec.source.repoURL
+  - source:
+      kind: Secret
+      version: v1
+      name: argocd-repo-url-public
+      namespace: argocd
+      fieldPath: stringData.url
+    targets:
+      - select:
+          kind: Application
+          name: 99-debug-container
+        fieldPaths:
+          - spec.source.repoURL
 
 generators:
   - kustomize-secret-generator.yaml
