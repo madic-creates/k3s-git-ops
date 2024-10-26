@@ -30,6 +30,7 @@ spec:
       serviceAccount: whoami-server
       containers:
         - name: whoami
+          # https://github.com/traefik/whoami
           image: traefik/whoami:v1.10.3
           imagePullPolicy: IfNotPresent
           resources:
