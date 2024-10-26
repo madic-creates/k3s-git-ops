@@ -1,7 +1,7 @@
 ---
 # Project information
 site_name: Madic | Home GitOps
-site_description: A mono repository for my home infrastructure and Kubernetes cluster which tries to adhere to Infrastructure as Code (IaC) and GitOps practices
+site_description: A mono repository for my home Kubernetes cluster which tries to adhere to Infrastructure as Code (IaC) and GitOps practices
 site_author: Michael Neese
 site_url: https://madic-.github.io/git-ops/
 
@@ -19,35 +19,31 @@ theme:
     repo: fontawesome/brands/github-alt
   language: en
   features:
-    - navigation.tabs
-    - navigation.tabs.sticky
     - navigation.sections
     - navigation.tracking
     - search.highlight
     - search.share
     - search.suggest
-  palette:
-    - scheme: default
-      primary: indigo
-      accent: indigo
-      toggle:
-        icon: material/weather-night
-        name: Switch to dark mode
-    - scheme: slate
-      primary: indigo
-      accent: indigo
-      toggle:
-        icon: material/weather-sunny
-        name: Switch to light mode
-  font:
-    text: Roboto
-    code: Roboto Mono
+    - content.code.copy
+  #palette:
+  #  - scheme: default
+  #    primary: indigo
+  #    accent: indigo
+  #    toggle:
+  #      icon: material/weather-night
+  #      name: Switch to dark mode
+  #  - scheme: slate
+  #    primary: indigo
+  #    accent: indigo
+  #    toggle:
+  #      icon: material/weather-sunny
+  #      name: Switch to light mode
 
 docs_dir: ./docs
 
 # Customization
-#extra_css:
-#  - extra.css
+extra_css:
+  - extra.css
 
 extra:
   social:
@@ -60,32 +56,44 @@ extra:
 
 # Plugins
 plugins:
-  - privacy
+  #- privacy
   - social
   - search:
       lang: en
-  - git-revision-date-localized:
-      enable_creation_date: true
-  - minify:
-      minify_html: true
+  #- minify:
+  #    minify_html: true
 
 # Extensions
 markdown_extensions:
-  #- attr_list
-  - admonition
   - attr_list
-  - sane_lists
-  - toc:
-      permalink: true
   - pymdownx.highlight:
       linenums: true
-      linenums_style: table
-  - pymdownx.superfences
+      anchor_linenums: true
   - pymdownx.inlinehilite
-  - pymdownx.details
-  - pymdownx.tabbed:
-      alternate_style: true
-  - pymdownx.tasklist
+  - pymdownx.superfences
+  # https://facelessuser.github.io/pymdown-extensions/extensions/blocks/plugins/admonition/
+  - pymdownx.blocks.admonition:
+      types:
+        - new
+        - settings
+        - note
+        - abstract
+        - info
+        - tip
+        - success
+        - question
+        - warning
+        - failure
+        - danger
+        - bug
+        - example
+        - quote
+  - toc:
+      permalink: "#"
+  #- pymdownx.details
+  #- pymdownx.tabbed:
+  #    alternate_style: true
+  #- pymdownx.tasklist
 
 # Navigation structure
 nav:

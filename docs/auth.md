@@ -1,6 +1,6 @@
 # Authentication
 
-Authelia runs [stateless](https://www.authelia.com/overview/authorization/statelessness/) and uses the following backends:
+Authelia runs [stateless](https://www.authelia.com/overview/authorization/statelessness/){target=_blank} and uses the following backends:
 
 - Session Provider: Redis
 - Storage Provider: MariaDB
@@ -22,5 +22,5 @@ docker run authelia/authelia:latest authelia crypto hash generate pbkdf2 --varia
 
 ## LLDAP
 
-For user and groups I use [LLDAP](https://github.com/lldap/lldap). It's an opinionated light ldap implementation including a simple webgui.
+For user and groups I use [LLDAP](https://github.com/lldap/lldap){target=_blank}. It's an opinionated light ldap implementation including a simple webgui.
 It is configured to use MariaDB as it's storage backend.

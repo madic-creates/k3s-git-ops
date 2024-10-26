@@ -1,6 +1,6 @@
 # mkdocs
 
-This repository builds it's documentation with mkdocs.
+This repository builds it's documentation with [mkdocs](https://www.mkdocs.org/){target=_blank}.
 
 ## Installation
 
@@ -17,5 +17,5 @@ pip install -r requirements.txt
 
 ```shell
 mkdocs build --strict --verbose
-mkdocs serve -a 0.0.0.0:8000
+mkdocs serve -a 127.0.0.1:8000
 ```

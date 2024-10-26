@@ -2,7 +2,7 @@
 
 ## Longhorn
 
-[Longhorn](https://longhorn.io/) is used as primary local distributed storage.
+[Longhorn](https://longhorn.io/){target=_blank} is used as primary local distributed storage.
 
 ### Troubleshooting
 

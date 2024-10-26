@@ -3,7 +3,7 @@
 In this repository I use two ways to encrypt secrets, both utilizing sops and age.
 
 - Kubernetes Secrets / Manifests are encrypted via [KSOPS](https://github.com/viaduct-ai/kustomize-sops){target=_blank} (described in this document)
-- Helm values are encrypted via sops and decrypted by an ArgoCD ConfigManagementPlugin (described in [ArgoCD](argocd#configmanagementplugins)
+- Helm values are encrypted via sops and decrypted by an ArgoCD ConfigManagementPlugin (described in [ArgoCD](argocd.md#configmanagementplugins)
 
 age is the recommended encryption tool for sops as it is more secure and easier to use than gpg.
 
@@ -113,7 +113,7 @@ To decrypt a secret inplace, use the following command:
 sops -d -i secret.enc.yaml
 ```
 
-If you're working with VSCode I can recommend the extension [@signageos/vscode-sops](https://marketplace.visualstudio.com/items?itemName=signageos.signageos-vscode-sops) which automatically decrypts and encrypts secrets on save.
+If you're working with VSCode I can recommend the extension [@signageos/vscode-sops](https://marketplace.visualstudio.com/items?itemName=signageos.signageos-vscode-sops){target=_blank} which automatically decrypts and encrypts secrets on save.
 
 It can also automatically encrypt files which are not yet encrypted. To enable this feature, add the following to your `settings.json`:
 

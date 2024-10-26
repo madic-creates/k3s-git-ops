@@ -2,7 +2,7 @@
 
 ## Metrics
 
-The [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) helm chart pre-configures the following components:
+The [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack){target=_blank} helm chart pre-configures the following components:
 
   - Prometheus (Operator)
   - Grafana
@@ -12,13 +12,13 @@ The [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/
 
 ![Cluster Compute Resources](images/cluster_compute_resources.png)
 
-Additionally the Alertmanager sends alerts via webhook to the [ntfy-alertmanager](https://hub.xenrox.net/~xenrox/ntfy-alertmanager/) which forwards it to a selfhosted [ntfy.sh](https://ntfy.sh/) instance.
+Additionally the Alertmanager sends alerts via webhook to the [ntfy-alertmanager](https://hub.xenrox.net/~xenrox/ntfy-alertmanager/){target=_blank} which forwards it to a selfhosted [ntfy.sh](https://ntfy.sh/){target=_blank} instance.
 
 ![ntfy alert](images/ntfy_alert.png)
 
 The encrypted config-file from the ntfy-alertmanager is basically this.
 
-More information can be found in the [ntfy-alertmanager config documentation](https://git.xenrox.net/~xenrox/ntfy-alertmanager/tree/master/item/config.scfg).
+More information can be found in the [ntfy-alertmanager config documentation](https://git.xenrox.net/~xenrox/ntfy-alertmanager/tree/master/item/config.scfg){target=_blank}.
 
 ```ini
 base-url https://ntfy-alertmanager.k8s.example.com
@@ -61,7 +61,7 @@ cache {
 
 ## Logging
 
-Loki and promtail are used as pod log collector. The grafan helm repository provides multiple loki charts. `loki-stack` is outdated and shouldn't be used. The other interesting charts are grafana/loki (SSD Mode) and grafan/loki-distributed (microservice mode). More information on the modes (SSD vs. microservices): [https://grafana.com/docs/loki/latest/get-started/deployment-modes/](https://grafana.com/docs/loki/latest/get-started/deployment-modes/). This repository uses the SSD mode.
+Loki and promtail are used as pod log collector. The grafan helm repository provides multiple loki charts. `loki-stack` is outdated and shouldn't be used. The other interesting charts are grafana/loki (SSD Mode) and grafan/loki-distributed (microservice mode). More information on the modes (SSD vs. microservices): [https://grafana.com/docs/loki/latest/get-started/deployment-modes/](https://grafana.com/docs/loki/latest/get-started/deployment-modes/){target=_blank}. This repository uses the SSD mode.
 
 ![Loki](images/logging.png)
 

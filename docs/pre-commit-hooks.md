@@ -1,6 +1,6 @@
 # pre-commit
 
-This repository uses [pre-commit](https://pre-commit.com/) to manage pre-commit hooks.
+This repository uses [pre-commit](https://pre-commit.com/){target=_blank} to manage pre-commit hooks.
 
 ## Installation
 

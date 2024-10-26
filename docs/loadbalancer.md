@@ -14,9 +14,9 @@ KubeVIP is used in two variants:
 ### HA for Kubernetes API
 
 A kube-vip pod is launched using a DaemonSet to manage a virtual IP (VIP) via ARP.
-More information: https://kube-vip.io/docs/installation/daemonset/
+More information: [https://kube-vip.io/docs/installation/daemonset/](https://kube-vip.io/docs/installation/daemonset/){target=_blank}
 
-Github Releases: https://github.com/kube-vip/kube-vip/releases
+Github Releases: [https://github.com/kube-vip/kube-vip/releases](https://github.com/kube-vip/kube-vip/releases){target=_blank}
 
 #### Updating KubeVIP
 

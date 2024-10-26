@@ -126,13 +126,13 @@ Of course, the configuration could be way shorter if a container, that already i
 - sops
 - helm
 
-More information about my journey to decrypt values.yaml can be found in the following ksops issue on github: [ Support kustomize helmCharts valuesFile](https://github.com/viaduct-ai/kustomize-sops/issues/242).
+More information about my journey to decrypt values.yaml can be found in the following ksops issue on github: [Support kustomize helmCharts valuesFile](https://github.com/viaduct-ai/kustomize-sops/issues/242){target=_blank}.
 
 More about secret management in the [Secret Management](secretmanagement.md) section.
 
 ## Ignoring values
 
-The [`ignoreDifferences`](https://argo-cd.readthedocs.io/en/stable/user-guide/diffing/) field is a powerful feature in Argo CD Application manifests that allows you to specify certain fields in your Kubernetes resources that should be ignored during the comparison between the live state and the desired state defined in the Git repository. I use it to tell Argo CD to e.g. ignore the number of replicas from a deployment or ignore the caBundle value from kube-prometheus-stack webhooks.
+The [`ignoreDifferences`](https://argo-cd.readthedocs.io/en/stable/user-guide/diffing/){target=_blank} field is a powerful feature in Argo CD Application manifests that allows you to specify certain fields in your Kubernetes resources that should be ignored during the comparison between the live state and the desired state defined in the Git repository. I use it to tell Argo CD to e.g. ignore the number of replicas from a deployment or ignore the caBundle value from kube-prometheus-stack webhooks.
 
 ### Detailed Explanation:
 
