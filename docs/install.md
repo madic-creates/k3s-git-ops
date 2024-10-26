@@ -1,20 +1,29 @@
 # Installation
 
-## Requriements
+## Requirements
 
+- git
 - ansible
 - kubectl
 - helm
 
-## Installation
+## Preparation
 
-You need to adapt the ansible vars to your needs. For this, copy the "example.yaml" to e.g. "own.yaml" and use that as ansible extra-vars file.
+- Clone this repository
+
+```shell
+git clone https://github.com/Madic-/k3s-git-ops
+```
+
+- Configure [pre-commit-hooks](pre-commit-hooks.md)
+- Adapt ansible vars to your needs. For this, copy the "example.yaml" to e.g. "own.yaml" and use that as ansible extra-vars file.
 
 ```shell
 cd ansible
 cp vars/example.yaml vars/own.yaml
-ansible-playbook install.yaml -i inventory --extra-vars "@vars/own.yaml" --diff
 ```
+
+A short explanation of the vars can be found in the vars file. Because they tend to change, I wont document them here.
 
 ### Ansible inventory
 
@@ -34,11 +43,14 @@ k3svm2
 k3svm3
 ```
 
-### Ansible variables
+## Installation
 
-The variables are documented in the `ansible/vars/vagrant.yaml` file.
+Run ansible from within the ansible folder
 
-Because they tend to change, I wont document them here.
+```shell
+cd ansible
+ansible-playbook install.yaml -i inventory --extra-vars "@vars/own.yaml" --diff
+```
 
 ## Removal
 
