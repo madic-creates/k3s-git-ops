@@ -19,8 +19,8 @@ resources:
   - 16-monitoring.yaml
   - 16-ntfy-alertmanager.yaml
   - 17-monitoring-loki.yaml
-  - 17-velero.yaml
-  - 17-velero-ui.yaml
+  #- 17-velero.yaml
+  #- 17-velero-ui.yaml
   - 20-csi-smb.yaml
   - 24-intel-gpu.yaml
   - 30-emby.yaml
