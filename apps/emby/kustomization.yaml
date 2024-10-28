@@ -91,6 +91,48 @@ helmCharts:
                       - argocd-application-controller
                       - jellyfin
               topologyKey: "kubernetes.io/hostname"
+      additionalContainers:
+        - name: backup-sidecar
+          image: ghcr.io/restic/restic:0.17.1
+          envFrom:
+            - secretRef:
+                name: backup-env-configuration
+          imagePullPolicy: IfNotPresent
+          command: ["/usr/sbin/crond", "-f", "-d", "6"]
+          volumeMounts:
+            - name: crontab-config
+              mountPath: /etc/crontabs/root
+              subPath: crontab
+            - name: backup-script
+              mountPath: /usr/local/bin/backup.sh
+              subPath: backup.sh
+            - mountPath: /backup/config
+              name: config
+              readOnly: true
+
+patches:
+  # Add volumes to Deployment
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: emby
+    patch: |-
+      apiVersion: aps/v1
+      kind: Deployment
+      metadata:
+        name: emby
+        namespace: media
+      spec:
+        template:
+          spec:
+            volumes:
+              - name: crontab-config
+                configMap:
+                  name: crontab
+              - name: backup-script
+                configMap:
+                  name: crontab-backup-script
 
 generators:
   - kustomize-secret-generator.yaml
