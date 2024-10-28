@@ -56,12 +56,12 @@ extra:
 
 # Plugins
 plugins:
-  #- privacy
+  - privacy
   - social
   - search:
       lang: en
-  #- minify:
-  #    minify_html: true
+  - minify:
+      minify_html: true
 
 # Extensions
 markdown_extensions:
@@ -90,10 +90,10 @@ markdown_extensions:
         - quote
   - toc:
       permalink: "#"
+  - pymdownx.tasklist:
   #- pymdownx.details
   #- pymdownx.tabbed:
   #    alternate_style: true
-  #- pymdownx.tasklist
 
 # Navigation structure
 nav:

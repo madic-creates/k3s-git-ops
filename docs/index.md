@@ -16,3 +16,12 @@ This is the foundation of the infrastructure. It's an easy to deploy and maintai
 - [Ansible](https://www.ansible.com/){target=_blank} prepares the machines for the k3s installation and installs k3s
 
 - [Vagrant](https://www.vagrantup.com/){target=_blank} manages the [test environment](testenv.md)
+
+## ToDos
+
+- ✅ Backup
+    * [ ] Notification on failure
+- ✅ Encryption of secrets
+    * [ ] Rework documentation
+- [ ] Extend [Monitoring](monitoring.md) beyond kube-prometheus-stack defaults
+- [ ] Migrate renovate to github actions
