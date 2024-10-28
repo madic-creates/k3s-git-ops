@@ -84,7 +84,7 @@ stringData:
   AWS_SECRET_ACCESS_KEY: <VerySecureSuperSecretKey>
 ```
 
-I won't include the backup script here, because it can change over time. The script is available in my repository as a ConfigMap. The ConfigMap get's replicated via reflector to all namespaces so all deployments can use the same script. But after changes to the script the pods using the script need to be restarted. This can be done by deleting the pods or by rolling out a new deployment.
+I won't include the backup script here, because it can change over time. The script is available in [my git repository](https://github.com/Madic-/k3s-git-ops/blob/main/apps/backup-script/backup-script.yaml){target=_blank} as a ConfigMap. The ConfigMap get's replicated via reflector to all namespaces so all deployments can use the same script. But after changes to the script the pods using the script need to be restarted. This can be done by deleting the pods or by rolling out a new deployment.
 
 ## rclone
 

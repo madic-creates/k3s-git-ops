@@ -1,3 +1,4 @@
+# Explanation to this ConfigMap: https://madic-.github.io/k3s-git-ops/backup/
 ---
 apiVersion: v1
 kind: ConfigMap
