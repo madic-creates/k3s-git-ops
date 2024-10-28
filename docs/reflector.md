@@ -1,5 +1,6 @@
 # Reflector
 
-[https://github.com/emberstack/kubernetes-reflector](https://github.com/emberstack/kubernetes-reflector){target=_blank}
+[Reflector ](https://github.com/emberstack/kubernetes-reflector){target=_blank} syncs Secrets and ConfigMaps between namespaces. I use it to sync the following objects between namespaces:
 
-Syncs Secrets and ConfigMaps between namespaces. Used to sync the secret of the wildcard certificate across all namespaces.
+* Wildcard certificate
+* Backup script
