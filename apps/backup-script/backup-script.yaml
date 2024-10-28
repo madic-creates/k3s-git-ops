@@ -1,0 +1,37 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: crontab-backup-script
+  namespace: longhorn
+  annotations:
+    reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
+    #reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "certmanager" # Control destination namespaces
+    # Auto create reflection for matching namespaces
+    reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
+    #reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: "dev,staging,prod" # Control auto-reflection namespaces
+data:
+  backup.sh: |
+    #!/bin/sh
+
+    # Log start of backup
+    echo "$(date) Backup process started" > /proc/1/fd/1
+
+    # Check if a Restic repository exists and initialize it if not
+    if ! restic snapshots > /dev/null 2>&1; then
+      echo "$(date) Restic repository not found. Initializing a new repository." > /proc/1/fd/1
+      restic init
+      if [ $? -ne 0 ]; then
+        echo "$(date) Failed to initialize Restic repository. Exiting." > /proc/1/fd/1
+        exit 1
+      fi
+    fi
+
+    # Create a snapshot with Restic
+    restic backup --host $(hostname | cut -d '-' -f1) "${RESTIC_SOURCE}"
+
+    # Remove older backups
+    restic forget --host $(hostname | cut -d '-' -f1) --keep-hourly ${KEEP_HOURLY} --keep-daily ${KEEP_DAILY} --keep-weekly ${KEEP_WEEKLY} --keep-last ${KEEP_LAST} --prune
+
+    # Log end of backup
+    echo "$(date) Backup process completed" > /proc/1/fd/1
