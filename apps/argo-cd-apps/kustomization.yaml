@@ -14,6 +14,7 @@ resources:
   - 10-authelia.yaml
   - 12-pihole.yaml
   - 14-external-snapshotter.yaml
+  - 15-backup-script.yaml
   - 15-longhorn.yaml
   #- 16-checkmk.yaml
   - 16-monitoring.yaml
