@@ -64,7 +64,7 @@ The secrets need to be encrypted with both public keys. The ArgoCD key is used t
 
 Create a `.sops.yaml` file in the repository root. Example:
 
-```yaml Title=.sops.yaml
+```yaml title=.sops.yaml
 creation_rules:
   - path_regex: .*.enc.yaml
     encrypted_regex: "^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|clientSecret|argocdServerAdminPassword|oidc.config|commonName|literals)$"
@@ -121,12 +121,12 @@ repoServer:
 
 To tell kustomize to use ksops for decryption, we need to add a **generators** configuration to the `kustomization.yaml` file:
 
-```yaml Title="kustomization.yaml"
+```yaml title="kustomization.yaml"
 generators:
   - kustomize-secret-generator.yaml
 ```
 
-```yaml Title="kustomize-secret-generator.yaml"
+```yaml title="kustomize-secret-generator.yaml"
 ---
 apiVersion: viaduct.ai/v1
 kind: ksops
