@@ -2,7 +2,7 @@
 
 In this repository I use two ways to encrypt secrets, both utilizing sops and age.
 
-- [Kubernetes Secrets / Manifests are encrypted](#kubernetes-secrets--manifests-via-ksops) via [KSOPS](https://github.com/viaduct-ai/kustomize-sops){target=_blank} (described in this document)
+- [Kubernetes Secrets / Manifests are encrypted](#kubernetes-secrets-manifests-via-ksops) via [KSOPS](https://github.com/viaduct-ai/kustomize-sops){target=_blank} (described in this document)
 - [Kustomize managed Helm values](#kustomize-managed-helm-values) are encrypted via sops and decrypted by an ArgoCD ConfigManagementPlugin
 
 age is the recommended encryption tool for sops as it is more secure and easier to use than gpg.
