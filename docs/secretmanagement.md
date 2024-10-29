@@ -64,7 +64,7 @@ The secrets need to be encrypted with both public keys. The ArgoCD key is used t
 
 Create a `.sops.yaml` file in the repository root. Example:
 
-```yaml title=.sops.yaml
+```yaml title=".sops.yaml"
 creation_rules:
   - path_regex: .*.enc.yaml
     encrypted_regex: "^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|clientSecret|argocdServerAdminPassword|oidc.config|commonName|literals)$"
