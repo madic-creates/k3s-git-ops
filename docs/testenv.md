@@ -14,7 +14,7 @@ The test environment is based upon virtual machines and created with Vagrant and
 
 I decided to base the test environemnt on virtual machines because I also test different network plugins. This is much easier to do with virtual machines than with containers. Another requirement is ansible, which I use to initially install k3s. This also needs to be tested. During deployment Vagrant uses the same ansible playbook to provision the system(s) as the one used for the production environment. Just the vars are a bit different and can be adjusted in the ansible/vars/vagrant.yaml file.
 
-In the subfolder **./shared/<HOSTNAME>/** are files for the configuration of the k3s cluster, like the kubeconfig.
+In the subfolder **./shared/${HOSTNAME}/** are files for the configuration of the k3s cluster, like the kubeconfig.
 
 The folder **./shared** gets also mounted to the virtual machines. This is the place where you can put files you want to share with the virtual machines. Though this requires **memory_backing_dir = "/dev/shm"** in **/etc/libvirt/qemu.conf**.
 

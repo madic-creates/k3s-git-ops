@@ -7,3 +7,11 @@
 .md-nav__title {
   color: black
 }
+
+h2 {
+  margin: .64em 0 .64em !important;
+}
+
+h3 {
+  margin: .8em 0 .8em !important;
+}

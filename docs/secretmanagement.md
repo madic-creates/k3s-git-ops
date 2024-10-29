@@ -60,7 +60,9 @@ repoServer:
 
 ## Repository configuration
 
+/// info
 The secrets need to be encrypted with both public keys. The ArgoCD key is used to decrypt the secrets in the ArgoCD cluster and the local key is used to de- and encrypt the secrets locally.
+///
 
 Create a `.sops.yaml` file in the repository root. Example:
 
@@ -119,7 +121,9 @@ repoServer:
 
 ### Adjusting kustomize configuration
 
-To tell kustomize to use ksops for decryption, we need to add a **generators** configuration to the `kustomization.yaml` file:
+/// info
+To tell kustomize to use ksops for decryption, we need to add a **generators** configuration to the `kustomization.yaml` file.
+///
 
 ```yaml title="kustomization.yaml"
 generators:
@@ -144,7 +148,11 @@ The **backup-secrets.enc.yaml** is just a normal kubernetes manifest but with so
 
 ## Kustomize managed Helm values
 
-This repository makes heavy use of kustomize rendering helm charts. Kustomize can manage helm values either directly in the kustomization.yaml or in a separate file. The helm values can contain sensitive values and it's not possible to encrypt values in the kustomization.yaml file directly so we need to use a separate helm values file. The workflow basically is to create an encrypted **values.enc.yaml**, tell kustomize to get the helm values from **values.yaml** and use an ArgoCD ConfigManagementPlugin to decrypt the **values.enc.yaml** to values.yaml. The ConfigManagementPlugin gets executed when ArgoCD finds a values.enc.yaml before kustomize renders the kubernetes manifests.
+This repository makes heavy use of kustomize rendering helm charts. Kustomize can manage helm values either directly in the kustomization.yaml or in a separate file. The helm values can contain sensitive values and it's not possible to encrypt values in the kustomization.yaml file directly so we need to use a separate helm values file.
+
+/// info
+The workflow basically is to create an encrypted **values.enc.yaml**, tell kustomize to get the helm values from **values.yaml** and use an ArgoCD ConfigManagementPlugin to decrypt the **values.enc.yaml** to values.yaml. The ConfigManagementPlugin gets executed when ArgoCD finds a values.enc.yaml before kustomize renders the kubernetes manifests.
+///
 
 ### Configuration of the ConfigManagementPlugin
 
@@ -286,7 +294,7 @@ To decrypt a file inplace, use the following command:
 ```shell
 sops -d -i secret.enc.yaml
 ```
-
+/// tip
 If you're working with VSCode I can recommend the extension [@signageos/vscode-sops](https://marketplace.visualstudio.com/items?itemName=signageos.signageos-vscode-sops){target=_blank} which automatically decrypts and encrypts secrets on save.
 
 It can also automatically encrypt files which are not yet encrypted. To enable this feature, add the following to your `settings.json`:
@@ -298,3 +306,4 @@ It can also automatically encrypt files which are not yet encrypted. To enable t
 ```
 
 This will automatically encrypt files which match the `creation_rules` in the `.sops.yaml` file.
+///

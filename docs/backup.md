@@ -15,7 +15,9 @@ Backups with restic provide:
 
 So I can upload my backup to any storage backend without leaking any data. And because of deduplication and compression a lot of storage space can be saved. Included retention policies make it easy to delete old backups.
 
+/// info
 The script runs restic and uploads the backup to the storage backend. Additionally it deletes old backups. It get's the configuration from environment variables.
+///
 
 ```yaml title="Sidecar deployment example"
 apiVersion: apps/v1

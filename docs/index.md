@@ -22,6 +22,6 @@ This is the foundation of the infrastructure. It's an easy to deploy and maintai
 - ✅ Backup
     * [ ] Notification on failure
 - ✅ Encryption of secrets
-    * [ ] Rework documentation
+    * ✅ Rework documentation
 - [ ] Extend [Monitoring](monitoring.md) beyond kube-prometheus-stack defaults
 - [ ] Migrate renovate to github actions
