@@ -150,10 +150,39 @@ This repository makes heavy use of kustomize rendering helm charts. Kustomize ca
 
 If ArgoCD finds a values.enc.yaml in an application directory, argo-cd runs the CMP cmp-sops-decrypt, which decryptes the file to values.yaml, and then runs kustomize.
 
-The ConfigManagementPlugin is configured as a separate [argo-cd app deployment](https://github.com/Madic-/k3s-git-ops/tree/main/apps/argo-cd-configmanagementplugins){target=_blank} and needs to be run as a sidecar container for the argo-cd repo-server so the deployment of it needs to be extended. The helm values I adjusted:
+The ConfigManagementPlugin is configured as a configmap within a separate [argo-cd app deployment](https://github.com/Madic-/k3s-git-ops/tree/main/apps/argo-cd-configmanagementplugins){target=_blank}. Additionaly it needs helm and sops binaries for the argo-cd repo-server which get configured via a sidecar container. So the deployment of it needs to be extended.
+
+ConfigManagementPlugin:
+
+```yaml title="argocd-cmp-sops-plugin.yaml"
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cmp-sops-plugin
+  namespace: argocd
+data:
+  plugin.yaml: |
+    ---
+    apiVersion: argoproj.io/v1alpha1
+    kind: ConfigManagementPlugin
+    metadata:
+      name: cmp-sops-decrypt
+    spec:
+      version: v1.0
+      generate:
+        command: [sh, -c]
+        args:
+          - sops --decrypt --input-type yaml --output-type yaml values.enc.yaml > values.yaml;
+            kustomize build --enable-helm --enable-alpha-plugins --enable-exec .
+      discover:
+        fileName: "values.enc.yaml"
+```
+
+The adjusted helm values for the argo-cd repo-server. Some of the adjustments are dependent on changes from the previous section (like ksops and kustomize usage).
 
 ```yaml title="values.yaml"
 repoServer:
+  # Addingcustom tools volume and ConfigManagementPlugin to the repo-server pod deployment
   volumes:
     - name: custom-tools
       emptyDir: {}
@@ -162,6 +191,7 @@ repoServer:
     - name: cmp-sops-plugin
       configMap:
         name: argocd-cmp-sops-plugin
+  # Installation of binaries
   initContainers:
     - name: install-sops
       image: ghcr.io/getsops/sops:v3.8.1-alpine
@@ -169,7 +199,9 @@ repoServer:
         - /bin/sh
         - -c
       args:
-        - echo "Installing SOPS..."; cp /usr/local/bin/sops /custom-tools/; echo "Done.";
+        - echo "Installing SOPS..."; 
+          cp /usr/local/bin/sops /custom-tools/;
+          echo "Done.";
       volumeMounts:
         - mountPath: /custom-tools
           name: custom-tools
@@ -183,6 +215,7 @@ repoServer:
       volumeMounts:
         - mountPath: /custom-tools
           name: custom-tools
+  # Adding Container responsible for the configured ConfigManagementPlugin
   extraContainers:
     - name: cmp-sops-plugin
       command:
@@ -231,16 +264,14 @@ repoServer:
 
 This basically builds the plugin container with all required tools on-demand.
 
-Of course, the configuration could be way shorter if a container, that already includes the following binaries, would be used 🤷
+Of course, the configuration could be way shorter if a container, that already includes the following binaries, would be used as extraContainer 🤷
 
 - kustomize (from ksops)
 - ksops
 - sops
 - helm
 
-More information about my journey to decrypt values.yaml can be found in the following ksops issue on github: [Support kustomize helmCharts valuesFile](https://github.com/viaduct-ai/kustomize-sops/issues/242){target=_blank}.
-
-More about secret management in the [Secret Management](secretmanagement.md) section.
+More information about my journey to en- and decrypt values.yaml can be found in the following ksops issue on github: [Support kustomize helmCharts valuesFile](https://github.com/viaduct-ai/kustomize-sops/issues/242){target=_blank}.
 
 ## En- and decrypting helm values and manifests
 
