@@ -15,15 +15,42 @@ data:
   backup.sh: |
     #!/bin/sh
 
+    NTFY_TITLE="$(hostname | cut -d '-' -f1) - Backup failed"
+
+    # Function to send notification on failure
+    notify_failure_ntfy() {
+    curl -s ${NTFY_CREDS} \
+        -H "Title: ${NTFY_TITLE}" \
+        -H "Priority: ${NTFY_PRIO}" \
+        -H "Tags: ${NTFY_TAG}" \
+        -d "Script exited with exit code ${1}.
+    $(cat /tmp/backup.log)" \
+        "${NTFY_SERVER}"/"${NTFY_TOPIC}" >/dev/null
+    }
+
+    # Redirect all output to a temporary log file and stdout
+    exec > >(tee /tmp/backup.log) 2>&1
+
+    # Set a trap for ERR to notify of any failures via ntfy
+    if [ "${NTFY_ENABLED}" = "true" ]; then
+      trap 'notify_failure_ntfy "$?"' ERR
+    fi
+
+    # Install curl if it is not already installed
+    if ! command -v curl > /dev/null 2>&1; then
+      echo "$(date) curl not found. Installing curl."
+      apk add --no-cache curl
+    fi
+
     # Log start of backup
-    echo "$(date) Backup process started" > /proc/1/fd/1
+    echo "$(date) Backup process started"
 
     # Check if a Restic repository exists and initialize it if not
     if ! restic snapshots > /dev/null 2>&1; then
-      echo "$(date) Restic repository not found. Initializing a new repository." > /proc/1/fd/1
+      echo "$(date) Restic repository not found. Initializing a new repository."
       restic init
       if [ $? -ne 0 ]; then
-        echo "$(date) Failed to initialize Restic repository. Exiting." > /proc/1/fd/1
+        echo "$(date) Failed to initialize Restic repository. Exiting."
         exit 1
       fi
     fi
@@ -35,4 +62,4 @@ data:
     restic forget --host $(hostname | cut -d '-' -f1) --keep-hourly ${KEEP_HOURLY} --keep-daily ${KEEP_DAILY} --keep-weekly ${KEEP_WEEKLY} --keep-last ${KEEP_LAST} --prune
 
     # Log end of backup
-    echo "$(date) Backup process completed" > /proc/1/fd/1
+    echo "$(date) Backup process completed"
