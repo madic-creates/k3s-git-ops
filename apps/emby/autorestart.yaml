@@ -45,7 +45,7 @@ metadata:
   namespace: media
 spec:
   concurrencyPolicy: Forbid
-  schedule: "0 3 * * *" # cron spec of time, here, 3 o'clock
+  schedule: "30 3 * * *" # cron spec of time, here, 3 o'clock
   jobTemplate:
     spec:
       backoffLimit:
