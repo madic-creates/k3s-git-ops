@@ -1,5 +1,4 @@
 serviceMonitor:
   enabled: true
-  addtionalLabels:
-    _scrape_interval: 60s
-    _scrape_timeout: 5s
+  interval: 60s
+  scrapeTimeout: 5s
