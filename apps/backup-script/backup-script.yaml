@@ -88,7 +88,7 @@ data:
 
     # Create a snapshot with Restic
     echo "$(date) Creating snapshot."
-    restic backup --host "$(hostname | cut -d '-' -f1)" "${RESTIC_SOURCE}"
+    restic backup --host "$(hostname | cut -d '-' -f1)" "${RESTIC_SOURCE}" ${RESTIC_ADDITIONAL_BACKUP_PARAMETERS}
 
     # Remove older backups
     echo "$(date) Executing retention policies."
