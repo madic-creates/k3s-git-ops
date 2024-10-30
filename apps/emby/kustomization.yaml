@@ -96,13 +96,13 @@ helmCharts:
           image: ghcr.io/restic/restic:0.17.1
           envFrom:
             - secretRef:
-                name: backup-env-configuration
+                name: backup-env-configuration-emby
           imagePullPolicy: IfNotPresent
           command: ["/usr/sbin/crond", "-f", "-d", "6"]
           volumeMounts:
             - name: crontab-config
               mountPath: /etc/crontabs/root
-              subPath: crontab
+              subPath: crontab-emby
             - name: backup-script
               mountPath: /usr/local/bin/backup.sh
               subPath: backup.sh
@@ -129,7 +129,7 @@ patches:
             volumes:
               - name: crontab-config
                 configMap:
-                  name: crontab
+                  name: crontab-emby
               - name: backup-script
                 configMap:
                   name: crontab-backup-script
