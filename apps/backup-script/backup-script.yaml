@@ -15,7 +15,12 @@ data:
   backup.sh: |
     #!/bin/sh
 
+    # Variable for NTFS notification
     NTFY_TITLE="$(hostname | cut -d '-' -f1) - Backup failed"
+
+    # Variables for Prometheus metrics
+    JOB_START_TIME=$(date +%s)
+    JOB_STATUS="success"
 
     # Function to send notification on failure
     notify_failure_ntfy() {
@@ -26,6 +31,19 @@ data:
         -d "$(cat /tmp/backup.log)
         $(date) Script exited with exit code ${1}." \
         "${NTFY_SERVER}"/"${NTFY_TOPIC}" >/dev/null
+    }
+
+    # Function to send metrics to Prometheus Pushgateway
+    send_metrics_prometheus() {
+        local job_duration=$(( $(date +%s) - JOB_START_TIME ))
+        
+        # Construct the text data for the metrics
+        metrics="backup_duration_seconds ${job_duration}
+    backup_start_timestamp ${JOB_START_TIME}
+    backup_status{status=\"${JOB_STATUS}\"} 1"
+
+        # Send the metrics to the Pushgateway
+        echo "$metrics" | curl -s --data-binary @- "${PUSHGATEWAY_URL}/metrics/job/backup/instance/$(hostname | cut -d '-' -f1)"
     }
 
     # Redirect all output to a temporary log file and stdout
@@ -51,6 +69,7 @@ data:
       restic init
       if [ $? -ne 0 ]; then
         echo "$(date) Failed to initialize Restic repository. Exiting."
+        send_metrics_prometheus
         exit 1
       fi
     fi
@@ -63,3 +82,8 @@ data:
 
     # Log end of backup
     echo "$(date) Backup process completed"
+
+    # Send metrics to Prometheus Pushgateway if enabled
+    if [ "${PUSHGATEWAY_ENABLED}" = "true" ]; then
+      send_metrics_prometheus
+    fi

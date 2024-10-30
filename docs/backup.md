@@ -115,6 +115,8 @@ The following environment variables are used to configure the backup script.
 | `NTFY_TAG`              | Tags to categorize the ntfy notification, allowing filtering or grouping of messages           |
 | `NTFY_SERVER`           | URL of the ntfy server used for sending notifications                                          |
 | `NTFY_TOPIC`            | Specific topic on the ntfy server where the message will be sent.                              |
+| `PUSHGATEWAY_ENABLED`   | Indicates whether sending metrics to the Pushgateway is enabled. Possible values are `"true"` or `"false"` |
+| `PUSHGATEWAY_URL`       | URL of the Pushgateway server for sending metrics                                              |
 
 ```shell title="Example environment variables"
 RESTIC_SOURCE: /backup/config
@@ -133,6 +135,8 @@ NTFY_PRIO: "4"
 NTFY_TAG: bangbang
 NTFY_SERVER: https://ntfy.geekbundle.org
 NTFY_TOPIC: kubernetes-at-home
+PUSHGATEWAY_ENABLED: "true"
+PUSHGATEWAY_URL: http://pushgateway.monitoring.svc.cluster.local
 ```
 
 ## rclone
