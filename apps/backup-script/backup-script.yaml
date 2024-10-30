@@ -87,10 +87,17 @@ data:
     fi
 
     # Create a snapshot with Restic
+    echo "$(date) Creating snapshot."
     restic backup --host "$(hostname | cut -d '-' -f1)" "${RESTIC_SOURCE}"
 
     # Remove older backups
+    echo "$(date) Executing retention policies."
     restic forget --host "$(hostname | cut -d '-' -f1)" --keep-hourly "${KEEP_HOURLY}" --keep-daily "${KEEP_DAILY}" --keep-weekly "${KEEP_WEEKLY}" --keep-last "${KEEP_LAST}" --prune
+
+    # Checking integrity and consistency (best used with RESTIC_CACHE_DIR set)
+    if [ -n "${RESTIC_CACHE_DIR}" ]; then
+      restic check
+    fi
 
     # Log end of backup
     echo "$(date) Backup process completed"
