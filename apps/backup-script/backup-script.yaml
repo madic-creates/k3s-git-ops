@@ -15,6 +15,11 @@ data:
   backup.sh: |
     #!/bin/sh
 
+    set -eEu -o pipefail
+
+    # Variable for runtime calculation
+    JOB_START_TIME=$(date +%s)
+
     # Function to send notification on failure
     notify_failure_ntfy() {
       # Variable for NTFY notification
@@ -24,22 +29,19 @@ data:
           -H "Title: ${NTFY_TITLE}" \
           -H "Priority: ${NTFY_PRIO}" \
           -H "Tags: ${NTFY_TAG}" \
-          -d "$(cat /tmp/backup.log)
-          $(date) Script exited with exit code ${1}." \
+          -d "$(cat /tmp/backup.log)" \
           "${NTFY_SERVER}"/"${NTFY_TOPIC}" >/dev/null
     }
 
     # Function to send metrics to Prometheus Pushgateway
     send_metrics_prometheus() {
-        # Variables for Prometheus metrics
-        JOB_START_TIME=$(date +%s)
         if [ "$1" = "0" ]; then
           JOB_STATUS="success"
         else
           JOB_STATUS="failure"
         fi
         JOB_DURATION=$(( $(date +%s) - JOB_START_TIME ))
-        
+
         # Construct the text data for the metrics
         metrics="backup_duration_seconds ${JOB_DURATION}
     backup_start_timestamp ${JOB_START_TIME}
@@ -49,12 +51,19 @@ data:
         echo "$metrics" | curl -s --data-binary @- "${PUSHGATEWAY_URL}/metrics/job/backup/instance/$(hostname | cut -d '-' -f1)"
     }
 
+    # Show script runtime for stdout and logfile
+    script_runtime() {
+      JOB_DURATION=$(( $(date +%s) - JOB_START_TIME ))
+      JOB_RUNTIME=$(date -u -d @${JOB_DURATION} +"%T")
+      echo "$(date) Script exited with exit code ${1}. Script runtime: $JOB_RUNTIME"
+    }
+
     # Redirect all output to a temporary log file and stdout
     exec > >(tee /tmp/backup.log) 2>&1
 
     # Set a trap for ERR to notify of any failures via ntfy
     if [ "${NTFY_ENABLED}" = "true" ]; then
-      trap 'notify_failure_ntfy "$?"' ERR
+      trap 'script_runtime "$?"; notify_failure_ntfy' ERR
     fi
 
     # Set a trap to notify of any job status via prometheus pushgateway
@@ -75,17 +84,14 @@ data:
     if ! restic snapshots > /dev/null 2>&1; then
       echo "$(date) Restic repository not found. Initializing a new repository."
       restic init
-      if [ $? -ne 0 ]; then
-        echo "$(date) Failed to initialize Restic repository. Exiting."
-        exit 1
-      fi
     fi
 
     # Create a snapshot with Restic
-    restic backup --host $(hostname | cut -d '-' -f1) "${RESTIC_SOURCE}"
+    restic backup --host "$(hostname | cut -d '-' -f1)" "${RESTIC_SOURCE}"
 
     # Remove older backups
-    restic forget --host $(hostname | cut -d '-' -f1) --keep-hourly ${KEEP_HOURLY} --keep-daily ${KEEP_DAILY} --keep-weekly ${KEEP_WEEKLY} --keep-last ${KEEP_LAST} --prune
+    restic forget --host "$(hostname | cut -d '-' -f1)" --keep-hourly "${KEEP_HOURLY}" --keep-daily "${KEEP_DAILY}" --keep-weekly "${KEEP_WEEKLY}" --keep-last "${KEEP_LAST}" --prune
 
     # Log end of backup
     echo "$(date) Backup process completed"
+    script_runtime "$?"
