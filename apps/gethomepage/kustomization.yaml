@@ -9,7 +9,6 @@ namespace: media
 resources:
   - k8s.deployment.yaml
   - k8s.rbac.yaml
-  - k8s.secret.yaml
   - k8s.service.yaml
 
 # Use configmapgenerator to auto restart pod upon confimap changes
