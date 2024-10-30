@@ -88,6 +88,53 @@ stringData:
 
 I won't include the backup script here, because it can change over time. The script is available in [my git repository](https://github.com/Madic-/k3s-git-ops/blob/main/apps/backup-script/backup-script.yaml){target=_blank} as a ConfigMap. The ConfigMap get's replicated via reflector to all namespaces so all deployments can use the same script. But after changes to the script the pods using the script need to be restarted. This can be done by deleting the pods or by rolling out a new deployment.
 
+## Notifications
+
+To get notified if a backup fails I'm using [ntfy](https://ntfy.sh/){target=_blank}. Ntfy is a simple notification service that can be self-hosted. I'm using it to get notified if a backup fails.
+
+[![ntfy backup notification](images/ntfy_backup_alert.png){: style="height:600px" loading=lazy}](images/ntfy_backup_alert.png)
+
+## 📝 Environment Variables
+
+The following environment variables are used to configure the backup script.
+
+| Environment Variable    | Description                                                                                    |
+|-------------------------|------------------------------------------------------------------------------------------------|
+| `RESTIC_SOURCE`         | Source directory to back up using Restic                                                       |
+| `RESTIC_REPOSITORY`     | Destination repository for the backup                                                          |
+| `RESTIC_PASSWORD`       | Password for encrypting the backup                                                             |
+| `AWS_ACCESS_KEY_ID`     | Access key ID for authenticating with an S3 compatible storage backend                         |
+| `AWS_SECRET_ACCESS_KEY` | Secret access key for authenticating with an S3 compatible storage backend                     |
+| `KEEP_HOURLY`           | Number of hourly backups to retain                                                             |
+| `KEEP_DAILY`            | Number of daily backups to keep                                                                |
+| `KEEP_WEEKLY`           | Number of weekly backups to maintain                                                           |
+| `KEEP_LAST`             | Total number of most recent backups to keep, irrespective of time-based intervals              |
+| `NTFY_ENABLED`          | Indicates whether notification via ntfy is enabled. Possible values are `"true"` or `"false"`  |
+| `NTFY_CREDS`            | Credentials for authenticating with the ntfy notification service. **Optional**                |
+| `NTFY_PRIO`             | Priority level for the ntfy notification. Determines the importance of the notification        |
+| `NTFY_TAG`              | Tags to categorize the ntfy notification, allowing filtering or grouping of messages           |
+| `NTFY_SERVER`           | URL of the ntfy server used for sending notifications                                          |
+| `NTFY_TOPIC`            | Specific topic on the ntfy server where the message will be sent.                              |
+
+```shell title="Example environment variables"
+RESTIC_SOURCE: /backup/config
+RESTIC_REPOSITORY: s3:s3.eu-central-2.wasabisys.com/k3s-at-home-01/emby
+RESTIC_PASSWORD: bDuSsDS7uWf0OGrK4y5SBvEfIKkIVcK3gGZpxsVx6Ya6PfwkWANDZo8mRaoGnCE6
+KEEP_HOURLY: "48"
+KEEP_DAILY: "7"
+KEEP_WEEKLY: "4"
+KEEP_LAST: "1"
+AWS_ACCESS_KEY_ID: v1eoAeRYfHhcRsUsW
+AWS_SECRET_ACCESS_KEY: Hlk6wZiKdrqIafYLOdMbw9Z7WfKK8W6ata
+NTFY_ENABLED: "true"
+# Needs to be with "-u"
+NTFY_CREDS: -u mne-adm:qhCVXJvzkf9SkjgFE9RDhtzycKbszdSnVw7fHFgS3cZCDmZMno25yfVhikrnPidS
+NTFY_PRIO: "4"
+NTFY_TAG: bangbang
+NTFY_SERVER: https://ntfy.geekbundle.org
+NTFY_TOPIC: kubernetes-at-home
+```
+
 ## rclone
 
 At some point I was also evaluating [rclone](https://rclone.org){target=_blank} as a sidecar container. But it doesn't support de-duplication and I want my storage costs to be as low as possible. For history reasons I keep the script that I've written and mounted in the container.
