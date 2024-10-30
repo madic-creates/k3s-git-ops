@@ -15,32 +15,35 @@ data:
   backup.sh: |
     #!/bin/sh
 
-    # Variable for NTFS notification
-    NTFY_TITLE="$(hostname | cut -d '-' -f1) - Backup failed"
-
-    # Variables for Prometheus metrics
-    JOB_START_TIME=$(date +%s)
-    JOB_STATUS="success"
-
     # Function to send notification on failure
     notify_failure_ntfy() {
-    curl -s ${NTFY_CREDS} \
-        -H "Title: ${NTFY_TITLE}" \
-        -H "Priority: ${NTFY_PRIO}" \
-        -H "Tags: ${NTFY_TAG}" \
-        -d "$(cat /tmp/backup.log)
-        $(date) Script exited with exit code ${1}." \
-        "${NTFY_SERVER}"/"${NTFY_TOPIC}" >/dev/null
+      # Variable for NTFY notification
+      NTFY_TITLE="$(hostname | cut -d '-' -f1) - Backup failed"
+
+      curl -s ${NTFY_CREDS} \
+          -H "Title: ${NTFY_TITLE}" \
+          -H "Priority: ${NTFY_PRIO}" \
+          -H "Tags: ${NTFY_TAG}" \
+          -d "$(cat /tmp/backup.log)
+          $(date) Script exited with exit code ${1}." \
+          "${NTFY_SERVER}"/"${NTFY_TOPIC}" >/dev/null
     }
 
     # Function to send metrics to Prometheus Pushgateway
     send_metrics_prometheus() {
-        local job_duration=$(( $(date +%s) - JOB_START_TIME ))
+        # Variables for Prometheus metrics
+        JOB_START_TIME=$(date +%s)
+        if [ "$1" = "0" ]; then
+          JOB_STATUS="success"
+        else
+          JOB_STATUS="failure"
+        fi
+        JOB_DURATION=$(( $(date +%s) - JOB_START_TIME ))
         
         # Construct the text data for the metrics
-        metrics="backup_duration_seconds ${job_duration}
+        metrics="backup_duration_seconds ${JOB_DURATION}
     backup_start_timestamp ${JOB_START_TIME}
-    backup_status{status=\"${JOB_STATUS}\"} 1"
+    backup_status{status=\"${JOB_STATUS}\"} $1"
 
         # Send the metrics to the Pushgateway
         echo "$metrics" | curl -s --data-binary @- "${PUSHGATEWAY_URL}/metrics/job/backup/instance/$(hostname | cut -d '-' -f1)"
@@ -52,6 +55,11 @@ data:
     # Set a trap for ERR to notify of any failures via ntfy
     if [ "${NTFY_ENABLED}" = "true" ]; then
       trap 'notify_failure_ntfy "$?"' ERR
+    fi
+
+    # Set a trap to notify of any job status via prometheus pushgateway
+    if [ "${PUSHGATEWAY_ENABLED}" = "true" ]; then
+      trap 'send_metrics_prometheus "$?"' EXIT
     fi
 
     # Install curl if it is not already installed
@@ -69,7 +77,6 @@ data:
       restic init
       if [ $? -ne 0 ]; then
         echo "$(date) Failed to initialize Restic repository. Exiting."
-        send_metrics_prometheus
         exit 1
       fi
     fi
@@ -82,8 +89,3 @@ data:
 
     # Log end of backup
     echo "$(date) Backup process completed"
-
-    # Send metrics to Prometheus Pushgateway if enabled
-    if [ "${PUSHGATEWAY_ENABLED}" = "true" ]; then
-      send_metrics_prometheus
-    fi
