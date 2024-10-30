@@ -207,7 +207,7 @@ repoServer:
         - /bin/sh
         - -c
       args:
-        - echo "Installing SOPS..."; 
+        - echo "Installing SOPS...";
           cp /usr/local/bin/sops /custom-tools/;
           echo "Done.";
       volumeMounts:
