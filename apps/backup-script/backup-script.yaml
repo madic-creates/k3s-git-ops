@@ -15,6 +15,10 @@ data:
   backup.sh: |
     #!/bin/sh
 
+    # Variables
+    RESTIC_CACHE_DIR="${RESTIC_CACHE_DIR:-""}"
+    RESTIC_ADDITIONAL_BACKUP_PARAMETERS="${RESTIC_ADDITIONAL_BACKUP_PARAMETERS:-""}"
+
     set -eEu -o pipefail
 
     # Variable for runtime calculation
