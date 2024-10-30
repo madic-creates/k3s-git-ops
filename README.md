@@ -18,7 +18,7 @@ It uses [ArgoCD](https://github.com/argoproj/argo-cd) as a GitOPs platform to au
 
 For more information take a lookt at my [docs](https://madic-.github.io/k3s-git-ops/).
 
-If you're getting a certificate error when opening the docs (happens in Firefox), thats because of the hyphen in my username. hyphens aren't allowed at the end of DNS names. As a workaround use a chromium based browser.
+If you're getting a certificate error when opening the docs (happens in Firefox), thats because of the hyphen in my username. Hyphens aren't allowed at the end of DNS names. As a workaround you can use a chromium based browser.
 
 ## Features
 
