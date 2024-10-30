@@ -97,7 +97,7 @@ I won't include the backup script here, because it can change over time. The scr
 
 ## Notifications
 
-To get notified if a backup fails I'm using [ntfy](https://ntfy.sh/){target=_blank}. Ntfy is a simple notification service that can be self-hosted. I'm using it to get notified if a backup fails.
+To get notified if a backup fails I'm using [ntfy](https://ntfy.sh/){target=_blank}. Ntfy is a simple notification service that can be self-hosted.
 
 [![ntfy backup notification](images/ntfy_backup_alert.png){: style="height:600px" loading=lazy}](images/ntfy_backup_alert.png)
 
@@ -110,7 +110,7 @@ Additionaly the backup script supports integration with a Prometheus Pushgateway
 To enable metrics pushing to the Pushgateway, the following environment variables should be configured:
 
 - **`PUSHGATEWAY_ENABLED`**: Set this to `"true"` to enable sending metrics to the Pushgateway
-- **`PUSHGATEWAY_URL`**: Specify the URL of the Pushgateway server where metrics should be sent
+- **`PUSHGATEWAY_URL`**: Specify the URL of the Pushgateway server where metrics should be sent to
 
 #### Metrics Published
 
@@ -152,7 +152,7 @@ The following environment variables are used to configure the backup script.
 | `NTFY_TAG`              | Tags to categorize the ntfy notification, allowing filtering or grouping of messages           |
 | `NTFY_SERVER`           | URL of the ntfy server used for sending notifications                                          |
 | `NTFY_TOPIC`            | Specific topic on the ntfy server where the message will be sent.                              |
-| `PUSHGATEWAY_ENABLED`   | Indicates whether sending metrics to the Pushgateway is enabled. Possible values are `"true"` or `"false"` |
+| `PUSHGATEWAY_ENABLED`   | Indicates whether sending metrics to the Pushgateway is enabled. Possible values are `"true"` or `"false"` **Optional** |
 | `PUSHGATEWAY_URL`       | URL of the Pushgateway server for sending metrics                                              |
 
 ```yaml title="Example environment variables"
