@@ -94,6 +94,36 @@ To get notified if a backup fails I'm using [ntfy](https://ntfy.sh/){target=_bla
 
 [![ntfy backup notification](images/ntfy_backup_alert.png){: style="height:600px" loading=lazy}](images/ntfy_backup_alert.png)
 
+### Pushgateway Integration
+
+Additionaly the backup script supports integration with a Prometheus Pushgateway to send custom metrics about the backup process. This enables tracking of backup duration, start time, and status.
+
+#### Configuration
+
+To enable metrics pushing to the Pushgateway, the following environment variables should be configured:
+
+- **`PUSHGATEWAY_ENABLED`**: Set this to `"true"` to enable sending metrics to the Pushgateway
+- **`PUSHGATEWAY_URL`**: Specify the URL of the Pushgateway server where metrics should be sent
+
+#### Metrics Published
+
+/// warning
+The metrics might change in the future. Currently I'm not realy satisfied. But maybe that's because I wasn't able to create a good grafana dashboard with them yet. I would appreciate any help.
+///
+
+The script publishes the following metrics to the Pushgateway:
+
+- **`backup_duration_seconds`**: The time, in seconds, that the backup process took
+- **`backup_start_timestamp`**: The timestamp in epoch at which the backup process began
+- **`backup_status`**: The status of the backup process, with either `status="success"` or `status="failure"`
+
+**Example Environment Configuration:**
+
+```yaml
+PUSHGATEWAY_ENABLED: "true"
+PUSHGATEWAY_URL: http://pushgateway.monitoring.svc.cluster.local
+```
+
 ## 📝 Environment Variables
 
 The following environment variables are used to configure the backup script.
@@ -118,7 +148,7 @@ The following environment variables are used to configure the backup script.
 | `PUSHGATEWAY_ENABLED`   | Indicates whether sending metrics to the Pushgateway is enabled. Possible values are `"true"` or `"false"` |
 | `PUSHGATEWAY_URL`       | URL of the Pushgateway server for sending metrics                                              |
 
-```shell title="Example environment variables"
+```yaml title="Example environment variables"
 RESTIC_SOURCE: /backup/config
 RESTIC_REPOSITORY: s3:s3.eu-central-2.wasabisys.com/k3s-at-home-01/emby
 RESTIC_PASSWORD: bDuSsDS7uWf0OGrK4y5SBvEfIKkIVcK3gGZpxsVx6Ya6PfwkWANDZo8mRaoGnCE6

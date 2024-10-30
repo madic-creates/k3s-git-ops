@@ -20,7 +20,7 @@ This is the foundation of the infrastructure. It's an easy to deploy and maintai
 ## ToDos
 
 - ✅ Backup
-    * [ ] Notification on failure
+    * ✅ Notification on failure
 - ✅ Encryption of secrets
     * ✅ Rework documentation
 - [ ] Extend [Monitoring](monitoring.md) beyond kube-prometheus-stack defaults
