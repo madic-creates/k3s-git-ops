@@ -102,7 +102,7 @@ helmCharts:
           volumeMounts:
             - name: crontab-config
               mountPath: /etc/crontabs/root
-              subPath: crontab-emby
+              subPath: crontab
             - name: backup-script
               mountPath: /usr/local/bin/backup.sh
               subPath: backup.sh
