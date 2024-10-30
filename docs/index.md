@@ -36,6 +36,7 @@ Excerpt of features this cluster provides:
 - Logging via loki
 - Alerting via alertmanager to a selfhosted ntfy
 - Storage managed via longhorn
+- Vagrant based virtual test environment
 
 ## ToDos
 
