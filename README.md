@@ -20,6 +20,8 @@ For more information take a lookt at my [docs](https://madic-.github.io/k3s-git-
 
 If you're getting a certificate error when opening the docs (happens in Firefox), thats because of the hyphen in my username. Hyphens aren't allowed at the end of DNS names. As a workaround you can use a chromium based browser.
 
+See also the following GitHub discussion: [Hyphen at the end of usernames](https://github.com/orgs/community/discussions/143105)
+
 ## Features
 
 Excerpt of features this cluster provides:
