@@ -15,6 +15,13 @@ Backups with restic provide:
 
 So I can upload my backup to any storage backend without leaking any data. And because of deduplication and compression a lot of storage space can be saved. Included retention policies make it easy to delete old backups.
 
+Script Features:
+
+- Backup any folder to a restic supported storage backend
+- Delete old backups (Daily, Weekly, Monthly, Always Keep Last)
+- ntfy.sh notification on failure
+- prometheus pushgateway metrics
+
 /// info
 The script runs restic and uploads the backup to the storage backend. Additionally it deletes old backups. It get's the configuration from environment variables.
 ///
