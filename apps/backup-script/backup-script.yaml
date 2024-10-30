@@ -23,8 +23,8 @@ data:
         -H "Title: ${NTFY_TITLE}" \
         -H "Priority: ${NTFY_PRIO}" \
         -H "Tags: ${NTFY_TAG}" \
-        -d "Script exited with exit code ${1}.
-    $(cat /tmp/backup.log)" \
+        -d "$(date) $(cat /tmp/backup.log)
+        Script exited with exit code ${1}." \
         "${NTFY_SERVER}"/"${NTFY_TOPIC}" >/dev/null
     }
 
