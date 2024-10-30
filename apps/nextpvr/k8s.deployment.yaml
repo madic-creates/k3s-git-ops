@@ -46,7 +46,7 @@ spec:
               readOnly: true
             - name: crontab-config
               mountPath: /etc/crontabs/root
-              subPath: crontab-nextpvr
+              subPath: crontab
             - name: backup-script
               mountPath: /usr/local/bin/backup.sh
               subPath: backup.sh
