@@ -78,7 +78,7 @@ spec:
       path: /metrics
       port: pihole-exporter
       scheme: http
-  jobLabel: app
+  jobLabel: ""
   namespaceSelector:
     matchNames:
       - dns
