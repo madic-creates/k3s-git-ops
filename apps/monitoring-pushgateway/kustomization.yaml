@@ -1,0 +1,12 @@
+---
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "17"
+
+helmCharts:
+  - name: prometheus-pushgateway
+    repo: https://prometheus-community.github.io/helm-charts
+    version: 2.15.0
+    releaseName: prometheus-pushgateway
+    namespace: monitoring
+    includeCRDs: true
+    valuesFile: values.yaml

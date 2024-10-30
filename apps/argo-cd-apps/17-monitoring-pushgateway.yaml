@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: 17-velero-ui
+  name: 17-monitoring-pushgateway
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -12,7 +12,7 @@ spec:
   project: default
   source:
     repoURL: "example.com"
-    path: apps/velero-ui
+    path: apps/monitoring-pushgateway
     targetRevision: HEAD
   destination:
     server: "https://kubernetes.default.svc"
