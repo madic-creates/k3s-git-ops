@@ -35,7 +35,7 @@ Excerpt of features this cluster provides:
   - prometheus pushgateway metrics
 - KubeDoom: Killing whoami containers with a shotgun
 - High Avaliability ControlPlane and LoadBalancer via KubeVIP
-- Monitoring via kube.-prometheus-stack
+- Monitoring via kube-prometheus-stack
 - Logging via loki
 - Alerting via alertmanager to a selfhosted ntfy
 - Storage managed via longhorn
