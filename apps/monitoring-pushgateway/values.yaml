@@ -1,4 +1,5 @@
 serviceMonitor:
   enabled: true
-  #addtionalLabels:
-  #  release: prom-stack
+  addtionalLabels:
+    _scrape_interval: 60s
+    _scrape_timeout: 5s
