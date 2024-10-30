@@ -37,7 +37,7 @@ spec:
           image: ghcr.io/restic/restic:0.17.1
           envFrom:
             - secretRef:
-                name: backup-env-configuration
+                name: backup-env-configuration-nextpvr
           imagePullPolicy: IfNotPresent
           command: ["/usr/sbin/crond", "-f", "-d", "6"]
           volumeMounts:
@@ -46,7 +46,7 @@ spec:
               readOnly: true
             - name: crontab-config
               mountPath: /etc/crontabs/root
-              subPath: crontab
+              subPath: crontab-nextpvr
             - name: backup-script
               mountPath: /usr/local/bin/backup.sh
               subPath: backup.sh
@@ -60,7 +60,7 @@ spec:
             claimName: smb-pvc-video
         - name: crontab-config
           configMap:
-            name: crontab
+            name: crontab-nextpvr
         - name: backup-script
           configMap:
             name: crontab-backup-script
