@@ -115,7 +115,7 @@ To enable metrics pushing to the Pushgateway, the following environment variable
 #### Metrics Published
 
 /// warning
-The metrics might change in the future. Currently I'm not realy satisfied. But maybe that's because I wasn't able to create a good grafana dashboard with them yet. I would appreciate any help.
+The metrics might change in the future. Currently I'm not realy satisfied. But maybe that's because I wasn't able to create a good grafana dashboard with them yet. I would appreciate any help. See issue [#3](https://github.com/Madic-/k3s-git-ops/issues/3){target=_blank}
 ///
 
 The script publishes the following metrics to the Pushgateway:
