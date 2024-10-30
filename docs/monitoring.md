@@ -10,11 +10,11 @@ The [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/
   - Alertmanager
   - kube-state-metrics
 
-![Cluster Compute Resources](images/cluster_compute_resources.png)
+[![Cluster Compute Resources](images/cluster_compute_resources.png){: loading=lazy}](images/cluster_compute_resources.png)
 
 Additionally the Alertmanager sends alerts via webhook to the [ntfy-alertmanager](https://hub.xenrox.net/~xenrox/ntfy-alertmanager/){target=_blank} which forwards it to a selfhosted [ntfy.sh](https://ntfy.sh/){target=_blank} instance.
 
-![ntfy alert](images/ntfy_alert.png)
+[![ntfy alert](images/ntfy_alert.png){: loading=lazy}](images/ntfy_alert.png)
 
 The encrypted config-file from the ntfy-alertmanager is basically this.
 
@@ -63,6 +63,6 @@ cache {
 
 Loki and promtail are used as pod log collector. The grafan helm repository provides multiple loki charts. `loki-stack` is outdated and shouldn't be used. The other interesting charts are grafana/loki (SSD Mode) and grafan/loki-distributed (microservice mode). More information on the modes (SSD vs. microservices): [https://grafana.com/docs/loki/latest/get-started/deployment-modes/](https://grafana.com/docs/loki/latest/get-started/deployment-modes/){target=_blank}. This repository uses the SSD mode.
 
-![Loki](images/logging.png)
+[![Loki](images/logging.png){: loading=lazy}](images/logging.png)
 
 ## Kubernetes Events
