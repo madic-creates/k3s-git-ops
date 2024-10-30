@@ -26,10 +26,10 @@ Excerpt of features this cluster provides:
 - Encrypted secrets with [sops](https://github.com/mozilla/sops)
 - Every exposed service uses SSO with [Authelia](https://www.authelia.com/)
 - File backups from persistant volumes
-  - Backup any folder to a restic supported storage backend
-  - Delete old backups (Daily, Weekly, Monthly, Always Keep Last)
-  - ntfy.sh notification on failure
-  - prometheus pushgateway metrics
+    - Backup any folder to a restic supported storage backend
+    - Delete old backups (Daily, Weekly, Monthly, Always Keep Last)
+    - ntfy.sh notification on failure
+    - prometheus pushgateway metrics
 - KubeDoom: Killing whoami containers with a shotgun
 - High Avaliability ControlPlane and LoadBalancer via KubeVIP
 - Monitoring via kube-prometheus-stack
