@@ -27,7 +27,7 @@ data:
     KEEP_YEARLY="${KEEP_YEARLY:-0}"
     KEEP_LAST="${KEEP_LAST:-1}"
     NTFY_ENABLED="${NTFY_ENABLED:-false}"
-    NTFY_TITLE="${NTFY_TITLE:-${RESTIC_HOSTNAME - Backup failed}"
+    NTFY_TITLE="${NTFY_TITLE:-${RESTIC_HOSTNAME} - Backup failed}"
     NTFY_CREDS="${NTFY_CREDS:-""}"
     NTFY_PRIO="${NTFY_PRIO:-4}"
     NTFY_TAG="${NTFY_TAG:-bangbang}"
@@ -35,6 +35,7 @@ data:
     NTFY_TOPIC="${NTFY_TOPIC:-backup}"
     PUSHGATEWAY_ENABLED="${PUSHGATEWAY_ENABLED:-false}"
     PUSHGATEWAY_URL="${PUSHGATEWAY_URL:-""}"
+    RESTIC_BACKUP_COMMAND="restic backup --host ${RESTIC_HOSTNAME} ${RESTIC_SOURCE} ${RESTIC_ADDITIONAL_BACKUP_PARAMETERS}"
     set -eEu -o pipefail
 
     # Variable for runtime calculation
@@ -106,9 +107,11 @@ data:
       restic init
     fi
 
-    # Create a snapshot with Restic
+    # Create a snapshot with Restic.
+    # Allows customization of the restic backup command, for e.g. mysql backup.
+    # Advanced usage!
     echo "$(date) Creating snapshot."
-    restic backup --host "${RESTIC_HOSTNAME}" "${RESTIC_SOURCE}" ${RESTIC_ADDITIONAL_BACKUP_PARAMETERS}
+    eval "${RESTIC_BACKUP_COMMAND}"
 
     # Remove older backups
     echo "$(date) Executing retention policies."
