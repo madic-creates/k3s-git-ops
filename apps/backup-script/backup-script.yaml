@@ -17,6 +17,7 @@ data:
     if [ "${DEBUG}" = "true" ]; then set -x; fi
 
     # Variables
+    PRE_HOOK="${PRE_HOOK:-""}"
     RESTIC_CACHE_DIR="${RESTIC_CACHE_DIR:-""}"
     RESTIC_ADDITIONAL_BACKUP_PARAMETERS="${RESTIC_ADDITIONAL_BACKUP_PARAMETERS:-""}"
     RESTIC_HOSTNAME="${RESTIC_HOSTNAME:-$(hostname | cut -d '-' -f1)}"
@@ -90,6 +91,12 @@ data:
     # Set a trap to notify of any job status via prometheus pushgateway
     if [ "${PUSHGATEWAY_ENABLED}" = "true" ]; then
       trap 'send_metrics_prometheus "$?"' EXIT
+    fi
+
+    # Execute PRE_HOOK. Advanced usage!
+    if [ -n "${PRE_HOOK}" ]; then
+      echo "$(date) Executing pre-hook command."
+      eval "${PRE_HOOK}"
     fi
 
     # Install curl if it is not already installed
