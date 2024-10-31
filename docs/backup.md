@@ -135,7 +135,7 @@ PUSHGATEWAY_URL: http://pushgateway.monitoring.svc.cluster.local
 
 The following environment variables are used to configure the backup script.
 
-| Environment Variable    | Description                                                                                    |
+| <div style="width:180px">Environment Variable</div>    | Description                                                                                    |
 |-------------------------|------------------------------------------------------------------------------------------------|
 | `RESTIC_SOURCE`         | Source directory to back up using Restic                                                       |
 | `RESTIC_REPOSITORY`     | Destination repository for the backup                                                          |
