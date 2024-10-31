@@ -147,6 +147,7 @@ The following environment variables are used to configure the backup script.
 | `KEEP_WEEKLY`           | Number of weekly backups to maintain                                                           |
 | `KEEP_LAST`             | Total number of most recent backups to keep, irrespective of time-based intervals              |
 | `NTFY_ENABLED`          | Indicates whether notification via ntfy is enabled. Possible values are `"true"` or `"false"`  |
+| `NTFY_TITLE`            | Title of the ntfy notification message. Can be a string or shell command                       |
 | `NTFY_CREDS`            | Credentials for authenticating with the ntfy notification service. **Optional**                |
 | `NTFY_PRIO`             | Priority level for the ntfy notification. Determines the importance of the notification        |
 | `NTFY_TAG`              | Tags to categorize the ntfy notification, allowing filtering or grouping of messages           |
@@ -166,6 +167,7 @@ KEEP_LAST: "1"
 AWS_ACCESS_KEY_ID: v1eoAeRYfHhcRsUsW
 AWS_SECRET_ACCESS_KEY: Hlk6wZiKdrqIafYLOdMbw9Z7WfKK8W6ata
 NTFY_ENABLED: "true"
+NTFY_TITLE: $(hostname | cut -d '-' -f1) - Backup failed
 # Needs to be with "-u"
 NTFY_CREDS: -u mne-adm:qhCVXJvzkf9SkjgFE9RDhtzycKbszdSnVw7fHFgS3cZCDmZMno25yfVhikrnPidS
 NTFY_PRIO: "4"
