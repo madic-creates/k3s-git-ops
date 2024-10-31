@@ -34,7 +34,7 @@ data:
     NTFY_SERVER="${NTFY_SERVER:-ntfy.sh}"
     NTFY_TOPIC="${NTFY_TOPIC:-backup}"
     PUSHGATEWAY_ENABLED="${PUSHGATEWAY_ENABLED:-false}"
-    PUSHGATEWAY_URL="${PUSHGATEWAY_URL:-http://pushgateway.monitoring.svc.cluster.local:9091}"
+    PUSHGATEWAY_URL="${PUSHGATEWAY_URL:-""}"
     set -eEu -o pipefail
 
     # Variable for runtime calculation

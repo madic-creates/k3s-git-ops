@@ -157,7 +157,7 @@ The following environment variables are used to configure the backup script.
 | `NTFY_SERVER`           | ntfy.sh | **Optional.** URL of the ntfy server used for sending notifications                                          |
 | `NTFY_TOPIC`            | backup | **Optional.** Topic on the ntfy server where the message will be sent to                              |
 | `PUSHGATEWAY_ENABLED`   | false | **Optional.** Indicates whether sending metrics to the Pushgateway is enabled. Possible values are `"true"` or `"false"` |
-| `PUSHGATEWAY_URL`       | http://prometheus-pushgateway.monitoring.svc.cluster.local:9091 | **Optional.** URL of the Pushgateway server for sending metrics                                              |
+| `PUSHGATEWAY_URL`       | Unset | **Optional.** URL of the Pushgateway server for sending metrics                                              |
 
 ```yaml title="Example environment variables"
 RESTIC_SOURCE: /backup/config
@@ -178,7 +178,7 @@ NTFY_TAG: bangbang
 NTFY_SERVER: https://ntfy.geekbundle.org
 NTFY_TOPIC: kubernetes-at-home
 PUSHGATEWAY_ENABLED: "true"
-PUSHGATEWAY_URL: http://pushgateway.monitoring.svc.cluster.local
+PUSHGATEWAY_URL: http://pushgateway.monitoring.svc.cluster.local:9091
 ```
 
 ## rclone
