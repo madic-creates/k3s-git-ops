@@ -1,69 +1,73 @@
 global:
-  storageClass: longhorn
+    storageClass: longhorn
 architecture: standalone
 auth:
-  rootPassword: ENC[AES256_GCM,data:bMMBdMb7hsMiGfUfwahUMiinV+ZClO0CBwH7O7np/OPLfFcmsiSkYZpr09HUF8ljGLScHgAsAwfL8cq3i+ZTiQ==,iv:LBXUPiA/eSz195Sc8dwNzPU+Z0PL52zX9dqtlZkoqi4=,tag:bBeLTGBDrLd43ISOlY9qFg==,type:str]
-  replicationPassword: ENC[AES256_GCM,data:i6RIWLBNYe1kxYVFmMJ7Yp6Ha2gBBguS98irvdBeVlGMqHrz/+cqCcBXDHQUCzrs4wkZWa5QqmbZYhHNf+quTA==,iv:dJNWJsaVybNlREhYbQYyF8Wc3KjA0PvaI8ezhV3dRmE=,tag:0qsoEz4hjHho8tCLugLWgg==,type:str]
+    rootPassword: ENC[AES256_GCM,data:bMMBdMb7hsMiGfUfwahUMiinV+ZClO0CBwH7O7np/OPLfFcmsiSkYZpr09HUF8ljGLScHgAsAwfL8cq3i+ZTiQ==,iv:LBXUPiA/eSz195Sc8dwNzPU+Z0PL52zX9dqtlZkoqi4=,tag:bBeLTGBDrLd43ISOlY9qFg==,type:str]
+    replicationPassword: ENC[AES256_GCM,data:i6RIWLBNYe1kxYVFmMJ7Yp6Ha2gBBguS98irvdBeVlGMqHrz/+cqCcBXDHQUCzrs4wkZWa5QqmbZYhHNf+quTA==,iv:dJNWJsaVybNlREhYbQYyF8Wc3KjA0PvaI8ezhV3dRmE=,tag:0qsoEz4hjHho8tCLugLWgg==,type:str]
 metrics:
-  enabled: true
-  serviceMonitor:
     enabled: true
+    serviceMonitor:
+        enabled: true
 primary:
-  sidecars:
-    - name: backup-sidecar
-      image: ghcr.io/restic/restic:0.17.1
-      envFrom:
-        - secretRef:
-            name: backup-env-configuration-mariadb
-      imagePullPolicy: IfNotPresent
-      command:
-        - /usr/sbin/crond
-        - -f
-        - -d
-        - "6"
-      volumeMounts:
-        - name: data
-          mountPath: /backup/bitnami/mariadb
-          readOnly: true
+    revisionHistoryLimit: 2
+    sidecars:
+        - name: backup-sidecar
+          image: ghcr.io/restic/restic:0.17.1
+          env:
+            - name: MARIADB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                    key: mariadb-root-password
+                    name: mariadb
+          envFrom:
+            - secretRef:
+                name: backup-env-configuration-mariadb
+          imagePullPolicy: IfNotPresent
+          command:
+            - /usr/sbin/crond
+            - -f
+            - -d
+            - "6"
+          volumeMounts:
+            - name: crontab-config
+              mountPath: /etc/crontabs/root
+              subPath: crontab
+            - name: backup-script
+              mountPath: /usr/local/bin/backup.sh
+              subPath: backup.sh
+    extraVolumes:
         - name: crontab-config
-          mountPath: /etc/crontabs/root
-          subPath: crontab
+          configMap:
+            name: crontab-mariadb
         - name: backup-script
-          mountPath: /usr/local/bin/backup.sh
-          subPath: backup.sh
-  extraVolumes:
-    - name: crontab-config
-      configMap:
-        name: crontab-mariadb
-    - name: backup-script
-      configMap:
-        name: crontab-backup-script
+          configMap:
+            name: crontab-backup-script
 sops:
-  kms: []
-  gcp_kms: []
-  azure_kv: []
-  hc_vault: []
-  age:
-    - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
-      enc: |
-        -----BEGIN AGE ENCRYPTED FILE-----
-        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBNTmVOTCs3YTF0VE4xTFZ6
-        U29COG9jdmEyMW9wbmFjZ1duUnN2dG4yR1QwCmxVUHYyc3FlVkxZRm8yVzd6S2lO
-        YkVHZHA0SjVOTk1aYXU1dWNoUmJ2dVkKLS0tIFlHWmZ2bHFEVVdvbUt1bGpSeFRD
-        ZXdsZmY3WUpkdlZKQUY1WmFTZGR3ME0KicsNUFLthNJpPgbhU1kiSfLnGmHB1Rcs
-        qw4keSQ1hvAX93zlgRrariQXkFvgec3ferift5JrZmQMYpPHfpRsYQ==
-        -----END AGE ENCRYPTED FILE-----
-    - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
-      enc: |
-        -----BEGIN AGE ENCRYPTED FILE-----
-        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBrekQvMUVkTWlIM010c2NS
-        ZnBJZ213SUwrRUdWenZCbG5jblV0eldXbW5BClRmMUV4SWZBdTlEVmdPR2I3SStS
-        aUdDNDNFMXNLWmxyazJyL0JiMmlYdUkKLS0tIGQzTk9XQUlUTzhjWEdpOWFZcUNI
-        eWkvQThOWWRzVDlmQlZzbU5tNkdyVUkK9bIBo70oaJK31myMDcpPdo5tWTN+JLB5
-        2xqj5S1wzAyYII/d7ZfbhlLm9kwpvpnV4Wfl9unkMirspONq2VfdWw==
-        -----END AGE ENCRYPTED FILE-----
-  lastmodified: "2024-10-31T13:51:06Z"
-  mac: ENC[AES256_GCM,data:38GAnMmxowZW775FyJjjIoSUUeUQ3WQt/7XshBbIBWEIlvj51qhNVQdnnPYp1P7lKQnVUJOcZK0Bge7PqmmejbM/NrwVMH6KjkytjO16RbRurwzSbX+wQo2EJUw0ZS0KPCZEIoadWVBB4VLvfrahXbxQ53znjSi0hhtq59jjQWQ=,iv:CEz2rsu9FeLeuLc/wopUj5Z3PwsGxaR1fd5uTYmNICc=,tag:upGl/9bc0e0giYw6o1kD5w==,type:str]
-  pgp: []
-  encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword)$
-  version: 3.9.1
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBNTmVOTCs3YTF0VE4xTFZ6
+            U29COG9jdmEyMW9wbmFjZ1duUnN2dG4yR1QwCmxVUHYyc3FlVkxZRm8yVzd6S2lO
+            YkVHZHA0SjVOTk1aYXU1dWNoUmJ2dVkKLS0tIFlHWmZ2bHFEVVdvbUt1bGpSeFRD
+            ZXdsZmY3WUpkdlZKQUY1WmFTZGR3ME0KicsNUFLthNJpPgbhU1kiSfLnGmHB1Rcs
+            qw4keSQ1hvAX93zlgRrariQXkFvgec3ferift5JrZmQMYpPHfpRsYQ==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBrekQvMUVkTWlIM010c2NS
+            ZnBJZ213SUwrRUdWenZCbG5jblV0eldXbW5BClRmMUV4SWZBdTlEVmdPR2I3SStS
+            aUdDNDNFMXNLWmxyazJyL0JiMmlYdUkKLS0tIGQzTk9XQUlUTzhjWEdpOWFZcUNI
+            eWkvQThOWWRzVDlmQlZzbU5tNkdyVUkK9bIBo70oaJK31myMDcpPdo5tWTN+JLB5
+            2xqj5S1wzAyYII/d7ZfbhlLm9kwpvpnV4Wfl9unkMirspONq2VfdWw==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-31T14:37:13Z"
+    mac: ENC[AES256_GCM,data:KEPIaUwDOrljg/vVGWOTVTUXpFJ4D5K7dvAyRDGViWJCJvyDKe2ruIpYhTPn7eNvFVZS2x7IAGkj+5xpSjwK2pMQOxGCcShev39ItJRjjyPe3cllwff0SWdS9N4AcqorD6wj7awaFGdvtAl3Y7moF4cp28IBW4NA3dRLNLLUs8E=,iv:ksIvQkUesdDnOT99eQ7zvMbWQkJyJ3i5RPWI2LbLiyw=,tag:1c2Xomh0/SHQkTcCVYVSnw==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword)$
+    version: 3.9.1

@@ -23,7 +23,7 @@ Create new database
 Execute in the shell of the MariaDB Container:
 
 ```bash
-mariadb -u root -p
+mariadb -u root --password=$MARIADB_ROOT_PASSWORD
 ```
 
 ```sql
