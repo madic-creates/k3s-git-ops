@@ -140,21 +140,21 @@ The following environment variables are used to configure the backup script.
 | `RESTIC_SOURCE`         | Source directory to back up using Restic                                                       |
 | `RESTIC_REPOSITORY`     | Destination repository for the backup                                                          |
 | `RESTIC_PASSWORD`       | Password for encrypting the backup                                                             |
-| `RESTIC_HOSTNAME`       | Hostname to use for the backup. Defaults to `$(hostname | cut -d '-' -f1)`, which gives the pod name. Especially usefull for pods with host networking. |
+| `RESTIC_HOSTNAME`       | **Optional.** Hostname to use for the backup. Defaults to `$(hostname | cut -d '-' -f1)`, which gives the pod name. Especially usefull for pods with host networking. |
 | `AWS_ACCESS_KEY_ID`     | Access key ID for authenticating with an S3 compatible storage backend                         |
 | `AWS_SECRET_ACCESS_KEY` | Secret access key for authenticating with an S3 compatible storage backend                     |
 | `KEEP_HOURLY`           | Number of hourly backups to retain                                                             |
 | `KEEP_DAILY`            | Number of daily backups to keep                                                                |
 | `KEEP_WEEKLY`           | Number of weekly backups to maintain                                                           |
 | `KEEP_LAST`             | Total number of most recent backups to keep, irrespective of time-based intervals              |
-| `NTFY_ENABLED`          | Indicates whether notification via ntfy is enabled. Possible values are `"true"` or `"false"`  |
+| `NTFY_ENABLED`          | **Optional.** Indicates whether notification via ntfy is enabled. Possible values are `"true"` or `"false"`  |
 | `NTFY_TITLE`            | Title of the ntfy notification message. Can be a string or shell command                       |
-| `NTFY_CREDS`            | Credentials for authenticating with the ntfy notification service. **Optional**                |
+| `NTFY_CREDS`            | **Optional.** Credentials for authenticating with the ntfy notification service.                |
 | `NTFY_PRIO`             | Priority level for the ntfy notification. Determines the importance of the notification        |
 | `NTFY_TAG`              | Tags to categorize the ntfy notification, allowing filtering or grouping of messages           |
 | `NTFY_SERVER`           | URL of the ntfy server used for sending notifications                                          |
 | `NTFY_TOPIC`            | Specific topic on the ntfy server where the message will be sent.                              |
-| `PUSHGATEWAY_ENABLED`   | Indicates whether sending metrics to the Pushgateway is enabled. Possible values are `"true"` or `"false"` **Optional** |
+| `PUSHGATEWAY_ENABLED`   | **Optional.** Indicates whether sending metrics to the Pushgateway is enabled. Possible values are `"true"` or `"false"` |
 | `PUSHGATEWAY_URL`       | URL of the Pushgateway server for sending metrics                                              |
 
 ```yaml title="Example environment variables"
