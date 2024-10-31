@@ -13,6 +13,9 @@ helmCharts:
 
 resources:
   - namespace.yaml
+
+generators:
+  - kustomize-secret-generator.yaml
 #patches:
 #  - target:
 #      group: apps

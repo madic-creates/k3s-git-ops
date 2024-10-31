@@ -8,6 +8,39 @@ metrics:
     enabled: true
     serviceMonitor:
         enabled: true
+primary:
+    sidecars:
+        - name: backup-sidecar
+          image: ghcr.io/restic/restic:0.17.1
+          env:
+            - name: MARIADB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                    key: mariadb-root-password
+                    name: mariadb
+          envFrom:
+            - secretRef:
+                name: backup-env-configuration-mariadb
+          imagePullPolicy: IfNotPresent
+          command:
+            - /usr/sbin/crond
+            - -f
+            - -d
+            - "6"
+          volumeMounts:
+            - name: crontab-config
+              mountPath: /etc/crontabs/root
+              subPath: crontab
+            - name: backup-script
+              mountPath: /usr/local/bin/backup.sh
+              subPath: backup.sh
+    extraVolumes:
+        - name: crontab-config
+          configMap:
+            name: crontab-mariadb
+        - name: backup-script
+          configMap:
+            name: crontab-backup-script
 sops:
     kms: []
     gcp_kms: []
@@ -32,8 +65,8 @@ sops:
             eWkvQThOWWRzVDlmQlZzbU5tNkdyVUkK9bIBo70oaJK31myMDcpPdo5tWTN+JLB5
             2xqj5S1wzAyYII/d7ZfbhlLm9kwpvpnV4Wfl9unkMirspONq2VfdWw==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-10-25T05:23:22Z"
-    mac: ENC[AES256_GCM,data:yCYtmims1dES/MiGM5b9sf3BuzEuv4pqjPdjGpa8z28gHUeXJJ0hPgJ5T8lwAHyVz86Ih0cxHed+iDLNW32rvV08+L3hGgy56akjyz1NV909oiDB1GFaA+Xr2+P45lULxLFluNIQiqnjFB43WI6WtgvOSx19KeCWIxRoKHcwTOQ=,iv:ihd2PTeg/rBfJvB4FOVpwvV5wqyLrXHx44/nDcXnLtc=,tag:PZ4N9DebxW68/QcPpN/hkg==,type:str]
+    lastmodified: "2024-10-31T14:11:30Z"
+    mac: ENC[AES256_GCM,data:HU8v/3MEMyHIM7PxK7fotLgqBTY3zeSyg9gxex3ZG9rb+7KbSoc9/fX6AMpnqEFkPQrEIPhqjgTVBO7N8X6Yp/aGXim8FfYHwI4G9TnH2zkOziUyk4WTXBgdwKpqnWbnl+OJKKncFsuyl51VttAN8U6AtZDpD4+me8B6+C1JhsQ=,iv:BJ5PSaqUUTuhdH1S8bHggeSsjdjydbBMwhGw2my5Nnk=,tag:jaF9RMX6/oqRwuLELdGXhg==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword)$
     version: 3.9.1
