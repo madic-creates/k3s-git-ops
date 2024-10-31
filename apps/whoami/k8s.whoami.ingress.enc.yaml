@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-    name: whoami
+    name: whoami-auth
     namespace: whoami
     annotations:
         traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
@@ -19,13 +19,6 @@ spec:
         - host: ENC[AES256_GCM,data:kDJLtIsvYh+ghj6aPxDibz4l4MyOIGk=,iv:B+lGKXDRLtpDCucc7Lti1S14OAT2XYf8XjZISvFQ/Gw=,tag:brwlYgnDroTd5+Zl/UuZ0w==,type:str]
           http:
             paths:
-                - path: /bar
-                  pathType: Exact
-                  backend:
-                    service:
-                        name: whoami
-                        port:
-                            number: 80
                 - path: /foo
                   pathType: Exact
                   backend:
@@ -57,8 +50,66 @@ sops:
             QmpyOXh1YzJRZ3IzMmpNRHU3UlhlWUkKSv9/61b1vcOpyroko0K7ndPPxgsuDDW1
             IjaeqhThDgpr9lMaku10q5Ppey5VF+iqKn165iUjXcNLariakyYc5g==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-10-19T19:06:17Z"
-    mac: ENC[AES256_GCM,data:bc135QovK5dtFw+ta/tW6C5zqCa1uqdWDD+laqUeQESWD6En3xB5x11MfeWA368N6MdM5r8vsm1Ajo9kvf6RjPa6cqm6l8cpzYWEMtoDq8R0XjuidwZYeM7oS7CJcRSOddnFhCwaa0z87w6Y5Owhywpyu0Bere5CUcmd3Svdkt4=,iv:NRlq6d+g/VVNHDXCrBc7EmGf6wkJOEEppOg+QZ0e1h8=,tag:y2RRw/ZRRWHecEje/hvvTg==,type:str]
+    lastmodified: "2024-10-31T09:23:47Z"
+    mac: ENC[AES256_GCM,data:2ENwL5Liv+EtyzRvaSXsKFu47OffxnrHb0vrE24wrJwcXRZHYCz7h/zEuNCTWGdN/v9SML36ZF8SAd3dU2qT87UZKjEgYUvOJ7DMUe6L9i5G2MedFLHt81f7uJUaxwXI/tN7RV6O6stpNydLcxUUSvO586XT91LNkvLUWWM0oG8=,iv:ScDd42mG/YCt144GmBO01UALbT78+3lrjg/QELe9uLU=,tag:iHoiLqX1fQeM6+9MQnDqiQ==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|clientSecret|argocdServerAdminPassword|oidc.config|commonName|literals)$
+    version: 3.9.0
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name: whoami-non-auth
+    namespace: whoami
+    annotations:
+        traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+        traefik.ingress.kubernetes.io/router.tls: "true"
+        traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect@kubernetescrd
+        kustomize.config.k8s.io/needs-hash: "false"
+        kustomize.config.k8s.io/behavior: replace
+spec:
+    ingressClassName: traefik
+    tls:
+        - hosts:
+            - ENC[AES256_GCM,data:MsiO8XWBFXMRvCp7mLPGIhIrTdnH/mA=,iv:RfF/GvTodgNTJvid2O+1SSvFVAFHJttidN59IYBAx+U=,tag:Ltm92AR0pbVLpEMZQNrs+g==,type:str]
+          secretName: wildcard-cloudflare-production-01
+    rules:
+        - host: ENC[AES256_GCM,data:kDJLtIsvYh+ghj6aPxDibz4l4MyOIGk=,iv:B+lGKXDRLtpDCucc7Lti1S14OAT2XYf8XjZISvFQ/Gw=,tag:brwlYgnDroTd5+Zl/UuZ0w==,type:str]
+          http:
+            paths:
+                - path: /bar
+                  pathType: Exact
+                  backend:
+                    service:
+                        name: whoami
+                        port:
+                            number: 80
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBvS2pmS2VERllQaWpsazJO
+            K29LOTl6U3QrYnRtVGkwZE9BY25aTk5GWmlRCm9IR0t0VTFIblpCSlZhOGpZS1dD
+            OXdNYWNJYnRTT0tncGE0U010UEpNZ2cKLS0tIFJuZEI2SStiREMwQXFXUUtMRDZi
+            ZHhTV1JDQUowYkhpOWtENEJxR3hYV00KMglpd84gxF93qaZXseO0CQF5gOyp+aEt
+            jjBCKNNNEmKbzqGIin+sDru2oJF0DjzRH8DQlZSBNBtMygzeYT7afA==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBIRGM1TVBJaFZMRHJ3N2xx
+            d0p5dzI2Y3hRSEpxcnZPSTBKR3RUNGpxMVU4CmFNa2JIT1c1K3JNb0lmYzNGNjZD
+            K3l1elFXMTJmUytRZWp6OTNCd2k5eHcKLS0tIHpteEUzdlErWURueFQ2MDB4TU9R
+            QmpyOXh1YzJRZ3IzMmpNRHU3UlhlWUkKSv9/61b1vcOpyroko0K7ndPPxgsuDDW1
+            IjaeqhThDgpr9lMaku10q5Ppey5VF+iqKn165iUjXcNLariakyYc5g==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-31T09:23:47Z"
+    mac: ENC[AES256_GCM,data:2ENwL5Liv+EtyzRvaSXsKFu47OffxnrHb0vrE24wrJwcXRZHYCz7h/zEuNCTWGdN/v9SML36ZF8SAd3dU2qT87UZKjEgYUvOJ7DMUe6L9i5G2MedFLHt81f7uJUaxwXI/tN7RV6O6stpNydLcxUUSvO586XT91LNkvLUWWM0oG8=,iv:ScDd42mG/YCt144GmBO01UALbT78+3lrjg/QELe9uLU=,tag:iHoiLqX1fQeM6+9MQnDqiQ==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|clientSecret|argocdServerAdminPassword|oidc.config|commonName|literals)$
     version: 3.9.0
