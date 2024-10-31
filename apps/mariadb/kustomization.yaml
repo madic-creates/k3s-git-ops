@@ -16,17 +16,20 @@ resources:
 
 generators:
   - kustomize-secret-generator.yaml
-#patches:
-#  - target:
-#      group: apps
-#      version: v1
-#      kind: StatefulSet
-#      name: mariadb
-#    patch: |-
-#      apiVersion: apps/v1
-#      kind: StatefulSet
-#      metadata:
-#        name: mariadb
-#        namespace: databases
-#      spec:
-#        replicas: 1
+
+patches:
+  - target:
+      group: apps
+      version: v1
+      kind: StatefulSet
+      name: mariadb
+    patch: |-
+      apiVersion: apps/v1
+      kind: StatefulSet
+      metadata:
+        name: mariadb
+        namespace: databases
+      spec:
+        template:
+          spec:
+            shareProcessNamespace: true

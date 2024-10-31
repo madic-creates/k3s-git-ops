@@ -9,6 +9,7 @@ metrics:
     serviceMonitor:
         enabled: true
 primary:
+    revisionHistoryLimit: 2
     sidecars:
         - name: backup-sidecar
           image: ghcr.io/restic/restic:0.17.1
@@ -65,8 +66,8 @@ sops:
             eWkvQThOWWRzVDlmQlZzbU5tNkdyVUkK9bIBo70oaJK31myMDcpPdo5tWTN+JLB5
             2xqj5S1wzAyYII/d7ZfbhlLm9kwpvpnV4Wfl9unkMirspONq2VfdWw==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-10-31T14:11:30Z"
-    mac: ENC[AES256_GCM,data:HU8v/3MEMyHIM7PxK7fotLgqBTY3zeSyg9gxex3ZG9rb+7KbSoc9/fX6AMpnqEFkPQrEIPhqjgTVBO7N8X6Yp/aGXim8FfYHwI4G9TnH2zkOziUyk4WTXBgdwKpqnWbnl+OJKKncFsuyl51VttAN8U6AtZDpD4+me8B6+C1JhsQ=,iv:BJ5PSaqUUTuhdH1S8bHggeSsjdjydbBMwhGw2my5Nnk=,tag:jaF9RMX6/oqRwuLELdGXhg==,type:str]
+    lastmodified: "2024-10-31T14:36:50Z"
+    mac: ENC[AES256_GCM,data:0+zh7+buLTvX5O4iMKjxL9m+nXzM3C62ELUFsC7XSMCBlO+ZU4EyPtBK4Av8tNNK5cuCv4sg2OwhrHYez1/mIY6UyeVHA8VeXcFY+FLfn4gaBnKGi3sXNWFoOB0afVtHDWwlFEt6S4TXaY/14gaC/7vfvaoMV1qjymXi3dBNQF0=,iv:V2sUfOQQMIANXZEmMHF4dodUJJfUrKg6TZOcKahqomI=,tag:vGxWn3g7GLIKD4FAfi25lg==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword)$
     version: 3.9.1
