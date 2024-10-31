@@ -27,7 +27,7 @@ data:
     KEEP_YEARLY="${KEEP_YEARLY:-0}"
     KEEP_LAST="${KEEP_LAST:-1}"
     NTFY_ENABLED="${NTFY_ENABLED:-false}"
-    NTFY_TITLE="${NTFY_TITLE:-"$(hostname | cut -d '-' -f1) - Backup failed"}"
+    NTFY_TITLE="${NTFY_TITLE:-${RESTIC_HOSTNAME - Backup failed}"
     NTFY_CREDS="${NTFY_CREDS:-""}"
     NTFY_PRIO="${NTFY_PRIO:-4}"
     NTFY_TAG="${NTFY_TAG:-bangbang}"

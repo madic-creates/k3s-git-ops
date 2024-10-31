@@ -150,7 +150,7 @@ The following environment variables are used to configure the backup script.
 | `KEEP_YEARLY`           | 0 | **Optional.** Number of yearly backups to keep. Not implemented yet.                          |
 | `KEEP_LAST`             | 1 | **Optional.** Total number of most recent backups to keep, irrespective of time-based intervals              |
 | `NTFY_ENABLED`          | false | **Optional.** Indicates whether notification via ntfy is enabled. Possible values are `"true"` or `"false"`  |
-| `NTFY_TITLE`            | `$(hostname | cut -d '-' -f1) - Backup failed` | **Optional.** Title of the ntfy notification message. Can be a string or shell command                       |
+| `NTFY_TITLE`            | `${RESTIC_HOSTNAME - Backup failed}` | **Optional.** Title of the ntfy notification message. Can be a string or shell command                       |
 | `NTFY_CREDS`            | Unset | **Optional.** Credentials for authenticating with the ntfy notification service. Needs to include the `-u` option                |
 | `NTFY_PRIO`             | 4 | **Optional.** Priority level for the ntfy notification. Determines the importance of the notification        |
 | `NTFY_TAG`              | bangbang | **Optional.** Tags to categorize the ntfy notification, allowing filtering or grouping of messages           |
