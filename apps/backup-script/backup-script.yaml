@@ -27,7 +27,7 @@ data:
     # Function to send notification on failure
     notify_failure_ntfy() {
       # Variable for NTFY notification
-      NTFY_TITLE="$(hostname | cut -d '-' -f1) - Backup failed"
+      NTFY_TITLE=$(eval echo "${NTFY_TITLE}")
 
       curl -s ${NTFY_CREDS} \
           -H "Title: ${NTFY_TITLE}" \
