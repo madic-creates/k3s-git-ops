@@ -20,6 +20,13 @@ spec:
         app: nextpvr
     spec:
       hostNetwork: true
+      ## Use cluster internal dns config for lookup of e.g. pushgateway
+      dnsPolicy: "None" # Don't use the host's DNS policy
+      dnsConfig:
+        nameservers:
+          - 10.43.0.10 # IP of cluster DNS service (kube-dns or core-dns)
+        searches:
+          - svc.cluster.local # Default search domain
       containers:
         - name: nextpvr
           image: nextpvr/nextpvr_amd64:latest
