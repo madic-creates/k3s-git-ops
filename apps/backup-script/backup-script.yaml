@@ -68,7 +68,7 @@ data:
     backup_status{status=\"${JOB_STATUS}\"} $1"
 
         # Send the metrics to the Pushgateway
-        echo "$metrics" | curl -s --data-binary @- "${PUSHGATEWAY_URL}/metrics/job/backup/instance/$(hostname | cut -d '-' -f1)"
+        echo "$metrics" | curl -s --data-binary @- "${PUSHGATEWAY_URL}/metrics/job/backup/instance/${RESTIC_HOSTNAME}"
     }
 
     # Show script runtime for stdout and logfile
