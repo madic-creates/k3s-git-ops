@@ -140,6 +140,7 @@ The following environment variables are used to configure the backup script.
 | `RESTIC_SOURCE`         | Source directory to back up using Restic                                                       |
 | `RESTIC_REPOSITORY`     | Destination repository for the backup                                                          |
 | `RESTIC_PASSWORD`       | Password for encrypting the backup                                                             |
+| `RESTIC_HOSTNAME`       | Hostname to use for the backup. Defaults to `$(hostname | cut -d '-' -f1)`, which gives the pod name. Especially usefull for pods with host networking. |
 | `AWS_ACCESS_KEY_ID`     | Access key ID for authenticating with an S3 compatible storage backend                         |
 | `AWS_SECRET_ACCESS_KEY` | Secret access key for authenticating with an S3 compatible storage backend                     |
 | `KEEP_HOURLY`           | Number of hourly backups to retain                                                             |

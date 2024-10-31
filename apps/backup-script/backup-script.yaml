@@ -18,7 +18,7 @@ data:
     # Variables
     RESTIC_CACHE_DIR="${RESTIC_CACHE_DIR:-""}"
     RESTIC_ADDITIONAL_BACKUP_PARAMETERS="${RESTIC_ADDITIONAL_BACKUP_PARAMETERS:-""}"
-
+    RESTIC_HOSTNAME="${RESTIC_HOSTNAME:-$(hostname | cut -d '-' -f1)}"
     set -eEu -o pipefail
 
     # Variable for runtime calculation
@@ -92,11 +92,11 @@ data:
 
     # Create a snapshot with Restic
     echo "$(date) Creating snapshot."
-    restic backup --host "$(hostname | cut -d '-' -f1)" "${RESTIC_SOURCE}" ${RESTIC_ADDITIONAL_BACKUP_PARAMETERS}
+    restic backup --host "${RESTIC_HOSTNAME}" "${RESTIC_SOURCE}" ${RESTIC_ADDITIONAL_BACKUP_PARAMETERS}
 
     # Remove older backups
     echo "$(date) Executing retention policies."
-    restic forget --host "$(hostname | cut -d '-' -f1)" --keep-hourly "${KEEP_HOURLY}" --keep-daily "${KEEP_DAILY}" --keep-weekly "${KEEP_WEEKLY}" --keep-last "${KEEP_LAST}" --prune
+    restic forget --host "${RESTIC_HOSTNAME}" --keep-hourly "${KEEP_HOURLY}" --keep-daily "${KEEP_DAILY}" --keep-weekly "${KEEP_WEEKLY}" --keep-last "${KEEP_LAST}" --prune
 
     # Checking integrity and consistency (best used with RESTIC_CACHE_DIR set)
     if [ -n "${RESTIC_CACHE_DIR}" ]; then
