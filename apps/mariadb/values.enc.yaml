@@ -29,6 +29,9 @@ primary:
             - -d
             - "6"
           volumeMounts:
+            - mountPath: /bitnami/mariadb
+              name: data
+              readOnly: true
             - name: crontab-config
               mountPath: /etc/crontabs/root
               subPath: crontab
@@ -66,8 +69,8 @@ sops:
             eWkvQThOWWRzVDlmQlZzbU5tNkdyVUkK9bIBo70oaJK31myMDcpPdo5tWTN+JLB5
             2xqj5S1wzAyYII/d7ZfbhlLm9kwpvpnV4Wfl9unkMirspONq2VfdWw==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-10-31T14:36:50Z"
-    mac: ENC[AES256_GCM,data:0+zh7+buLTvX5O4iMKjxL9m+nXzM3C62ELUFsC7XSMCBlO+ZU4EyPtBK4Av8tNNK5cuCv4sg2OwhrHYez1/mIY6UyeVHA8VeXcFY+FLfn4gaBnKGi3sXNWFoOB0afVtHDWwlFEt6S4TXaY/14gaC/7vfvaoMV1qjymXi3dBNQF0=,iv:V2sUfOQQMIANXZEmMHF4dodUJJfUrKg6TZOcKahqomI=,tag:vGxWn3g7GLIKD4FAfi25lg==,type:str]
+    lastmodified: "2024-10-31T21:35:16Z"
+    mac: ENC[AES256_GCM,data:ZKyGwvst5cw5nmIcqabcfz+3iQr6R7YtxEYnAFPpvXX0jcexcVvZzWAq7b95LW0YZiDWDKzeVoGHcMyuO6IJ3u+SqbsDP3rRN2VjUTN77WUKValId0NGO4K3UUPDlkSoOpfNxpmEbW4SspU7Ok//bLSCEUtEd9DZ3x7Eqy4R4HI=,iv:7GJTYAOge+/kDX7AWOBRI98Cpq7r9cmJKbM9V7d8Im4=,tag:pdu8c5TBkzkgoBol9WU/lw==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword)$
     version: 3.9.1
