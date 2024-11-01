@@ -143,6 +143,7 @@ The following environment variables are used to configure the backup script.
 | `RESTIC_HOSTNAME`       | `$(hostname | cut -d '-' -f1)` | **Optional.** Hostname to use for the backup. Defaults to the pod name. Especially usefull for pods with host networking. |
 | `AWS_ACCESS_KEY_ID`     | Unset | Access key ID for authenticating with an S3 compatible storage backend                         |
 | `AWS_SECRET_ACCESS_KEY` | Unset | Secret access key for authenticating with an S3 compatible storage backend                     |
+| `RESTIC_RETENTION_POLICIES_ENABLED` | `true` | **Optional.** Enable or disable retention policies |
 | `KEEP_HOURLY`           | 24 | **Optional.** Number of hourly backups to retain                                                             |
 | `KEEP_DAILY`            | 7 | **Optional.** Number of daily backups to keep                                                                |
 | `KEEP_WEEKLY`           | 4 | **Optional.** Number of weekly backups to maintain                                                           |

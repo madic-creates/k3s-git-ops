@@ -21,6 +21,7 @@ data:
     RESTIC_CACHE_DIR="${RESTIC_CACHE_DIR:-""}"
     RESTIC_ADDITIONAL_BACKUP_PARAMETERS="${RESTIC_ADDITIONAL_BACKUP_PARAMETERS:-""}"
     RESTIC_HOSTNAME="${RESTIC_HOSTNAME:-$(hostname | cut -d '-' -f1)}"
+    RESTIC_RETENTION_POLICIES_ENABLED="${RESTIC_RETENTION_POLICIES_ENABLED:-true}"
     KEEP_HOURLY="${KEEP_HOURLY:-24}"
     KEEP_DAILY="${KEEP_DAILY:-7}"
     KEEP_WEEKLY="${KEEP_WEEKLY:-4}"
@@ -121,8 +122,10 @@ data:
     eval "${RESTIC_BACKUP_COMMAND}"
 
     # Remove older backups
-    echo "$(date) Executing retention policies."
-    restic forget --host "${RESTIC_HOSTNAME}" --keep-hourly "${KEEP_HOURLY}" --keep-daily "${KEEP_DAILY}" --keep-weekly "${KEEP_WEEKLY}" --keep-monthly "${KEEP_MONTHLY}" --keep-yearly "${KEEP_YEARLY}" --keep-last "${KEEP_LAST}" --prune
+    if [ "${RESTIC_RETENTION_POLICIES_ENABLED}" = "true" ]; then
+      echo "$(date) Executing retention policies."
+      restic forget --host "${RESTIC_HOSTNAME}" --keep-hourly "${KEEP_HOURLY}" --keep-daily "${KEEP_DAILY}" --keep-weekly "${KEEP_WEEKLY}" --keep-monthly "${KEEP_MONTHLY}" --keep-yearly "${KEEP_YEARLY}" --keep-last "${KEEP_LAST}" --prune
+    fi
 
     # Checking integrity and consistency (best used with RESTIC_CACHE_DIR set)
     if [ -n "${RESTIC_CACHE_DIR}" ]; then
