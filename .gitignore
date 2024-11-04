@@ -12,3 +12,4 @@ apps/argo-cd-apps/argocd.secret*.yaml
 ansible/vars/*
 !ansible/vars/example.yaml
 !ansible/vars/vagrant.yaml
+values.yaml
