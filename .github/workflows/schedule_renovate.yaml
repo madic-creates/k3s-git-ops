@@ -22,7 +22,7 @@ on:
           - info
           - debug
   schedule:
-    - cron: "30 5,17 * * *"
+    - cron: "0 */2 * * *"
 concurrency: renovate
 jobs:
   renovate:
