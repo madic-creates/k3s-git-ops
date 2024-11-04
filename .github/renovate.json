@@ -63,6 +63,16 @@
         "repository: (?<depName>.*)\\s.*tag: (?<currentValue>.*)"
       ],
       "datasourceTemplate": "docker"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": [
+        "apps\/.+\/kustomization\\.yaml$"
+      ],
+      "matchStrings": [
+        "image:\\s*(?<depName>[^:\\s]+):(?<currentValue>.*)"
+      ],
+      "datasourceTemplate": "docker"
     }
   ],
   "minimumReleaseAge": "5 days",
