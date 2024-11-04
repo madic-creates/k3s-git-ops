@@ -40,6 +40,10 @@ tag: 4.9.0.30
 
 `Repository` is required for renovate to know, in which repository to search for new versions to update the tag.
 
+**pre-commit hooks**
+
+Renovate is able to update pre-commit hooks. [But it's still in beta and can lead to problems](https://docs.renovatebot.com/modules/manager/pre-commit/#additional-information){target=_blank}. Because of this automerge for pre-commit is disabled and every update requires approval through a pull request.
+
 ## System Upgrade Controller
 
 The System Upgrade Controller is a Kubernetes controller that manages the upgrade of a Kubernetes cluster. There are only plans configured to automatically upgrade the cluster to the latest k3s version.
