@@ -39,7 +39,7 @@ jobs:
           configurationFile: ".github/renovate.json"
           token: ${{ secrets.RENOVATE_TOKEN }}
         env:
-          LOG_LEVEL: ${{ github.event.inputs.logLevel || "info" }}
+          LOG_LEVEL: ${{ github.event.inputs.logLevel || 'info' }}
           # github.event.inputs converts the boolean into string. inputs doesn't
           # https://docs.github.com/en/enterprise-cloud@latest/actions/writing-workflows/workflow-syntax-for-github-actions#onworkflow_dispatchinputs
-          RENOVATE_DRY_RUN: ${{ github.event.inputs.dryRun || "false" }}
+          RENOVATE_DRY_RUN: ${{ github.event.inputs.dryRun || 'false' }}
