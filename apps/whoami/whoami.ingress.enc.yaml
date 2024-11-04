@@ -7,8 +7,8 @@ metadata:
         traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
         traefik.ingress.kubernetes.io/router.tls: "true"
         traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect@kubernetescrd, authelia-forwardauth-authelia@kubernetescrd
-        kustomize.config.k8s.io/needs-hash: "false"
-        kustomize.config.k8s.io/behavior: replace
+        #kustomize.config.k8s.io/needs-hash: "false"
+        #kustomize.config.k8s.io/behavior: replace
 spec:
     ingressClassName: traefik
     tls:
@@ -50,11 +50,11 @@ sops:
             QmpyOXh1YzJRZ3IzMmpNRHU3UlhlWUkKSv9/61b1vcOpyroko0K7ndPPxgsuDDW1
             IjaeqhThDgpr9lMaku10q5Ppey5VF+iqKn165iUjXcNLariakyYc5g==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-10-31T09:23:47Z"
-    mac: ENC[AES256_GCM,data:2ENwL5Liv+EtyzRvaSXsKFu47OffxnrHb0vrE24wrJwcXRZHYCz7h/zEuNCTWGdN/v9SML36ZF8SAd3dU2qT87UZKjEgYUvOJ7DMUe6L9i5G2MedFLHt81f7uJUaxwXI/tN7RV6O6stpNydLcxUUSvO586XT91LNkvLUWWM0oG8=,iv:ScDd42mG/YCt144GmBO01UALbT78+3lrjg/QELe9uLU=,tag:iHoiLqX1fQeM6+9MQnDqiQ==,type:str]
+    lastmodified: "2024-11-04T21:01:20Z"
+    mac: ENC[AES256_GCM,data:F/HWXoNmv6ByDrYQbFpGto0BQJkwNAy5qgHpIl3px7+9CeXUKI/gtgN/ECb9kUjaBnE4PI7laHVjaUx8hEivWq1nBrnN0iIdHlflzfn4+Ikz0erWrURmosLJNBRlhzdaCDRCrMOMROTn/ia4rkfhH7bZhOsAs87Z6z84AWHjF64=,iv:pPTnW/cgnpYNiZwfV8lWqZxeY0KaXcU1gaWgIs9dNiI=,tag:iTZgRt2vhCnI4HmfMkLiOQ==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|clientSecret|argocdServerAdminPassword|oidc.config|commonName|literals)$
-    version: 3.9.0
+    version: 3.9.1
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -65,8 +65,8 @@ metadata:
         traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
         traefik.ingress.kubernetes.io/router.tls: "true"
         traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect@kubernetescrd
-        kustomize.config.k8s.io/needs-hash: "false"
-        kustomize.config.k8s.io/behavior: replace
+        #kustomize.config.k8s.io/needs-hash: "false"
+        #kustomize.config.k8s.io/behavior: replace
 spec:
     ingressClassName: traefik
     tls:
@@ -108,8 +108,8 @@ sops:
             QmpyOXh1YzJRZ3IzMmpNRHU3UlhlWUkKSv9/61b1vcOpyroko0K7ndPPxgsuDDW1
             IjaeqhThDgpr9lMaku10q5Ppey5VF+iqKn165iUjXcNLariakyYc5g==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-10-31T09:23:47Z"
-    mac: ENC[AES256_GCM,data:2ENwL5Liv+EtyzRvaSXsKFu47OffxnrHb0vrE24wrJwcXRZHYCz7h/zEuNCTWGdN/v9SML36ZF8SAd3dU2qT87UZKjEgYUvOJ7DMUe6L9i5G2MedFLHt81f7uJUaxwXI/tN7RV6O6stpNydLcxUUSvO586XT91LNkvLUWWM0oG8=,iv:ScDd42mG/YCt144GmBO01UALbT78+3lrjg/QELe9uLU=,tag:iHoiLqX1fQeM6+9MQnDqiQ==,type:str]
+    lastmodified: "2024-11-04T21:01:20Z"
+    mac: ENC[AES256_GCM,data:F/HWXoNmv6ByDrYQbFpGto0BQJkwNAy5qgHpIl3px7+9CeXUKI/gtgN/ECb9kUjaBnE4PI7laHVjaUx8hEivWq1nBrnN0iIdHlflzfn4+Ikz0erWrURmosLJNBRlhzdaCDRCrMOMROTn/ia4rkfhH7bZhOsAs87Z6z84AWHjF64=,iv:pPTnW/cgnpYNiZwfV8lWqZxeY0KaXcU1gaWgIs9dNiI=,tag:iTZgRt2vhCnI4HmfMkLiOQ==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|clientSecret|argocdServerAdminPassword|oidc.config|commonName|literals)$
-    version: 3.9.0
+    version: 3.9.1

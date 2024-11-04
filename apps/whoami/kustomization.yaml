@@ -1,7 +1,6 @@
 ---
 resources:
   - k8s.whoami.yaml
-  - k8s.whoami.ingress.enc.yaml
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "80"
