@@ -11,6 +11,7 @@
   "repositories": [
     "madic-/k3s-git-ops"
   ],
+  "gitAuthor": "Renovate Bot <bot@renovateapp.com>",
   "prConcurrentLimit": 0,
   "prHourlyLimit": 8,
   "platform": "github",
