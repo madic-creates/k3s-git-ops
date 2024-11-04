@@ -21,9 +21,9 @@ helmCharts:
 
 resources:
   - k8s.namespace.yaml
-  - k8s.cloudflare_issuer.enc.yaml
-  - k8s.wildcard.enc.yaml
-  - k8s.secrets.enc.yaml
+  #- k8s.cloudflare_issuer.enc.yaml
+  #- k8s.wildcard.enc.yaml
+  #- k8s.secrets.enc.yaml
 
 #configurations:
 #  - kustomizeconfig.yaml
