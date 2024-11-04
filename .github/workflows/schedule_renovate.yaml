@@ -6,15 +6,21 @@ on:
   workflow_dispatch:
     inputs:
       dryRun:
-        description: Dry Run
+        description: "Configure Dry Run"
+        required: true
         default: "false"
-        required: false
-        type: string
+        type: choice
+        options:
+          - "false"
+          - "true"
       logLevel:
-        description: "Override default log level"
-        required: false
+        description: "Override log level"
+        required: true
         default: "debug"
-        type: string
+        type: choice
+        options:
+          - info
+          - debug
   schedule:
     - cron: "30 5,17 * * *"
 concurrency: renovate
@@ -33,5 +39,7 @@ jobs:
           configurationFile: ".github/renovate.json"
           token: ${{ secrets.RENOVATE_TOKEN }}
         env:
-          LOG_LEVEL: ${{ inputs.logLevel || 'info' }}
-          RENOVATE_DRY_RUN: ${{ inputs.dryRun || 'false' }}
+          LOG_LEVEL: ${{ github.event.inputs.logLevel || "info" }}
+          # github.event.inputs converts the boolean into string. inputs doesn't
+          # https://docs.github.com/en/enterprise-cloud@latest/actions/writing-workflows/workflow-syntax-for-github-actions#onworkflow_dispatchinputs
+          RENOVATE_DRY_RUN: ${{ github.event.inputs.dryRun || "false" }}
