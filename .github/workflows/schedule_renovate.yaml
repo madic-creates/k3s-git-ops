@@ -8,30 +8,24 @@ on:
         required: false
         default: "info"
         type: string
-      overrideSchedule:
-        description: "Override all schedules"
-        required: false
-        default: "false"
-        type: string
   schedule:
     - cron: "30 5,17 * * *"
-
+concurrency: renovate
 jobs:
   renovate:
+    permissions:
+      contents: write
+      pull-requests: write
     name: Renovate
     runs-on: ubuntu-latest
     steps:
-      # Checkout master branch of this repository
-      - name: Checkout
-        uses: actions/checkout@master
-      # Don't waste time starting Renovate if JSON is invalid
-      #- name: Validate Renovate JSON
-      #  run: jq type .github/renovate.json
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Validate Renovate JSON
+        run: jq type .github/renovate.json
       - name: Run Renovate
-        uses: docker://renovate/renovate:latest
+        uses: renovatebot/github-action:v40.3.2
+        with:
+          renovate-config-file: ".github/renovate.json"
         env:
-          RENOVATE_REPOSITORIES: $GITEA_REPOSITORY
-          RENOVATE_TOKEN: ${{ secrets.RENOVATE_TOKEN }}
-          RENOVATE_AUTOMERGE: false
-          RENOVATE_ENDPOINT: ${{ secrets.API_URL }}
-          RENOVATE_PLATFORM: gitea
+          LOG_LEVEL: ${{ inputs.logLevel || 'info' }}
