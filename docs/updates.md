@@ -17,11 +17,28 @@ Multiple configurations in the [renovate.json](https://github.com/Madic-/k3s-git
 
 **Kubernetes Manifests**
 
-Renovate identifies Kubernetes manifests depending on the file name. The current regex is `apps\/.+\/k8s\\..*\\.yaml$`. Basically beneath the apps folder every yaml file that begins with k8s.
+Renovate identifies Kubernetes manifests depending on the file name. The current regex is `apps\/.+\/k8s\\..*\\.yaml$`. Basically beneath the apps folder it matches every yaml file that begins with k8s.
 
 /// danger
 Renovate must not change Kubernetes manifests which contain sops encrypted entries because that would break the file signature. Encrypted Kubernetes manifests aren't allowed to begin with **k8s**!
 ///
+
+**Auto Updates**
+
+Renovate will auto-update every entry after 5 days of release. If not explicitly excluded, every minor and patch release gets automatically updated / merged. Major releases need to be approved via Pull Request.
+
+Longhorn is an exception. It will never automerge and will only create Pull Requests for releases that are available for 14 days, even for patch releases. Because Longhorn is the storage provider for the cluster, I want it to be a tested release.
+
+**Image Tags**
+
+Beside updating image tags in kubernetes manifests, renovate updates image tags in kustomization.yaml files when it finds the keyword `image` or the following structure:
+
+```yaml
+repository: emby/embyserver
+tag: 4.9.0.30
+```
+
+`Repository` is required for renovate to know, in which repository to search for new versions to update the tag.
 
 ## System Upgrade Controller
 
