@@ -13,7 +13,7 @@
   ],
   "gitAuthor": "Renovate Bot <bot@renovateapp.com>",
   "prConcurrentLimit": 0,
-  "prHourlyLimit": 8,
+  "prHourlyLimit": 0,
   "platform": "github",
   "kubernetes": {
     "fileMatch": [
