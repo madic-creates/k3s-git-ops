@@ -2,14 +2,26 @@
 
 The cluster uses two components to manage updates:
 
-- [renovatebot](https://github.com/renovatebot/renovate){target=_blank}
+- [Renovate](https://github.com/renovatebot/renovate){target=_blank}
 - [System Upgrade Controller](https://github.com/rancher/system-upgrade-controller){target=_blank}
 
-## Renovatebot
+## Renovate
 
 Renovate is configured as a scheduled github workflow. Additionally, the action can be run manually with optional increased debug log or in dry-run mode. As RENOVATE_TOKEN a github personal access token is used.
 
 More information about the required token permissions can be found in the official docs: [https://docs.renovatebot.com/modules/platform/github/]/(https://docs.renovatebot.com/modules/platform/github/){target=_blank}. I keep it here because I had a hard time finding thoses information 🙈
+
+### Rules
+
+Multiple configurations in the [renovate.json](https://github.com/Madic-/k3s-git-ops/blob/main/.github/renovate.json){target=_blank} support renovate in finding updates.
+
+**Kubernetes Manifests**
+
+Renovate identifies Kubernetes manifests depending on the file name. The current regex is `apps\/.+\/k8s\\..*\\.yaml$`. Basically beneath the apps folder every yaml file that begins with k8s.
+
+/// danger
+Renovate must not change Kubernetes manifests which contain sops encrypted entries because that would break the file signature. Encrypted Kubernetes manifests aren't allowed to begin with **k8s**!
+///
 
 ## System Upgrade Controller
 
