@@ -51,6 +51,12 @@
       ],
       "minimumReleaseAge": "14 days",
       "automerge": false
+    },
+    {
+      "matchManagers": [
+        "pre-commit"
+      ],
+      "automerge": false
     }
   ],
   "customManagers": [
@@ -75,6 +81,9 @@
       "datasourceTemplate": "docker"
     }
   ],
+  "pre-commit": {
+    "enabled": true
+  },
   "minimumReleaseAge": "5 days",
   "internalChecksFilter": "strict"
 }
