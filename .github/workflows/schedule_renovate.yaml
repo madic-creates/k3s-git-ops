@@ -34,4 +34,4 @@ jobs:
           token: ${{ secrets.RENOVATE_TOKEN }}
         env:
           LOG_LEVEL: ${{ inputs.logLevel || 'info' }}
-          RENOVATE_DRY_RUN: "${{ inputs.dryRun == false }}"
+          RENOVATE_DRY_RUN: ${{ inputs.dryRun || 'false' }}
