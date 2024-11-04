@@ -1,9 +1,19 @@
 {
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "onboarding": false,
+  "requireConfig": "ignored",
   "extends": [
     "config:recommended"
   ],
-  "assignees": ["madic"],
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "assignees": [
+    "madic-"
+  ],
+  "repositories": [
+    "madic-/k3s-git-ops"
+  ],
+  "prConcurrentLimit": 0,
+  "prHourlyLimit": 8,
+  "platform": "github",
   "kubernetes": {
     "fileMatch": [
       "apps\/.+\/k8s\\..*\\.yaml$"
