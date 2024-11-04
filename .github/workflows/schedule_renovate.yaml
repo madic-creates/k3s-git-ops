@@ -1,4 +1,6 @@
 ---
+name: Run renovatebot for updates
+
 on:
   # Allows manual/automated ad-hoc trigger
   workflow_dispatch:
