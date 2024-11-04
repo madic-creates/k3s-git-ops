@@ -42,7 +42,7 @@ tag: 4.9.0.30
 
 **pre-commit hooks**
 
-Renovate is able to update pre-commit hooks. [But it's still in beta and can lead to problems](https://docs.renovatebot.com/modules/manager/pre-commit/#additional-information){target=_blank}. Because of this automerge for pre-commit is disabled and every update requires approval through a pull request.
+Renovate is able to update [pre-commit](pre-commit-hooks.md) hooks. [But it's still in beta and can lead to problems](https://docs.renovatebot.com/modules/manager/pre-commit/#additional-information){target=_blank}. Because of this automerge for pre-commit is disabled and every update requires approval through a pull request.
 
 ## System Upgrade Controller
 
