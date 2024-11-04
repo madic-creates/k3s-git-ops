@@ -3,9 +3,9 @@ kind: Certificate
 metadata:
     name: wildcard-cloudflare-production-01
     namespace: certmanager
-    annotations:
-        kustomize.config.k8s.io/behavior: replace
-        kustomize.config.k8s.io/needs-hash: "false"
+    #annotations:
+    #    kustomize.config.k8s.io/behavior: replace
+    #    kustomize.config.k8s.io/needs-hash: "false"
 spec:
     secretName: wildcard-cloudflare-production-01
     issuerRef:
@@ -45,8 +45,8 @@ sops:
             NDNqTnd4VWtNY3FGMktPVHBVZGhDc1EKfmoq4zm+3N7IlTdRfz2lLmSK9dGsRpjf
             XONvgJ8oI66nUATKT1n9uuN7c72XVCmqkpftiIB+R+Wlv71n5DUYYA==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-09-21T15:28:45Z"
-    mac: ENC[AES256_GCM,data:Dko7n0DTBFdp6rfCpKQYlo1qFasVwRYR2xTgtIgLZwaL64zBtJU/L4qsZJECsy6dmVEhk+gf/DSR/wmVT0Ov25auLlBpp+7deC2YWdtqd+6+78LY6JjphElX7JRyF8sESnsLVdsJwvkzP9zBHjwQ4lXpQjjVQlgKh37UxMRrkbA=,iv:txk3DMgWElNDuRCbpdggtnPGbnPJJrOdjVXJ5ZCUSJ8=,tag:1pAQTZXFxs6zndz3wdbHNQ==,type:str]
+    lastmodified: "2024-11-04T20:56:08Z"
+    mac: ENC[AES256_GCM,data:7+lOKTNv3NjHNX2zSMJFGOgMdTmCTfItSZ3QaJOwilrP+XrbfNu5HIadfrWVaBNmoUe+0BYhTciekrKdjZV91xi/1yMqqLhQReS986QURsqOcmpuNC1Qq9SyqaboQKADxTwIAELDwdrCFCqiGr0G2hNW9o1E8uAPkl050DKAoHI=,iv:jwggGJNYpnAel2hGRFvWoox8rTVr/SoVzq68LtwA7/k=,tag:yvYrIYWIferSTOHxhNE6cQ==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|clientSecret|argocdServerAdminPassword|oidc.config|commonName|literals)$
-    version: 3.9.0
+    version: 3.9.1
