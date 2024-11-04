@@ -12,7 +12,7 @@ primary:
     revisionHistoryLimit: 2
     sidecars:
         - name: backup-sidecar
-          image: ghcr.io/restic/restic:0.17.1
+          image: ghcr.io/restic/restic:0.17.2
           env:
             - name: MARIADB_ROOT_PASSWORD
               valueFrom:
