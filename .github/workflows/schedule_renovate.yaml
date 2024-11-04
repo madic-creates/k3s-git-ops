@@ -5,10 +5,15 @@ on:
   # Allows manual/automated ad-hoc trigger
   workflow_dispatch:
     inputs:
+      dryRun:
+        description: Dry Run
+        default: "false"
+        required: false
+        type: string
       logLevel:
         description: "Override default log level"
         required: false
-        default: "info"
+        default: "debug"
         type: string
   schedule:
     - cron: "30 5,17 * * *"
@@ -29,3 +34,4 @@ jobs:
           token: ${{ secrets.RENOVATE_TOKEN }}
         env:
           LOG_LEVEL: ${{ inputs.logLevel || 'info' }}
+          RENOVATE_DRY_RUN: "${{ inputs.dryRun == false }}"
