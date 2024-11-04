@@ -3,9 +3,9 @@ kind: Certificate
 metadata:
     name: emby-certificate
     namespace: media
-    annotations:
-        kustomize.config.k8s.io/needs-hash: "false"
-        kustomize.config.k8s.io/behavior: merge
+    #annotations:
+    #    kustomize.config.k8s.io/needs-hash: "false"
+    #    kustomize.config.k8s.io/behavior: merge
 spec:
     secretName: emby-certificate-pkcs12
     issuerRef:
@@ -44,20 +44,20 @@ sops:
             STVGcU5lOFRyNUJTSW1kbzRrS29uMHcKHWEFXcCoCG3/ZUiPfG0i3qdwxZ/ypzc9
             8ZMk+Mg1l5GOInr5fZgQKVrlHetumED8ceWGLMtpXACGZ3Hx6l+psQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-09-21T10:20:41Z"
-    mac: ENC[AES256_GCM,data:pwLqYFFgAsEeqb4MUQDiYWxcpRXm+p6F2ivrKxdA981WdLg/RvCl/LeaBJAcKwqyEScjgsCeu/V3AB4snPv9VwZePukAquysFr4slQk/Pj1BHGizC3t8swki9BpJ3cJg4a4hF+jYlgu93s2HbDMPcle9zD7Y5Hq3Tgj0SJftQ2o=,iv:1ZAV9fY6aKNHN94sLLBA5lxMM7TLr12n335z96XVrEE=,tag:TBi6Skkk+MnkKq8vkSn2LQ==,type:str]
+    lastmodified: "2024-11-04T20:58:28Z"
+    mac: ENC[AES256_GCM,data:P98L2x3O/AfXv1BPj43wvyqbWf0diklPBsFAYaBkbSbpIhLhdmKyRF8O2DGnGpfAjBHy2D7qKhyngtlx2p8v5J/Cs9DC0QOBHsVC59cDDxkqeloYYDhFNb/RmaVBZgwCCaSuq4GQITcvF8kZRUlWMU9mYQ+lLe0AfJY9cgIrb8M=,iv:QATwr5bJVALOJkVftG8YYV69kGbOENCS0O450iYkTQQ=,tag:493OnfpsQh9HT/EjMkxx7g==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|clientSecret|argocdServerAdminPassword|oidc.config|commonName|literals)$
-    version: 3.9.0
+    version: 3.9.1
 ---
 apiVersion: v1
 kind: Secret
 metadata:
     name: emby-certificate-secret
     namespace: media
-    annotations:
-        kustomize.config.k8s.io/needs-hash: "false"
-        kustomize.config.k8s.io/behavior: merge
+    #annotations:
+    #    kustomize.config.k8s.io/needs-hash: "false"
+    #    kustomize.config.k8s.io/behavior: merge
 stringData:
     pkcs12-password-secret: ENC[AES256_GCM,data:1ih1ehHpj5O1PgK++ONRJrZc4XLeWWkW4P/qwJV7uKY=,iv:Z6mKidyeezLKXpu/msS+h6Fotk3l2jUVccDoWn+LWlU=,tag:vWGCGactY3SLS1CfoBiGwA==,type:str]
 sops:
@@ -84,8 +84,8 @@ sops:
             STVGcU5lOFRyNUJTSW1kbzRrS29uMHcKHWEFXcCoCG3/ZUiPfG0i3qdwxZ/ypzc9
             8ZMk+Mg1l5GOInr5fZgQKVrlHetumED8ceWGLMtpXACGZ3Hx6l+psQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-09-21T10:20:41Z"
-    mac: ENC[AES256_GCM,data:pwLqYFFgAsEeqb4MUQDiYWxcpRXm+p6F2ivrKxdA981WdLg/RvCl/LeaBJAcKwqyEScjgsCeu/V3AB4snPv9VwZePukAquysFr4slQk/Pj1BHGizC3t8swki9BpJ3cJg4a4hF+jYlgu93s2HbDMPcle9zD7Y5Hq3Tgj0SJftQ2o=,iv:1ZAV9fY6aKNHN94sLLBA5lxMM7TLr12n335z96XVrEE=,tag:TBi6Skkk+MnkKq8vkSn2LQ==,type:str]
+    lastmodified: "2024-11-04T20:58:28Z"
+    mac: ENC[AES256_GCM,data:P98L2x3O/AfXv1BPj43wvyqbWf0diklPBsFAYaBkbSbpIhLhdmKyRF8O2DGnGpfAjBHy2D7qKhyngtlx2p8v5J/Cs9DC0QOBHsVC59cDDxkqeloYYDhFNb/RmaVBZgwCCaSuq4GQITcvF8kZRUlWMU9mYQ+lLe0AfJY9cgIrb8M=,iv:QATwr5bJVALOJkVftG8YYV69kGbOENCS0O450iYkTQQ=,tag:493OnfpsQh9HT/EjMkxx7g==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|clientSecret|argocdServerAdminPassword|oidc.config|commonName|literals)$
-    version: 3.9.0
+    version: 3.9.1

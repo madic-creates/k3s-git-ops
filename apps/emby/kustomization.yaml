@@ -3,7 +3,6 @@ resources:
   - namespace.yaml
   - smb-media.yaml
   - longhorn-media.yaml
-  - k8s.certificate.enc.yaml
   - autorestart.yaml
 
 namespace: media
