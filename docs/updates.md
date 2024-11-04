@@ -9,7 +9,7 @@ The cluster uses two components to manage updates:
 
 Renovate is configured as a scheduled github workflow. Additionally, the action can be run manually with optional increased debug log or in dry-run mode. As RENOVATE_TOKEN a github personal access token is used.
 
-More information about the required token permissions can be found in the official docs: [https://docs.renovatebot.com/modules/platform/github/]/(https://docs.renovatebot.com/modules/platform/github/){target=_blank}. I keep it here because I had a hard time finding thoses information 🙈
+More information about the required token permissions can be found in the official docs: [https://docs.renovatebot.com/modules/platform/github/](https://docs.renovatebot.com/modules/platform/github/){target=_blank}. I keep it here because I had a hard time finding thoses information 🙈
 
 ### Rules
 
