@@ -6,7 +6,7 @@ namespace: databases
 helmCharts:
   - name: mariadb
     repo: https://charts.bitnami.com/bitnami
-    version: 19.1.1
+    version: 19.1.2
     releaseName: mariadb
     namespace: databases
     valuesFile: values.yaml
