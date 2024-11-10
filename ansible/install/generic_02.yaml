@@ -1,4 +1,6 @@
 ---
+# code: language=ansible
+
 - name: Waiting until k3s service is running
   ansible.builtin.service_facts:
   register: k3s_service_facts_server

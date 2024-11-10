@@ -1,4 +1,6 @@
 ---
+# code: language=ansible
+
 - name: Arch | Installing | K3S Server ca
   ansible.builtin.copy:
     src: ../shared/{{ groups['k3s_control_plane'][0] }}/server-ca.crt

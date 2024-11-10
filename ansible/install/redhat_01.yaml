@@ -1,4 +1,6 @@
 ---
+# code: language=ansible
+
 - name: RedHat | Installing Packages
   ansible.builtin.dnf:
     name:

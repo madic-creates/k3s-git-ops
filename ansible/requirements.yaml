@@ -1,4 +1,6 @@
 ---
+# code: language=ansible
+
 collections:
   - name: ansible.posix
     version: 1.6.2

@@ -1,4 +1,6 @@
 ---
+# code: language=ansible
+
 - name: Arch | Installing Packages
   community.general.pacman:
     name:
