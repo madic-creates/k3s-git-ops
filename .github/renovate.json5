@@ -66,24 +66,24 @@
       "fileMatch": [
         "apps\/.+\/kustomization\\.yaml$"
       ],
-      //"matchStrings": [
-      //  "repository: (?<depName>.*)\\s.*tag: (?<currentValue>.*)"
-      //],
       "matchStrings": [
-        "(?:repository:|image:)\\s*(?<depName>[^:\\s]+)(?::\\s*|\\s.*tag:\\s*)(?<currentValue>\\S+)"
+        "repository: (?<depName>.*)\\s.*tag: (?<currentValue>.*)"
       ],
+      //"matchStrings": [
+      //  "(?:repository:|image:)\\s*(?<depName>[^:\\s]+)(?::\\s*|\\s.*tag:\\s*)(?<currentValue>\\S+)"
+      //],
       "datasourceTemplate": "docker"
     },
-    //{
-    //  "customType": "regex",
-    //  "fileMatch": [
-    //    "apps\/.+\/kustomization\\.yaml$"
-    //  ],
-    //  "matchStrings": [
-    //    "image:\\s*(?<depName>[^:\\s]+):(?<currentValue>.*)"
-    //  ],
-    //  "datasourceTemplate": "docker"
-    //}
+    {
+      "customType": "regex",
+      "fileMatch": [
+        "apps\/.+\/kustomization\\.yaml$"
+      ],
+      "matchStrings": [
+        "image:\\s*(?<depName>[^:\\s]+):(?<currentValue>.*)"
+      ],
+      "datasourceTemplate": "docker"
+    }
   ],
   "pre-commit": {
     "enabled": true
