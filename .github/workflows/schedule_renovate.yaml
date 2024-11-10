@@ -47,7 +47,8 @@ jobs:
         uses: actions/checkout@v4
       #- name: Validate Renovate JSON
       #  run: jq type .github/renovate.json5
-      - uses: dawidd6/action-download-artifact@v6
+      - name: Download renovate cache
+        uses: dawidd6/action-download-artifact@v6
         if: github.event.inputs.repoCache != 'disabled'
         continue-on-error: true
         with:
@@ -87,7 +88,8 @@ jobs:
         run: |
           ls $cache_dir
           tar -czvf $cache_archive -C $cache_dir .
-      - uses: actions/upload-artifact@v4
+      - name: Upload renovate cache
+        uses: actions/upload-artifact@v4
         if: github.event.inputs.repoCache != 'disabled'
         with:
           name: ${{ env.cache_key }}
