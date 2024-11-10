@@ -21,8 +21,22 @@ on:
         options:
           - info
           - debug
+      repoCache:
+        description: "Reset or disable the cache?"
+        default: enabled
+        type: choice
+        options:
+          - enabled
+          - disabled
+          - reset
   schedule:
     - cron: "0 */2 * * *"
+
+env:
+  cache_archive: renovate_cache.tar.gz
+  cache_dir: /tmp/renovate/cache/renovate/repository
+  cache_key: renovate-cache
+
 concurrency: renovate
 jobs:
   renovate:
@@ -33,6 +47,31 @@ jobs:
         uses: actions/checkout@v4
       #- name: Validate Renovate JSON
       #  run: jq type .github/renovate.json5
+      - uses: dawidd6/action-download-artifact@v6
+        if: github.event.inputs.repoCache != 'disabled'
+        continue-on-error: true
+        with:
+          name: ${{ env.cache_key }}
+          path: cache-download
+      - name: Extract renovate cache
+        run: |
+          set -x
+          # Skip if no cache is set, such as the first time it runs.
+          if [ ! -d cache-download ] ; then
+            echo "No cache found."
+            exit 0
+          fi
+
+          # Make sure the directory exists, and extract it there. Note that it's nested in the download directory.
+          mkdir -p $cache_dir
+          tar -xzf cache-download/$cache_archive -C $cache_dir
+
+          # Unfortunately, the permissions expected within renovate's docker container
+          # are different than the ones given after the cache is restored. We have to
+          # change ownership to solve this. We also need to have correct permissions in
+          # the entire /tmp/renovate tree, not just the section with the repo cache.
+          sudo chown -R 12021:0 /tmp/renovate/
+          ls -R $cache_dir
       - name: Run Renovate
         uses: renovatebot/github-action@v40.3.5
         with:
@@ -43,3 +82,14 @@ jobs:
           # github.event.inputs converts the boolean into string. inputs doesn't
           # https://docs.github.com/en/enterprise-cloud@latest/actions/writing-workflows/workflow-syntax-for-github-actions#onworkflow_dispatchinputs
           RENOVATE_DRY_RUN: ${{ github.event.inputs.dryRun || 'false' }}
+          RENOVATE_REPOSITORY_CACHE: ${{ github.event.inputs.repoCache || 'enabled' }}
+      - name: Compress renovate cache
+        run: |
+          ls $cache_dir
+          tar -czvf $cache_archive -C $cache_dir .
+      - uses: actions/upload-artifact@v4
+        if: github.event.inputs.repoCache != 'disabled'
+        with:
+          name: ${{ env.cache_key }}
+          path: ${{ env.cache_archive }}
+          retention-days: 1
