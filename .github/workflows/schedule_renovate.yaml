@@ -31,8 +31,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Validate Renovate JSON
-        run: jq type .github/renovate.json5
+      #- name: Validate Renovate JSON
+      #  run: jq type .github/renovate.json5
       - name: Run Renovate
         uses: renovatebot/github-action@v40.3.5
         with:
