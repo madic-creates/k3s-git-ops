@@ -18,7 +18,7 @@ helmCharts:
     includeCRDs: true
   - name: kubernetes-event-exporter
     repo: https://charts.bitnami.com/bitnami
-    version: 3.2.14
+    version: 3.2.15
     releaseName: kubernetes-event-exporter
     namespace: monitoring
     includeCRDs: true
