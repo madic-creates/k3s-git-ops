@@ -11,7 +11,7 @@ commonAnnotations:
 helmCharts:
   - name: cloudflare-tunnel-ingress-controller
     repo: https://helm.strrl.dev
-    version: 0.0.15
+    version: 0.0.16
     releaseName: cloudflare-tunnel-ingress-controller
     namespace: cloudflare
     includeCRDs: true
