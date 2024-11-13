@@ -5,7 +5,7 @@ commonAnnotations:
 helmCharts:
   - name: vpa
     repo: https://charts.fairwinds.com/stable
-    version: 4.7.0
+    version: 4.7.1
     releaseName: vpa
     namespace: goldilocks
     includeCRDs: true
