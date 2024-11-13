@@ -85,6 +85,10 @@ dnsmasq:
         - dhcp-match=set:efi-x86_64,option:client-arch,7
         - dhcp-boot=tag:efi-x86_64,ipxe.efi,dns01,192.168.1.11
         - dhcp-boot=http://192.168.1.45:8043/boot.ipxe
+        # DHCP Reservation with differend dns server
+        - dhcp-option=net:customdns,6,9.9.9.9,1.1.1.1
+        - dhcp-host=net:customdns,EC:79:49:51:64:16,192.168.1.187,ipl06002-lan
+        - dhcp-host=net:customdns,F4:4E:E3:2C:C2:B6,192.168.1.56,ipl06002-wlan
         # HTTP Boot
         #- dhcp-match=set:efi-x86_64_http,option:vendor-class-identifier,0,10
         #- dhcp-boot=tag:efi-x86_64_http,"http://192.168.1.45:8043/ipxe.efi"
@@ -131,8 +135,8 @@ sops:
             R0w1V1dFME9uaDNpOXNvM2JSVU1nencKvT3hkm+hoTsFEjHwfDWrPkyiAH9Htx6M
             WzKyhCGz66Bo7q5FpRvRLmZWIRKkK6/+QDF4BlGS+ZYFeBLT38W8Xw==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-10-25T11:30:30Z"
-    mac: ENC[AES256_GCM,data:vfKif3w/xMUIqSZE+b5jLDB7cxcz+62gde/Q9puGqDq73qS8CuhBGfkmUODCtQgCNauyXsAOIQtqNP59Qorx5V8qJzlez4uAGq2xC4k+82jdOfqr6cnGUOGPTTkH2lEInWvdFlc/K7LJWXHZCgTOZnmoG/BJ/sPr9VtpUgaNwr0=,iv:a8jLULGwUvYjfbXO8eCvOiNs3Vq/qh2gWfMQlKp6Vgg=,tag:aiyYnJu+S+9lf9SflmvQQw==,type:str]
+    lastmodified: "2024-11-13T11:43:03Z"
+    mac: ENC[AES256_GCM,data:zlDTGtDwhbZK/3m4zsOwa4ebKBu0IQYsONy+gRy5ua48pn8N8bRCHZ2yWOvSPpVclMX0GvMB8FlCV7dKrEMVKCb5vTTPRtifJs5xfmItrWqox56rNbzt8hHAebU+jpUe7MLr1u6dZjA6jYDDvQgj9v67wy7vR0Ig7MTSJjKA4lY=,iv:pEFHmzrKJtJ/AHp3Yvls1fvRM6ZgUemT/v1DOoZxOQ0=,tag:/LBJqIyANnNChbzfWpPAtg==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients)$
     version: 3.9.1
