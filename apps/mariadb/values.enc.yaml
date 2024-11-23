@@ -38,6 +38,9 @@ primary:
             - name: backup-script
               mountPath: /usr/local/bin/backup.sh
               subPath: backup.sh
+            - name: backup
+              mountPath: /backup
+              redOnly: true
     extraVolumes:
         - name: crontab-config
           configMap:
@@ -74,8 +77,8 @@ sops:
             eWkvQThOWWRzVDlmQlZzbU5tNkdyVUkK9bIBo70oaJK31myMDcpPdo5tWTN+JLB5
             2xqj5S1wzAyYII/d7ZfbhlLm9kwpvpnV4Wfl9unkMirspONq2VfdWw==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-11-23T17:18:27Z"
-    mac: ENC[AES256_GCM,data:KEyqlB+j7M78rMEtoNCIQV7WlcTroebVui9ReXE+HUEkkeI+7WC6AwkU/ak/9KmeUFoo9+n481vzjosyZL4mgf9xdV0bI47uPI764XtUhLjiTowQdEa823mfA1rlZow7JBhOhxzac2bjmAjfe2hV/07k/msc7N7fkigqo7wNaqQ=,iv:Ju5BVCpezjrkUH0pwKa8fh831HHeyfdaOYFBC6rMiwk=,tag:NiXAsb9htmp8YlSj6f5AhA==,type:str]
+    lastmodified: "2024-11-23T17:24:51Z"
+    mac: ENC[AES256_GCM,data:kzS+E1WBor67r+y963Sh14STAxfzXIxsOg8ZeTaVGR/ZvHQX9zjpHlE18V7jX7al7hvsip3QA44vB+p7QnLH/msoVBO5WGhd2g8Z7t0fvlpkWGiK0sJ/uHXjnxCIJvNMpy2QkRpoG9G2nrnHK+jNepriAG8VHugU6ZNnG5B0O1Y=,iv:bGJuKEqpDHBtONzIghNKxM9spkEBxlkzspdiJ7Au/Xg=,tag:wIQK4FOu1IzBbE0rsbgOCA==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword)$
     version: 3.9.1
