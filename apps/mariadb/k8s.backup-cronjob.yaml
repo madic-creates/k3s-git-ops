@@ -5,11 +5,13 @@ metadata:
   name: mariadb-backup
   namespace: databases
 spec:
+  concurrencyPolicy: Forbid
   schedule: "45 * * * *"
   jobTemplate:
     spec:
       template:
         spec:
+          backoffLimit: 1
           containers:
             - name: mariadb-backup
               image: docker.io/bitnami/mariadb:11.5.2-debian-12-r6
@@ -34,6 +36,7 @@ spec:
             - name: data
               persistentVolumeClaim:
                 claimName: data-mariadb-0
+              readOnly: true
             - name: backup
               persistentVolumeClaim:
                 claimName: longhorn-pvc-mariadb-backup
