@@ -1,0 +1,52 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mariadb-backup
+  namespace: databases
+spec:
+  schedule: "45 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: mariadb-backup
+              image: docker.io/bitnami/mariadb:11.4.4-debian-12-r0
+              args:
+                - /bin/bash
+                - -c
+                - mariadb-backup --host mariadb.databases.svc.cluster.local --user=root --password=$MARIADB_ROOT_PASSWORD --backup --stream=xbstream > /backup/mariadb.xb
+              env:
+                - name: MARIADB_ROOT_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: mariadb
+                      key: mariadb-root-password
+              volumeMounts:
+                - mountPath: /bitnami/mariadb
+                  name: data
+                  readOnly: true
+                - mountPath: /backup
+                  name: backup
+          restartPolicy: OnFailure
+          volumes:
+            - name: data
+              persistentVolumeClaim:
+                claimName: data-mariadb-0
+            - name: backup
+              persistentVolumeClaim:
+                claimName: longhorn-pvc-mariadb-backup
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: longhorn-pvc-mariadb-backup
+  namespace: databases
+spec:
+  storageClassName: longhorn
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 4Gi

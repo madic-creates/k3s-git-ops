@@ -49,7 +49,8 @@ primary:
           configMap:
             name: crontab-backup-script
         - name: backup
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: longhorn-pvc-mariadb-backup
     extraVolumeMounts:
         - name: backup
           mountPath: /backup
@@ -77,8 +78,8 @@ sops:
             eWkvQThOWWRzVDlmQlZzbU5tNkdyVUkK9bIBo70oaJK31myMDcpPdo5tWTN+JLB5
             2xqj5S1wzAyYII/d7ZfbhlLm9kwpvpnV4Wfl9unkMirspONq2VfdWw==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-11-23T17:27:36Z"
-    mac: ENC[AES256_GCM,data:HjAt6m7U32cB2TJdDCoHbTSbO95nCNkL57uuNmWRGfTrR7TqSklo+BL92OzYg1pe0+CbNwVJJZUK3+TtITpFt/a/eC7DOG/9PgIoE0hTaL3nCSo4vEdrOq8ntCiwX0N/e9gkMYr/UmBXWrxtcHiwqFRf1GY0MDDSclqB/lD/tbY=,iv:DHt0fazQs0c32xH3QJgKDsQSxcNVQsfQbLAXIcroQfI=,tag:vvn5mAWxCwSj8XKTKhEEeg==,type:str]
+    lastmodified: "2024-11-25T08:47:41Z"
+    mac: ENC[AES256_GCM,data:W+2jxKx1HOuwb1wzweQApNP2kaZpHNnMBWhbsXxdssTrEu2O+QeK8DSq8HsgLIkDAdkJ3V77wf+zpOOTgbGFazYyWZKMt2UMWqFnf7IS7KAqWyp5oYLeMEx5e6JIEMfdbAbSk4oNuiyi3oM7GEW3G9uarGxSos5Fkef4dVCfeb4=,iv:eGQLaqvV5dVVLzCAOiv8N+Xu4XjGoxdFMmMSd3LXX8M=,tag:rBKL1TkYCGjNjh3b+lV2Qg==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword)$
     version: 3.9.1

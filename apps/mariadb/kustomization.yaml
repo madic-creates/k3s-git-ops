@@ -13,6 +13,7 @@ helmCharts:
 
 resources:
   - namespace.yaml
+  - k8s.backup-cronjob.yaml
 
 generators:
   - kustomize-secret-generator.yaml
