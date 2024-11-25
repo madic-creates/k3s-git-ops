@@ -26,7 +26,7 @@ configs:
         k3s-git-ops:
             url: ENC[AES256_GCM,data:K7iMDBaU4PD47PwMpbk9Hv7w8SAra9DvyDU6i+xhf5FjWsUNuQ==,iv:0uyUaJ6Xuzv+JKUfNTvBCQ4PRH3lETn/GjvqHquBXrs=,tag:BEiDdKSfTqBn8F7sy8E04w==,type:str]
             username: ENC[AES256_GCM,data:xXweeZq2,iv:/IHtAyhAoaQnCWTM088+KcrRYo4vmgM8SgZbULyQFmA=,tag:1BltNAkX6lZvHmUm0WfZIQ==,type:str]
-            password: ENC[AES256_GCM,data:6adyjSuVdWQMs4f7KDRZrHxS5iQLXqsqRbIe/12kSQNHLtvZ+1BHLdmpiHbqw5DV9Me95mx8lsCLUInMEjBEFV0cIaYxEHV5R67YAnJZ4pvm6DtKrw0p6lFJwhYD,iv:gdblcf24v4oYEINyQR0kgwVHTRgm3YzQdCzhIIRvZAU=,tag:vOyBJm5mgDco1GLNqJk/Ig==,type:str]
+            password: ENC[AES256_GCM,data:YTSxVUfZXFP3jKwOrugkgZb6YdICWFizSBjXugMB3++0MmFvDQVat11X8lfR19huQbyz2z1QgXSby2mDhFbC7UIyV+SydVCkhXa0VB9T3O14/sPNPcFl2J22Om/i,iv:fivtQqpZbkofsGslYpyD9sE9BJQVcu6qSkIYTS1tAMY=,tag:kMditPW0FpsJtlKWsjptdg==,type:str]
     cm:
         admin.enabled: true
         kustomize.buildOptions: --enable-helm --enable-alpha-plugins --enable-exec
@@ -234,8 +234,8 @@ sops:
             MkxxQ2tHZ3lFeU1zOWNIR2tyeWtoNFEKExPKO1Y7/v4BIDFO6Sk98DvU8TeF74pV
             YwAgvSeay1gJ6Qk0vCByptZS7QgSe4yND77LJo8Oiw2gtSm/OID9SQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-10-25T20:50:53Z"
-    mac: ENC[AES256_GCM,data:HJGQnX7G1cCzNkNN6KAy1ATMpIVtIB+J4l5TIGEVUGUTkF77LKsAqQxW/jUkX7X8oPalgChfcSoZl8HkDbEOA7U/C7Aibkc2u7gdIjmYxzucAcb34qvkCbI6q9ftu/gxpEonQ++v4ha4DHVcuIGxdgR1nFtUTWBxu1V/r2O29Mo=,iv:1yMjqoFjbevEs21qqBXv1tbd6ZQDwvTCU4O3mCruVOE=,tag:K3NgewOGa7j9md5qhykJCA==,type:str]
+    lastmodified: "2024-11-25T09:43:13Z"
+    mac: ENC[AES256_GCM,data:FhD3XGeg0OOiNeQjEawghU6/y93aLYBSpZzAtAl8yEOEfLaYgzREREwjJNHxDlC0R9Nq7OHX4ch5eJVxIaH3uh0khzBG7ebNOfgwtpNwWL9FE37QQAIWp8Zia/0Ka3VsHO7pY6MvRhq8JY9/WdmrEUbv2b2NMregdAPpo1aBAzo=,iv:P1gQzX+ADv1hiSFkJ9GXfrFPGLJyilZ/wXyhiXUhmtk=,tag:I4flPJDLcFiNUPK778yiKw==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|clientSecret|argocdServerAdminPassword|oidc.config|commonName|literals)$
     version: 3.9.0
