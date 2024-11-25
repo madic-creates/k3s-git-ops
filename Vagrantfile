@@ -1,5 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
+# code: language=ruby
 
 # Adapted from https://akos.ma/blog/vagrant-k3s-and-virtualbox/
 

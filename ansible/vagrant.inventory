@@ -1,3 +1,5 @@
+# code: language=ansible
+
 ## We need this inventory because Vagrant does not create a complete inventory file.
 ## When e.g. creating the vm k3svm2 alone, the vagant created inventory file does not contain
 ## the host group k3s_control_plane. But the playbook requires this group to be present.
