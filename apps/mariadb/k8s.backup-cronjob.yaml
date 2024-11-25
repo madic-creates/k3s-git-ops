@@ -5,11 +5,13 @@ metadata:
   name: mariadb-backup
   namespace: databases
 spec:
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
   concurrencyPolicy: Forbid
   schedule: "45 * * * *"
   jobTemplate:
     spec:
-      backoffLimit: 1
+      backoffLimit: 0
       template:
         spec:
           containers:
@@ -31,7 +33,7 @@ spec:
                   readOnly: true
                 - mountPath: /backup
                   name: backup
-          restartPolicy: OnFailure
+          restartPolicy: Never
           volumes:
             - name: data
               persistentVolumeClaim:
