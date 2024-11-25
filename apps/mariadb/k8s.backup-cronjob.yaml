@@ -36,7 +36,6 @@ spec:
             - name: data
               persistentVolumeClaim:
                 claimName: data-mariadb-0
-              readOnly: true
             - name: backup
               persistentVolumeClaim:
                 claimName: longhorn-pvc-mariadb-backup
