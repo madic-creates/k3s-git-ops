@@ -9,9 +9,9 @@ spec:
   schedule: "45 * * * *"
   jobTemplate:
     spec:
+      backoffLimit: 1
       template:
         spec:
-          backoffLimit: 1
           containers:
             - name: mariadb-backup
               image: docker.io/bitnami/mariadb:11.5.2-debian-12-r6
