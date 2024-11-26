@@ -272,12 +272,12 @@ grafana:
                 #  revison: 3
                 #  datasource: Prometheus
     resources:
-        limits:
-            cpu: 100m
-            memory: 128Mi
         requests:
-            cpu: 100m
-            memory: 128Mi
+            cpu: "1"
+            memory: 1Gi
+        limits:
+            cpu: "4"
+            memory: 2Gi
     grafana.ini:
         auth:
             oauth_allow_insecure_email_lookup: true
@@ -342,8 +342,8 @@ sops:
             aWJVQzkvemJYZS9Ed3Q5ckwwR0g3VTAKM/lC8aLmdCgX1wI0n4g0ibBzK3N76gzD
             6LnmDsvMtzUFk53ri+Ck6yEFMvk0y5h3UB73DD9BJ7N93wzZ3XU6cw==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-10-25T05:32:05Z"
-    mac: ENC[AES256_GCM,data:OhpdpmdyjUdqa3lgolC/mCP6GbJY7esVDtobDRzycg8Mbo/geJdK7q4T/DgzCDxBx5ASPuh4dANnMs71x561pFxlim8OKY+9KFDbKwKVPdboIhbmv7TWFtxabKl5NJ7J/9AIqbkqQ84Y+MyR+CeUTBvYCIp22ekZ4OHICgNLiSE=,iv:tzigfzHyJ6hnWsu7rQv6hUOywEdMLC5sCIU5s3CTpQs=,tag:UTEggzXySaUQIbR65B5Fiw==,type:str]
+    lastmodified: "2024-11-26T19:33:43Z"
+    mac: ENC[AES256_GCM,data:HkWY8+8o8BIargVDoQwJSdETBRdZH13HORAKdemK1Hw6l2I6gxm+5WfRNFtGUMa7a8gscWeuMEKjVzKS6o2a1RIruaxSQFPzBm3Ojd2G8KWqm8EgyRIrQGSYxPA4t9qCTPFIU5ZllQfC6IIqGVErAc9uuRUAuZyqqVptVvKHx0s=,iv:am5PXEw6SXzwb7cNXLXDvCgwpBCwiFWX1d7pWRa6JO8=,tag:shRRqmJY8KGGFQuCBGYpAA==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url)$
     version: 3.9.1
