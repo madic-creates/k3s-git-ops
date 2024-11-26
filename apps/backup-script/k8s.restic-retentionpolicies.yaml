@@ -14,7 +14,7 @@ spec:
       backoffLimit: 0
       template:
         spec:
-          initContainers:
+          containers:
             - name: restic
               image: ghcr.io/restic/restic:0.17.3
               envFrom:
