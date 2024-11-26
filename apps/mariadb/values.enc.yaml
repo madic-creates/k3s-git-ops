@@ -14,6 +14,9 @@ primary:
         - name: backup
           persistentVolumeClaim:
             claimName: longhorn-pvc-mariadb-backup
+    extraVolumeMounts:
+        - name: backup
+          mountPath: /backup
 sops:
     kms: []
     gcp_kms: []
@@ -38,8 +41,8 @@ sops:
             eWkvQThOWWRzVDlmQlZzbU5tNkdyVUkK9bIBo70oaJK31myMDcpPdo5tWTN+JLB5
             2xqj5S1wzAyYII/d7ZfbhlLm9kwpvpnV4Wfl9unkMirspONq2VfdWw==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-11-26T15:06:13Z"
-    mac: ENC[AES256_GCM,data:b0e/yNntKrYhf2ZmJJ2aZPNZncrRiGBeQcMUH6a4t/RuDV1oU6liPt+5qA/boZnDVc5uXlrY91VYLhkhe5TEiTt4QXT4IrpdhpxI5pmI8fK6xzSp7MbxkmY7DhNZLDWbfWAmQpR5Khc8Eu774H1ohq1R5x5vw/ALjBhN5YoJnII=,iv:U3gCC0I8inQUBK+0lKil6krFQUD7HqWYALCrZzW2bRQ=,tag:Q93tODbVsFcq04DUpoEX0g==,type:str]
+    lastmodified: "2024-11-26T15:18:02Z"
+    mac: ENC[AES256_GCM,data:TjOGSgoEqGbyKjNnxDZTAZvINUYxBApWlaO/xGKzxDl69N1jR6fEq3nvTJbKlgUQAjZoN7CoRhSkG2vPl9/uVPxN9Pj/VYQGOUZMDGlJAyTx/MdyO6EH/QrdpIK5dJOHSRODPTpgRcakbkCiSsj30uMrH3KueJnkA+R3GkyygNk=,iv:a4cemebRL/EbKpEzLIRdeTqMIwtP/7naG5a0z/rJZ/g=,tag:luWzNAzslpxkQupJvqCuiQ==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword)$
     version: 3.9.1
