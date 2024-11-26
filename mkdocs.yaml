@@ -66,6 +66,7 @@ plugins:
 # Extensions
 markdown_extensions:
   - attr_list
+  - sane_lists
   - pymdownx.highlight:
       linenums: true
       anchor_linenums: true

@@ -1,48 +1,30 @@
 # Datenbanken
 
-## Redis
-
-| Database | Application |
-| -------- | ----------- |
-| 1        | authelia    |
-| 2        | paperless   |
-
-Get all keys from a database:
-
-```bash
-redis-cli -n 1 KEYS '*'
-```
-
-```bash
-redis-cli SET server:name "redis server"
-redis-cli GET server:name
-```
-
 ## MariaDB
 
 Execute these commands in the shell of the MariaDB Container.
 
 Logging into the database:
 
-```bash
+```bash linenums="0"
 mariadb -u root --password=$MARIADB_ROOT_PASSWORD
 ```
 
 Show all databases:
 
-```sql
+```sql linenums="0"
 SHOW databases;
 ```
 
 Show permiissions for user:
 
-```sql
+```sql linenums="0"
 SHOW GRANTS FOR 'authelia'@'host';
 ```
 
 Create database:
 
-```sql
+```sql linenums="0"
 CREATE DATABASE authelia;
 ```
 
@@ -64,7 +46,7 @@ FLUSH PRIVILEGES;
 
 Delete user:
 
-```sql
+```sql linenums="0"
 DROP USER 'authelia'@'%';
 ```
 
@@ -72,7 +54,7 @@ DROP USER 'authelia'@'%';
 
 The backup for MariaDB in this setup is handled using `mariadb-backup` and `restic`. mariadb-backup creates a [physical backup](https://www.managedserver.eu/backup-mysql-percona-and-mariadb-xbstream-and-mbstream-format/#Backup_fisici){target=_blank} and restic stores the file in a repository, providing compression and deduplication.
 
-```shell title="Backup command"
+```shell title="Backup command" linenums="0"
 mariadb-backup --host mariadb.databases.svc.cluster.local --user=root --password=$MARIADB_ROOT_PASSWORD --backup --target-dir=/backup --stream=xbstream > /backup/mariadb.xb
 ```
 
@@ -82,13 +64,13 @@ The restoration of backups involves retrieving backup snapshots from restic, des
 
 1. **List Backups**: Get available backups stored in the restic repository
 
-```shell
+```shell linenums="0"
 restic snapshots --tag MariaDB
 ```
 
 2. **Restore Snapshot**: Extract the latest snapshot to a target directory
 
-```shell
+```shell linenums="0"
 restic restore latest --tag MariaDB --target .
 ```
 
@@ -101,7 +83,7 @@ mbstream -x <mariadb.xb
 
 4. **Prepare the Recovery**: Prepare the backup for use. If possible, use the same mariadb-backup version with which the backup was created
 
-```shell
+```shell linenums="0"
 mariadb-backup --prepare --target-dir=./mariadb_recovery
 ```
 
@@ -123,7 +105,7 @@ A Kubernetes CronJob is used to automate the MariaDB backups. At first it create
 
 - **Storage**: A `PersistentVolumeClaim` (`longhorn-pvc-mariadb-backupvolume`) is used to store the current backup temporarily
 
-The backup strategy is designed to ensure that `mariadb-backup` uses a version compatible with the running MariaDB server by executing within the MariaDB container.
+The backup strategy is designed to ensure that `mariadb-backup` uses a version compatible with the running MariaDB server by executing it within the MariaDB container.
 
 ```yaml title="Shortened Kubernetes CronJob"
 apiVersion: batch/v1
@@ -156,4 +138,22 @@ spec:
               volumeMounts:
                 - name: backup
                   mountPath: /backup
+```
+
+## Redis
+
+| Database | Application |
+| -------- | ----------- |
+| 1        | authelia    |
+| 2        | paperless   |
+
+Get all keys from a database:
+
+```bash linenums="0"
+redis-cli -n 1 KEYS '*'
+```
+
+```bash
+redis-cli SET server:name "redis server"
+redis-cli GET server:name
 ```
