@@ -1,3 +1,7 @@
 ---
 resources:
   - backup-script.yaml
+  - k8s.restic-retentionpolicies.yaml
+
+generators:
+  - kustomize-secret-generator.yaml

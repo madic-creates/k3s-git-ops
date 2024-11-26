@@ -1,0 +1,49 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: restic-retentionpolicies
+  namespace: databases
+spec:
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
+  concurrencyPolicy: Forbid
+  schedule: "20 1 * * *"
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          initContainers:
+            - name: restic
+              image: ghcr.io/restic/restic:0.17.3
+              envFrom:
+                - secretRef:
+                    name: restic-backup
+              imagePullPolicy: IfNotPresent
+              command:
+                - sh
+                - -c
+                - |
+                  apk add rclone
+                  rclone size wasabi:k3s-at-home-01
+                  restic forget --tag emby --group-by "host,tags" --keep-hourly 48 --keep-daily 7 --keep-weekly 2 --keep-monthly 0 --keep-yearly 0 --keep-last 4 -q
+                  restic forget --tag MariaDB --group-by "host,tags" --keep-hourly 48 --keep-daily 7 --keep-weekly 2 --keep-monthly 0 --keep-yearly 0 --keep-last 4 -q
+                  restic forget --tag NextPVR --group-by "host,tags" --keep-hourly 48 --keep-daily 7 --keep-weekly 2 --keep-monthly 0 --keep-yearly 0 --keep-last 4 -q
+                  restic prune -q
+                  rclone size wasabi:k3s-at-home-01
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
+                privileged: false
+              volumeMounts:
+                - name: restic-backup-config
+                  mountPath: /root/.config/rclone/rclone.conf
+                  subPath: rclone.conf
+          volumes:
+            - name: restic-backup-config
+              secret:
+                secretName: restic-backup
+          restartPolicy: Never
