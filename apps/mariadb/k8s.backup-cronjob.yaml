@@ -1,3 +1,37 @@
+## Service Account
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: mariadb-backup-serviceaccount
+  namespace: databases
+## Role with permissions
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: databases
+  name: mariadb-backup-role
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "pods/exec"]
+    verbs: ["get", "list", "create"]
+## Bind role and service account
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: mariadb-backup-rolebinding
+  namespace: databases
+subjects:
+  - kind: ServiceAccount
+    name: mariadb-backup-serviceaccount
+    namespace: databases
+roleRef:
+  kind: Role
+  name: mariadb-backup-role
+  apiGroup: rbac.authorization.k8s.io
+## CronJob
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -5,34 +39,44 @@ metadata:
   name: mariadb-backup
   namespace: databases
 spec:
-  failedJobsHistoryLimit: 1
-  successfulJobsHistoryLimit: 1
-  concurrencyPolicy: Forbid
-  schedule: "45 * * * *"
+  schedule: "0 0 * * *"
   jobTemplate:
     spec:
-      backoffLimit: 0
       template:
         spec:
+          serviceAccountName: mariadb-backup-serviceaccount
           containers:
-            - name: mariadb-backup
-              image: docker.io/bitnami/mariadb:11.5.2-debian-12-r6
-              args:
-                - /bin/bash
+            - name: kubectl
+              image: bitnami/kubectl:latest
+              command:
+                - /bin/sh
                 - -c
-                - mariadb-backup --host mariadb.databases.svc.cluster.local --user=root --password=$MARIADB_ROOT_PASSWORD --backup --stream=xbstream > /backup/mariadb.xb
+                - |
+                  POD_NAME=$(kubectl get pods -n databases -l app.kubernetes.io/name=mariadb -o jsonpath="{.items[0].metadata.name}")
+                  kubectl exec -n databases $POD_NAME -- bash -c "mariadb-backup --backup --target-dir=/bitnami/mariadb-backup --datadir=/bitnami/mariadb"
+            - name: backup-sidecar
+              image: ghcr.io/restic/restic:0.17.1
               env:
                 - name: MARIADB_ROOT_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: mariadb
                       key: mariadb-root-password
+                      name: mariadb
+              envFrom:
+                - secretRef:
+                    name: backup-env-configuration-mariadb
+              imagePullPolicy: IfNotPresent
+              command:
+                - /bin/bash
+                - -c
+                - /usr/local/bin/backup.sh
               volumeMounts:
-                - mountPath: /bitnami/mariadb
-                  name: data
+                - name: backup-script
+                  mountPath: /usr/local/bin/backup.sh
+                  subPath: backup.sh
+                - name: backup
+                  mountPath: /backup
                   readOnly: true
-                - mountPath: /backup
-                  name: backup
               securityContext:
                 allowPrivilegeEscalation: false
                 capabilities:
@@ -51,16 +95,6 @@ spec:
             - name: backup
               persistentVolumeClaim:
                 claimName: longhorn-pvc-mariadb-backup
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: longhorn-pvc-mariadb-backup
-  namespace: databases
-spec:
-  storageClassName: longhorn
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 4Gi
+            - name: backup-script
+              configMap:
+                name: crontab-backup-script
