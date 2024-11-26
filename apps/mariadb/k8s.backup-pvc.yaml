@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: longhorn-pvc-mariadb-backup
+  name: longhorn-pvc-mariadb-backupvolume
   namespace: databases
 spec:
   storageClassName: longhorn
