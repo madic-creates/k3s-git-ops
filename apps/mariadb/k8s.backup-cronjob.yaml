@@ -55,7 +55,7 @@ spec:
                   POD_NAME=$(kubectl get pods -n databases -l app.kubernetes.io/name=mariadb -o jsonpath="{.items[0].metadata.name}")
                   kubectl exec -n databases $POD_NAME -- bash -c "mariadb-backup --backup --target-dir=/bitnami/mariadb-backup --datadir=/bitnami/mariadb"
             - name: backup-sidecar
-              image: ghcr.io/restic/restic:0.17.1
+              image: ghcr.io/restic/restic:0.17.3
               env:
                 - name: MARIADB_ROOT_PASSWORD
                   valueFrom:
