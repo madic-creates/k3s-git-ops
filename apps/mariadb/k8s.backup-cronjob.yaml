@@ -32,6 +32,11 @@ roleRef:
   name: mariadb-backup-role
   apiGroup: rbac.authorization.k8s.io
 ## CronJob
+### Backup is done this way because for best compatibility mariadb-backup must be the same version as the server
+### Alternatively I could use the mariadb container image, but need to remember to update it as well when updating the container
+### This way I always get the correct mariadb-backup version by just using mariadb-backup within the mariadb container
+###
+### The processes need to run sequential and not parallel. Therefor mariadb-backup runs as an initContainer and restic as a normal container
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -39,36 +44,34 @@ metadata:
   name: mariadb-backup
   namespace: databases
 spec:
-  schedule: "0 0 * * *"
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
+  concurrencyPolicy: Forbid
+  schedule: "0 * * * *"
   jobTemplate:
     spec:
+      backoffLimit: 0
       template:
         spec:
           serviceAccountName: mariadb-backup-serviceaccount
-          containers:
-            - name: kubectl
+          initContainers:
+            - name: kubectl-mariadb-backup
               image: bitnami/kubectl:latest
               command:
                 - /bin/sh
                 - -c
                 - |
                   POD_NAME=$(kubectl get pods -n databases -l app.kubernetes.io/name=mariadb -o jsonpath="{.items[0].metadata.name}")
-                  kubectl exec -n databases $POD_NAME -- bash -c "mariadb-backup --backup --target-dir=/bitnami/mariadb-backup --datadir=/bitnami/mariadb"
-            - name: backup-sidecar
+                  kubectl exec -n databases $POD_NAME -- bash -c "mariadb-backup --host 127.0.0.1 --user=root --password=\$MARIADB_ROOT_PASSWORD --backup --stream=xbstream > /backup/mariadb.xb"
+          containers:
+            - name: restic
               image: ghcr.io/restic/restic:0.17.1
-              env:
-                - name: MARIADB_ROOT_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      key: mariadb-root-password
-                      name: mariadb
               envFrom:
                 - secretRef:
-                    name: backup-env-configuration-mariadb
+                    name: backup-env-configuration-mariadb-df4g9g8987
               imagePullPolicy: IfNotPresent
               command:
-                - /bin/bash
-                - -c
+                - /bin/sh
                 - /usr/local/bin/backup.sh
               volumeMounts:
                 - name: backup-script
@@ -83,18 +86,11 @@ spec:
                   drop:
                     - ALL
                 privileged: false
-                readOnlyRootFilesystem: true
-                runAsGroup: 1001
-                runAsNonRoot: true
-                runAsUser: 1001
           restartPolicy: Never
           volumes:
-            - name: data
-              persistentVolumeClaim:
-                claimName: data-mariadb-0
             - name: backup
               persistentVolumeClaim:
-                claimName: longhorn-pvc-mariadb-backup
+                claimName: longhorn-pvc-mariadb-backupvolume
             - name: backup-script
               configMap:
                 name: crontab-backup-script
