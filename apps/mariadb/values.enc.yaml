@@ -10,50 +10,10 @@ metrics:
         enabled: true
 primary:
     revisionHistoryLimit: 2
-    sidecars:
-        - name: backup-sidecar
-          image: ghcr.io/restic/restic:0.17.1
-          env:
-            - name: MARIADB_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                    key: mariadb-root-password
-                    name: mariadb
-          envFrom:
-            - secretRef:
-                name: backup-env-configuration-mariadb
-          imagePullPolicy: IfNotPresent
-          command:
-            - /usr/sbin/crond
-            - -f
-            - -d
-            - "6"
-          volumeMounts:
-            - mountPath: /bitnami/mariadb
-              name: data
-              readOnly: true
-            - name: crontab-config
-              mountPath: /etc/crontabs/root
-              subPath: crontab
-            - name: backup-script
-              mountPath: /usr/local/bin/backup.sh
-              subPath: backup.sh
-            - name: backup
-              mountPath: /backup
-              readOnly: true
     extraVolumes:
-        - name: crontab-config
-          configMap:
-            name: crontab-mariadb
-        - name: backup-script
-          configMap:
-            name: crontab-backup-script
         - name: backup
           persistentVolumeClaim:
             claimName: longhorn-pvc-mariadb-backup
-    extraVolumeMounts:
-        - name: backup
-          mountPath: /backup
 sops:
     kms: []
     gcp_kms: []
@@ -78,8 +38,8 @@ sops:
             eWkvQThOWWRzVDlmQlZzbU5tNkdyVUkK9bIBo70oaJK31myMDcpPdo5tWTN+JLB5
             2xqj5S1wzAyYII/d7ZfbhlLm9kwpvpnV4Wfl9unkMirspONq2VfdWw==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-11-25T08:47:41Z"
-    mac: ENC[AES256_GCM,data:W+2jxKx1HOuwb1wzweQApNP2kaZpHNnMBWhbsXxdssTrEu2O+QeK8DSq8HsgLIkDAdkJ3V77wf+zpOOTgbGFazYyWZKMt2UMWqFnf7IS7KAqWyp5oYLeMEx5e6JIEMfdbAbSk4oNuiyi3oM7GEW3G9uarGxSos5Fkef4dVCfeb4=,iv:eGQLaqvV5dVVLzCAOiv8N+Xu4XjGoxdFMmMSd3LXX8M=,tag:rBKL1TkYCGjNjh3b+lV2Qg==,type:str]
+    lastmodified: "2024-11-26T15:06:13Z"
+    mac: ENC[AES256_GCM,data:b0e/yNntKrYhf2ZmJJ2aZPNZncrRiGBeQcMUH6a4t/RuDV1oU6liPt+5qA/boZnDVc5uXlrY91VYLhkhe5TEiTt4QXT4IrpdhpxI5pmI8fK6xzSp7MbxkmY7DhNZLDWbfWAmQpR5Khc8Eu774H1ohq1R5x5vw/ALjBhN5YoJnII=,iv:U3gCC0I8inQUBK+0lKil6krFQUD7HqWYALCrZzW2bRQ=,tag:Q93tODbVsFcq04DUpoEX0g==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword)$
     version: 3.9.1
