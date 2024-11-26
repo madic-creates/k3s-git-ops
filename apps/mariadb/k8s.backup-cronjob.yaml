@@ -68,7 +68,7 @@ spec:
               image: ghcr.io/restic/restic:0.17.3
               envFrom:
                 - secretRef:
-                    name: backup-env-configuration-mariadb-df4g9g8987
+                    name: backup-env-configuration-mariadb
               imagePullPolicy: IfNotPresent
               command:
                 - /bin/sh
