@@ -32,12 +32,13 @@ spec:
                   echo| tee -a $LOG
                   rclone size wasabi:k3s-at-home-01 | tee -a $LOG
                   echo -e "\nRetention policies for emby" | tee -a $LOG
-                  restic forget --tag emby --group-by "host,tags" --keep-hourly 48 --keep-daily 7 --keep-weekly 2 --keep-monthly 0 --keep-yearly 0 --keep-last 4 -q | tee -a $LOG
+                  restic forget --tag emby --group-by "host,tags" --keep-hourly 48 --keep-daily 7 --keep-weekly 2 --keep-monthly 0 --keep-yearly 0 --keep-last 4 | tee -a $LOG
                   echo -e "\nRetention policies for MariaDB" | tee -a $LOG
-                  restic forget --tag MariaDB --group-by "host,tags" --keep-hourly 48 --keep-daily 7 --keep-weekly 2 --keep-monthly 0 --keep-yearly 0 --keep-last 4 -q | tee -a $LOG
+                  restic forget --tag MariaDB --group-by "host,tags" --keep-hourly 48 --keep-daily 7 --keep-weekly 2 --keep-monthly 0 --keep-yearly 0 --keep-last 4 | tee -a $LOG
                   echo -e "\nRetention policies for NextPVR" | tee -a $LOG
-                  restic forget --tag NextPVR --group-by "host,tags" --keep-hourly 48 --keep-daily 7 --keep-weekly 2 --keep-monthly 0 --keep-yearly 0 --keep-last 4 -q | tee -a $LOG
-                  restic prune -q | tee -a $LOG
+                  restic forget --tag NextPVR --group-by "host,tags" --keep-hourly 48 --keep-daily 7 --keep-weekly 2 --keep-monthly 0 --keep-yearly 0 --keep-last 4 | tee -a $LOG
+                  echo -e "\nPruning repository"
+                  restic prune | tee -a $LOG
                   echo | tee -a $LOG
                   rclone size wasabi:k3s-at-home-01 | tee -a $LOG
                   JOB_DURATION=$(( $(date +%s) - JOB_START_TIME ))
