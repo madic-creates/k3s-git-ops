@@ -39,11 +39,11 @@ spec:
                     - ALL
                 privileged: false
               volumeMounts:
-                - name: restic-backup-config
+                - name: rclone-config
                   mountPath: /root/.config/rclone/
                   subPath: rclone.conf
           volumes:
-            - name: restic-backup-config
+            - name: rclone-config
               secret:
-                secretName: restic-backup
+                secretName: rclone-config
           restartPolicy: Never
