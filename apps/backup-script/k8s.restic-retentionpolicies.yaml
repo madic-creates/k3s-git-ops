@@ -25,13 +25,29 @@ spec:
                 - sh
                 - -c
                 - |
-                  apk add rclone
-                  rclone --config="/root/.config/rclone/rclone.conf" size wasabi:k3s-at-home-01
-                  restic forget --tag emby --group-by "host,tags" --keep-hourly 48 --keep-daily 7 --keep-weekly 2 --keep-monthly 0 --keep-yearly 0 --keep-last 4 -q
-                  restic forget --tag MariaDB --group-by "host,tags" --keep-hourly 48 --keep-daily 7 --keep-weekly 2 --keep-monthly 0 --keep-yearly 0 --keep-last 4 -q
-                  restic forget --tag NextPVR --group-by "host,tags" --keep-hourly 48 --keep-daily 7 --keep-weekly 2 --keep-monthly 0 --keep-yearly 0 --keep-last 4 -q
-                  restic prune -q
-                  rclone --config="/root/.config/rclone/rclone.conf" size wasabi:k3s-at-home-01
+                  JOB_START_TIME=$(date +%s)
+                  LOG=$(mktemp)
+                  apk add --no-cache rclone | tee -a $LOG
+                  echo| tee -a $LOG
+                  rclone size wasabi:k3s-at-home-01 | tee -a $LOG
+                  echo -e "\nRetention policies for emby" | tee -a $LOG
+                  restic forget --tag emby --group-by "host,tags" --keep-hourly 48 --keep-daily 7 --keep-weekly 2 --keep-monthly 0 --keep-yearly 0 --keep-last 4 -q | tee -a $LOG
+                  echo -e "\nRetention policies for MariaDB" | tee -a $LOG
+                  restic forget --tag MariaDB --group-by "host,tags" --keep-hourly 48 --keep-daily 7 --keep-weekly 2 --keep-monthly 0 --keep-yearly 0 --keep-last 4 -q | tee -a $LOG
+                  echo -e "\nRetention policies for NextPVR" | tee -a $LOG
+                  restic forget --tag NextPVR --group-by "host,tags" --keep-hourly 48 --keep-daily 7 --keep-weekly 2 --keep-monthly 0 --keep-yearly 0 --keep-last 4 -q | tee -a $LOG
+                  restic prune -q | tee -a $LOG
+                  echo | tee -a $LOG
+                  rclone size wasabi:k3s-at-home-01 | tee -a $LOG
+                  JOB_DURATION=$(( $(date +%s) - JOB_START_TIME ))
+                  JOB_RUNTIME=$(date -u -d @${JOB_DURATION} +"%T")
+                  echo "Script runtime: $JOB_RUNTIME" | tee -a $LOG
+                  {
+                    echo "Subject: Restic Retention Policy Report"
+                    echo "From: \"Restic Forgety\" <no-reply@geekbundle.org>"
+                    echo
+                    cat $LOG
+                  } | sendmail -S 192.168.1.45:25 webmaster@geekbundle.org
               securityContext:
                 allowPrivilegeEscalation: false
                 capabilities:
@@ -40,7 +56,7 @@ spec:
                 privileged: false
               volumeMounts:
                 - name: rclone-config
-                  mountPath: /root/.config/rclone/
+                  mountPath: /root/.rclone.conf
                   subPath: rclone.conf
           volumes:
             - name: rclone-config
