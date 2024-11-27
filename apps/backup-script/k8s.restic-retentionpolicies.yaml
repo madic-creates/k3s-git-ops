@@ -44,6 +44,6 @@ spec:
                   subPath: rclone.conf
           volumes:
             - name: rclone-config
-              secret:
-                secretName: rclone-config
+              configMap:
+                name: rclone-config
           restartPolicy: Never
