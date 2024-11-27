@@ -27,6 +27,7 @@ spec:
                 - |
                   JOB_START_TIME=$(date +%s)
                   LOG=$(mktemp)
+                  mkdir -p "$RESTIC_CACHE_DIR" | tee -a $LOG
                   apk add --no-cache rclone | tee -a $LOG
                   echo| tee -a $LOG
                   rclone size wasabi:k3s-at-home-01 | tee -a $LOG
@@ -48,6 +49,7 @@ spec:
                     echo
                     cat $LOG
                   } | sendmail -S 192.168.1.45:25 webmaster@geekbundle.org
+                  #while true; do sleep 1000; done
               securityContext:
                 allowPrivilegeEscalation: false
                 capabilities:
