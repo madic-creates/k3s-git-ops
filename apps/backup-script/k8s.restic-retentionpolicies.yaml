@@ -40,7 +40,7 @@ spec:
                 privileged: false
               volumeMounts:
                 - name: restic-backup-config
-                  mountPath: /root/.config/rclone/rclone.conf
+                  mountPath: /root/.config/rclone/
                   subPath: rclone.conf
           volumes:
             - name: restic-backup-config
