@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
     name: rclone-config
-    namespace: databases
+    namespace: longhorn
 data:
     rclone.conf: ENC[AES256_GCM,data:RflwK6COdXJ8ezK5+8pd0MAecY0NSBEWKqNXWR2ZQajVDvw4gbKYptW/J6CI8z4wGn4yD9/nIDlEBEunwcZ3K7gyVHC5G8DBkAZhAqbQGBUwRVSkqZNKUUpvOPBQdDFMIqwHK8bwvMV9h/liS9itmi8tTDmmYf1MHCJ7ovA4zVN3/OtKv/t+ZBtoZ64WKnhaOTs1UYLj3XRmMmnF0w7WIrVsda0nuGVaxClD1f615sqzow/9nWWuPWXR8faCAesQMajPH24i,iv:Qt9q+6JsE8Cuzr/OBhlr302JMScBBjukVdc9tPyWsuE=,tag:54nv2IrVx5Q0/2ZzFZPEWQ==,type:str]
 sops:
@@ -29,8 +29,8 @@ sops:
             SFliMFROOStLT3IrT0Y0VjJwVzdhMHMKb2smvDjwAYLUSI8Gs5aIUFG+JyFIexcv
             yDaCc7Ic2/7EM471x5tiPobArVqYU5s9Y1zTyIPNadwVDXViKs9OXg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-11-26T22:53:51Z"
-    mac: ENC[AES256_GCM,data:7lpEjoKS7TkjBjfsf3CqFmbZGEd5OUP+GLDH3PCZSo/RKuSVMg0dcegO5Wc7yi4eD4rBNS4Che+0Sd/oCFC4XSb20nHCDkv+Shm/UMoXtUFzr7FUciDiAtAg4u+xD+/VLGd3GRxrRCYRlLHq/j4spt7zpFyI80kl0B7Ksjsui+g=,iv:K0TK7qWPmWE8srMOIgNQrYPUAxWPvrsCoUX3eQ6s5VM=,tag:JPu8JFBEstw1oxXt5b+aQw==,type:str]
+    lastmodified: "2024-11-27T07:35:24Z"
+    mac: ENC[AES256_GCM,data:GyiETVoEYBKL7m2eaGAV6UWMz4Pz+KNnZ8GRHJtJi+6fGS/ES+nPf5+fJBzJ0HKbMeSUAicZ4BLeQ8Sm42WxgQAd7WlM82DIxhxmLXUlj8aieXsYgTTRofYoXGRd8+FbkkSBLyBCkkbQwuLB0hgoFY4amsL0GJLy458V1wmJvEY=,iv:k9vaw9MlxCbAUarMtB8MXmET8D8oRMSZj4Wko0pGMvI=,tag:8nVjnjAbgLWJ1I9C3xn16Q==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients)$
     version: 3.9.1

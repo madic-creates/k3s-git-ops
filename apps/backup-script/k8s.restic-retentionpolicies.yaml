@@ -3,7 +3,7 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: restic-retentionpolicies
-  namespace: databases
+  namespace: longhorn
 spec:
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 1
