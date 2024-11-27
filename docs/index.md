@@ -45,4 +45,4 @@ Excerpt of features this cluster provides:
 - ✅ Encryption of secrets
     * ✅ Rework documentation
 - [ ] Extend [Monitoring](monitoring.md) beyond kube-prometheus-stack defaults
-- [ ] Migrate renovate to github actions
+- ✅ Migrate renovate to github actions
