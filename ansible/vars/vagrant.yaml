@@ -36,8 +36,6 @@ K3S_AGENT_CONFIG:
 # https://github.com/derailed/k9s/releases
 K3S_K9S_VERSION: v0.32.4
 
-K3S_DEPLOY_ARGOCD: false
-
 K3S_REGISTRIES:
   - name: registries.yaml
     content: |

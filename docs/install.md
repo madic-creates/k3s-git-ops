@@ -59,7 +59,7 @@ cd ansible
 ansible-playbook remove.yaml -i inventory -l node01.example.com -K --diff
 ```
 
-## ArgoCD Installieren
+## ArgoCD
 
 ```shell
 kubectl kustomize apps/argo-cd --enable-helm | kubectl apply -f -
