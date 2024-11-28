@@ -29,7 +29,7 @@ vagrant plugin install vagrant-libvirt
 ```
 
 /// tip | Tip
-If you have, like me, dependency problems with the libvirt plugin, you can use the [vagrant-libvirt](https://vagrant-libvirt.github.io/vagrant-libvirt/installation.html#docker--podman) docker container. I **recommend** you to use my extended [vagrant-libvirt-ansible](https://github.com/madic-creates/vagrant-libvirt-ansible){target=_blank} container with added ansible. Ansible is required for provisioning and by default not installed in the standard vagrant-libvirt container.
+If you have, like me, dependency problems with the libvirt plugin, you can use the [vagrant-libvirt](https://vagrant-libvirt.github.io/vagrant-libvirt/installation.html#docker--podman){target=_blank} docker container. I **recommend** you to use my extended [vagrant-libvirt-ansible](https://github.com/madic-creates/vagrant-libvirt-ansible){target=_blank} container with added ansible. Ansible is required for provisioning and by default not installed in the standard vagrant-libvirt container.
 ///
 
 Start the complete test environment:
