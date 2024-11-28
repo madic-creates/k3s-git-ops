@@ -144,7 +144,7 @@ files:
   - backup-secrets.enc.yaml
 ```
 
-The **backup-secrets.enc.yaml** is just a normal kubernetes manifest but with sops encrypted values: [Example emby backup-secrets.enc.yaml](https://github.com/Madic-/k3s-git-ops/blob/main/apps/emby/backup-secrets.enc.yaml){target=_blank}. Do not add thouse manifests to the resource list of the kustomization.yaml because this would result in a duplicate resource error.
+The **backup-secrets.enc.yaml** is just a normal kubernetes manifest but with sops encrypted values: [Example emby backup-secrets.enc.yaml](https://github.com/madic-creates/k3s-git-ops/blob/main/apps/emby/backup-secrets.enc.yaml){target=_blank}. Do not add thouse manifests to the resource list of the kustomization.yaml because this would result in a duplicate resource error.
 
 ## Kustomize managed Helm values
 
@@ -158,7 +158,7 @@ The workflow basically is to create an encrypted **values.enc.yaml**, tell kusto
 
 If ArgoCD finds a values.enc.yaml in an application directory, argo-cd runs the CMP cmp-sops-decrypt, which decryptes the file to values.yaml, and then runs kustomize.
 
-The ConfigManagementPlugin is configured as a configmap within a separate [argo-cd app deployment](https://github.com/Madic-/k3s-git-ops/tree/main/apps/argo-cd-configmanagementplugins){target=_blank}. Additionaly it needs helm and sops binaries for the argo-cd repo-server which get configured via a sidecar container. So the deployment of it needs to be extended.
+The ConfigManagementPlugin is configured as a configmap within a separate [argo-cd app deployment](https://github.com/madic-creates/k3s-git-ops/tree/main/apps/argo-cd-configmanagementplugins){target=_blank}. Additionaly it needs helm and sops binaries for the argo-cd repo-server which get configured via a sidecar container. So the deployment of it needs to be extended.
 
 ConfigManagementPlugin:
 

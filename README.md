@@ -16,7 +16,7 @@ This repository is a playground for my Kubernetes Home Cluster.
 
 It uses [ArgoCD](https://github.com/argoproj/argo-cd) as a GitOPs platform to automate the deployment and keep the cluster in a consistent state.
 
-For more information take a lookt at my [docs](https://madic-.github.io/k3s-git-ops/).
+For more information take a lookt at my [docs](https://madic-creates.github.io/k3s-git-ops/).
 
 If you're getting a certificate error when opening the docs (happens in Firefox), thats because of the hyphen in my username. Hyphens aren't allowed at the end of DNS names. As a workaround you can use a chromium based browser.
 

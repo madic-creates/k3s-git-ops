@@ -13,7 +13,7 @@ More information about the required token permissions can be found in the offici
 
 ### Rules
 
-Multiple configurations in the [renovate.json](https://github.com/Madic-/k3s-git-ops/blob/main/.github/renovate.json){target=_blank} support renovate in finding updates.
+Multiple configurations in the [renovate.json](https://github.com/madic-creates/k3s-git-ops/blob/main/.github/renovate.json){target=_blank} support renovate in finding updates.
 
 **Kubernetes Manifests**
 

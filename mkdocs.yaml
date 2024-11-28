@@ -3,11 +3,11 @@
 site_name: Madic | Home GitOps
 site_description: A mono repository for my home Kubernetes cluster which tries to adhere to Infrastructure as Code (IaC) and GitOps practices
 site_author: Michael Neese
-site_url: https://madic-.github.io/git-ops/
+site_url: https://madic-creates.github.io/git-ops/
 
 # Repository
-repo_name: madic-/k3s-git-ops
-repo_url: https://github.com/madic-/k3s-git-ops
+repo_name: madic-creates/k3s-git-ops
+repo_url: https://github.com/madic-creates/k3s-git-ops
 edit_uri: "-/edit/main/docs/"
 
 copyright: Copyright &copy; 2024
@@ -48,7 +48,7 @@ extra_css:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/madic-
+      link: https://github.com/madic-creates
     - icon: fontawesome/brands/mastodon
       link: https://chaos.social/@Madic
     - icon: fontawesome/brands/wordpress

@@ -93,7 +93,7 @@ stringData:
   AWS_SECRET_ACCESS_KEY: <VerySecureSuperSecretKey>
 ```
 
-I won't include the backup script here, because it can change over time. The script is available in [my git repository](https://github.com/Madic-/k3s-git-ops/blob/main/apps/backup-script/backup-script.yaml){target=_blank} as a ConfigMap. The ConfigMap get's replicated via reflector to all namespaces so all deployments can use the same script. But after changes to the script the pods using the script need to be restarted. This can be done by deleting the pods or by rolling out a new deployment.
+I won't include the backup script here, because it can change over time. The script is available in [my git repository](https://github.com/madic-creates/k3s-git-ops/blob/main/apps/backup-script/backup-script.yaml){target=_blank} as a ConfigMap. The ConfigMap get's replicated via reflector to all namespaces so all deployments can use the same script. But after changes to the script the pods using the script need to be restarted. This can be done by deleting the pods or by rolling out a new deployment.
 
 ## Notifications
 
@@ -115,7 +115,7 @@ To enable metrics pushing to the Pushgateway, the following environment variable
 #### Metrics Published
 
 /// warning
-The metrics might change in the future. Currently I'm not realy satisfied. But maybe that's because I wasn't able to create a good grafana dashboard with them yet. I would appreciate any help. See issue [#3](https://github.com/Madic-/k3s-git-ops/issues/3){target=_blank}
+The metrics might change in the future. Currently I'm not realy satisfied. But maybe that's because I wasn't able to create a good grafana dashboard with them yet. I would appreciate any help. See issue [#3](https://github.com/madic-creates/k3s-git-ops/issues/3){target=_blank}
 ///
 
 The script publishes the following metrics to the Pushgateway:

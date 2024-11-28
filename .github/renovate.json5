@@ -7,10 +7,10 @@
     "config:recommended"
   ],
   "assignees": [
-    "madic-"
+    "madic-creates"
   ],
   "repositories": [
-    "madic-/k3s-git-ops"
+    "madic-creates/k3s-git-ops"
   ],
   "gitAuthor": "Renovate Bot <bot@renovateapp.com>",
   "prConcurrentLimit": 0,

@@ -12,7 +12,7 @@
 - Clone this repository
 
 ```shell
-git clone https://github.com/Madic-/k3s-git-ops
+git clone https://github.com/madic-creates/k3s-git-ops
 ```
 
 - Configure [pre-commit-hooks](pre-commit-hooks.md)
