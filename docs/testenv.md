@@ -77,7 +77,7 @@ Sometimes vagrant has conflicts with os packages resutling in message like this:
 
 *conflicting dependencies date (= 3.2.2) and date (= 3.3.4)*
 
-Set the following environment variable to ignore gem versions:
+Set the following environment variable to ignore gem versions or directly use my [vagrant-libvirt-ansible](https://github.com/madic-creates/vagrant-libvirt-ansible){target=_blank} container:
 
 ```shell
 export VAGRANT_DISABLE_STRICT_DEPENDENCY_ENFORCEMENT=1
