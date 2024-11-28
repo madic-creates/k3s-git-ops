@@ -41,25 +41,25 @@
 - name: Get service facts
   ansible.builtin.service_facts:
 
-- name: Generic | Configure systemd-resolved to manage /etc/resolv.conf
-  when: (ansible_facts.services['systemd-resolved.service']['status'] == 'enabled')
-  block:
-    - name: Generic | Check if /etc/resolv.conf exists
-      ansible.builtin.stat:
-        path: /etc/resolv.conf
-      register: resolv_conf
+- name: Generic | Check if /etc/resolv.conf exists
+  ansible.builtin.stat:
+    path: /etc/resolv.conf
+  register: resolv_conf
 
+- name: Generic | Configure systemd-resolved to manage /etc/resolv.conf
+  when: (ansible_facts.services['systemd-resolved.service']['status'] == 'enabled') and
+        (resolv_conf.stat.exists) and
+        (resolv_conf.stat.islnk == false or resolv_conf.stat.lnk_source != '/run/systemd/resolve/stub-resolv.conf')
+  block:
     - name: Generic | Backup /etc/resolv.conf to /etc/resolv.conf.bak
       ansible.builtin.copy:
         src: /etc/resolv.conf
         dest: /etc/resolv.conf.bak
-      when: resolv_conf.stat.exists
 
     - name: Generic | Deleting /etc/resolv.conf
       ansible.builtin.file:
         path: /etc/resolv.conf
         state: absent
-      when: resolv_conf.stat.exists
 
     - name: Generic | Link systemd-resolved to resolv.conf
       ansible.builtin.file:
@@ -91,17 +91,22 @@
   with_items:
     - "{{ K3S_REGISTRIES }}"
     - "{{ K3S_KUBELET }}"
-    - "{{ K3S_SERVER_CONFIG}}"
-    - "{{ K3S_WORKER_CONFIG}}"
 
-- name: Downloading K3S installation script
-  ansible.builtin.get_url:
-    url: https://get.k3s.io
-    dest: /tmp/k3s_install.sh
-    mode: "0750"
+# - name: Downloading K3S installation script
+#   ansible.builtin.get_url:
+#     url: https://get.k3s.io
+#     dest: /tmp/k3s_install.sh
+#     mode: "0750"
 
-- name: Installing | K3S Control Plane
-  when: "'k3s_control_plane' in group_names"
+## Shell module because inside test environment, get_url outputs an error
+- name: Downloading K3S installation script if it does not exist
+  ansible.builtin.shell:
+    cmd: curl -sfL https://get.k3s.io -o /tmp/k3s_install.sh && chmod 0750 /tmp/k3s_install.sh
+  args:
+    creates: /tmp/k3s_install.sh
+
+- name: Installing | K3S Server
+  when: "'k3s_server' in group_names"
   block:
     - name: K3S Server | Creating local config directory
       ansible.builtin.file:
@@ -113,7 +118,19 @@
       become: false
       delegate_to: localhost
       with_items:
-        - ../shared/{{ groups['k3s_control_plane'][0] }}
+        - ../shared/{{ groups['k3s_server'][0] }}
+
+    - name: K3S Server | Copying configuration to /etc/rancher/k3s/
+      ansible.builtin.copy:
+        content: "{{ item.content }}"
+        dest: "/etc/rancher/k3s/{{ item.name }}"
+        owner: root
+        group: root
+        mode: "0644"
+      # Do not display in ansible output
+      no_log: true
+      with_items:
+        - "{{ K3S_SERVER_CONFIG}}"
 
     - name: K3S Server | Installing
       ansible.builtin.command: "/tmp/k3s_install.sh"
@@ -124,14 +141,26 @@
     - name: K3S Server | Fetching ca certificate
       ansible.builtin.fetch:
         src: /var/lib/rancher/k3s/server/tls/server-ca.crt
-        dest: ../shared/{{ groups['k3s_control_plane'][0] }}/
+        dest: ../shared/{{ groups['k3s_server'][0] }}/
         flat: true
       run_once: true
 
-- name: Installing | K3S Worker
-  when: "'k3s_worker' in group_names"
+- name: Installing | K3S Agent
+  when: "'k3s_agent' in group_names"
   block:
-    - name: K3S Worker | Installing
+    - name: K3S Agent | Copying configuration to /etc/rancher/k3s/
+      ansible.builtin.copy:
+        content: "{{ item.content }}"
+        dest: "/etc/rancher/k3s/{{ item.name }}"
+        owner: root
+        group: root
+        mode: "0644"
+      # Do not display in ansible output
+      no_log: true
+      with_items:
+        - "{{ K3S_AGENT_CONFIG}}"
+
+    - name: K3S Agent | Installing
       ansible.builtin.command: "/tmp/k3s_install.sh"
       environment:
         K3S_TOKEN: "{{ K3S_TOKEN }}"

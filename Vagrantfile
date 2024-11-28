@@ -28,7 +28,7 @@ Vagrant.configure("2") do |config|
       ansible.galaxy_role_file = "ansible/requirements.yaml"
       ansible.inventory_path = "ansible/vagrant.inventory"
       ansible.groups = {
-        "k3s_control_plane" => ["k3svm1"]
+        "k3s_server" => ["k3svm1"]
       }
       ansible.become = true
     end
@@ -59,7 +59,7 @@ Vagrant.configure("2") do |config|
         ansible.galaxy_role_file = "ansible/requirements.yaml"
         ansible.inventory_path = "ansible/vagrant.inventory"
         ansible.groups = {
-          "k3s_worker" => ["k3svm[2:3]"]
+          "k3s_agent" => ["k3svm[2:3]"]
         }
         ansible.become = true
       end

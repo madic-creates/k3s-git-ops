@@ -1,11 +1,21 @@
 ---
 # code: language=ansible
 
+- name: Arch | Updating archlinux-keyring
+  community.general.pacman:
+    name:
+      - archlinux-keyring
+    state: latest
+
 - name: Arch | Installing Packages
   community.general.pacman:
     name:
       - nano
-      # - qemu-guest-agent
       - htop
       - open-iscsi
       - k9s
+
+- name: Arch | Installing qemu-guest-agent on KVM
+  community.general.pacman:
+    name: qemu-guest-agent
+  when: ansible_virtualization_type == "kvm"

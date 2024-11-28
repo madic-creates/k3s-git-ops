@@ -16,11 +16,11 @@ git clone https://github.com/madic-creates/k3s-git-ops
 ```
 
 - Configure [pre-commit-hooks](pre-commit-hooks.md)
-- Adapt ansible vars to your needs. For this, copy the "example.yaml" to e.g. "own.yaml" and use that as ansible extra-vars file.
+- Adapt ansible vars to your needs. For this, copy the "vagrant.yaml" to e.g. "own.yaml" and use that as ansible extra-vars file.
 
 ```shell
 cd ansible
-cp vars/example.yaml vars/own.yaml
+cp vars/vagrant.yaml vars/own.yaml
 ```
 
 A short explanation of the vars can be found in the vars file. Because they tend to change, I wont document them here.
@@ -29,16 +29,16 @@ A short explanation of the vars can be found in the vars file. Because they tend
 
 This playbook requires the following host groups:
 
-- k3s_control_plane
-- k3s_worker
+- k3s_server
+- k3s_agent
 
 Example:
 
 ```ini
-[k3s_control_plane]
+[k3s_server]
 k3svm1
 
-[k3s_worker]
+[k3s_agent]
 k3svm2
 k3svm3
 ```

@@ -52,7 +52,7 @@ The ansible **ansible/install.yaml** playbook, which vagrant automatically runs,
 export KUBECONFIG="$PWD/shared/k3svm1/k3s.yaml"
 ```
 
-Start the worker nodes separately if needed. Ansible will automaitcally join the worker nodes to the k3s cluster.
+Start the worker nodes separately if needed. Ansible will automatically join the worker nodes to the k3s cluster.
 
 ```shell
 vagrant up k3svm2
@@ -73,7 +73,7 @@ vagrant destroy -f
 
 ## Notes
 
-Sometimes vagrant has conflicts with os packages resutling in message like this:
+Sometimes vagrant has conflicts with os packages resulting in message like this:
 
 *conflicting dependencies date (= 3.2.2) and date (= 3.3.4)*
 

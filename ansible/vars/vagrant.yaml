@@ -1,6 +1,6 @@
 ---
 K3S_IP_ADDRESS: 192.168.33.11
-#K3S_VIP: 192.168.33.9
+K3S_VIP: 192.168.33.9
 K3S_TOKEN: VAGRANT
 K3S_SERVER_CONFIG:
   - name: config.yaml
@@ -9,18 +9,26 @@ K3S_SERVER_CONFIG:
       disable:
         - "servicelb"
         - "local-storage"
-      kube-controller-manager-arg: "bind-address=0.0.0.0"
-      kube-proxy-arg: "metrics-bind-address=0.0.0.0"
-      kube-scheduler-arg: "bind-address=0.0.0.0"
-      kubelet-arg: "config=/etc/rancher/k3s/kubelet.config"
+        - "traefik"
+      # Bindings required for prometheus monitoring
+      kube-controller-manager-arg:
+        - "bind-address=0.0.0.0"
+      kube-proxy-arg:
+        - "metrics-bind-address=0.0.0.0"
+      kube-scheduler-arg:
+        - "bind-address=0.0.0.0"
+      kubelet-arg:
+        - "config=/etc/rancher/k3s/kubelet.config"
+      etcd-expose-metrics: true
+      tls-san: "192.168.33.11, 192.168.33.12, 192.168.33.13"
+      resolv-conf: "/run/systemd/resolve/resolv.conf"
+      embedded-registry: true
       cluster-init: true
-K3S_WORKER_CONFIG:
+K3S_AGENT_CONFIG:
   - name: config.yaml
     content: |
-      disable:
-        - "servicelb"
-        - "local-storage"
       kubelet-arg: "config=/etc/rancher/k3s/kubelet.config"
+      resolv-conf: "/run/systemd/resolve/resolv.conf"
 
 #--flannel-backend 'wireguard-native'
 #--flannel-iface 'wg0'
@@ -55,17 +63,17 @@ K3S_KUBELET:
 ## KubeVIP
 ### https://kube-vip.io/
 ### https://github.com/kube-vip/kube-vip/releases
-#K3S_KUBEVIP_VERSION: v0.7.2
-#K3S_KUBEVIP_ARGS: >-
-#  vip
-#  /kube-vip
-#  manifest
-#  daemonset
-#  --interface {{ ansible_default_ipv4.interface }}
-#  --address {{ K3S_VIP }}
-#  --inCluster
-#  --taint
-#  --controlplane
-#  --services
-#  --arp
-#  --leaderElection
+K3S_KUBEVIP_VERSION: v0.7.2
+K3S_KUBEVIP_ARGS: >-
+  vip
+  /kube-vip
+  manifest
+  daemonset
+  --interface {{ ansible_default_ipv4.interface }}
+  --address {{ K3S_VIP }}
+  --inCluster
+  --taint
+  --controlplane
+  --services
+  --arp
+  --leaderElection
