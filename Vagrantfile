@@ -28,11 +28,12 @@ Vagrant.configure("2") do |config|
   all_groups = {}
   # Determine which machines are specified as command line arguments
   running_machines = ARGV.select { |arg| server.keys.include?(arg) }
+  provision_done = false  # Variable to track if provisioning is done
 
   # Iterate over each machine configuration and define it in Vagrant
   server.each do |name, config_params|
     config.vm.define name do |node|
-      # Configure network settings and host name for the VM
+      # Configure network settings and hostname for the VM
       node.vm.network "private_network", ip: config_params[:ip]
       node.vm.synced_folder "./shared", "/vagrant", type: "virtiofs"
       node.vm.hostname = name
@@ -52,11 +53,11 @@ Vagrant.configure("2") do |config|
       end
 
       # Determine whether to provision all VMs or specific ones based on arguments
-      provision_all = running_machines.empty? || (running_machines.size == server.keys.size)
+      provision_all = running_machines.empty?
       provision_single = !running_machines.empty? && running_machines.include?(name)
 
       # Configure Ansible provisioner
-      if provision_all || provision_single
+      if (provision_all && !provision_done) || provision_single
         node.vm.provision :ansible do |ansible|
           ansible.limit = "all"
           ansible.compatibility_mode = "2.0"
@@ -67,6 +68,7 @@ Vagrant.configure("2") do |config|
           ansible.groups = all_groups
           ansible.become = true
         end
+        provision_done = true  # Set the flag to true after provisioning the first time
       end
     end
   end
