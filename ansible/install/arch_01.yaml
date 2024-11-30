@@ -19,3 +19,11 @@
   community.general.pacman:
     name: qemu-guest-agent
   when: ansible_virtualization_type == "kvm"
+
+- name: Arch | Comment out DNS servers from vagrant image
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/resolved.conf
+    regexp: '^DNS=4\.2\.2\.1 4\.2\.2\.2 208\.67\.220\.220'
+    line: '#DNS=4.2.2.1 4.2.2.2 208.67.220.220'
+    backrefs: true
+    state: present
