@@ -1,3 +1,5 @@
+# code: language=ruby
+
 Vagrant.configure("2") do |config|
   # Specify the base box to use, in this case an Arch Linux box
   config.vm.box = "generic/arch"
@@ -35,6 +37,7 @@ Vagrant.configure("2") do |config|
     config.vm.define name do |node|
       # Configure network settings and hostname for the VM
       node.vm.network "private_network", ip: config_params[:ip]
+      # synced_folder with virtiofs requires memory_backing_dir = "/dev/shm" in /etc/libvirt/qemu.conf
       node.vm.synced_folder "./shared", "/vagrant", type: "virtiofs"
       node.vm.hostname = name
 
