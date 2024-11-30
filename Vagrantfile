@@ -1,6 +1,8 @@
 Vagrant.configure("2") do |config|
+  # Specify the base box to use, in this case an Arch Linux box
   config.vm.box = "generic/arch"
 
+  # Define configurations for multiple virtual machines with their specific settings
   server = {
     "k3svm1" => {
       ip: "192.168.33.11",
@@ -22,15 +24,20 @@ Vagrant.configure("2") do |config|
     }
   }
 
+  # Initialize a hash to store all group configurations for Ansible
   all_groups = {}
+  # Determine which machines are specified as command line arguments
   running_machines = ARGV.select { |arg| server.keys.include?(arg) }
 
+  # Iterate over each machine configuration and define it in Vagrant
   server.each do |name, config_params|
     config.vm.define name do |node|
+      # Configure network settings and host name for the VM
       node.vm.network "private_network", ip: config_params[:ip]
       node.vm.synced_folder "./shared", "/vagrant", type: "virtiofs"
       node.vm.hostname = name
 
+      # Use Libvirt provider to specify CPU, memory, and other settings
       node.vm.provider :libvirt do |libvirt|
         libvirt.cpus = config_params[:cpus]
         libvirt.memory = config_params[:memory]
@@ -38,12 +45,13 @@ Vagrant.configure("2") do |config|
         libvirt.cputopology :sockets => '1', :cores => config_params[:cpus].to_s, :threads => '1'
       end
 
-      # Accumulate groups for Ansible provisioning
+      # Collect group configurations for Ansible provisioning
       config_params[:groups].each do |group, hosts|
         all_groups[group] ||= []
         all_groups[group].concat(hosts)
       end
 
+      # Determine whether to provision all VMs or specific ones based on arguments
       provision_all = running_machines.empty? || (running_machines.size == server.keys.size)
       provision_single = !running_machines.empty? && running_machines.include?(name)
 
