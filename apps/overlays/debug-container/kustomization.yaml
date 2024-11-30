@@ -1,0 +1,18 @@
+---
+resources:
+  - ../../debug-container
+
+patches:
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: netshoot
+    patch: |-
+      apiVersion: aps/v1
+      kind: Deployment
+      metadata:
+        name: netshoot
+        namespace: kube-system
+      spec:
+        replicas: 6

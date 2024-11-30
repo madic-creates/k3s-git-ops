@@ -1,0 +1,5 @@
+resources:
+  - ../../traefik
+
+patches:
+  - path: traefik-ingress.yaml

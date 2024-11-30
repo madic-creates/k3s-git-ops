@@ -1,6 +1,6 @@
 ---
 resources:
-  - ../../infrastructure/kubevip
+  - ../../kubevip-cloud-controller
 
 configMapGenerator:
   - name: kubevip
@@ -8,3 +8,5 @@ configMapGenerator:
     behavior: replace
     literals:
       - cidr-global=192.168.33.241-192.168.33.250
+    options:
+      disableNameSuffixHash: true

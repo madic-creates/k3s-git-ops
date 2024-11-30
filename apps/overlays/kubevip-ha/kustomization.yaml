@@ -1,0 +1,5 @@
+resources:
+  - ../../kubevip-ha
+
+patches:
+  - path: k8s.kubevip.yaml
