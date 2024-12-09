@@ -7,7 +7,7 @@ commonAnnotations:
 helmCharts:
   - name: authelia
     repo: https://charts.authelia.com
-    version: 0.9.13
+    version: 0.9.14
     releaseName: authelia
     namespace: authelia
     valuesFile: values.yaml
