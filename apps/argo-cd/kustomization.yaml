@@ -8,7 +8,7 @@ commonAnnotations:
 helmCharts:
   - name: argo-cd
     repo: https://argoproj.github.io/argo-helm
-    version: 6.11.1
+    version: 7.7.10
     releaseName: argo-cd
     namespace: argocd
     valuesFile: values.yaml
