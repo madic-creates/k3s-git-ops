@@ -279,6 +279,9 @@ grafana:
             cpu: "4"
             memory: 2Gi
     grafana.ini:
+        analytics:
+            reporting_enabled: false
+            check_for_updates: false
         auth:
             oauth_allow_insecure_email_lookup: true
             disable_login_form: true
@@ -342,8 +345,8 @@ sops:
             aWJVQzkvemJYZS9Ed3Q5ckwwR0g3VTAKM/lC8aLmdCgX1wI0n4g0ibBzK3N76gzD
             6LnmDsvMtzUFk53ri+Ck6yEFMvk0y5h3UB73DD9BJ7N93wzZ3XU6cw==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-11-26T19:33:43Z"
-    mac: ENC[AES256_GCM,data:HkWY8+8o8BIargVDoQwJSdETBRdZH13HORAKdemK1Hw6l2I6gxm+5WfRNFtGUMa7a8gscWeuMEKjVzKS6o2a1RIruaxSQFPzBm3Ojd2G8KWqm8EgyRIrQGSYxPA4t9qCTPFIU5ZllQfC6IIqGVErAc9uuRUAuZyqqVptVvKHx0s=,iv:am5PXEw6SXzwb7cNXLXDvCgwpBCwiFWX1d7pWRa6JO8=,tag:shRRqmJY8KGGFQuCBGYpAA==,type:str]
+    lastmodified: "2024-12-17T20:51:28Z"
+    mac: ENC[AES256_GCM,data:/kZeS5MN4qXJYo7yLGMu//TI3ML6UEFjYad0enu5Qxni0lMyg12WgclXZ+LJHeGf9HfK+xKwASj25vpN6QBAV5xRV7XwjiTHU+vd9/dBiMFS/5xdfbp3gQ2O/18LPQV4hH9L6SD507nH/eXssxXQbXja1DhBrYqDwxkzwWh6v0U=,iv:fzyTG+4EId3kTLMKFs9XqTmtk1zfMwUla2KbFlOmFh0=,tag:D0oT13suHwG7YrJ+fADHRQ==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url)$
     version: 3.9.1
