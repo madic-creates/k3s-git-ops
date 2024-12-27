@@ -47,7 +47,7 @@
   register: resolv_conf
 
 - name: Generic | Configure systemd-resolved to manage /etc/resolv.conf
-  when: (ansible_facts.services['systemd-resolved.service']['status'] == 'enabled') and
+  when: (ansible_facts.services.get('systemd-resolved.service', {}).get('status', 'disabled') == 'enabled') and
         (resolv_conf.stat.exists) and
         (resolv_conf.stat.islnk == false or resolv_conf.stat.lnk_source != '/run/systemd/resolve/stub-resolv.conf')
   block:
@@ -87,7 +87,7 @@
     group: root
     mode: "0644"
   # Do not display in ansible output
-  no_log: true
+  #no_log: true
   with_items:
     - "{{ K3S_REGISTRIES }}"
     - "{{ K3S_KUBELET }}"
@@ -156,7 +156,7 @@
         group: root
         mode: "0644"
       # Do not display in ansible output
-      no_log: true
+      #no_log: true
       with_items:
         - "{{ K3S_AGENT_CONFIG}}"
 
