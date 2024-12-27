@@ -16,11 +16,11 @@ git clone https://github.com/madic-creates/k3s-git-ops
 ```
 
 - Configure [pre-commit-hooks](pre-commit-hooks.md)
-- Adapt ansible vars to your needs. For this, copy the "vagrant.yaml" to e.g. "own.yaml" and use that as ansible extra-vars file.
+- Adapt ansible vars to your needs. For this, copy the "group_vars/all/main.yml" to e.g. ""group_vars/all/own.yml" to override the default vars
 
 ```shell
 cd ansible
-cp vars/vagrant.yaml vars/own.yaml
+cp group_vars/all/main.yml group_vars/all/own.yml
 ```
 
 A short explanation of the vars can be found in the vars file. Because they tend to change, I wont document them here.
@@ -49,7 +49,7 @@ Run ansible from within the ansible folder
 
 ```shell
 cd ansible
-ansible-playbook install.yaml -i inventory --extra-vars "@vars/own.yaml" --diff
+ansible-playbook install.yaml -i inventory --diff
 ```
 
 ## Removal

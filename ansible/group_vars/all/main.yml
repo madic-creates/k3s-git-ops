@@ -42,10 +42,10 @@ K3S_REGISTRIES:
       # This configures a local caching registry as a mirror for all docker.io hosted images to prevent rate limiting.
       # Currently running official registry as caching mirror.
       # Potential replacement to cache from every container registry: https://github.com/rpardini/docker-registry-proxy
-      mirrors:
-        docker.io:
-          endpoint:
-            - http://192.168.1.45:5000
+      #mirrors:
+      #  docker.io:
+      #    endpoint:
+      #      - http://192.168.1.45:5000
 
 K3S_KUBELET:
   - name: kubelet.config
