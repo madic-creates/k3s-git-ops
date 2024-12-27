@@ -87,7 +87,7 @@
     group: root
     mode: "0644"
   # Do not display in ansible output
-  #no_log: true
+  no_log: true
   with_items:
     - "{{ K3S_REGISTRIES }}"
     - "{{ K3S_KUBELET }}"
@@ -156,7 +156,7 @@
         group: root
         mode: "0644"
       # Do not display in ansible output
-      #no_log: true
+      no_log: true
       with_items:
         - "{{ K3S_AGENT_CONFIG}}"
 
