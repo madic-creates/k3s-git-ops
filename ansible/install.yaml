@@ -4,6 +4,7 @@
 - name: K3S Install
   hosts: all
   gather_facts: false
+  become: true
 
   pre_tasks:
     - name: Arch | Installing python
@@ -12,6 +13,7 @@
       changed_when:
         - pacman_output.stdout != ""
         - pacman_output.stdout != "\r\n"
+      ignore_errors: true
 
     - name: Gathering facts
       ansible.builtin.setup:
