@@ -1,6 +1,7 @@
 deploymentMode: SingleBinary
 loki:
     auth_enabled: false
+    revisionHistoryLimit: 3
     commonConfig:
         replication_factor: 1
     storage:
@@ -53,8 +54,8 @@ sops:
             N3ZHN0pTQ0lROWYwUzV6UmNaNmtqcWMKHSrjQX9cxnGh7kCU3E0xmOM6LZiAG9JO
             295h72+lL3Sin35TkdgFQKRNNJW4ZfT78CyAhCoDr9R9Bz1LeRhIyw==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-10-19T11:11:34Z"
-    mac: ENC[AES256_GCM,data:JeeudCruhVJGDBL0k1maen2aPemRqr8a/6Nps7/08s0t/cCeofVv+gKV7Ei/A89GDhmAxQx22Fij0R2wtGQYubuLrmNbdupeKbZ0+YDbeAAbTJGQ8emxKdiIpdW+tGZv47c5s1Q7TrLRqMbkvQmH3d8B9udJKhz/TQihWPeE2wE=,iv:wwyxLo/bo1aHLWL7wW9rBf9xJi4ktChqxt9SoKfqTSE=,tag:LnwxWaut3mbK0/xGEBhP1w==,type:str]
+    lastmodified: "2025-01-03T21:18:27Z"
+    mac: ENC[AES256_GCM,data:8QiAqGEOGZPYot6GF+cGZkpvJdG76eF2qEfba/vUtOeJG4hvPov1lfvA/wqLAyb9+Tkm1H7V3HoAXe6/MoLcp6ML53HSfW5EGBKY4ef2ajMN7tOFVEF8AWNbqdqzFcUvAn5dlb+uNklAzOns/m9vj8tzH5d/H7St6T5Nh5uYdr4=,iv:XcLR7lxZH7FPQPjKg68j2K5Zu3sklX+1bL9L4uYaSu8=,tag:Q0o/HP9Sliv0KKZF+RW7AQ==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|clientSecret|argocdServerAdminPassword|oidc.config|commonName|literals)$
     version: 3.9.0
