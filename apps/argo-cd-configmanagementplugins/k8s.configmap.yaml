@@ -17,6 +17,6 @@ data:
         command: [sh, -c]
         args:
           - sops --decrypt --input-type yaml --output-type yaml values.enc.yaml > values.yaml;
-            /home/argocd/cmp-server/plugins/kustomize build --enable-helm --enable-alpha-plugins --enable-exec .
+            kustomize build --enable-helm --enable-alpha-plugins --enable-exec .
       discover:
         fileName: "values.enc.yaml"
