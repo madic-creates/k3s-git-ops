@@ -19,6 +19,7 @@ resources:
   #- 16-checkmk.yaml
   - 16-monitoring.yaml
   - 16-ntfy-alertmanager.yaml
+  - 17-monitoring-kubernetes-event-exporter.yaml
   - 17-monitoring-loki.yaml
   - 17-monitoring-pushgateway.yaml
   - 20-csi-smb.yaml

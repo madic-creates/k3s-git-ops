@@ -1,0 +1,43 @@
+config:
+    logLevel: info
+    routes:
+        # This route forwards all events to loki because it has no fields to match and no drop rules
+        - match:
+            - receiver: loki
+    receivers:
+        - name: dump
+          file:
+            path: /dev/stdout
+            deDot: true
+        - name: loki
+          loki:
+            url: ENC[AES256_GCM,data:FV05Dh9J9oWBYEj9jWndj+FzimoCFPozBYmUfx0BwXa55g4t,iv:vJIICMCW15Uow3pUwR6vrxIn+rq8jc/+WTjssr1l7g8=,tag:PykbdxMFhTsiEROcxavFAQ==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBrbFNvMkJvWXRCeElLK05r
+            Z1BvUnlRQ083YzRGL1dtKzBxT0wwNTFTWW5BCmVWancrRE8xc1UzZEM4NzArWXE4
+            Y1ZwelpvRW13WExtanNpdjQyVTRCTk0KLS0tIGd3MXdtOVFrSW94VTNFVHczZ1Aw
+            R21mMlZHVWluV3IwM3hVTlN2S1pVNEUKAAeLTz/+zNKLTc/dCMFaWOIegDBDn2WT
+            9kRx/qGs6Jmc72yhoWxuggNKlj/NnN06E5cdjVXzUukuFfNSmc2iIw==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBDU3hxTWtIVGRVdWZQbkNq
+            VXBvRjVqMEI2NmFqYWs5dHl1eWxjQThJK2lnCjlYQ29DTUVSN2ZwdDZtVVFicjJh
+            eTVMeHY5ZHB5VEJSSzVLeEdSQmUwTFkKLS0tIG5pbWgxZ1NZaXI2ZE82WWZDTVQz
+            aUZQSzZRNVRpcHdPK3g1UlRBeEs3OEEKmfyGyIsiC0FIZfTci56jgOuaSkTjIUqo
+            3XVInqFoHiOs5zxRRxk1p4Zfz4XBnZK0PokvMw7DjvErkiv/HEFkgQ==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-01-03T21:09:55Z"
+    mac: ENC[AES256_GCM,data:F9h2596OIDaO0iLPnRWjt7Bk/9YbMHm1ROWPfxZqe7iXvYxkVgHNusEkygQS5L/IVKm5X7xhggBapnTGGfohqR3/UVFZ41zGSMZ1wKSkeEKXVPx8oyqJb4l7Ez7qh7/ozEvt0iiTF5RjxT34wn7gIEDz64hapiVBm0bRlyRSxtI=,iv:bpa53tcNIh6hhsdfRTjo0WfGX3f0AoB6lb+gzYOQzj0=,tag:JfIQi6JfhAELFeT101VfTw==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients)$
+    version: 3.8.1

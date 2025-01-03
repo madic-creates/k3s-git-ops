@@ -1,0 +1,12 @@
+---
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "17"
+
+helmCharts:
+  - name: kubernetes-event-exporter
+    repo: https://charts.bitnami.com/bitnami
+    version: 3.3.0
+    releaseName: kubernetes-event-exporter
+    namespace: monitoring
+    includeCRDs: true
+    valuesFile: values.yaml
