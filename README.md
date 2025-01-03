@@ -7,6 +7,7 @@
 [![k3s](https://img.shields.io/badge/k3s-v1.31.4-blue?style=for-the-badge&logo=kubernetes&logoColor=white)](https://k3s.io/)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled?logo=pre-commit&logoColor=white&style=for-the-badge&color=brightgreen)](https://github.com/pre-commit/pre-commit)
 [![renovate](https://img.shields.io/badge/renovate-enabled?style=for-the-badge&logo=renovatebot&logoColor=white&color=brightgreen)](https://github.com/renovatebot/renovate)
+[![documentation](https://img.shields.io/badge/Docs-grey?style=for-the-badge&logo=materialformkdocs)](https://madic-creates.github.io/k3s-git-ops/)
 
 </div>
 
