@@ -8,6 +8,7 @@ metrics:
     enabled: true
     serviceMonitor:
         enabled: true
+        interval: 60s
 primary:
     revisionHistoryLimit: 2
     extraVolumes:
@@ -41,8 +42,8 @@ sops:
             eWkvQThOWWRzVDlmQlZzbU5tNkdyVUkK9bIBo70oaJK31myMDcpPdo5tWTN+JLB5
             2xqj5S1wzAyYII/d7ZfbhlLm9kwpvpnV4Wfl9unkMirspONq2VfdWw==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-11-26T16:06:32Z"
-    mac: ENC[AES256_GCM,data:32A6jObXppWikK2Vc/UeqBYvnGn/ZLTL/FpAtnWgRzkocH2rYs9oQM7taphAxPq891H81IVu8pBjqH7Fz4D8DCYgsBKE/HrPR3mhxS8kNWRNCN9V12ofYnN3LDB+vwwTRGgWYKlui3Tpw1kW9ox+CUuUiKDHdbTwdHFxfNhZeKU=,iv:f+agvhnFr++3d18DED+qOgkkpn3hYqAnF30lzBbUEtI=,tag:vqoFEdZAwHw6MxKgBJIttA==,type:str]
+    lastmodified: "2025-01-03T19:31:26Z"
+    mac: ENC[AES256_GCM,data:FFycCJbJlSjo6wUOOviCdkqR5dtmNODhJzdW83byH3jVclfej4n5IOq150SMLPftyIaKjDa/LQacoOP/0NAAJls21NFSvK0e6nJiNVGU7i4aD4qCzi05cceIs2HjehmAqUxoOt9QnDiFB+fa3Z35TrNrWHJNgFMfLh3I/nz97NY=,iv:Sz3+KpGOHHvjVXDTsr3MZ/1O0B3uGp15IewTJBYFp4k=,tag:qHvVG8IOrwxSJ2Of486cRQ==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword)$
     version: 3.9.1
