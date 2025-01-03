@@ -138,6 +138,16 @@ repoServer:
           volumeMounts:
             - mountPath: /custom-tools
               name: custom-tools
+        - name: install-kustomize
+          image: alpine:3.21
+          command:
+            - /bin/sh
+            - -c
+          args:
+            - wget -qO- https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.5.0/kustomize_v5.5.0_linux_amd64.tar.gz | tar -xvzf - && mv kustomize /custom-tools/
+          volumeMounts:
+            - mountPath: /custom-tools
+              name: custom-tools
     extraContainers:
         - name: cmp-sops-plugin
           command:
@@ -159,9 +169,9 @@ repoServer:
             # Starting with v2.4, do NOT mount the same tmp volume as the repo-server container. The filesystem separation helps mitigate path traversal attacks.
             - mountPath: /tmp
               name: cmp-tmp
-            #- mountPath: /usr/local/bin/kustomize
-            #  name: custom-tools
-            #  subPath: kustomize
+            - mountPath: /usr/local/bin/kustomize
+              name: custom-tools
+              subPath: kustomize
             - mountPath: /usr/local/bin/ksops
               name: custom-tools
               subPath: ksops
@@ -234,8 +244,8 @@ sops:
             MkxxQ2tHZ3lFeU1zOWNIR2tyeWtoNFEKExPKO1Y7/v4BIDFO6Sk98DvU8TeF74pV
             YwAgvSeay1gJ6Qk0vCByptZS7QgSe4yND77LJo8Oiw2gtSm/OID9SQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-01-03T20:28:27Z"
-    mac: ENC[AES256_GCM,data:tDLi3uNDuu4xSCyPKCvvJ8up/b7A7iwPJZLNol+u1WgWInZLsAqy8sJGfMnr8/ZejQZTsuboTt1kueYIy0+yO1L+IC+aO7PCfIsSlvv+216uyork7gRy1o8YIG8LEQXE0OBEtMY/REVlRjX6O8uS4au9MRPToc9uUFJlGXXA1hg=,iv:/5csk3sCTI3kle9T70Neej6p7f1A4t98dqGxapMlswo=,tag:mx8fNHlmIuaEPPDEO2xQ6Q==,type:str]
+    lastmodified: "2025-01-03T20:45:42Z"
+    mac: ENC[AES256_GCM,data:cuw5IYvMGISkMjHu0hLXxOulaqjDxIVZvk0P6sg8gEhlA4TWPJKZAeavrWSns8NaIW17PMAN5TU4rfgKfqFneV1YJtxIEmtNaSHNcGB7vQBDOCCUaXRHlZWDP57OxmuLR+a19MzbiQKmuf61yfIipazsajk0/hq3AdK3Gp5OU+E=,iv:8HRXZhIemF3Vu4I281pN0klTzVIgPwbUQv5w/9e56L8=,tag:V/vvgjS3pRcBe2gJwn95vQ==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|clientSecret|argocdServerAdminPassword|oidc.config|commonName|literals)$
     version: 3.9.0
