@@ -118,7 +118,7 @@ repoServer:
               name: custom-tools
         - name: install-sops
           # https://github.com/getsops/sops/pkgs/container/sops/versions?filters%5Bversion_type%5D=tagged
-          image: ghcr.io/getsops/sops:v3.9.1-alpine
+          image: ghcr.io/getsops/sops:v3.9.3-alpine
           command:
             - /bin/sh
             - -c
@@ -129,7 +129,7 @@ repoServer:
               name: custom-tools
         - name: install-helm
           # https://hub.docker.com/r/alpine/helm/tags
-          image: alpine/helm:3.16.2
+          image: alpine/helm:3.16.4
           command:
             - /bin/sh
             - -c
@@ -159,9 +159,9 @@ repoServer:
             # Starting with v2.4, do NOT mount the same tmp volume as the repo-server container. The filesystem separation helps mitigate path traversal attacks.
             - mountPath: /tmp
               name: cmp-tmp
-            - mountPath: /usr/local/bin/kustomize
-              name: custom-tools
-              subPath: kustomize
+            #- mountPath: /usr/local/bin/kustomize
+            #  name: custom-tools
+            #  subPath: kustomize
             - mountPath: /usr/local/bin/ksops
               name: custom-tools
               subPath: ksops
@@ -234,8 +234,8 @@ sops:
             MkxxQ2tHZ3lFeU1zOWNIR2tyeWtoNFEKExPKO1Y7/v4BIDFO6Sk98DvU8TeF74pV
             YwAgvSeay1gJ6Qk0vCByptZS7QgSe4yND77LJo8Oiw2gtSm/OID9SQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-11-25T09:43:13Z"
-    mac: ENC[AES256_GCM,data:FhD3XGeg0OOiNeQjEawghU6/y93aLYBSpZzAtAl8yEOEfLaYgzREREwjJNHxDlC0R9Nq7OHX4ch5eJVxIaH3uh0khzBG7ebNOfgwtpNwWL9FE37QQAIWp8Zia/0Ka3VsHO7pY6MvRhq8JY9/WdmrEUbv2b2NMregdAPpo1aBAzo=,iv:P1gQzX+ADv1hiSFkJ9GXfrFPGLJyilZ/wXyhiXUhmtk=,tag:I4flPJDLcFiNUPK778yiKw==,type:str]
+    lastmodified: "2025-01-03T20:28:27Z"
+    mac: ENC[AES256_GCM,data:tDLi3uNDuu4xSCyPKCvvJ8up/b7A7iwPJZLNol+u1WgWInZLsAqy8sJGfMnr8/ZejQZTsuboTt1kueYIy0+yO1L+IC+aO7PCfIsSlvv+216uyork7gRy1o8YIG8LEQXE0OBEtMY/REVlRjX6O8uS4au9MRPToc9uUFJlGXXA1hg=,iv:/5csk3sCTI3kle9T70Neej6p7f1A4t98dqGxapMlswo=,tag:mx8fNHlmIuaEPPDEO2xQ6Q==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|clientSecret|argocdServerAdminPassword|oidc.config|commonName|literals)$
     version: 3.9.0
