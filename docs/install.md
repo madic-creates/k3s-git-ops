@@ -52,6 +52,21 @@ cd ansible
 ansible-playbook install.yaml -i inventory --diff
 ```
 
+Ansible downloads the kubeconfig file to the folder **./shared/${HOSTNAME}/k3s.yaml** file. You can use this file to access the cluster.
+
+To get the validity of the kubeconfig file, you can use the following command (either replace **$KUBECONFIG** with the path to the kubeconfig file or set it as environment variable):
+
+```shell
+awk '/client-certificate-data:/ {print $2}' $KUBECONFIG | base64 -d | \
+openssl x509 -noout -startdate -enddate && \
+echo "Valid for: $(awk '/client-certificate-data:/ {print $2}' $KUBECONFIG | \
+base64 -d | openssl x509 -noout -enddate | cut -d= -f2 | \
+xargs -I{} date -d "{}" +"%s" | \
+awk -v now=$(date +%s) '{printf "%.0f\n", ($1-now)/86400}') days"
+```
+
+[![Kubeconfig validity](images/kubeconfig_validity.png){: loading=lazy}](images/kubeconfig_validity.png)
+
 ## Removal
 
 ```shell
