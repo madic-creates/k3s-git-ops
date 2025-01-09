@@ -36,10 +36,9 @@
   "packageRules": [
     {
       "matchFileNames": [
-        "apps/mariadb",
-        "apps/traefik",
-        "apps/monitoring",
-        "apps/kubevip-ha"
+        "apps/mariadb/**",
+        "apps/traefik/**",
+        "apps/kubevip-ha/**"
       ],
       "automerge": false
     },
