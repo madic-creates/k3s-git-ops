@@ -1,0 +1,8 @@
+---
+resources:
+  - k8s.deployment.yaml
+  - k8s.service.yaml
+  - k8s.storage.yaml
+
+generators:
+  - kustomize-secret-generator.yaml

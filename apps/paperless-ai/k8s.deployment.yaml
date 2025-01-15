@@ -1,0 +1,40 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paperless-ai
+  namespace: paper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: paperless-ai
+  template:
+    metadata:
+      labels:
+        app: paperless-ai
+    spec:
+      containers:
+        - name: paperless-ai
+          image: clusterzx/paperless-ai:2.1.9
+          ports:
+            - containerPort: 3000
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: paperless-ai-data
