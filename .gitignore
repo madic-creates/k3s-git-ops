@@ -8,7 +8,8 @@ site/
 .cache/
 apps/argo-cd-apps/argocd.secret*.yaml
 !apps/argo-cd-apps/argocd.secret*.enc.yaml
-.decrypted~*.yaml
+*.decrypted~*.yaml
+*.decrypted.yaml
 ansible/vars/*
 !ansible/vars/example.yaml
 !ansible/vars/vagrant.yaml
