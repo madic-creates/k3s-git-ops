@@ -1,6 +1,6 @@
 image:
     repository: ghcr.io/paperless-ngx/paperless-ngx
-    tag: 2.13.4
+    tag: 2.14.5
 env:
     - name: TZ
       value: Europe/Berlin
@@ -73,23 +73,23 @@ sops:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB4UVpBWm0xUnVvYWI0c1Yw
-            V0NNejM1MHRPelc1ZUh4MTUzNVI2QXpxSFJvCjVrdURKblZ2SDB0VzVHU2l1ZFFC
-            NmZHY2JaYkY0YWR6d09NNWlDd0VyUU0KLS0tIGFMRnk4S0xaQ1ZBQmEzWjQxdEoy
-            azdvcEoyS0x3bG5zWHVJTEZodHdZQ3cKkdBc1ZJFyeHu3JnuHBLc/1ADT6IJMYwS
-            pGZ4SkBszV7Xb4JJ3UHpMbpX/aBZEOdDHxSr4/Vjoc1WkZoFhZeM4g==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBydVAxV1hxS0lwMjFoRXJZ
+            Vkpqa0todnVnVGJJTlNwdXROb0ttTEVqWXcwCktnTDh4a1Y0ZTBucDlvTFVRNExN
+            UVhDd3AyM2JoQVR5dkdRUTBSLzRuaWcKLS0tIFFodWY3VHg5ZWpkaFBScnlZK2lP
+            OUR5Z1J3b1hqZ2hXdEdyUTgxMDlyWm8K7kF9ps0Iye1/W9Uypjl8w9TNbr3v1543
+            sogXv2ItKJk7YPocYOF4ubfvATQChfTExO5cQ3Z98O2GCbttiy4bCw==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBUUS9Oc2gyT2dvQWp3T3Y5
-            TU9BTUlkMkVoTzIrZFdHa3V1QytLVUdRTXpJCkdTTE8vVFh3YkhZZmdKMXRjeUdi
-            N1pQR015dU9yTWkrUlVDOE0wS05iU1EKLS0tIGg3NVdZeDRwU284d0V0eFBDclFQ
-            UGdHVXJtYkk1enlEWEVSS1Vta2I5NjgKNskHnBmyqhA/kk40mHjXKDpH+wQWDEVV
-            QqDJh+jB7zLKbzwDcfpMTUJJ0k7hhWfvc6N2AivMhXhykuXDCUmb8A==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB0U3JaeXdoUm9kOWtBbUIw
+            eUJBbjk5ajIxQ0o1aWoyN3lveVNMN2Q3b2hvCnhBTG9RZVk0cXFhSzBtMzd4ZkZH
+            eTJUeXpDZUFqRHhORGFWMmYwSzFEMjQKLS0tIHBEOEptaWdsZVFCL2Z6bFhmVEto
+            NThWc3cyUG5GTGVUbTJaSDI1SGlmTVUK/b4Yh48XmEnzP3Mr0Wv5CQGD9E3q6FZU
+            s6sTNvW6tNDcVy6p5P72hA3YWziye1PxVN4JLWLnT4frqACZvMPWvQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-11-04T21:00:03Z"
-    mac: ENC[AES256_GCM,data:kKqY9QxVBcnobR0cnavtMfxZig+cTY/KlFXJ8BV1Mley5uBsQLpDMKFBnDZVGN8NFqHLE6B3beUD2N4X8Hg+xaCAlqDyR+6qOk0y/bex804s9HY8UV1hu8YIy2b2zmrVoorazvIKv25PsW42PLcJudz537vYmQasudBXb1uN9xQ=,iv:94W34zUY29WPir5RVvcAKpmUlZZziV7TO0sjfH7/N9I=,tag:4YsSFcnryUY5NEZi7JDOgw==,type:str]
+    lastmodified: "2025-01-22T19:42:54Z"
+    mac: ENC[AES256_GCM,data:v++SJ9WkFDt5/XLu7YTgIQIXMObb3xZWu+25d3u1cDEPQ4a3a87U4uIk5xbjaGCErl2XO85vD+j6DWc/uG40Tk09T0KF6NTauPoR7+/k+thtNhA8+mNmGNQz+fDFD6TOFrJJUDnbbaWent0m6KGNQhhFst/k9+au3246FD6oS4Q=,iv:UVoLT5c3CRg2QzP8rKsh9nd5RDsniKa4xJq/9mJ9hnY=,tag:feC5flX565U7J47Tu1HYzQ==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients)$
-    version: 3.9.1
+    version: 3.8.1
