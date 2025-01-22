@@ -5,7 +5,7 @@ commonAnnotations:
 helmCharts:
   - name: loki
     repo: https://grafana.github.io/helm-charts
-    version: 6.24.1
+    version: 6.25.0
     releaseName: loki
     namespace: monitoring
     includeCRDs: true
