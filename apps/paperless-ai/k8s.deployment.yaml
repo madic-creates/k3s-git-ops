@@ -9,6 +9,8 @@ spec:
   selector:
     matchLabels:
       app: paperless-ai
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
