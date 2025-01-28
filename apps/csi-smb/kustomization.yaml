@@ -9,7 +9,7 @@ commonAnnotations:
 helmCharts:
   - name: csi-driver-smb
     repo: https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
-    version: v1.16.0
+    version: v1.17.0
     releaseName: csi-driver-smb
     namespace: csi-smb-provisioner
     includeCRDs: true
