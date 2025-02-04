@@ -18,7 +18,7 @@ helmCharts:
       image:
         # https://hub.docker.com/r/intel/intel-gpu-plugin/tags
         repository: intel/intel-gpu-plugin
-        tag: 0.31.1
+        tag: 0.32.0
       resources:
         requests:
           memory: "105m"
