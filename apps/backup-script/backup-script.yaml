@@ -14,6 +14,7 @@ metadata:
 data:
   backup.sh: |
     #!/bin/sh
+    # Enable debug mode if DEBUG is set to true
     if [ "${DEBUG}" = "true" ]; then set -x; fi
 
     # Variables
@@ -48,6 +49,7 @@ data:
       # Variable for NTFY notification
       NTFY_TITLE=$(eval echo "${NTFY_TITLE}")
 
+      # Send notification via curl
       curl -s ${NTFY_CREDS} \
           -H "Title: ${NTFY_TITLE}" \
           -H "Priority: ${NTFY_PRIO}" \
@@ -58,6 +60,7 @@ data:
 
     # Function to send metrics to Prometheus Pushgateway
     send_metrics_prometheus() {
+        # Determine job status
         if [ "$1" = "0" ]; then
           JOB_STATUS="success"
         else
