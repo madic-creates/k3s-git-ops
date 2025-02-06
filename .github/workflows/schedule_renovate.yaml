@@ -48,7 +48,7 @@ jobs:
       #- name: Validate Renovate JSON
       #  run: jq type .github/renovate.json5
       - name: Download renovate cache
-        uses: dawidd6/action-download-artifact@v7
+        uses: dawidd6/action-download-artifact@v8
         if: github.event.inputs.repoCache != 'disabled'
         continue-on-error: true
         with:
