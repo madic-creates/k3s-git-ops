@@ -5,7 +5,7 @@ commonAnnotations:
 helmCharts:
   - name: kubernetes-event-exporter
     repo: oci://registry-1.docker.io/bitnamicharts
-    version: 3.3.3
+    version: 3.3.4
     releaseName: kubernetes-event-exporter
     namespace: monitoring
     includeCRDs: true
