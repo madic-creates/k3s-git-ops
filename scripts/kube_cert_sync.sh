@@ -25,6 +25,6 @@ kubectl get secret "${CERT}" -n certmanager -o jsonpath="{.data.tls\.crt}" | bas
 ## Get private key
 kubectl get secret "${CERT}" -n certmanager -o jsonpath="{.data.tls\.key}" | base64 -d > "${CERT}".key
 
-scp -p wildcard-cloudflare-production-01.* "${DEST_SERVER}":
+scp -p "${CERT}".* "${DEST_SERVER}":
 ssh -t "${DEST_SERVER}" "sudo cp ${CERT}.* /etc/nginx/ && sudo systemctl reload nginx"
 rm -f "${CERT}".*
