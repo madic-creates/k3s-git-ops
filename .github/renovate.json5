@@ -38,7 +38,8 @@
       "matchFileNames": [
         "apps/mariadb/**",
         "apps/traefik/**",
-        "apps/kubevip-ha/**"
+        "apps/kubevip-ha/**",
+        "apps/paperless-ai/**"
       ],
       "automerge": false
     },
