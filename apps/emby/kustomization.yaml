@@ -30,7 +30,7 @@ helmCharts:
         pullPolicy: IfNotPresent
       resources:
         requests:
-          gpu.intel.com/i915: 1
+          #gpu.intel.com/i915: 1
           memory: "4Gi"
           cpu: "1"
         limits:
