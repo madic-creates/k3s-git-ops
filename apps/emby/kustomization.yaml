@@ -34,7 +34,7 @@ helmCharts:
           memory: "4Gi"
           cpu: "1"
         limits:
-          gpu.intel.com/i915: 1
+          #gpu.intel.com/i915: 1
           memory: "12Gi"
           # Units in mCPU. 6000m ~ 6 CPU
           cpu: "6000m"
