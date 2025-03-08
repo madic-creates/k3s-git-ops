@@ -39,7 +39,8 @@
         "apps/mariadb/**",
         "apps/traefik/**",
         "apps/kubevip-ha/**",
-        "apps/paperless-ai/**"
+        "apps/paperless-ai/**",
+        "apps/pihole/**"
       ],
       "automerge": false
     },
