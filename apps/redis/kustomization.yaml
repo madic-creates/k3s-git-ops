@@ -5,7 +5,7 @@ commonAnnotations:
 helmCharts:
   - name: redis
     repo: oci://registry-1.docker.io/bitnamicharts
-    version: 20.11.2
+    version: 20.11.3
     releaseName: redis
     namespace: databases
     valuesFile: values.yaml
