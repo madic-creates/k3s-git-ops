@@ -14,6 +14,7 @@
       - htop
       - open-iscsi
       - k9s
+      - nfs-utils
 
 - name: Arch | Installing qemu-guest-agent on KVM
   community.general.pacman:
