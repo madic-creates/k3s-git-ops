@@ -23,15 +23,13 @@ K3S_SERVER_CONFIG:
       tls-san: "192.168.33.11, 192.168.33.12, 192.168.33.13"
       resolv-conf: "/run/systemd/resolve/resolv.conf"
       embedded-registry: true
+      flannel-backend: "wireguard-native"
       cluster-init: true
 K3S_AGENT_CONFIG:
   - name: config.yaml
     content: |
       kubelet-arg: "config=/etc/rancher/k3s/kubelet.config"
       resolv-conf: "/run/systemd/resolve/resolv.conf"
-
-#--flannel-backend 'wireguard-native'
-#--flannel-iface 'wg0'
 
 # https://github.com/derailed/k9s/releases
 K3S_K9S_VERSION: v0.32.4
@@ -57,21 +55,3 @@ K3S_KUBELET:
       ## https://kubernetes.io/blog/2021/04/21/graceful-node-shutdown-beta/
       shutdownGracePeriod: 30s
       shutdownGracePeriodCriticalPods: 10s
-
-## KubeVIP
-### https://kube-vip.io/
-### https://github.com/kube-vip/kube-vip/releases
-K3S_KUBEVIP_VERSION: v0.7.2
-K3S_KUBEVIP_ARGS: >-
-  vip
-  /kube-vip
-  manifest
-  daemonset
-  --interface {{ ansible_default_ipv4.interface }}
-  --address {{ K3S_VIP }}
-  --inCluster
-  --taint
-  --controlplane
-  --services
-  --arp
-  --leaderElection

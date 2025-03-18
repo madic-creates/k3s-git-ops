@@ -31,7 +31,7 @@ spec:
       containers:
         - name: whoami
           # https://github.com/traefik/whoami
-          image: traefik/whoami:v1.10.4
+          image: traefik/whoami:v1.11.0
           imagePullPolicy: IfNotPresent
           resources:
             requests:
