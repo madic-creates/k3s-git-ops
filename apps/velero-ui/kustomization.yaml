@@ -7,7 +7,7 @@ namespace: longhorn
 helmCharts:
   - name: vui
     repo: https://seriohub.github.io/velero-helm/
-    version: 0.1.24
+    version: 0.1.25
     releaseName: vui
     namespace: longhorn
     includeCRDs: true
