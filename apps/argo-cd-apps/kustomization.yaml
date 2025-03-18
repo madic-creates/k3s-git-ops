@@ -9,10 +9,11 @@ resources:
   #- 03-cloudflare-tunnel-ingress-controller.yaml
   - 03-traefik.yaml
   - 08-mariadb.yaml
-  - 11-lldap.yaml
   - 09-redis.yaml
   - 10-authelia.yaml
+  - 11-lldap.yaml
   - 12-pihole.yaml
+  - 13-node-feature-discovery.yaml
   - 14-external-snapshotter.yaml
   - 15-backup-script.yaml
   - 15-longhorn.yaml

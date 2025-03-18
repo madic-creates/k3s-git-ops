@@ -1,0 +1,16 @@
+---
+resources:
+  # Node Feature Discovery
+  - https://github.com/kubernetes-sigs/node-feature-discovery/deployment/overlays/default?ref=v0.17.2
+  # NFD rules for Intel HW
+  - https://github.com/intel/intel-device-plugins-for-kubernetes/deployments/nfd/overlays/node-feature-rules?ref=v0.32.0
+
+#helmCharts:
+#  - name: node-feature-discovery
+#    repo: https://kubernetes-sigs.github.io/node-feature-discovery/charts
+#    version: 0.17.2
+#    releaseName: nfd
+#    namespace: node-feature-discovery
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "13"
