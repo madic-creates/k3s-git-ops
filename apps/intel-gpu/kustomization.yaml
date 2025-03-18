@@ -6,7 +6,7 @@ resources:
 helmCharts:
   - name: intel-device-plugins-operator
     repo: https://intel.github.io/helm-charts/
-    version: 0.31.1
+    version: 0.32.0
     namespace: intel-device-plugins
     releaseName: intel-device-plugins-operator
     includeCRDs: true
