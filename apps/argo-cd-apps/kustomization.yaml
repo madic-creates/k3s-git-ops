@@ -23,7 +23,7 @@ resources:
   - 17-monitoring-loki.yaml
   - 17-monitoring-pushgateway.yaml
   - 20-csi-smb.yaml
-  #- 24-intel-gpu.yaml
+  - 24-intel-gpu.yaml
   - 30-emby.yaml
   - 31-nextpvr.yaml
   - 40-paperless-ai.yaml
