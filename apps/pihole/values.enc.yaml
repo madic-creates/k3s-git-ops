@@ -15,16 +15,16 @@ serviceDhcp:
     annotations:
         kube-vip.io/loadbalancerIPs: 192.168.1.232
     type: LoadBalancer
-virtualHost: ENC[AES256_GCM,data:XU6R4DDiw9Ceg+tFvssHXhpryyD82gs=,iv:cln33uv0GbKCBaZOXDDQQ2fS45h/wyaxVk9Z8T7US/A=,tag:Hd/OWCJNq103Q8OVe6PN9w==,type:str]
+virtualHost: ENC[AES256_GCM,data:P4Ez7aX+vaMWXlTBnfhNhyHrPzMiYjQ=,iv:XHv+cOU2bJNdS5a1bGeFcVfgPlJ2z25L8snQ5FNoD+0=,tag:ijyTKtC2QJQaWwataOxdKA==,type:str]
 ingress:
     enabled: true
     ingressClassName: traefik
     hosts:
-        - ENC[AES256_GCM,data:tURuYUAuxgKvY0KD1TUJGkK0pT0bzIU=,iv:wsdc0W3vZe8lVRxfnjDm5w/F3sxLFOXTNXREXuw1cSU=,tag:SQ6tr3+Us2ll6UgP31AYvA==,type:str]
+        - ENC[AES256_GCM,data:U/x+PMTP1Rragqi9HzsTIVtLPiuwQ58=,iv:Y35CcQBT7cO1r0MQXjABnqWClWS/hxlxJdyqmAV0w4U=,tag:RQGZb/hVDmLRgArrywGPDQ==,type:str]
     tls:
         - secretName: wildcard-cloudflare-production-01
           hosts:
-            - ENC[AES256_GCM,data:/TrKt7MfBj6XVqJyPA6wOJ3igeLTYDs=,iv:LZ6NE2gGfGEiXGvR+O3U7tJklw5wuDfpBQc3A++mG8s=,tag:L851GDiqxW0oIwIOSjNLrw==,type:str]
+            - ENC[AES256_GCM,data:kspVSbxEwbOLKfRXRaw5IJQxVLNYPmc=,iv:9wQc40ODrjoywIUYWi15yoEZ6cu5XtSCkzVt8I1qSjg=,tag:4U3hfKAVsJu3CSDqZS/AfA==,type:str]
     annotations:
         traefik.ingress.kubernetes.io/router.entrypoints: websecure
         traefik.ingress.kubernetes.io/router.tls: "true"
@@ -38,7 +38,7 @@ resources:
         memory: 128Mi
 extraEnvVars:
     TZ: Europe/Berlin
-    FTLCONF_LOCAL_IPV4: 192.168.1.232
+    #FTLCONF_LOCAL_IPV4: 192.168.1.232
     FTLCONF_dns_dnssec: true
     FTLCONF_dns_bogusPriv: true
     FTLCONF_dns_domainNeeded: true
@@ -48,9 +48,9 @@ extraEnvVars:
     FTLCONF_dhcp_leaseTime: 12
     FTLCONF_dns_domain: neese-web.de
     FTLCONF_dhcp_rapidCommit: true
-    FTLCONF_webserver_interface_boxed: traditional
-    FTLCONF_MOZILLA_CANARY: true
-    FTLCONF_BLOCK_ICLOUD_PR: true
+    FTLCONF_webserver_interface_boxed: false
+    #FTLCONF_MOZILLA_CANARY: true
+    #FTLCONF_BLOCK_ICLOUD_PR: true
 DNS1: 127.0.0.1:5053
 # Not required because secured via authelia oidc
 admin:
@@ -59,7 +59,7 @@ doh:
     enabled: true
     pullPolicy: IfNotPresent
     envVars:
-        TUNNEL_DNS_UPSTREAM: ENC[AES256_GCM,data:kHB1xQlxAXJ+NebggGYOqGEzXq2lVSjdofx3WALuUzEoyNsh,iv:v8TgDYoe2SUZ/tNXKZrPlJNJYFGjEfYt3NiG2g92LzQ=,tag:o1m5CoKir+xZ+j2o0xB3Kg==,type:str]
+        TUNNEL_DNS_UPSTREAM: ENC[AES256_GCM,data:bZ0mwYAtnim5GDlDBFzyfLHU8aIut+Pkbts5bd5rI1GKp781,iv:i/tLUwPl/MVJ8U6j2lra9EN/ASg9pEFdVM+/VvybVD4=,tag:Pj8K8ttIpoW9OpLuoRAW2g==,type:str]
 dnsmasq:
     # Contains internal wildcard domains:
     # - address=/.example.com/192.168.1.45
@@ -67,17 +67,17 @@ dnsmasq:
     # - address=/.k8s.example.com/192.168.1.231
     # - 'address=/.k8s.example.com/::'
     customDnsEntries:
-        - ENC[AES256_GCM,data:u2VRsZ0l+4tC2Fci1m7WIjzFm5ogl91uDqwB2tT3YIcdW58=,iv:Kdzg58AEt6MY73z1F1v+ao73wNZG4jNjCMNREm/bYFU=,tag:fQIdydznb0h17PKF9Sa80w==,type:str]
-        - ENC[AES256_GCM,data:QSDsPIcp+aZVydIn5R39cl3YrC6XxbKTgg==,iv:gPSwpwB/JMJn8NCElMradXAeiXO2SdoL74rDrCCYr+o=,tag:3TNkH4njJbcBT7bK9cbTBA==,type:str]
-        - ENC[AES256_GCM,data:uKEM5bvFWhRfR2wn1dk+RZeA+gv267u65WVXt/O8qV5n5Dom35323g==,iv:EfgaQFSjffWn7t8WFxvCp48HoLfAUDONrxNXjcPGr/E=,tag:ODjNKNrugrJzdJwmSEFXGA==,type:str]
-        - ENC[AES256_GCM,data:tB3C1jjAUMcDFjBYN1YcBKZkdrHld2k6/KxfFAs=,iv:j0johl58Cd/Mo0FeIRrRFd18KpNwQil7XhDhI/uQjE8=,tag:G2VTaGA5pqSDh4ddzVtiPA==,type:str]
+        - ENC[AES256_GCM,data:ypVyBB3Kf8ieu63bypLoLhoKstk2DZNrr3jRSGsdc2hpYDI=,iv:9Cg6MCdmNZ+fPAgsQRyyEtGMZaLys/xTK40xnLcTUgY=,tag:/LiEj+V+3KZOu3eXrDTaxA==,type:str]
+        - ENC[AES256_GCM,data:ROUHytlIBk4ACXDTB4uAkXd36X12cagh9Q==,iv:E86f6NAlb7xgYd3vJtiRhw8xENgluP6x2VYz6+va1GA=,tag:ocE0oXGu3QmRHQ6xekkg7w==,type:str]
+        - ENC[AES256_GCM,data:/5770CVo2vp8gMQlZNGu92PQwi5jRe+3iAEjTdJ1S1ZE1+4LhTVlRw==,iv:BqvoyXAotsCqIapqT6r4JiCvsZMrbsWUPGdfaV9nRS0=,tag:/6pqKMQAlaMnis9fQX2a+A==,type:str]
+        - ENC[AES256_GCM,data:Io9mT4JYrS2ybKdZA3V2GNRFC91b3517xM+GbtE=,iv:hr32M3+Q3SJH08iNET8UPvDNhiPWvuO3iC2eq/TJkgc=,tag:t70qAzkdY5WDMgyqJPFUkw==,type:str]
     customSettings:
         - dhcp-option=252,"\n"
         - dhcp-option=vendor:MSFT,2,1i
         # DNS
         - dhcp-option=6,192.168.1.232,192.168.1.1
         # NTP
-        #- dhcp-option=42,192.168.1.1
+        - dhcp-option=42,192.168.1.1
         - dhcp-range=::,ra-names
         - server=/geekbundle.org/192.168.1.1
         - ptr-record=1.1.168.192.in-addr.arpa.,"despair"
@@ -100,10 +100,18 @@ dnsmasq:
 capabilities:
     add:
         - NET_ADMIN
+        - CAP_SYS_TIME
+        - CAP_SYS_NICE
 persistentVolumeClaim:
     enabled: true
     storageClass: longhorn
     size: "10737418240"
+podDnsConfig:
+    enabled: true
+    policy: None
+    nameservers:
+        - 127.0.0.1
+        - 1.1.1.1
 #affinity:
 #  nodeAffinity:
 #    requiredDuringSchedulingIgnoredDuringExecution:
@@ -122,23 +130,23 @@ sops:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB5YjVQcFczeFdtdlZkUmRC
-            NmNoVHZJdDJFZlYxQ1psZzZnenFaWDVXaVEwCkFCbHZ5NnNSUEQzTFF1QVhJZDBQ
-            a2FVNEVEaHkvd1JiR2dtL05scGE5R2MKLS0tIGw2ZG9BMXMwblluMGV6aEFBWlN2
-            ZDVKQitWZG5zNFVFZHJ3dFJrdFNrazQKEkDG/qsU/rASNb77l4wb09Eb7hVc6uGM
-            D6myEsoEK7ok2B2TuFvuoQZuiBQpirPMdRFPABjRVzo/9yJMeMd/dg==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBaQXZUS2gydjc0NGpZOERi
+            TnhlZnkzL0dEMEZIeVE1UGROTFgrdUo5MVFNCmV5UDNYRVpBc2FIWjFSanBPbUh6
+            TEpJOTV5UGJvdkl5azByK1ZLdWYxeU0KLS0tIFk4UTBYMW1DbUt6cUdJd0NsTzNB
+            c1pDUFRUM0JVOHBvSWhuR0hKcDJuOWcKAfE7jbgtPJUQ57tzwaFY4Z0GXDOkxDla
+            1vRUHwnpx3FB1z2C6ywQwjBeFRBHZnZ6SLvkboUpa6nWsN1s48yLnQ==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBURkF1bkk0aVlPQ2l0TVpG
-            L1hVV0s0b1hKK3RDSUFvMk5Xa0t1RXFMRldZCjVpeCtDQXJXUWZiektJSk5qajdw
-            S0t5WTVlMUhVWU43SUJLTENoUnB2UTAKLS0tIHBKN0gvTjRtWE5QdVVmYWlaZWUw
-            KzhUZ3h4TlZsMEZyMi91T1NCWmt4Q3cKofajkERgn/eXt+LUcg921knPhDvCRpEp
-            vGJzsbbF4YP5w7+LKi0l6LmsuiRmYuxpdxyhoQxHByU8GAFcfaw15Q==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB1TGtBZC8yaVZWNFk0T3Bz
+            UTIyeTFvRy9MTHpvWWxEUGhwMWR3aFhxZzE0CnlreG1FUW5JM09FUjV6Vk0wU2Jy
+            YU8yMUdBNWdkYVpGeHJRTE10eUx2S2cKLS0tIE9Rb3h3VTRSWnFGaHN6K2ZpcHB6
+            WUl2QlB0c3dXWUhhUnhVZ2Rqc3VUcEkKGVsDk8lQVov8VNJ9BxtGVG//1Zry7eJy
+            GXYcey1tWcGOTr0NeXvikd6lEo2GnQ+b5kXQIXPpdPfjNdzm8xnNfg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-03-25T20:44:14Z"
-    mac: ENC[AES256_GCM,data:4j638LqoC7ROqFCSFeU6J91mIqoOz5vPnTbfpfiIFrrdPW+XeW6aGnDw9TUmDa/l2ntY+5SXvAU/y7c/C8MjxrRQAx/kh+K9oTBVG+HdvygwflLf1ilyT2018siPUh9BaDj6j6r3LNMjY8IgzD+gReuqDeErBS5oZzwPR7xqDtE=,iv:KhGB+/qMGjECh8hzi8YDT4bFOtdrAB3gz75rKoFcUao=,tag:z/IO5Ixjs6p4kwU99HF4Ow==,type:str]
+    lastmodified: "2025-03-25T21:10:15Z"
+    mac: ENC[AES256_GCM,data:l84gSzGTfj07SlapgjMeXzRdDF3uyvp2LHaHX7UAQ6iICHoaBdAX8WiLSnOjsAJbr2qsgye1eA3av1+ol1Y8S6pzBnXcODY7xGUTqcuRBNGaNdNPBB/P3CTwWz9j9epz28JH7txpZp2OxO7Bg6ObPfc7crNhRVH9PWCji6/Y8I4=,iv:Gfk3lnyheDSzogs4nAPfczlG5Uo3KeJhd3UL5b/B5G0=,tag:LZI7zRisnpskWnxfNQ5CgQ==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients)$
     version: 3.8.1
