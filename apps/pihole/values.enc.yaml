@@ -28,7 +28,7 @@ ingress:
     annotations:
         traefik.ingress.kubernetes.io/router.entrypoints: websecure
         traefik.ingress.kubernetes.io/router.tls: "true"
-        traefik.ingress.kubernetes.io/router.middlewares: authelia-forwardauth-authelia@kubernetescrd, root-to-admin@kubernetescrd
+        traefik.ingress.kubernetes.io/router.middlewares: authelia-forwardauth-authelia@kubernetescrd, traefik-root-to-admin@kubernetescrd
 resources:
     limits:
         cpu: 1000m
@@ -145,8 +145,8 @@ sops:
             WUl2QlB0c3dXWUhhUnhVZ2Rqc3VUcEkKGVsDk8lQVov8VNJ9BxtGVG//1Zry7eJy
             GXYcey1tWcGOTr0NeXvikd6lEo2GnQ+b5kXQIXPpdPfjNdzm8xnNfg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-03-25T21:51:38Z"
-    mac: ENC[AES256_GCM,data:rLf/zIctjqZMA6JPE6rezY7OaQ/d8VRIekbXYSyagXVCDHHepzoxcCOmggI6wlyb2gnCo+dWScyqGRq80j9yLAmTpDkicxe7ArjU4CDu2kWXSRUYAg5SiMHezeGVygItaQ83JNpJTppUy+EAgSb1/KpFZHxPs90cyT4kGelQeGM=,iv:orHLHFTGpK9zgpDHxdPlOMP7ftIIXuqgG25ClhHgb6s=,tag:nzXdt6DvQIqIlOhHzxXHag==,type:str]
+    lastmodified: "2025-03-25T21:55:08Z"
+    mac: ENC[AES256_GCM,data:sApfn6VQFM3z2YpIg+bvrAEvbMh/BCz0OmKrfwBr+EhpjdfVi2yHQWwk1ZuGjpcxWdbIslL26WEP8JFXiPRbEpoTAsGLQWyvViGAQIgwFkGAd7KzuEpvLURvWj12aC8dLmdCY6fDgWHazp5g/97Ijo5ppmZyvl1lNoVsNw6v/DE=,iv:Pde+xrs5cWPatXMovCq3o2UJdSwGYw7AL601CK8f38c=,tag:8GKX66Xgu7Ya88IQZLYSdg==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients)$
     version: 3.8.1
