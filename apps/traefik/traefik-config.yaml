@@ -1,4 +1,16 @@
 ---
+## Redirect from root to /admin/
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: root-to-admin
+  namespace: traefik
+spec:
+  redirectRegex:
+    regex: ^/$
+    replacement: /admin/
+    permanent: true
+---
 ## Traefik http https redirect
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware

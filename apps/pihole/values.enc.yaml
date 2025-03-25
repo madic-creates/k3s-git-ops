@@ -15,20 +15,30 @@ serviceDhcp:
     annotations:
         kube-vip.io/loadbalancerIPs: 192.168.1.232
     type: LoadBalancer
-virtualHost: ENC[AES256_GCM,data:P4Ez7aX+vaMWXlTBnfhNhyHrPzMiYjQ=,iv:XHv+cOU2bJNdS5a1bGeFcVfgPlJ2z25L8snQ5FNoD+0=,tag:ijyTKtC2QJQaWwataOxdKA==,type:str]
+virtualHost: ENC[AES256_GCM,data:2ZM+suOvBuC39IjGwcmtNhHsdM9ZA3A=,iv:i4l4RrAak34xVwyTDLB8Vykrb+eK4+Mku/UUWGmcUMg=,tag:FKeNm1GfmXCrgxc4HpQuaQ==,type:str]
 ingress:
     enabled: true
     ingressClassName: traefik
     hosts:
-        - ENC[AES256_GCM,data:U/x+PMTP1Rragqi9HzsTIVtLPiuwQ58=,iv:Y35CcQBT7cO1r0MQXjABnqWClWS/hxlxJdyqmAV0w4U=,tag:RQGZb/hVDmLRgArrywGPDQ==,type:str]
+        - ENC[AES256_GCM,data:qXcpOJdLcqi8hHjAdlWGCqiiNXOiW7g=,iv:p5neb9Lb7R5W4g8JMGOxuzzgAbmtx0mkqkaanegVUHg=,tag:JyWK5DbaXLLgKl9DSFWhLg==,type:str]
     tls:
         - secretName: wildcard-cloudflare-production-01
           hosts:
-            - ENC[AES256_GCM,data:kspVSbxEwbOLKfRXRaw5IJQxVLNYPmc=,iv:9wQc40ODrjoywIUYWi15yoEZ6cu5XtSCkzVt8I1qSjg=,tag:4U3hfKAVsJu3CSDqZS/AfA==,type:str]
+            - ENC[AES256_GCM,data:PDoOd8ZsHZi7+OgUmGwyVUVDT2XoJFk=,iv:hx2oPSnmxXeYOswYEfD4n+5XslstNELUL0QLvnKa1fM=,tag:4b/RgMck7qHgD655FOiMPw==,type:str]
     annotations:
         traefik.ingress.kubernetes.io/router.entrypoints: websecure
         traefik.ingress.kubernetes.io/router.tls: "true"
-        traefik.ingress.kubernetes.io/router.middlewares: authelia-forwardauth-authelia@kubernetescrd
+        traefik.ingress.kubernetes.io/router.middlewares: authelia-forwardauth-authelia@kubernetescrd,root-to-admin@kubernetescrd
+    path: /
+admin:
+    existingSecret: pihole-admin-password
+    passwordKey: password
+persistentVolumeClaim:
+    enabled: true
+    accessModes:
+        - ReadWriteOnce
+    size: 1Gi
+    storageClass: longhorn
 resources:
     limits:
         cpu: 1000m
@@ -59,7 +69,7 @@ doh:
     enabled: true
     pullPolicy: IfNotPresent
     envVars:
-        TUNNEL_DNS_UPSTREAM: ENC[AES256_GCM,data:bZ0mwYAtnim5GDlDBFzyfLHU8aIut+Pkbts5bd5rI1GKp781,iv:i/tLUwPl/MVJ8U6j2lra9EN/ASg9pEFdVM+/VvybVD4=,tag:Pj8K8ttIpoW9OpLuoRAW2g==,type:str]
+        TUNNEL_DNS_UPSTREAM: ENC[AES256_GCM,data:Jsh3xKbuydGvqleOGPBWPRr8sbmiFkOYhkpzuStIWsUKyHYi,iv:k/buiAkeGNEufCq+4lQ2nj+hsbGfx8iWek52XDe9lTU=,tag:PW0KFkc2r5d7NaTeCsoyPw==,type:str]
 dnsmasq:
     # Contains internal wildcard domains:
     # - address=/.example.com/192.168.1.45
@@ -67,10 +77,10 @@ dnsmasq:
     # - address=/.k8s.example.com/192.168.1.231
     # - 'address=/.k8s.example.com/::'
     customDnsEntries:
-        - ENC[AES256_GCM,data:ypVyBB3Kf8ieu63bypLoLhoKstk2DZNrr3jRSGsdc2hpYDI=,iv:9Cg6MCdmNZ+fPAgsQRyyEtGMZaLys/xTK40xnLcTUgY=,tag:/LiEj+V+3KZOu3eXrDTaxA==,type:str]
-        - ENC[AES256_GCM,data:ROUHytlIBk4ACXDTB4uAkXd36X12cagh9Q==,iv:E86f6NAlb7xgYd3vJtiRhw8xENgluP6x2VYz6+va1GA=,tag:ocE0oXGu3QmRHQ6xekkg7w==,type:str]
-        - ENC[AES256_GCM,data:/5770CVo2vp8gMQlZNGu92PQwi5jRe+3iAEjTdJ1S1ZE1+4LhTVlRw==,iv:BqvoyXAotsCqIapqT6r4JiCvsZMrbsWUPGdfaV9nRS0=,tag:/6pqKMQAlaMnis9fQX2a+A==,type:str]
-        - ENC[AES256_GCM,data:Io9mT4JYrS2ybKdZA3V2GNRFC91b3517xM+GbtE=,iv:hr32M3+Q3SJH08iNET8UPvDNhiPWvuO3iC2eq/TJkgc=,tag:t70qAzkdY5WDMgyqJPFUkw==,type:str]
+        - ENC[AES256_GCM,data:2kwm/xJOc3VyxTirxPuKFFHDncxKXVEVIXdAjihozjxrJTM=,iv:VGzkFX+P3hNmOUCVuSZWQX3K2tni4IRtW9VA2vWAuNw=,tag:zPp6GZvVhrNGZcrHMX8gaQ==,type:str]
+        - ENC[AES256_GCM,data:C+eL+GAIs6vdlilkj7CDFx6dV4h0Khv0og==,iv:xO686QF/El6LBmZ9+uKokxhFohqm2W1FilDUf4FsINQ=,tag:7UTv3xkz70hgaUaZt/ShFA==,type:str]
+        - ENC[AES256_GCM,data:A6kqR6HNugDnYNRToMtCHzOU+iqBY4NQv/L4R/gfuRFUI/YjL5IL/A==,iv:/VxnEnZ1FUhhOInd7DJ36RFKsXe7qIE7u6CImvXWI6k=,tag:6kfaHPFqJYP3czcl+vYppw==,type:str]
+        - ENC[AES256_GCM,data:ez8zir+TEFet9oMMCDZAA0+hGMcXnoQ1oHbBuug=,iv:xKHQCudB7aO5VVkc0Uwxkv2eaTr4AB3UgxcrIDtLuaw=,tag:bKwRXeosvegdQt8IHojjkg==,type:str]
     customSettings:
         - dhcp-option=252,"\n"
         - dhcp-option=vendor:MSFT,2,1i
@@ -130,23 +140,23 @@ sops:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBaQXZUS2gydjc0NGpZOERi
-            TnhlZnkzL0dEMEZIeVE1UGROTFgrdUo5MVFNCmV5UDNYRVpBc2FIWjFSanBPbUh6
-            TEpJOTV5UGJvdkl5azByK1ZLdWYxeU0KLS0tIFk4UTBYMW1DbUt6cUdJd0NsTzNB
-            c1pDUFRUM0JVOHBvSWhuR0hKcDJuOWcKAfE7jbgtPJUQ57tzwaFY4Z0GXDOkxDla
-            1vRUHwnpx3FB1z2C6ywQwjBeFRBHZnZ6SLvkboUpa6nWsN1s48yLnQ==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAwSjFPVDZjeVVZeCt0bUtX
+            N3YwbGk2UlhnMmhobU5ZaDlrcmM4S1lTRmdnCnU0OVdNbWx0bWMzRUhic3N5TE1J
+            UTlvQ2RYeDhzclovNGtwNmdUVEdyWkkKLS0tIHVRYUJMc3FKQ2EwaHZiYkljZTRR
+            TzhqNm1nWVhob3M0b2JVb2NYYzhhamsKeFD7JkEhA+etTa9rjH76D3aZFgfqwCtw
+            Y4oRRroYeeGg7FN2XvFqPMYMs722E25BSUURH4DLeMzY/lLXtl1zvg==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB1TGtBZC8yaVZWNFk0T3Bz
-            UTIyeTFvRy9MTHpvWWxEUGhwMWR3aFhxZzE0CnlreG1FUW5JM09FUjV6Vk0wU2Jy
-            YU8yMUdBNWdkYVpGeHJRTE10eUx2S2cKLS0tIE9Rb3h3VTRSWnFGaHN6K2ZpcHB6
-            WUl2QlB0c3dXWUhhUnhVZ2Rqc3VUcEkKGVsDk8lQVov8VNJ9BxtGVG//1Zry7eJy
-            GXYcey1tWcGOTr0NeXvikd6lEo2GnQ+b5kXQIXPpdPfjNdzm8xnNfg==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBDelkvOXFvaFZyL0psVW9i
+            RjdsV3RIYXFnekxtemJvcXRtaUlFUzhndkZnCm44SGV1NTR2dXEyT1dOOGhlckpw
+            bmxVRkZxanRITzdYdUk0Z2ZtYmhocEEKLS0tIE9PNTRsdlhrVWFjNjBrOUwzUTY1
+            RW1mV21oVkwzWlNwOTlvaGZ1WStyV0UKKTb/sVaXyHjzsrGwL0x3KetDxAt6daXc
+            VUnEu1chWVJJ8eIcZ+t+UmpioXrje2MK5NSYI60446ZA4zxymFLZmA==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-03-25T21:10:15Z"
-    mac: ENC[AES256_GCM,data:l84gSzGTfj07SlapgjMeXzRdDF3uyvp2LHaHX7UAQ6iICHoaBdAX8WiLSnOjsAJbr2qsgye1eA3av1+ol1Y8S6pzBnXcODY7xGUTqcuRBNGaNdNPBB/P3CTwWz9j9epz28JH7txpZp2OxO7Bg6ObPfc7crNhRVH9PWCji6/Y8I4=,iv:Gfk3lnyheDSzogs4nAPfczlG5Uo3KeJhd3UL5b/B5G0=,tag:LZI7zRisnpskWnxfNQ5CgQ==,type:str]
+    lastmodified: "2025-03-25T21:37:03Z"
+    mac: ENC[AES256_GCM,data:M4dmFcHJf95kLU7IE1W0VZi/s7eE/HNmedYUCr0IbKSedfAE+6Slb7MYSK5KmRshIRKhTLQIXNFRnm5pQZ0Zu8EHgxQyDanxacFkfsFWo8+J9wYup93Ot82Y7mW444ZswWG1Wk0NILPr01tBeCIbvcaMMeUS8Fp6uLLf8C9zz4k=,iv:a3j70mKjZZX0EW7EB6OXNj2OxOmXp+fsEU4I4bPcNwY=,tag:EOFTMGAuOIi+wbxD27blsA==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients)$
     version: 3.8.1
