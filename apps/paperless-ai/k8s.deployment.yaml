@@ -21,6 +21,9 @@ spec:
           image: clusterzx/paperless-ai:2.7.6
           ports:
             - containerPort: 3000
+          env:
+            - name: PAPERLESS_AI_PORT
+              value: 3000
           volumeMounts:
             - name: data
               mountPath: /app/data
