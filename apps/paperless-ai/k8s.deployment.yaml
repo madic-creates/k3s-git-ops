@@ -23,7 +23,7 @@ spec:
             - containerPort: 3000
           env:
             - name: PAPERLESS_AI_PORT
-              value: 3000
+              value: "3000"
           volumeMounts:
             - name: data
               mountPath: /app/data
