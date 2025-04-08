@@ -2,7 +2,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
     name: homepage
-    namespace: default
     labels:
         app.kubernetes.io/name: homepage
     annotations:
@@ -20,10 +19,10 @@ spec:
     ingressClassName: traefik
     tls:
         - hosts:
-            - ENC[AES256_GCM,data:w3r3AXulTrQ1UY243IlXCkZxgQuS,iv:O3FKyWWtYLrFrAF+nrUy7iZGy7sVbgTgZPqeYy/w7+E=,tag:NGL7sTuhFNShSk5oL0NiPw==,type:str]
+            - ENC[AES256_GCM,data:KIEDFkRaFT7wkPsoFESWiSs7LZWD,iv:DybZ0CFqCnhutarUgPBAyb4bVv1/mzcx7I76zbZ7nE8=,tag:J8g6or0xfG231zuWLjtstg==,type:str]
           secretName: wildcard-cloudflare-production-01
     rules:
-        - host: ENC[AES256_GCM,data:A93cCDHX7e5lVJs1xkiR70KvNwFU,iv:Nv+qpCPigVhs+pR3Ynu2kKH6yW471WHY58VcOgqUwYo=,tag:oIRkOQ30FhfJBgcn8FfE0Q==,type:str]
+        - host: ENC[AES256_GCM,data:6hBCpXbZarQDbgXR7y6NkQ4OUzfg,iv:2+zKNPLo2CsOpSwhcVw8oA7rX8NkyWfv6kKbkibdVZY=,tag:DTshHLKj0zQ7GEYXi7nJRw==,type:str]
           http:
             paths:
                 - path: /
@@ -34,31 +33,26 @@ spec:
                         port:
                             number: 3000
 sops:
-    kms: []
-    gcp_kms: []
-    azure_kv: []
-    hc_vault: []
     age:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBndENHYlR1bSt4aTZUT3ls
-            OUpVY0xKVE1nWENPVUh2cmdCR0dUazlCUzNVCkgxVHBSQkdxd3Z1SXN5Sy8xRmdE
-            R1gyY3gxZ0ZkWllMcW0rQlBFZjNXNG8KLS0tIEV6cEJUUmdpOXF2aDBJbHZaUG1T
-            RVdzMlRwdVc0Q0JMZ21mUSttaGhEZlUKK8m5Y/Li0t8noZJGfImL/5lS81XpeOL5
-            PkXvWcmCv0sx4KGjsKu9xD9cpxigTrOce18+SukqzfFExLrwHiGCQg==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBScGZka2s4WjRCdEdFUTJi
+            VjNzdmlPUWxUWGw3SjlQTndaNGk3WTYxVTNvCnRnbVpMbmVRTjQyb3ZXUHBEL0hv
+            bTNqNGNTWGVaSDQ4SnI3Ny8yUEFOOTQKLS0tIFlBV0JEdHpiWjRMN2Z6TFlRMm8w
+            aThmcG1LUDlJbTJ2b0RxSGg2MmpuZG8KjRlqXVMoK3tFnbsx5TBl9LhX2uMxoKnY
+            52Q7oLNXOahqtyOloTZlHfgmjabpJL4vtKX5s/i1ASkcv3/V7JNE6A==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBGb0xJL29BNTF1WUJJcWQ4
-            clFtc3U3Tm5sUFMrc0thdFpMNWJVY25ERGdvClkzZnk3NTlVWUJCazVLbWE4VDJV
-            K0N2aG9wdmJydGQ0cHdzSmhhdG0ra0EKLS0tICtzdzRNNE5na3JpMTdEd2wvMW1J
-            SkhFVFExUVIreWtmdkhHclF0S3VPeEUKARsO5b2OuUcowxaZ84/nOefktOdlfFtX
-            wH5AA1lmcTtdYc6YcrLnrTD6KXimVMoT++SP1UvOKGlg1LKBEE9+Jw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB3YWFYT0ZZRTFFdkl2aEVs
+            eGtNa0gzT2haVm94dnVyam1uWGhhV1pTL0VBCjBMOTFsVlczeXRuS0JhK0ZleXR2
+            SzQySWcvTjFPL3l2QmJCMGdrdzhMUEEKLS0tICtZa0U4U3NXZ3pCdjArNTVaQjJu
+            NnZySDFNUkEyOVNwQi9XdGNyUGdWTm8KwWJH8KVTzsbGSVWMqnA9Jof9DrypUF/g
+            zSRXUetwkJP8smitVckspt/osiDpoYzFPCRDBkvmu7UmY1npC4dVMQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-10-24T18:08:47Z"
-    mac: ENC[AES256_GCM,data:wCa/zwpFxzU/gFjQ+xIaVknAJdDpWRFz9UmJejHfjHVjhlH8uQZFCVYNxZill/nR2Wk/Ov2sp5A6ZL432FotapwGomR0EgF/43r7oqnLVHa4ASif96OtF+XjQ6vKtYeU3epMv/J3oP535EYpHsBk8ukAC0rcGbJDq59BjWjJBZU=,iv:rnm92Y4JX1VwabwI33GvOcNy8T0MSFUYrBsVqtcmjSQ=,tag:66uO3GZKG3670Rly5b1FiA==,type:str]
-    pgp: []
-    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId)$
-    version: 3.9.1
+    lastmodified: "2025-04-08T09:53:12Z"
+    mac: ENC[AES256_GCM,data:eBk6JBMb4De3TtVagEZ/41HBmJfeL5O6ooqKIps31FBQ6JEo+8FlMEZLZ7o1/kO4t8Z9rvfmBj+VlSeW4M+Q8s3hNQVYacX16hzSwdUgnjliywvMw47R2O0qFB2WVQjIFuMUtLrmgEPyKzjxA4Qxt1n2YmoM/dPPhZ1x/aZ3NXI=,iv:JAk5rcxg8funFpfyQahxf4PRYADPHYUYEjT+8n/J4x8=,tag:RTXVDvOvF+iQpKyqYGZvqQ==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients)$
+    version: 3.10.1
