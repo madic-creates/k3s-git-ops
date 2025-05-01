@@ -13,6 +13,10 @@ helmCharts:
     releaseName: csi-driver-smb
     namespace: csi-smb-provisioner
     includeCRDs: true
+    valuesInline:
+      feature:
+        # https://github.com/kubernetes-csi/csi-driver-smb/issues/920
+        enableInlineVolume: false
 
 generators:
   - kustomize-secret-generator.yaml
