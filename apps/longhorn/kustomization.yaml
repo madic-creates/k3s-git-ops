@@ -10,6 +10,7 @@ helmCharts:
         backupTarget: s3://k3s-at-home-01@eu-central-2/
         backupTargetCredentialSecret: wasabi-secret
         orphanAutoDeletion: true
+        removeSnapshotsDuringFilesystemTrim: true
       longhornUI:
         replicas: 1
       longhornConversionWebhook:
