@@ -5,7 +5,7 @@ commonAnnotations:
 helmCharts:
   - name: velero
     repo: https://vmware-tanzu.github.io/helm-charts
-    version: 9.0.3
+    version: 9.0.4
     releaseName: velero
     namespace: longhorn
     includeCRDs: true
