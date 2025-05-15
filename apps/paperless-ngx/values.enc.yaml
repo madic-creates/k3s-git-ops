@@ -1,6 +1,6 @@
 image:
     repository: ghcr.io/paperless-ngx/paperless-ngx
-    tag: 2.14.7
+    tag: 2.15.3
 env:
     - name: TZ
       value: Europe/Berlin
@@ -65,31 +65,26 @@ trash:
     persistentVolumeClaim:
         claimName: smb-pvc-container-paperless-trash
 sops:
-    kms: []
-    gcp_kms: []
-    azure_kv: []
-    hc_vault: []
     age:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBRYUxhNjJHRHNXNFZQNXY0
-            cXR1TTVOUTV4ZFZ1UmY2NURvZ1E0TS9mU0MwCkpmV0VJYnRtN1FWSXkrM3l0ek9y
-            blZTYWI1eXZWU0ZxR0RVaUpFc2JtM0kKLS0tIHBQbll3d0Jwc2ordWd3Q0pqc3BR
-            OW9VTVhxanl4OGxSK2VUMC9hZ2V0a0kKoTU914VIi8WyaLyUcM7bTja6EXpcyjrO
-            SBRusIvj2XsLPygcOoXyZtPeZvvbsJykbJ53RifHlpZvOBTM6G2eWw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB5WTM0OVhPRWVwZmFxK0Uv
+            d0tHb3VUVEt0VE9abW51UFp5YnZpY3NJVlZ3CmI4M0taYzFoMXBnL0hhUFdudDRp
+            THFiUFF1bjB5Mlh1NHhCUktrRXpHaTAKLS0tIEVVSEtzZldEMWFSRS9jUnlJOS9s
+            b0JMOFZWUnZTRHAxb2cyeE5SamdHUFUKX7xlHewFv2eUFFEgpQ8w1pmYsRDTNImF
+            zH97yt/+wmDjvTT5i7ZQxLcUwZ8OAVOg/IcZbUO6FPWmZdrqWCZJEA==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBzMnlEMjJXb29HVlJialJa
-            Z0ZZcEFjRjdOZVZuSDAvTHFzbGI5b29wWGk0Cmd2ZzhwWnJoNEpJRGcrMVNWUVJl
-            UVVLRXUzQmN1N1lHR3A2eWR4SnFsbGMKLS0tIDB5Z3RWd2MxSDl5ZzY0SmJKVVlQ
-            L0hhYVZ5TTFBYVpWZGl5L0phWVMwZnMK1dCzm5IlISMqffHClupD6z+wDnqvv3YI
-            tffwB+uwDQ/KeR58ATRFLnBXvnp7VBmv81QvUqQN5E0BcADIz93krA==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBWWTNhT3FPYTNtQWxDdWhZ
+            VzdIeEUyM1NnYU9WakRHcEhTTjdKODhGRmhrCmk1MUE4cVhXYVR6clBTTGxVNkpV
+            UVpCdTVFMUF3ZzYxL2w5c0xUU3FWdEEKLS0tIE9oblROT2lUTjZ6Tm00V016UzNI
+            VVQ3b0F3M09McjZaSitvRW5WbXhTQmsKUk/c0DLX4pPBt4kP6v2EY6U5diGQ2Kue
+            h2C/bFuIZsemRMnmsTb6IKWwDlg33yKNq9q7LDZ+oWulsuC/JFx/jw==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-02-06T18:27:59Z"
-    mac: ENC[AES256_GCM,data:7OC28e+6IIvGARWsa9n04bFxAFHSKj5p6VKOu6084jFbrrpiTVDOqJ/m7syYkD/wGdtIbGF0sE7ADGiEtdwvDmDs1V9r3kzjTYCOrx6PqePtfAjpuVpKH8y0cXqriC+2SO1KbS7IOdP3hCNtrOVToa9PsnQNsVSsWx9I/eWAlXY=,iv:65776viFgGF/s2ihifx0QOsuKRQ9OdvvqzhCf5XW4CE=,tag:rhRz8IjorfoC+PTFCJzBsg==,type:str]
-    pgp: []
-    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients)$
-    version: 3.8.1
+    lastmodified: "2025-05-15T09:32:59Z"
+    mac: ENC[AES256_GCM,data:HGRn5t3B8pnnRBfqqY8wdupYpN/ZEmXgWelKMu80uIcLmQ9raCeiEU1v2VpV/f+wloc6gb6ocNl8t68pllCBBapmFpLErEMu5gPmtiLeoKy7ss6EEU37XVJmC16QILo4cQIFqYi80wmISS0U2B8CcYYIfoefaPHJqwrWRfq862I=,iv:2GZ0Y0L+qbZBRfy0CaYc2S3OYOmPfugiKPSqe35al+M=,tag:qnms0wYiO7jmTasQSGHCfg==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
+    version: 3.10.2
