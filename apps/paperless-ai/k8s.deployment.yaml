@@ -18,7 +18,8 @@ spec:
     spec:
       containers:
         - name: paperless-ai
-          image: clusterzx/paperless-ai:3.0.4
+          # re-release of 3.0.4
+          image: clusterzx/paperless-ai:latest@sha256:33f1f9b63fe2ff590a903ecfde0d3f4d977f9918c5483470fad617479e2147a4
           ports:
             - containerPort: 3000
           env:
