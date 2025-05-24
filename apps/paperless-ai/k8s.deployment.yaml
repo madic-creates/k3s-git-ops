@@ -24,6 +24,10 @@ spec:
           env:
             - name: PAPERLESS_AI_PORT
               value: "3000"
+            - name: RAG_SERVICE_ENABLED
+              value: "true"
+            - name: RAG_SERVICE_URL
+              value: "http://localhost:8000"
           volumeMounts:
             - name: data
               mountPath: /app/data
