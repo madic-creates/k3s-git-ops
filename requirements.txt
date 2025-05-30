@@ -7,7 +7,7 @@ mkdocs==1.6.1
 mkdocs-material==9.6.14
 mkdocs-material[imaging]
 ### https://github.com/timvink/mkdocs-git-revision-date-localized-plugin
-mkdocs-git-revision-date-localized-plugin==1.4.5
+mkdocs-git-revision-date-localized-plugin==1.4.6
 ### https://github.com/byrnereese/mkdocs-minify-plugin
 mkdocs-minify-plugin==0.8.0
 
