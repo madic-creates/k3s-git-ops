@@ -1,5 +1,8 @@
 deploymentMode: SingleBinary
 loki:
+    analytics:
+        reporting_enabled: false
+        usage_stats_url: ""
     auth_enabled: false
     revisionHistoryLimit: 3
     commonConfig:
@@ -31,31 +34,26 @@ monitoring:
     serviceMonitor:
         enabled: true
 sops:
-    kms: []
-    gcp_kms: []
-    azure_kv: []
-    hc_vault: []
     age:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBXSnRnUzNmc0swVEhyVEtS
-            RENwQ2cyNlRRZkQrejIyQWpnQW1WMFhNWHg4ClUrMWxualVzbzNYOHROUENpUTlF
-            bUQzYlpWb3E1WFgveHhkL1VzRzA5QUkKLS0tIHFlYm9VYlAwZ3hodjBUbFZ0ajhr
-            T2ZQZEZOejhlOFVlellIN3ZucHFyU0UKaqSLsvqpEm5JzCGTBSZHbVY+TYNJ/9WR
-            ia1rr4QaIYaStTura4ydcrT5aiWUuJAJQeo+NI28UvLrTIE2OBfMLg==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBWeTBnZ2t4aTMyNGlnTnQ4
+            dHJGcWROeHV2SENLbS9sL2hpeVZ2a0swbWc4ClY0cHlnVHdVNWEyQ1JpUGdxQ0Jh
+            Z0IyckNHMFF6WnhYWEw2WTIzVXp2eW8KLS0tIEM1WGFEcTYzeklIbE10d2ZrdGpC
+            eHVnL1NZamg5dWlsK21LV0pGNnd3Qk0KWXqKzZBdTOyZNkgtNUk451v61dUlRIVY
+            UUOUTNepPJXhES5GK60swV6Auuj/GcLHbyM9FL5mvL5yFNABynaP0g==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSByZzVjT1hhZWhxWVQxc2RR
-            akhrUjJxZ3RUZVBZaXVUVTJiRlJNTjRBdmk4ClZ6QzJWamNURGh3T0p4S00rWm9Y
-            WXV5T2g5akdyQUF5RldBUmdUbXpoR28KLS0tIEo3aFIwVWdialdyMkRWbytkWVFi
-            N3ZHN0pTQ0lROWYwUzV6UmNaNmtqcWMKHSrjQX9cxnGh7kCU3E0xmOM6LZiAG9JO
-            295h72+lL3Sin35TkdgFQKRNNJW4ZfT78CyAhCoDr9R9Bz1LeRhIyw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBlTlJ6SUFWeXBrSEU2dFBC
+            T3B6MGR4V3JRM1ZuWitQaUNQaGJjL2FsV3owCkxLbU1xWnZyOTlZbVFzNUlYMGlq
+            N3BxRFVkTkd0K2g1UXIvZGtWT3pic0EKLS0tIDdPSGxQZWdRNnlEcU91eUR2Mm9E
+            UVpwZGlsQXlnQ2liMEdTUTFHa1hjTE0KZ/4Hjy8Cgl26fe1t8IvSCJpMYe86T7bH
+            sHY9dMAF/q/DpudF+2LIIr0bMjG58uuVVCuRVg2XhvjF9dx1Iib2+Q==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-01-03T21:18:27Z"
-    mac: ENC[AES256_GCM,data:8QiAqGEOGZPYot6GF+cGZkpvJdG76eF2qEfba/vUtOeJG4hvPov1lfvA/wqLAyb9+Tkm1H7V3HoAXe6/MoLcp6ML53HSfW5EGBKY4ef2ajMN7tOFVEF8AWNbqdqzFcUvAn5dlb+uNklAzOns/m9vj8tzH5d/H7St6T5Nh5uYdr4=,iv:XcLR7lxZH7FPQPjKg68j2K5Zu3sklX+1bL9L4uYaSu8=,tag:Q0o/HP9Sliv0KKZF+RW7AQ==,type:str]
-    pgp: []
-    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|clientSecret|argocdServerAdminPassword|oidc.config|commonName|literals)$
-    version: 3.9.0
+    lastmodified: "2025-06-17T11:46:42Z"
+    mac: ENC[AES256_GCM,data:T1ChSmIeDUMitrdRFpwjwTOsFIuCZkyWkJtQA44VN/O+IyiItjjoM2H1ASeLiPym8MJjaz4JgNfdb/gTUu0JCrns6TlbMAWmeBCfLsFC962SJd9YZjtB+h+UF54XrSTFkeDWBxkBcsIPM7z9s6UStWAiA5EBKNO0Ad0Gi+xV0r8=,iv:g9tY3bGL/mfTY3TK3LFpNmfalVMhPVd8FBg2nfVeagc=,tag:CRMMyQh75BwK6wCThkA3ig==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
+    version: 3.10.2
