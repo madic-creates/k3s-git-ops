@@ -7,4 +7,4 @@ collections:
   - name: kubernetes.core
     version: 6.0.0
   - name: community.general
-    version: 10.7.1
+    version: 11.0.0
