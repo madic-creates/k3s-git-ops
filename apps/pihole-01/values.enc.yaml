@@ -15,16 +15,16 @@ serviceDhcp:
     annotations:
         kube-vip.io/loadbalancerIPs: 192.168.1.232
     type: LoadBalancer
-virtualHost: ENC[AES256_GCM,data:q/n4Mrw9ACDa3A9HLWuNDt/65hQeKTM=,iv:2PHRG4ZM7jM3vn/RqWVeW3u/RtXdzz+N4kwSd6yqRIE=,tag:K+JG99tlwjeTYE1+hsGpcA==,type:str]
+virtualHost: ENC[AES256_GCM,data:T0yyBmaHE/is6SuVBRxL6d6BzNTPNBs=,iv:2nMD4M/dvpG8iU5wd5PUDVSRW4fE51IRDZLAxP0M8+M=,tag:GG4mUOCYjOROp9mYCNRvQw==,type:str]
 ingress:
     enabled: true
     ingressClassName: traefik
     hosts:
-        - ENC[AES256_GCM,data:t8kCxquFhh7TtxWLanQpsfx6ApzYoAs=,iv:wVVV6DuT/XdOwYwxx3AcYoxHB6WfwzMq/NBugU6IdmA=,tag:GPYmmEEkTuqWEaHIOm5C4A==,type:str]
+        - ENC[AES256_GCM,data:tNHD+h5Gk/f6zbM29q7XHY7r1WsiBeg=,iv:0dSnBxx1tYjpSuIRUMKtQpOnXGIkG+KOp7rBEvu5ovk=,tag:hl6ZVXMqAlCvKdDBGesmbA==,type:str]
     tls:
         - secretName: wildcard-cloudflare-production-01
           hosts:
-            - ENC[AES256_GCM,data:A1JipCr5T0YQu4L4EIRhbV8XtJN/cYc=,iv:KW2LgYZ/2hGHlXyUhVtDxCkGOnPhp90FIsS9Ih7Yib4=,tag:SBIkXJE/x+ntL8XO4aBdAg==,type:str]
+            - ENC[AES256_GCM,data:Hfm6yhE2NbqjZe8OLzTRLapEsyI+mV4=,iv:MHllCjqGtGdqt2Q3yCNjFpna049Q54yCvMbThenYg9Q=,tag:TuG5Vp0sa50DmgJYVX1jSw==,type:str]
     annotations:
         traefik.ingress.kubernetes.io/router.entrypoints: websecure
         traefik.ingress.kubernetes.io/router.tls: "true"
@@ -59,7 +59,7 @@ doh:
     enabled: true
     pullPolicy: IfNotPresent
     envVars:
-        TUNNEL_DNS_UPSTREAM: ENC[AES256_GCM,data:Qrs+LGtRD1YfLpVj/pSmgZCWX/DAD+5+vley/PfLoVBSZh2l,iv:ubcuyIGSjyQVt7OCn3QMAK6iucZqZYF69zofJUsZVVg=,tag:Ad2CmeSWXkYbtwQOqIsh6g==,type:str]
+        TUNNEL_DNS_UPSTREAM: ENC[AES256_GCM,data:+Ncp3TBoR2+U1M+UFxWC5tmZa+OtgohQrP6b7FZtt1Cp1a11,iv:xkkLgYJKi7KcMLuf8ola3IfSmfQdiH41aRYUwgW0xyo=,tag:cqMt7iVOyzIBK5BIYTEEZQ==,type:str]
 dnsmasq:
     # Contains internal wildcard domains:
     # - address=/.example.com/192.168.1.45
@@ -67,17 +67,18 @@ dnsmasq:
     # - address=/.k8s.example.com/192.168.1.231
     # - 'address=/.k8s.example.com/::'
     customDnsEntries:
-        - ENC[AES256_GCM,data:TINB8c/FIBK1HNX1pXEOlczK8hUqe1+arZYDvdpvfAyMj4k=,iv:Qpj+ieVmp5rhmZlvJk2pzZUoJ/L4oQVcGQHtJgO/Fmg=,tag:GWvJU53m2BCAgkJu+vzM2A==,type:str]
-        - ENC[AES256_GCM,data:MTKtYhlCyoysppEO2s2jpUxaznhvLLKU9g==,iv:oKmIjFG9cww6CVKmcehzHKonBQwHeDPt39FKsckw7gc=,tag:ADbS9xkzW1gMTSlcLWJGHw==,type:str]
-        - ENC[AES256_GCM,data:B7ON1fqWAjUtC0Hmabc99LQ8QhJkaYugjoQNCXOLKmUZrRX3OpEzBg==,iv:pQgk67wFca3MQqBhZyW/ACuiA+ReJl+DAqFae4cVVQk=,tag:dEFpdWhT2oPqbWKxkNRdJg==,type:str]
-        - ENC[AES256_GCM,data:rNlEakd35RO5BT8XBtwlx2bw9N514bmlNMG0HRA=,iv:3avVZoiAlNE+iYyPYDCG4POGHd5PvZDo4RNH6pJAG60=,tag:BNUzpGwj/wM2DxKps9KzIQ==,type:str]
-        - ENC[AES256_GCM,data:gjJG+VasKD3jruLLoPHtFUfUNb5Pe+F+EIUiTu5b3p/A9sPwxJZ0Bmr+j2M=,iv:fb4ulcd1mU1TbF+MjlT3X0WV1fHpZzKLFwXnmWXQA/E=,tag:+PaZflut488U87eDPQOOJQ==,type:str]
-        - ENC[AES256_GCM,data:AS5ozEKHvvdVDhRmpvyYN7NsGlBI8/OHgNyWmRpLhcLlsHh0YXxJHMxMcCMDwYYf6FCB,iv:N18QxmAHV4F584LCzaTetdGV0Z7LH1M2TXNdRPobcyc=,tag:X3Emsg1RG10cEfl1NMqpig==,type:str]
+        - ENC[AES256_GCM,data:YJ2rZymkLBUtAAjdULSE88+buYrWqwuHPhixj5gtwXVZj1g=,iv:KqyrHERFx4GjslmfqdH0Nr8DbiQj25iszU514R4CJW4=,tag:IPXQUwkgrY9bNeZ8/V8hdA==,type:str]
+        - ENC[AES256_GCM,data:4tjjJl0U4wdxAOff59MXESo2pn6NU9TUJA==,iv:c/RjQBf/uvcDcU4+M+Z6Pjfia9Hfg0FThC3PkWzoeF0=,tag:bgaqXRGI33S2v57lGlMVfg==,type:str]
+        - ENC[AES256_GCM,data:lfGMeyZjdvCKiHISKzpmLcjHA9AAXIqO7xsaORgirESBiXbINmQ8zw==,iv:un2+xwTy37onMwWXceanzJMhkfbspWFi12mFESg+HTo=,tag:o4r2f4gHEhHzZT64H55l0Q==,type:str]
+        - ENC[AES256_GCM,data:YFI49h47pCmhG3h0IbNDKYYi0dMFR2HM1tIAw4U=,iv:LxN6Xh8MZQ1v3/3HiWuyhfB+mOv5XmjN8lDlrAziN9k=,tag:tOf/a4v5Oyn7AozhvG2PJw==,type:str]
+        - ENC[AES256_GCM,data:5Pl3bg59uI+IWOjVxq/TB1CfedwRSQfd16D+Uiou3Twe7F0yu2oZreY7h1k=,iv:Y1CGB1AHazDM/n9iNNNVXdLxiZh0ktURK8NvZM6/xzk=,tag:MU0op7WOlXTpNWkG1ueaCQ==,type:str]
+        - ENC[AES256_GCM,data:/1CyIg2U/LQQoNNnvxScpyJy0rRkPjYN/rCxyGkxkpKd5k6ruNsvEN+niUVe5Bow0YpL,iv:6msojTDkzHc30TklvPZ/yyzzZz/GznO5w2NKHiGu/1I=,tag:S7VEraXCBVHcyigZl9vGwQ==,type:str]
     customSettings:
         - dhcp-option=252,"\n"
         - dhcp-option=vendor:MSFT,2,1i
         # DNS
-        - dhcp-option=6,192.168.1.232,192.168.1.1
+        #- dhcp-option=6,192.168.1.232,192.168.1.1
+        - dhcp-option=6,192.168.1.232
         # NTP
         - dhcp-option=42,192.168.1.1
         - dhcp-range=::,ra-names
@@ -93,6 +94,11 @@ dnsmasq:
         - dhcp-option=net:customdns,6,9.9.9.9,1.1.1.1
         - dhcp-host=net:customdns,EC:79:49:51:64:16,192.168.1.187,ipl06002-lan
         - dhcp-host=net:customdns,F4:4E:E3:2C:C2:B6,192.168.1.56,ipl06002-wlan
+        # DHCP Reservation with unrestricted youtube dns server
+        - dhcp-option=net:youtubedns,6,192.168.1.234
+        - dhcp-host=net:youtubedns,AC:3E:B1:A6:AF:D6,Pixel-7-Pro
+        - dhcp-host=net:youtubedns,74:58:F3:E7:3A:04,Fire-Cube-lan
+        - dhcp-host=net:youtubedns,48:43:DD:6E:CC:2D,Fire-Cube-wlan
         # HTTP Boot
         #- dhcp-match=set:efi-x86_64_http,option:vendor-class-identifier,0,10
         #- dhcp-boot=tag:efi-x86_64_http,"http://192.168.1.45:8043/ipxe.efi"
@@ -140,22 +146,22 @@ sops:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBReEVpU2xtMjg0N2hZSjdv
-            VDhnT0R4UlFuZU5sUEt0KzRpMVhQcWpNKzFnCmRhWEEyc20vMkhvOVpnTDdHZUhO
-            dGEwTVVJWnZBckE4cGwvYkxEUlRhRHMKLS0tIFI2cjIrT3F1NW1VYzBNNEoyOGRu
-            TGtHRE5OUGJIVTMzc2ZFeWNUWFJEaFkK4OfvaEEPWOnRzA7DSRFl6EZZSPopHC/J
-            s80GsJQD9ccRRPk50+Urdes86WRt+X9+kYeUplsl5j1okinV0dKh6Q==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBjdE96QkZOOEZGeXlTaTZP
+            Mlk1R1hSdW5PM2RVVXJnUFRicWQ0N3dzTWdzClBhQVZDMVBsMkJXWTVKMjJrbWdZ
+            YUdUQXR4cXhTd0xVS1lIRGlwZ25DNmsKLS0tIDc3Q29oZmFoalZJeU5RejJZRlR0
+            Mlc2OUQzaW5IeFFYMEVKNWRNZWJVTkkKwi5D407ytSARt3yzdNzQUCVfJP/VUe6h
+            gkwDhmiwTmGOLEX5T+mC8ozBcPU7mdh+H4MQPIKRGVGXHIQyueDoqQ==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBzZWJaMXhPckxCa09BUnp0
-            WUNUV3p4bHZTQ2g1YWhmSEJPVXE3RndXd1NZCnQrbEd5V2dvNTMrUzJIQXYwTzlE
-            bmYzZVl4emQwSDNPYVJpMmtENnhRbHMKLS0tIFFvQW1ucEZRNkY5eDhYRWFqeTJF
-            R1pCWHI4NXRodXVkbS9OcjAyNGp4WE0KyX2VjTLEqlqJOyXNq33H9dCmgZtA1VcB
-            YT8dFR3boMydbPT6LbEAv70c3NYJylqjireg4y9sGJ4iJsXaRv9AuQ==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAyTEd4Z1ZSNFJ3QlkveVJk
+            eUJ1UzZlcXdiVnM3empnMUJpOGlOcGpyT0hjCkJUQm53MWJXQ0VzOW94YzMwN1FY
+            TXVoMnI3QnlIMm42cUJWbmN0ZFUyNkUKLS0tIDY1ZlFzTG9MaEdMS1krelFUcis5
+            RmNPS1IyTmJBRzFjTGplNzdTeFgxSVUKYmX82jBDawunX71kZCRXFyDvBOzCh8iF
+            cpHilnWXzdWJOEzNZkO0uUE3prRV7apgidmhjz0sCchL6Z7Zl8wBmA==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-06-22T15:32:49Z"
-    mac: ENC[AES256_GCM,data:YeVu76eWeG19sxI9tlKCtlmedpUtp4xMWjWog8xjFlkWJzvpxk5Yk7aWful6XBmuiCaM+Njtk/EDYabeeo9973pvDFbQ+NBtDrkekSvQHimiiGvi8B22f4KPYICkzXkTvjoMSqo7Xw7cZ0trbRUDdOKYqp3AOkAinO0Nn2gZG8I=,iv:GzDUM6OhsN/Yy6BUpXOVaQe+vUfjJ6ljauveL9YFjV8=,tag:P1TXrt3YDKo+2VljuVi59A==,type:str]
+    lastmodified: "2025-06-22T15:56:44Z"
+    mac: ENC[AES256_GCM,data:6KlolgUg+Lcq41jB5DSzDdIW69v8luxrOBZk5m0nvxeb4tKMDuzHg70ZGv2TXhYDTKCaxI1llvYOogRdgsVO7ItMkHHIRCa2q95XcjZ73Ynaaw7WwzSzc48zQcB1xH+zMTlAhx6MWAb0baw/aaY9wglTKzqXtsIbrwuOTUrcT34=,iv:YDkAzlWc87kLhYmmGEySkDhPQ80maMR4/w0VONarDmo=,tag:2vMU9hwhMydDeGdzyU2BDg==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients)$
     version: 3.10.2
