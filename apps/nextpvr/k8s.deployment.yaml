@@ -41,7 +41,7 @@ spec:
           #  requests:
           #    gpu.intel.com/i915: "1"
         - name: backup-sidecar
-          image: ghcr.io/restic/restic:0.17.3
+          image: ghcr.io/restic/restic:0.18.0
           envFrom:
             - secretRef:
                 name: backup-env-configuration-nextpvr

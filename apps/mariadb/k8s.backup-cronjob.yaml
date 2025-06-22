@@ -65,7 +65,7 @@ spec:
                   kubectl exec -n databases $POD_NAME -- bash -c "mariadb-backup --skip-ssl-verify-server-cert --host 127.0.0.1 --user=root --password=\$(cat \$MARIADB_ROOT_PASSWORD_FILE) --backup --target-dir=/backup --stream=xbstream > /backup/mariadb.xb"
           containers:
             - name: restic
-              image: ghcr.io/restic/restic:0.17.3
+              image: ghcr.io/restic/restic:0.18.0
               envFrom:
                 - secretRef:
                     name: backup-env-configuration-mariadb
