@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: nebula-sync-config
+    namespace: dns
+    annotations:
+        kustomize.config.k8s.io/needs-hash: "true"
+data:
+    PRIMARY: ENC[AES256_GCM,data:9lq0pS3hYbCsPmpHWBS4+tqHvYZ7gHjONWw9hOxR92dFCqzoyR0mOtgmS1K/kM08Z1dnil0mCnHFv/ZwJyrRTmfXlKzQQBVv0USsB+CFuGgLm5eH,iv:SGO+NgGC7hwIPAu2v7EeJtFpRPUS9duZM9Z1j/HZf/A=,tag:TCrfXUyv2afXlFcv/I0DZQ==,type:str]
+    REPLICAS: ENC[AES256_GCM,data:BGCVwZ20EVFTV+Mni7xcNGMxDLSbva4q/12fPRdUts85RmeC/tzLpGpHSzByC5YHzybi5fR6ye0KHd1wGv1znqKQAthNZkqfW69hGVgaJ5PG7MovryA=,iv:VVsAEp4rRIiCL7b3kdUKbnhTFphJa+ZZM+AJ3OSujuU=,tag:dut/pxrNaa4kFNIlVk8Obw==,type:str]
+    FULL_SYNC: ENC[AES256_GCM,data:bsydbXs=,iv:SC2bL6UJbbsG4F1PiK8VMkF6A4wKJT0zEdn5N6jOQhQ=,tag:Isz6ML1g5eH2bajhsDSPvw==,type:str]
+    RUN_GRAVITY: ENC[AES256_GCM,data:6CU/vA==,iv:XmHdjqRuF82BaEqomfclw/g8uDy8S20xTP5rhRnx5RE=,tag:PcPRLx4Xvp1HGwwlvEAidQ==,type:str]
+    CRON: ENC[AES256_GCM,data:tiAoIt0Namyz,iv:IeoA11g7p+RIWnzPZu/HkZQgPZaxS1TKjDgeV9zy19s=,tag:uUDLBiJ0UPcBQK3hnbQsNA==,type:str]
+sops:
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBqKzNjVEh4WXk2NVZwdXdS
+            K0ZkSkZoeEdFaVpBeFRaaEtVWnRCL1lrUGhVCjRmZ3BZS1cybDRUNzVzWktQT2Js
+            RnpUeWhDdXM1V2VMYXhjN0dSci96dUkKLS0tIDNsQ3pvbDMwdGIwTVBJbCt5LzZh
+            RHFrSFcwN0JBNjNmcThiTU5tOTBldlEK6+UoEQe5cKrkHIREEISJrFsZvHFUhBGP
+            CK9zxBnEdPgSWH1QG0LJBhZP51bQRdroGCIhrPgtjo0MLgRoy3lYkw==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBTT0JTclFhSnJ1QzI1T0ls
+            cXNmckJ6NHRLcVZXRElLOW8vNmdrRUY5bW13ClNWZWtMb2s5eERDQTE5T3kvcTJj
+            anEvb3NUMjRLbUJEeWUwTUdWOTFtZ28KLS0tIGh4RlZrb09ycllXdUNHWEpOU3gz
+            bUNBYmx2c0tObmh2cEcvMmpmb2p5ODgKhFJY1iLf2fqJpUdsNZsmDiQT/Fqbbj4t
+            5KgPD5uXUjx5MBXlSMJUAvw96AvblpVj7pqU5qUyOmASE7Af2LCb1w==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-06-22T13:51:17Z"
+    mac: ENC[AES256_GCM,data:4iG/sKWdzbGj4RH823PlS4F7j9vDvYMDcHJ+rOlvzR05OucEHMyArMpm/nG7/bEBqkPPl81eVQuwwaQfIeOb2rTMjGaraRZDg6eN1a/Pweh006WQUwEnuYuWz0gZWv4Ngvb68VQidgLiwSuPPkO6DIucazDEnl/kCrWML/PndAM=,iv:ze9yHqu7kucg8AuubMu9dnkc82SXq38e3NCK2+V3F2M=,tag:2sGrRqemcBCVZoJq910stg==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients)$
+    version: 3.10.2

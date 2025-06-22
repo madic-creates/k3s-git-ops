@@ -36,6 +36,10 @@ resources:
   - k8s.dhcprelay.yaml
   - k8s.pihole-exporter.yaml
   - ks8.doh-service.yaml
+  - k8s.nebula-sync.yaml
+
+generators:
+  - kustomize-secret-generator.yaml
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "12"
