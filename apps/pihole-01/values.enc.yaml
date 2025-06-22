@@ -15,16 +15,16 @@ serviceDhcp:
     annotations:
         kube-vip.io/loadbalancerIPs: 192.168.1.232
     type: LoadBalancer
-virtualHost: ENC[AES256_GCM,data:N8oA5+42ZwIgm8VDd8Zq1wNCQ+yk8oc=,iv:iW5sFJE1HA8dVSTW1/WbCZDV6257EhG7h/v9ZJ3PtqM=,tag:WweaM1d/nR3+zE4LqlZrkw==,type:str]
+virtualHost: ENC[AES256_GCM,data:wt/AbEUE2OhijVrmS8447QtimojScpw=,iv:/1xcq9+uK7eITAZ/o6z9HpDFoms9ieJqL5ZRiLB8N60=,tag:OLMT+fWqlZS3GoBlbQeZ6A==,type:str]
 ingress:
     enabled: true
     ingressClassName: traefik
     hosts:
-        - ENC[AES256_GCM,data:TJJvmVNorei8hJbL2E2oOF0xCAN8ebs=,iv:LrUmE0W4nj2QtGZbt+OWCJ5xBC7DHvQ4qr+9GKFFBvE=,tag:F2VJ8Edt5q+eaWcwsXr26g==,type:str]
+        - ENC[AES256_GCM,data:8AJs9alkb4dqUDNNmPTYusq9CIdzMHc=,iv:T2u8WECrdkTtdE4CvYFi6ovJo5AS+dLYLY+SoSuSpzY=,tag:z9YRZxUThHKZkAZfVfCzZA==,type:str]
     tls:
         - secretName: wildcard-cloudflare-production-01
           hosts:
-            - ENC[AES256_GCM,data:Lvwvs/s5r0CNOLeZWD7YbE8FhuUZLVY=,iv:/vdYkDJC2QkF2t2Ih3k5AG+ccaxhJWJeaU2UUbHbZJI=,tag:MVb8Aci1iVxQx5zYbmS0sg==,type:str]
+            - ENC[AES256_GCM,data:4OmgTdNKdctBXZXpYFRmZJnpPTos54c=,iv:NR0BzinMw9ua/jdSr4UHUMUIJDV4LOQtTCi4PyZvVpA=,tag:SSjCI/J2B1B4b83QssyneQ==,type:str]
     annotations:
         traefik.ingress.kubernetes.io/router.entrypoints: websecure
         traefik.ingress.kubernetes.io/router.tls: "true"
@@ -59,7 +59,7 @@ doh:
     enabled: true
     pullPolicy: IfNotPresent
     envVars:
-        TUNNEL_DNS_UPSTREAM: ENC[AES256_GCM,data:EQDXCs+3BJs//KBA8VAG9Bx7w+vjpdUuw0xmFwBNxpfNiOyh,iv:JgNhzq+Ge8JU0TbsAyCaXOYqMC8Q0aPKujUPOSP6Gyk=,tag:W3dCydHKICpWmPwg+tA4yA==,type:str]
+        TUNNEL_DNS_UPSTREAM: ENC[AES256_GCM,data:XQ20w13SeHmUhexCbCg48XQGO24IzlgTXmQ+ezesfgghkdSq,iv:qABGJE4wFfyEm9VhPEhkgReRYv3uSJJ+5tVlJ2lafmA=,tag:cXPKeSCzwLG0l+bpc2zm+g==,type:str]
 dnsmasq:
     # Contains internal wildcard domains:
     # - address=/.example.com/192.168.1.45
@@ -67,10 +67,12 @@ dnsmasq:
     # - address=/.k8s.example.com/192.168.1.231
     # - 'address=/.k8s.example.com/::'
     customDnsEntries:
-        - ENC[AES256_GCM,data:7iUFUTWmjU1j+0Hv+891q0JPaaWPMsHR1CsbU8VvUYhLg34=,iv:hBrIf8Xm5PYHo0EdgeLflweYm3Va5Yam8UEv8JMNjZ4=,tag:h5Dp/Lspz5ikYd6wGeAP5w==,type:str]
-        - ENC[AES256_GCM,data:VHKbmF1jkVdx7/X5yg3n2T/8/15MRDQbjQ==,iv:L/1aDGV2nL9HGwPEWULrwFPrynDpLCv8X5LnRgjla7Q=,tag:TgWJQ8AxrEb5uFSLxvdimQ==,type:str]
-        - ENC[AES256_GCM,data:FzescbJ37IwC/OUlQ2IHHdicQnm/faoib4PGQyf1bQivSFIYU5AMsQ==,iv:5cXcSfB9XLl8tIQ1IY2XZkaf4Hw4irg89bjnghGke/g=,tag:L3UjAs3Bcc4aY6BAR/Xc3g==,type:str]
-        - ENC[AES256_GCM,data:Ut/g+xx/PNP5xJw25QbaIGgkc0iWVy6MkjvqhNI=,iv:mnnTq5CgMrx9OT0BwDtJr6CmcQrQP7IqmnBfUvB4Ljw=,tag:dp5KCA+2rcnJUMB/2vZHIg==,type:str]
+        - ENC[AES256_GCM,data:7nwp10TDObrKP0opFpv5X60VBXScZZHLKaZCAXiGdx0Tvl8=,iv:VvbXPmgmj6g8vyDwA8OTga28busggjascVm4F4dbNQc=,tag:9GFmQItmCLI1AAqn0M83Sw==,type:str]
+        - ENC[AES256_GCM,data:N5NMpFGuLnuBNMVnTveOHYfvD2+f/82uZA==,iv:yIoMOXQ5F+jYdfEtpQW+IWvRzchAMAOz7kcRoixBCog=,tag:DD7Toki+BjvqYwpfDyIoLw==,type:str]
+        - ENC[AES256_GCM,data:WY/A4fhBgE+VJ78cru+nrCsE9oxHHlSNHEKEPkO+hSgEzOO2psRKEQ==,iv:irVLwg+4cEuh2e3OCyBDBBWc8xxwpzZJ6dgql0awweo=,tag:kRzPagI4DxsxkZp509zXOA==,type:str]
+        - ENC[AES256_GCM,data:JY303S7dmebpDftK+OyaVQmiWH3t3Ou8iFnWw0c=,iv:OkSe+l2fzljNJxUPNnSIVeMRNL2he74lnQBj3RH44/U=,tag:FNzOCXG6ZWYuB7aM0JspRg==,type:str]
+        - ENC[AES256_GCM,data:Pc4k2C0rNQ2SkK8V8nOynx7f1dCoqHmj8eG0TYov7gLk7nXAz1rOIXkcSjo=,iv:W3adiD3CQfnNwvL9H03Crp7v/Uu98V6DBi5sxSQIf04=,tag:95CDMEVqM7g6czCRHl4P4g==,type:str]
+        - ENC[AES256_GCM,data:grZ5kbg5S8rwuPMB1qJsq3X1PkMzKx0LTUpG42QHmVk=,iv:K0qdRW9LW4JCWMj1IBUIMeUC03sRWq56zU9AaIPbpcA=,tag:rhyR53DZT9sgHtHmQY4GJQ==,type:str]
     customSettings:
         - dhcp-option=252,"\n"
         - dhcp-option=vendor:MSFT,2,1i
@@ -95,6 +97,12 @@ dnsmasq:
         #- dhcp-match=set:efi-x86_64_http,option:vendor-class-identifier,0,10
         #- dhcp-boot=tag:efi-x86_64_http,"http://192.168.1.45:8043/ipxe.efi"
         #- dhcp-boot=tag:!ipxe,"http://192.168.1.45:8043/ipxe.pxe"
+    customCnameEntries:
+        - cname=www.youtube.com,restrict.youtube.com
+        - cname=m.youtube.com,restrict.youtube.com
+        - cname=youtubei.googleapis.com,restrict.youtube.com
+        - cname=youtube.googleapis.com,restrict.youtube.com
+        - cname=www.youtube-nocookie.com,restrict.youtube.com
 # Not required. We're running a dhcp relay via host network.
 #hostNetwork: "true"
 capabilities:
@@ -132,22 +140,22 @@ sops:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAzVXlnUS8xaG1mTWw0bzZR
-            ZXdlditGaVcxTE0yaWxLelJPVmFhOHNHMm00CkRUcGtsVWlra0VtQ1VWRGp5WHcr
-            aG1WNjFvZHQ5YTl3VXdzWFlZVW56UjQKLS0tIE4yZzR3RnlzMFRkallBMTg0Z2Np
-            RWhEV3hVVHltNGx4NXYvVHh6ZFZyaEEKDuwmQag3PUkb0FSPKoaB+bSNRziiQjHF
-            3xXew/UgdSV4K17F3hMpbSnP4LGaucVAf+CIfJDbokRgJCtLNoVCsA==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBqM0dYZXBWeHdXVFJmU3Ny
+            QXlzRUhNanBveVNxbHlNUnhHNWhYNE9yeHpJCmNrbFMvTXNHK2lzbUlsNkhneEpD
+            WDc5TWRLK2RDaHlHTUp4aG9MeTFhelEKLS0tIDdmV09OM0Zsc25EcmRIRmxQYlVM
+            SGNnZm05SHh3S2NsUGVLdk5uQ2lXWVkKH+07D9oJlc7DdU70GfbWq8U+kuPt/F4i
+            jD/+614rPuJqNQ47Myv5Tx+8lg8H/aWOr3rXh0qgNRwDY3HiQb4idQ==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBZcUpNVjlrOC9uVHZJazV4
-            M21WaDlCcVVvNWdYZUtjUkZnM2J4NkdQbkN3CkxNVnE0aENXb0hacHYrd0t5V0hm
-            U0NNbTdHdXVUM21rMTRlMUwrUk9rS0UKLS0tIFZyd1pQYTQ3VVRZSS9lOUNMWmp6
-            bFZOSDROcUxsWXpmMVdlMFBuSjltYk0KFI5Kw4r+PJ0ghYFMBJCRgSxrVRV/VQaM
-            1g9Re89Ysy/b0NkJRYlsgiBn5f5mq/u7QINCGLaGM9gqw/5FHUV1LQ==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2KzM5S1JqQTNlYTRoSnRi
+            dlBuNlg1bEthZ0NYTzdEYUx3TSt5VTNldVRVCjhML1pBc0xYL1d2b0U2dzlvUUls
+            Ym0yeCtiTURzTHc3TEowdEtWcTdpV00KLS0tIGRjSlVVNUdWSDRyMHpFREV3NmVF
+            clNTaTFXVDNqR2pEWGloQ0lCUENCalEKHsObeNjeYBrswX+cxm4COWzZVQ6nVL3V
+            IV1ziBlfhKGoJCNBOHJzYUo7zw46rM6rsC5nZUm07v/QgVw0gZI4YQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-06-22T13:08:51Z"
-    mac: ENC[AES256_GCM,data:lQrF3eBdJ35roFryEHRSdK7UULaduG/rw8k9jvIoyOfRZ5/WyheIWY2aWNFf+HMbV/NfKZqTpuIqWpY0fg4VakrPg1oek/BLf4Kg2pPzAOZfRs9mimMt5yAubjamUC3bPOkokWJDuEuqsK5jb/eoq0fw/VcwLXWBTJ9NDIyTnO0=,iv:b8s8lranYHqGWdov+/GvPY8qlv8N2viIuU1mDuPi0GI=,tag:6oshppj3LSrreKgaPriAGQ==,type:str]
+    lastmodified: "2025-06-22T15:24:52Z"
+    mac: ENC[AES256_GCM,data:Hf5Rvj3ymMqkylxyHgrpbJ5WNFqZBw/pHatDNWjxk4MloUt7mEMei0yhNSIXsqkZFDBh2XFFuEY7WfupT0iW5A7vUl6t+ZtX6qayNs/xtyWWG6aUp0cUiZcwxGZNpvGKtKNuUOLekC6EJm+gD8MDvBj2/YIV4QMkDlcmL6t9iPI=,iv:t5w54kf4TjKxxKtDUhHOm2nlAyk7hwBLt4LwomexuzI=,tag:AH8zeJhllTanP0Oo+gUy5A==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients)$
     version: 3.10.2
