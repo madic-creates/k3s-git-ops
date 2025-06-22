@@ -69,6 +69,7 @@ replacements:
           kind: Application
         fieldPaths:
           - spec.source.repoURL
+          - spec.sources.repoURL
 
 generators:
   - kustomize-secret-generator.yaml

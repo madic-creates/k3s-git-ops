@@ -10,10 +10,13 @@ metadata:
     argocd.argoproj.io/sync-wave: "12"
 spec:
   project: default
-  source:
-    repoURL: "example.com"
-    path: apps/pihole-01
-    targetRevision: HEAD
+  sources:
+    - repoURL: "example.com"
+      path: apps/pihole-01
+      targetRevision: HEAD
+    - repoURL: "example.com"
+      path: apps/pihole-02
+      targetRevision: HEAD
   destination:
     server: "https://kubernetes.default.svc"
     namespace: default

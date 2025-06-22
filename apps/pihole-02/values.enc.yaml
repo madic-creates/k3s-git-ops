@@ -1,0 +1,75 @@
+serviceDns:
+    mixedService: true
+    annotations:
+        kube-vip.io/loadbalancerIPs: 192.168.1.234
+    # type LoadBalancer with externalTrafficPolicy Local
+    # requires 192.168.1.232 on the same node as the pod
+    type: LoadBalancer
+    #externalTrafficPolicy: Cluster
+    #type: ClusterIP
+serviceDhcp:
+    enabled: false
+virtualHost: ENC[AES256_GCM,data:wAOQh1qw6xYRIWERGVytlHahK5D3mdhaLg==,iv:gOJwlbO6UZ02QYJ05mwIap+dFdhsNOkjR7R63Ztnvk4=,tag:TQ6FkHzPvxA6GSe681VVhg==,type:str]
+ingress:
+    enabled: true
+    ingressClassName: traefik
+    hosts:
+        - ENC[AES256_GCM,data:dDauuHsELRpZmvr8WkU/Oy4Q4GCTqpMAZg==,iv:ySgHti5f1HMKqGWcF1gXn9o3pjh3RFO92wkVCxTvTl8=,tag:5i9XgGGgQb7HRXT1/7L09A==,type:str]
+    tls:
+        - secretName: wildcard-cloudflare-production-01
+          hosts:
+            - ENC[AES256_GCM,data:x5Agk+bgDAU/ZssBaaLroJgk1Dcav9Ub+Q==,iv:/s6oFtuyBv0KaSgf0CdRa8AXVsY1ZayhmfOQLjz9hoI=,tag:TjEF9ZHTACh8iFB6OAAtFA==,type:str]
+    annotations:
+        traefik.ingress.kubernetes.io/router.entrypoints: websecure
+        traefik.ingress.kubernetes.io/router.tls: "true"
+        traefik.ingress.kubernetes.io/router.middlewares: authelia-forwardauth-authelia@kubernetescrd, traefik-root-to-admin@kubernetescrd
+resources:
+    limits:
+        cpu: 1000m
+        memory: 256Mi
+    requests:
+        cpu: 100m
+        memory: 128Mi
+extraEnvVars:
+    TZ: Europe/Berlin
+DNS1: cloudflared-doh.dns.svc.cluster.local:5053
+DNS2: ""
+# Not required because secured via authelia oidc
+admin:
+    enabled: false
+doh:
+    enabled: false
+podDnsConfig:
+    enabled: true
+    policy: None
+    nameservers:
+        - 127.0.0.1
+        - 1.1.1.1
+capabilities:
+    add:
+        - CAP_SYS_TIME
+        - CAP_SYS_NICE
+sops:
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBTbWoxVHRQVlpmWEtiazVX
+            RkdvQVhxcHhHZFMweFE1T292MEk3cUUrVVNBCk5BQVA1a21KbGt1c0lENlpMaEZW
+            T3ZJNHdIU1dZRkUybUU3ZTJMQXcrdjQKLS0tIGlzWWR2aXQ0MUxqOXovWE5PWGJt
+            Y0NlZXJuZHRsUUFOUzc0S0o2eFRBYWcK3subX1cjCYhum6iXZ5j1rGzJYcgyaA51
+            9fIxiYmJss3i19FcmvIEH7UXuj+kAyiCT7d7/msHi6Fi0unv6UvhQA==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBhNXdQMHBZMkx1YmlkM1VV
+            NkcvaEFWNXVmaVlyNHVsc0VDclBwRVJYWVhBCmRhR1piRmpncVZYMDhEbks4ZWpn
+            QXdBSnA5N1N0MjVMQnE1V1g3akQwUU0KLS0tIHlONDA5blZWekpjOXE1b1hWMGJm
+            ZUdScFloZDZBSnRFWU81UTcza2poWkkKpeWC5rfvcSiNyV76sOTVKZnNLBIIHo3R
+            o6bwc2m0yeaVA4MNz4V+KXe+X1QroT0+uRkC0LhO050d7IdrevRdZw==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-06-22T13:03:18Z"
+    mac: ENC[AES256_GCM,data:rJB+Tjcu7DG4jyd6cEW+MJZjbQDwakrAtKuOb8yhwcNBreAPFWNY4TgjdCb748zVefs6BROvEzu/a4wPwkMRt16ulnEEbQCdm+swUjIUwh38KjvP3ivlwL9E5wm4bhLKNvEFi/Cm6NlwfvzRwyTtWc0irk/0f1yd1EdOv6kl+mg=,iv:1EqWh++tfsZMLViuy2J1F2jv8luDhRpSaW6P9TqdIOM=,tag:VeYnmaz8RX00AzRMfj7YCA==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients)$
+    version: 3.10.2
