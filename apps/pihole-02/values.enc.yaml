@@ -9,16 +9,16 @@ serviceDns:
     #type: ClusterIP
 serviceDhcp:
     enabled: false
-virtualHost: ENC[AES256_GCM,data:8AzQndnYfKjTDMSzZQVLvVHCYwi9T//Vjg==,iv:MReS7SYlSXftHBdhHkybv9ZKn+rG92XcrlbYiERseV4=,tag:Q7Pe28ASlvsf3YTs2GwvFA==,type:str]
+virtualHost: ENC[AES256_GCM,data:NEOQg0NXUkQPIS8eKdJ80dJlbSyixCAEKg==,iv:1czpv1EvjAxjyzxoThXUTUWZZbtu7s77sOubw9a1+DE=,tag:ilszbQjzOhnl+547BAlYQw==,type:str]
 ingress:
     enabled: true
     ingressClassName: traefik
     hosts:
-        - ENC[AES256_GCM,data:O7kJPekVZYZFEGMchYiV5TvxICaKf2O4sw==,iv:E0sHIjKVbR/dqtZCYxlmghydYZKHf1anFC0IWVJNnMg=,tag:79aUkHAFudE7jxCsY9xF/A==,type:str]
+        - ENC[AES256_GCM,data:h0OVkr79RWccEL3avQDoanQSlQLygitrAw==,iv:k+qbgPgsip+X/rkesT1Nnu/sQezDD/LQfoKyEvLXRf0=,tag:IjGT9uvlqHKG+hNWxJkMTA==,type:str]
     tls:
         - secretName: wildcard-cloudflare-production-01
           hosts:
-            - ENC[AES256_GCM,data:+5T+n59z+W1/FE3ZWOmneEu0AH9gECzLeQ==,iv:AyN31zLfHl04mGvd1oBXfp/BMGaulHd9gZ0szGg1jrM=,tag:/WIqFoN8xWdqbusYy4OBdw==,type:str]
+            - ENC[AES256_GCM,data:DK1bPUBevsCXAEkoroyf0oZ1f8JtOjY9bQ==,iv:2fVXNZ4h/SjSikNmxvPGtiUiN0xKiLNDSkGPxp+4M34=,tag:BBuHbGgwNcfuGoeh86g4aQ==,type:str]
     annotations:
         traefik.ingress.kubernetes.io/router.entrypoints: websecure
         traefik.ingress.kubernetes.io/router.tls: "true"
@@ -44,7 +44,7 @@ admin:
 doh:
     enabled: true
     envVars:
-        TUNNEL_DNS_UPSTREAM: ENC[AES256_GCM,data:DcraUv0paKqM27vx+rDOOEWsB06Kdwm5Tj5a+2LUOgmOAHm+tus=,iv:UKUUJZWzFUyMXb+pesmpCK4Qn5fV2WjpVnjLtYcZFPw=,tag:E+BusCw3i4DxHteU6t/3xA==,type:str]
+        TUNNEL_DNS_UPSTREAM: ENC[AES256_GCM,data:fWM/wzMq3KYyj+bsSRvdFrelpD8MwUg9D2H5tQ6Y/REh61XT2dY=,iv:v3ViypBnLBjWQ0NfjgeymX0BattWP5hWCI+Vcx2ZqJA=,tag:OQ21a9dbj1jCzUNGVTyWOA==,type:str]
 podDnsConfig:
     enabled: true
     policy: None
@@ -58,27 +58,54 @@ capabilities:
 persistentVolumeClaim:
     enabled: true
     existingClaim: pihole-02
+dnsmasq:
+    customSettings:
+        - dhcp-option=252,"\n"
+        - dhcp-option=vendor:MSFT,2,1i
+        # DNS
+        #- dhcp-option=6,192.168.1.232,192.168.1.1
+        - dhcp-option=6,192.168.1.232,192.168.1.234
+        # NTP
+        - dhcp-option=42,192.168.1.1
+        - dhcp-range=::,ra-names
+        - server=/geekbundle.org/192.168.1.1
+        - ptr-record=1.1.168.192.in-addr.arpa.,"despair"
+        # TFTP Boot
+        - dhcp-match=set:ipxe,175
+        - dhcp-boot=tag:!ipxe,ipxe.pxe,dns01,192.168.1.11
+        - dhcp-match=set:efi-x86_64,option:client-arch,7
+        - dhcp-boot=tag:efi-x86_64,ipxe.efi,dns01,192.168.1.11
+        - dhcp-boot=http://192.168.1.45:8043/boot.ipxe
+        # DHCP Reservation with different dns server
+        - dhcp-option=net:customdns,6,9.9.9.9,1.1.1.1
+        - dhcp-host=net:customdns,EC:79:49:51:64:16,192.168.1.187,ipl06002-lan
+        - dhcp-host=net:customdns,F4:4E:E3:2C:C2:B6,192.168.1.56,ipl06002-wlan
+        # DHCP Reservation with unrestricted youtube dns server
+        - dhcp-option=net:youtubedns,6,192.168.1.234
+        - dhcp-host=net:youtubedns,AC:3E:B1:A6:AF:D6,Pixel-7-Pro
+        - dhcp-host=net:youtubedns,74:58:F3:E7:3A:04,Fire-Cube-lan
+        - dhcp-host=net:youtubedns,48:43:DD:6E:CC:2D,Fire-Cube-wlan
 sops:
     age:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBrK3FReWhZdGhBbnBEWXJJ
-            WjQyeW9icndJdmgwdHN3ZFExMHNLd1k4N2tRCktDNUNYRTFhQ1hrelpsbFk4aWNS
-            T1BaSTVpbEEwanRQMXpVKzIyanhBS1kKLS0tIHZjTlpSczNpck5zUzlqNkZQdWU3
-            YWRzRnFaT0pTVWk4VXN3LzFXTGtqTHMKGODGIzxy0G+hs4W3y8BGDL9cy1isejxG
-            b3uPUnR/fEQZnhI6OvLUjn2QTrMtWUxkotYUtaqvb2dEGELC0I6QRg==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBTUTVjNDN3bHZ5S3dKWDc0
+            Nm1JZ29DeUNuNFQ0UzVQc01yS2wzRlFJY2g4ClpyZm1yK1BVUllnVW1jSkZISS9J
+            cUJhS2hHbE5tYmRJNnB0dnJ0UDdwc2cKLS0tIDA5RnBISXFaMW9hYVUzYjYyOTdB
+            MWtqZlJ2cmdZYVBPb04yZFdzU2ZpckkKIzC/R86Zw16R53hH5NhamKXtIaVOSb2Q
+            hpETzxfOer0a/MMGAI9j51VWYPndUbJ+LfOoOOMQeo1MHnV3ps4nGw==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBKbkdNckpoVWVDRytSK2hv
-            dzJZWjJsenZCOENkeXhBMW85b1k5R3Q3WjFrCnNkOGRYejhLajhCb3ZVbUt6c3Yv
-            dGdwVkJMZEIyd0M1bW0zcmVHblpjTTQKLS0tIENZcTVuQkE2ZW1lRmZvK1Q3c2Jj
-            TVowWXp3RkEwWjVpWGhzQjB4TVV2MmsKtDwzVXrd3ZrfESosPRlyfGoVUVywmeIj
-            tgR81FXzVgnMhyejKrp2Z0WhGbuwJnIHEqXaY/sWO9CnMV1kmknM9A==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBZdDh6Qjc0S1Z3R0RodDc5
+            S1lCK2ZnYkxVdjl3K0s2RFgwbndERFN5STM4CnAvK3NhQjN5cWc4SERKeXVpcHMz
+            STRlZTMvZS9Ea3VBNDZzR0hrVUxIcmcKLS0tIHJnUmRsZFRLN25pVEk4cm5tUDA1
+            MUFvSncxbzhKVDkzV09FN3hTYi9FZWMKFyT+ZpWpFhbaNABHHlVG2gy4zHhzDaIy
+            h5XmvlvuMJPp2FFfxxoyQWYCG3bZQnmSiTIut3CbwnrvJFMkuCAhsg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-06-23T21:23:58Z"
-    mac: ENC[AES256_GCM,data:r47s54P2cRsdOg7i0+HYRNpD0TKMTRlEyKHWvCr9msrqevhWFFNm7FdIKiZkkKB2FQD7wD+arae4oEYbd1Q54jj2r2G/rndpTGy+SBoTFk/oICUq1Jke60iDU+k9meryPwt9xpTGVLaxLx5J0u0larWe/cbQHoUZDoW7AVx+x84=,iv:lbO2Ok7Yfwcw3VNmeJnyCTTyp0riZiAH2ZXclmmlp4A=,tag:sD5GcshYhjTbSDgW03+CxQ==,type:str]
+    lastmodified: "2025-06-23T21:39:17Z"
+    mac: ENC[AES256_GCM,data:yhOkWMmYp+FxE04PFgFGJy+kPwkj5qTZ+tWiAWFnOe6GqjsmmiuNx1TB0OF71qcgkHKnDP0YZpk87+21faFpWMwSZua2n+COkbPJtZi301RLGA61PtmP7Kagt+/ISBZKAvUouBK9iBzKKAJJeUGGDJMv0anIVfrAbDCq+coSlE0=,iv:riVjt3hwHkl45uUyXA6hRR4ZO2B8cB/7f/02GdYsFpo=,tag:UgfSpAhnk173xRDS5VUTNg==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
     version: 3.10.2
