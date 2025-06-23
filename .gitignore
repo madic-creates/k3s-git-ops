@@ -18,3 +18,4 @@ values.yaml
 !/ansible/group_vars/all/main.yml
 /ansible/host_vars/*.yml
 !/ansible/host_vars/.gitkeep
+*.enc.tmp.yaml

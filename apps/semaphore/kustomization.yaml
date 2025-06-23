@@ -1,0 +1,48 @@
+---
+
+namespace: ansible
+
+resources:
+  - namespace.yaml
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "60"
+
+# https://artifacthub.io/packages/helm/semaphoreui/semaphore
+helmCharts:
+  - name: semaphore
+    repo: oci://ghcr.io/semaphoreui/charts/
+    version: 14.0.13
+    releaseName: ansible-semaphore
+    namespace: ansible
+    valuesFile: values.yaml
+
+generators:
+  - kustomize-secret-generator.yaml
+
+patches:
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: ansible-semaphore
+    patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: ansible-semaphore
+        namespace: ansible
+      spec:
+        template:
+          spec:
+            containers:
+              - name: semaphore
+                volumeMounts:
+                - name: vault-password
+                  mountPath: /tmp/vault-private.pass
+                  subPath: vault-private.pass
+                  readOnly: true
+            volumes:
+            - name: vault-password
+              secret:
+                secretName: ansible-vault
