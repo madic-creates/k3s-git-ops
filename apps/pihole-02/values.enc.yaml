@@ -9,16 +9,16 @@ serviceDns:
     #type: ClusterIP
 serviceDhcp:
     enabled: false
-virtualHost: ENC[AES256_GCM,data:keAIB23x4wc/kYvI12+0kJCmey7GqlIhFw==,iv:/ASWPQIdZJPF7MWVvb+faWLGwC5yDSZLfJBxbrDvMRg=,tag:GaXXZo9VPjsYMGDKp3pPLA==,type:str]
+virtualHost: ENC[AES256_GCM,data:8AzQndnYfKjTDMSzZQVLvVHCYwi9T//Vjg==,iv:MReS7SYlSXftHBdhHkybv9ZKn+rG92XcrlbYiERseV4=,tag:Q7Pe28ASlvsf3YTs2GwvFA==,type:str]
 ingress:
     enabled: true
     ingressClassName: traefik
     hosts:
-        - ENC[AES256_GCM,data:GP6FyJTDFa7xb6YtEuhqqr3hPCbELB5BYw==,iv:qNsPXSsoRJBTkQ/uPYxBfKfsxqzUIQP7yXPKYZQ26vA=,tag:44lYuppT5HiOMPq3VNWSxQ==,type:str]
+        - ENC[AES256_GCM,data:O7kJPekVZYZFEGMchYiV5TvxICaKf2O4sw==,iv:E0sHIjKVbR/dqtZCYxlmghydYZKHf1anFC0IWVJNnMg=,tag:79aUkHAFudE7jxCsY9xF/A==,type:str]
     tls:
         - secretName: wildcard-cloudflare-production-01
           hosts:
-            - ENC[AES256_GCM,data:m1ENDTBoWPWra996ZS6jx8krA7KxDXWl1A==,iv:kBli/oLtbgGf5o5zQUp70Y+wFCcEYeJS2/cWXqKQYwo=,tag:eFrMdeLKh473wjrWZLFUbA==,type:str]
+            - ENC[AES256_GCM,data:+5T+n59z+W1/FE3ZWOmneEu0AH9gECzLeQ==,iv:AyN31zLfHl04mGvd1oBXfp/BMGaulHd9gZ0szGg1jrM=,tag:/WIqFoN8xWdqbusYy4OBdw==,type:str]
     annotations:
         traefik.ingress.kubernetes.io/router.entrypoints: websecure
         traefik.ingress.kubernetes.io/router.tls: "true"
@@ -44,7 +44,7 @@ admin:
 doh:
     enabled: true
     envVars:
-        TUNNEL_DNS_UPSTREAM: ENC[AES256_GCM,data:pj8gmki801zhVVLh37TLGobT8TyFOswTD9+byrlc72CLoi0mCVc=,iv:E9DB8At8zs70/n9wZ5A3yQn1jRhEaG5pRd2Mmn67j5s=,tag:heb03Fi35GFC/kfUq784cg==,type:str]
+        TUNNEL_DNS_UPSTREAM: ENC[AES256_GCM,data:DcraUv0paKqM27vx+rDOOEWsB06Kdwm5Tj5a+2LUOgmOAHm+tus=,iv:UKUUJZWzFUyMXb+pesmpCK4Qn5fV2WjpVnjLtYcZFPw=,tag:E+BusCw3i4DxHteU6t/3xA==,type:str]
 podDnsConfig:
     enabled: true
     policy: None
@@ -63,22 +63,22 @@ sops:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAxSWpyZnhGZXZpY2tGcTg0
-            dGpHdDRtOUV5Vko1NW1zOStHWjNraHNJcDBvCnpwY0VOSEFGVnRrQUF0UjNmZHlH
-            aGNlUFpqZVg0a2kyVzFyZVA2WmRtNzQKLS0tIGQyaHJCWVIwekl2Z0Jya0F3R0Rr
-            Q0tCUmJpYmF2QVZmSE9aTFZjSWdmTWcKl5RrkEINKUD0sINk5Getw+H4+wya+sl3
-            jia9vqW01kC7IdVhnUmSm1rL2EP/DghjPigTlFA/E4PLkzr9FozJwQ==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBrK3FReWhZdGhBbnBEWXJJ
+            WjQyeW9icndJdmgwdHN3ZFExMHNLd1k4N2tRCktDNUNYRTFhQ1hrelpsbFk4aWNS
+            T1BaSTVpbEEwanRQMXpVKzIyanhBS1kKLS0tIHZjTlpSczNpck5zUzlqNkZQdWU3
+            YWRzRnFaT0pTVWk4VXN3LzFXTGtqTHMKGODGIzxy0G+hs4W3y8BGDL9cy1isejxG
+            b3uPUnR/fEQZnhI6OvLUjn2QTrMtWUxkotYUtaqvb2dEGELC0I6QRg==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAweXVaU04raHB5RElBbktE
-            ekpKQmp3SzJKa1dyVkJyN29VVmdHbkxidkNFCmFZcWlDRXhDWDBqN0p0dkxXMUFt
-            amRJSDdveDJGZVA3ZFNudm5pV1N5dGMKLS0tIHpVUmpKMjhndTFNUzVVZjdDeGpC
-            d012QXFSV0taN294SE5vYTlhWThHL2sK5Wp5gOHhieqhBTDvs9ur0ppq/b1kaZGq
-            LGoD++iiQgVCSQQmU1fpvK8mLpXA1exk0/QRsak5z8FpncAdyyUZKQ==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBKbkdNckpoVWVDRytSK2hv
+            dzJZWjJsenZCOENkeXhBMW85b1k5R3Q3WjFrCnNkOGRYejhLajhCb3ZVbUt6c3Yv
+            dGdwVkJMZEIyd0M1bW0zcmVHblpjTTQKLS0tIENZcTVuQkE2ZW1lRmZvK1Q3c2Jj
+            TVowWXp3RkEwWjVpWGhzQjB4TVV2MmsKtDwzVXrd3ZrfESosPRlyfGoVUVywmeIj
+            tgR81FXzVgnMhyejKrp2Z0WhGbuwJnIHEqXaY/sWO9CnMV1kmknM9A==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-06-23T16:27:40Z"
-    mac: ENC[AES256_GCM,data:XpB+gOFQ8+GiNEhbhx7KnKhXYUfdDlYzOdRfVYkus9EhbRXUV3/QoL4X8Du8A/JCM9GLrF3v23T4B8VcjnY31h+oDi1UanKc+sWSyiZOTWLr2o2+UTeE6z2d22nWMjLrNyizESpKw8Nq79kxxrjZOgQ5zDdPJTd+PwpaWeE20rs=,iv:Czf8heV5xm39sNC2CLyDMjBPDDLkPD8qZ3+FIWIwiic=,tag:3DJrJMUIX9FIpnX9dIvTcg==,type:str]
+    lastmodified: "2025-06-23T21:23:58Z"
+    mac: ENC[AES256_GCM,data:r47s54P2cRsdOg7i0+HYRNpD0TKMTRlEyKHWvCr9msrqevhWFFNm7FdIKiZkkKB2FQD7wD+arae4oEYbd1Q54jj2r2G/rndpTGy+SBoTFk/oICUq1Jke60iDU+k9meryPwt9xpTGVLaxLx5J0u0larWe/cbQHoUZDoW7AVx+x84=,iv:lbO2Ok7Yfwcw3VNmeJnyCTTyp0riZiAH2ZXclmmlp4A=,tag:sD5GcshYhjTbSDgW03+CxQ==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
     version: 3.10.2
