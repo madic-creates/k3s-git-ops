@@ -2,17 +2,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: 12-pihole
+  name: 13-pihole02
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
   annotations:
-    argocd.argoproj.io/sync-wave: "12"
+    argocd.argoproj.io/sync-wave: "13"
 spec:
   project: default
   source:
     repoURL: "example.com"
-    path: apps/pihole-01
+    path: apps/pihole-02
     targetRevision: HEAD
   destination:
     server: "https://kubernetes.default.svc"
