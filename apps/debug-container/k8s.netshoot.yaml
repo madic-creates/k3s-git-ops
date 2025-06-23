@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         # https://github.com/nicolaka/netshoot/pkgs/container/netshoot
-        - image: ghcr.io/nicolaka/netshoot:v0.13
+        - image: ghcr.io/nicolaka/netshoot:v0.14
           name: netshoot
           args:
             - "iperf"
