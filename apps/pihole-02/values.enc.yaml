@@ -9,16 +9,16 @@ serviceDns:
     #type: ClusterIP
 serviceDhcp:
     enabled: false
-virtualHost: ENC[AES256_GCM,data:5gI9DGWh1uw0kEeivkT3Gf0xrQYW1ykBqA==,iv:bghFHTS5THMzHhKhQJGodKr/Z+cJAAm2DZN+SavrC20=,tag:wcConQ4xiSssiwbjSo2vYw==,type:str]
+virtualHost: ENC[AES256_GCM,data:0G+2HvS9jGxwLx0qurE20XdY8nFb4NgftA==,iv:Ff1loZppyjI6a5Kb0W4wMX2rFHtdG8egI7yeLdEXIOw=,tag:RiYEv6V3orCs1OiEFlucTQ==,type:str]
 ingress:
     enabled: true
     ingressClassName: traefik
     hosts:
-        - ENC[AES256_GCM,data:WlkrBLEzMXjarAzwLLUU0OMtkU2d26aQ5A==,iv:Z/BExvEGojfLDGnQr+nOM4nivzWi1+AePzZDZUNSvqY=,tag:JPCL12nbd/vWTYW9yQXL0g==,type:str]
+        - ENC[AES256_GCM,data:YvkjOTq0JPHwpJGrtSVhJO9aD6m5qg31Zg==,iv:rfliLY+6VBSlNFWUx5uM413hKlRihvAjz6QtqLGMm6U=,tag:qvXAHdFaCxTilx1+x0O2MA==,type:str]
     tls:
         - secretName: wildcard-cloudflare-production-01
           hosts:
-            - ENC[AES256_GCM,data:SVGNzhPvpjZzvX8BcRroWDh5g6Mjr11KdA==,iv:gyPEQOoVv7ahbGGsaWdtK+iUug1fMua394NQSmvKBKE=,tag:LjGogfny0jmOL6ts0wHlLA==,type:str]
+            - ENC[AES256_GCM,data:TNBva3zcHp29JUhDB+MKtEQVnzWQMfASag==,iv:NgKTdH9DMTwxLdisTFRtsEYBWdpG31U0D10JHy17zps=,tag:yR0yiEk0fZxZQ6PRX0u6xg==,type:str]
     annotations:
         traefik.ingress.kubernetes.io/router.entrypoints: websecure
         traefik.ingress.kubernetes.io/router.tls: "true"
@@ -44,7 +44,7 @@ admin:
 doh:
     enabled: true
     envVars:
-        TUNNEL_DNS_UPSTREAM: ENC[AES256_GCM,data:d4NdEZqUELXr+kOZMVJTkiNUlO2/bJ3SHlnBv5Vbgku4gQrn65E=,iv:U24ILN3VtaW4SLxDoOCHDsX+6yoa+ShNcQ+H29k13TY=,tag:rgyX6p+2cTqkGjzvSr78vw==,type:str]
+        TUNNEL_DNS_UPSTREAM: ENC[AES256_GCM,data:8zqnOEdYjREr+uShfiXCfVU39g6tb5WW+0TNdM+cZ/QAsVZz1vU=,iv:TSX7GEA/jgBcZvuCqEd0kWT3g43JFn6jybSzSadc6Sk=,tag:WGtuCwgNLYeQFvX2/C0CJQ==,type:str]
 podDnsConfig:
     enabled: true
     policy: None
@@ -86,27 +86,37 @@ dnsmasq:
         - dhcp-host=net:youtubedns,AC:3E:B1:A6:AF:D6,Pixel-7-Pro
         - dhcp-host=net:youtubedns,74:58:F3:E7:3A:04,Fire-Cube-lan
         - dhcp-host=net:youtubedns,48:43:DD:6E:CC:2D,Fire-Cube-wlan
+affinity:
+    podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - pihole
+              topologyKey: kubernetes.io/hostname
 sops:
     age:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAvR0dlZWVUcGVGYVc2cnBE
-            SzhhZnBsNnlVc2pIR3Uzejl4RXBaVENFUjE4CnZ1ckJwZFJMR0hkZ1BwU0VqbWto
-            cjhSNzFMdE1qYm1CMzZldlpRV0NhMVkKLS0tIDdnSGN1aEl5d3c4RXdlaUtxWG5r
-            cHorSzlnMUVzdmFZejJQaXRZQy90bkkKuDWjmoFdukkuLXyRaftFwoJm7zV6PJr1
-            0gICetH9PWNrSboI+1H3BDiVxhSKGO2hrikj1m1fWsZuU1XH6lepRQ==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBiZXNwZkhmVzZyVjlpVTNh
+            TVpLTk80R2VKUVhDcnEyaDZHenQvYnNJVkFjCm9RMklLdnJyYklOY29DQlF1ejY1
+            eTVlVUViUlo2elBZamVmYlNWdU5PYzAKLS0tIHI2VUF0bmR2cmtSTkNrcmdJZ1hw
+            UWtYNFZFR2FaaHZkOUlhR1FsYnZhZHMKNgzXRZX4/lOT6veb1aSufMJ3uA8jzF4r
+            ziuvSiq+DsW0/ZCpG6c2tCWZi3UXCGE8oe5u3yxND87qjwhT9Lo39w==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBiSzJFYW5DeWlZeE9KYjJL
-            VnF0d1lZS2lLL2dUeFN4QS9QS2YvUkh4YVE0CjVFdFU0Y0dDVmxIRFVhV2c4d0Ir
-            SGZON3B5WnRWczVJczZ3emlXMVBidVkKLS0tICtZd08wMUIwVEFkVTdlb2pMUWhX
-            WlJIY2pFZVhsVG81OG9qNm5Ha1BvRmMK9hF0Qnlj4NqSlWriuK+f6gAtwqN6Fvly
-            PBF94NMq72HrMY7MJr9M7SPuATBxLBdznZ4wD64sIjMQuDZY2V/Zwg==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBsRUMxOXVZRDNRWUwzUlNX
+            aDhudGV3RjJVVlhSclAyWEtrNEMzRXNPODJ3Ci9pTnArc0NjbFlpbEYwQS8yNEZs
+            VGRJRG8xOVkrUUQrNXcxMnVTMzhuU2MKLS0tIFkwT1FXa0pxbVVjaGNJOTY3M3lE
+            WnFyQkNFWFRTMTZjNnAwNDB0ejBHYk0KfHfqMKKzGkUJCzkruvKlyiVC7gi3SF3F
+            GrXzoAp+1Wreaezfnug/r2Xmqr8GYvmS80NoHX7v9WdemdazuJzlKQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-06-23T21:48:36Z"
-    mac: ENC[AES256_GCM,data:WHU1rFflxoRpnjvjqAkTihUz/HogH1Z8MZoLyaxQoqHTJniQih7a7prf97pcPMkzmpQt/Z3fQVfzNRYtJ8Jrednl7jsZQJtdY5AvOqaNay11WVZXczJ0GLsb9DDAKISlBBEqWWJksU/HkQ2N3ay/q/Fobry/7udYIOZbQnodIvU=,iv:v2o/U4a1aMqRAu33LyeF8O78oryCqOpAk7qXPIWPhDo=,tag:3UZWo6wu8JAc4z69zxdWdg==,type:str]
+    lastmodified: "2025-06-25T09:54:42Z"
+    mac: ENC[AES256_GCM,data:FGKnC+9ewbnkvFWg9Ho5ujwPN0CZFfXBKJ5zKjAekYs9+w6KoMSBXqCdnPnLhnzEiWVhoFB3Gf5KNZ5rCQdnEWkP04XO6wU1ktq4eil9sTZ0GtebeLo+Ll+TJz16Lo5gK9OaIo/qkIoc0ihAo86KV3TqF/qfnhmOujW48qIcYyg=,iv:FtoxSXk8NrDTeyQQ1yv4awkqgcN+QfF+y766p9d/0Sw=,tag:lp3PvJC5mwwmKF5q+y1byA==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
     version: 3.10.2
