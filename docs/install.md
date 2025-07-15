@@ -25,6 +25,12 @@ cp group_vars/all/main.yml group_vars/all/own.yml
 
 A short explanation of the vars can be found in the vars file. Because they tend to change, I wont document them here.
 
+- Install required ansible modules
+
+```shell
+ansible-galaxy collection install -r requirements.yaml
+```
+
 ### Ansible inventory
 
 This playbook requires the following host groups:
