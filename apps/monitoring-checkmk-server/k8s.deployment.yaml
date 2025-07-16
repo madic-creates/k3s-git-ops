@@ -1,0 +1,100 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: checkmk
+  labels:
+    app: checkmk
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: checkmk
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: checkmk
+    spec:
+      containers:
+      - name: monitoring
+        image: checkmk/check-mk-raw:2.2.0p44
+        env:
+        - name: MAIL_RELAY_HOST
+          valueFrom:
+            secretKeyRef:
+              name: checkmk-config
+              key: mail-relay-host
+        - name: SSH_PRIVATE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: checkmk-ssh-key
+              key: id_ed25519
+        - name: IPMI_CONFIG
+          valueFrom:
+            secretKeyRef:
+              name: checkmk-ipmi-config
+              key: ipmi-default.cfg
+        - name: THRUK_MENU_CONFIG
+          valueFrom:
+            secretKeyRef:
+              name: checkmk-thruk-config
+              key: menu.conf
+        - name: CHECK_MATRIX_VERSION
+          valueFrom:
+            configMapKeyRef:
+              name: checkmk-nagios-plugins
+              key: check_matrix_version.sh
+        ports:
+        - containerPort: 5000
+          name: web
+        - containerPort: 8000
+          name: agent
+        - containerPort: 80
+          name: http
+        livenessProbe:
+          httpGet:
+            path: /cmk/check_mk/login.py
+            port: 5000
+          initialDelaySeconds: 180
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /cmk/check_mk/login.py
+            port: 5000
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+        volumeMounts:
+        - name: sites-volume
+          mountPath: /omd/sites
+        - name: localtime
+          mountPath: /etc/localtime
+          readOnly: true
+        - name: checkmk-pre-start-hook
+          mountPath: /docker-entrypoint.d/pre-start/prepare.sh
+          subPath: prepare.sh
+        - name: tmpfs-volume
+          mountPath: /opt/omd/sites/cmk/tmp
+      volumes:
+      - name: sites-volume
+        persistentVolumeClaim:
+          claimName: checkmk-sites-pvc
+      - name: tmpfs-volume
+        emptyDir:
+          medium: Memory
+          sizeLimit: 1Gi
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File
+      - name: checkmk-pre-start-hook
+        configMap:
+          name: checkmk-pre-start-hook
+          defaultMode: 0755
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"

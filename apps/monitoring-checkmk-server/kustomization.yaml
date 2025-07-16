@@ -1,0 +1,18 @@
+---
+resources:
+  - k8s.deployment.yaml
+  - k8s.pvc.yaml
+  - k8s.svc.yaml
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "18"
+
+namespace: monitoring
+
+generators:
+  - kustomize-secret-generator.yaml
+
+configMapGenerator:
+  - name: checkmk-pre-start-hook
+    files:
+      - prepare.sh
