@@ -54,6 +54,7 @@ helmCharts:
         - "--entryPoints.web.forwardedHeaders.insecure"
       experimental:
         plugins:
+          # Required for correct thruk redirect. Thruk sends in our scenario http redirect but we need to replace that with https
           redirectLocation:
             moduleName: "github.com/SchmitzDan/traefik-plugin-redirect-location"
             version: "v0.0.2"
