@@ -6,7 +6,7 @@ metadata:
   namespace: traefik
 spec:
   plugin:
-    traefik-plugin-redirect-location:
+    redirectLocation:
       default: "false"
       rewrites:
         - regex: "^http://(.+)$"
