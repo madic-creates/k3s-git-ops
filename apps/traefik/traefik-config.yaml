@@ -1,27 +1,13 @@
 ---
-## Middleware for HTTP-to-HTTPS Header
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: fix-location-headers
+  name: traefik-plugin-redirect-location
   namespace: traefik
 spec:
-  headers:
-    customResponseHeaders:
-      X-Forwarded-Proto: "https"
-      X-Forwarded-Port: "443"
-      X-Url-Scheme: "https"
----
-## Replace http with https in redirect responses
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: replace-http-with-https
-  namespace: traefik
-spec:
-  replacePathRegex:
-    regex: "https?://([^/]+)/(.*)"
-    replacement: "https://$1/$2"
+  plugin:
+    traefik-plugin-redirect-location:
+      default: "true"
 ---
 ## Redirect from root to /admin/
 apiVersion: traefik.containo.us/v1alpha1
