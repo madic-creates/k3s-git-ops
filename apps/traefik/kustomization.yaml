@@ -52,6 +52,11 @@ helmCharts:
         - "--api.insecure=true"
         - "--entryPoints.web.proxyProtocol.insecure"
         - "--entryPoints.web.forwardedHeaders.insecure"
+      experimental:
+        plugins:
+          redirectLocation:
+            modulename: "github.com/SchmitzDan/traefik-plugin-redirect-location"
+            version: "v0.0.2"
 
 generators:
   - kustomize-secret-generator.yaml

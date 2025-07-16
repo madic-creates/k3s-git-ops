@@ -7,7 +7,10 @@ metadata:
 spec:
   plugin:
     traefik-plugin-redirect-location:
-      default: "true"
+      default: "false"
+      rewrites:
+        - regex: "^http://(.+)$"
+          replacement: "https://$1"
 ---
 ## Redirect from root to /admin/
 apiVersion: traefik.containo.us/v1alpha1
