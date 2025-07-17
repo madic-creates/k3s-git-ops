@@ -40,7 +40,8 @@
         "apps/traefik/**",
         "apps/kubevip-ha/**",
         "apps/paperless-ai/**",
-        "apps/pihole/**"
+        "apps/pihole/**",
+        "apps/monitoring-checkmk-server/**"
       ],
       "automerge": false
     },

@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: monitoring
-        image: checkmk/check-mk-raw:2.4.0
+        image: checkmk/check-mk-raw:2.2.0p44
         env:
         - name: MAIL_RELAY_HOST
           valueFrom:
