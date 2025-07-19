@@ -20,7 +20,8 @@ spec:
     spec:
       containers:
       - name: monitoring
-        image: checkmk/check-mk-raw:2.2.0p44
+        # https://hub.docker.com/r/checkmk/check-mk-raw/tags
+        image: checkmk/check-mk-raw:2.4.0p7
         env:
         - name: MAIL_RELAY_HOST
           valueFrom:
@@ -54,21 +55,21 @@ spec:
           name: agent
         - containerPort: 80
           name: http
-        livenessProbe:
-          httpGet:
-            path: /cmk/check_mk/login.py
-            port: 5000
-          initialDelaySeconds: 180
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /cmk/check_mk/login.py
-            port: 5000
-          initialDelaySeconds: 60
-          periodSeconds: 10
-          timeoutSeconds: 5
+        #livenessProbe:
+        #  httpGet:
+        #    path: /cmk/check_mk/login.py
+        #    port: 5000
+        #  initialDelaySeconds: 180
+        #  periodSeconds: 10
+        #  timeoutSeconds: 5
+        #  failureThreshold: 3
+        #readinessProbe:
+        #  httpGet:
+        #    path: /cmk/check_mk/login.py
+        #    port: 5000
+        #  initialDelaySeconds: 60
+        #  periodSeconds: 10
+        #  timeoutSeconds: 5
         volumeMounts:
         - name: sites-volume
           mountPath: /omd/sites
