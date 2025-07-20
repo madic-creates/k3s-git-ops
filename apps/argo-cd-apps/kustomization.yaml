@@ -31,7 +31,7 @@ resources:
   - 40-paperless-ai.yaml
   - 40-paperless-ngx.yaml
   - 60-semaphore.yaml
-  #- 70-descheduler.yaml
+  - 70-descheduler.yaml
   - 80-whoami.yaml
   - 86-kube-doom.yaml
   - 90-gethomepage.yaml
@@ -49,17 +49,6 @@ resources:
 # The value is stored in an encrypted kubernetes secret and kustomize
 # Uses the value after decrypting it
 replacements:
-  #  - source:
-  #      kind: Secret
-  #      version: v1
-  #      name: argocd-repo-url-private
-  #      namespace: argocd
-  #      fieldPath: stringData.url
-  #    targets:
-  #      - select:
-  #          kind: Application
-  #        fieldPaths:
-  #          - spec.source.repoURL
   - source:
       kind: Secret
       version: v1
@@ -71,8 +60,6 @@ replacements:
           kind: Application
         fieldPaths:
           - spec.source.repoURL
-          #- spec.sources[0].repoURL
-          #- spec.sources[1].repoURL
 
 generators:
   - kustomize-secret-generator.yaml
