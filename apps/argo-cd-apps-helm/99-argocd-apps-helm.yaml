@@ -11,7 +11,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: "example.com"
+    repoURL: "https://github.com/madic-creates/k3s-git-ops.git"
     path: apps/argo-cd-apps-helm
     targetRevision: HEAD
   destination:

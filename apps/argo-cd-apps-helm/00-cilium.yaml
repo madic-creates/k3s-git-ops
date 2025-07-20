@@ -40,7 +40,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: "example.com"
+    repoURL: "https://github.com/madic-creates/k3s-git-ops.git"
     path: apps/cilium-config
     targetRevision: HEAD
   destination:
