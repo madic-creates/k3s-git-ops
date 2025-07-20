@@ -57,6 +57,10 @@ spec:
             enabled: true
           ui:
             enabled: true
+        tunnelProtocol: geneve
+        encryption:
+          enabled: true
+          type: wireguard
   destination:
     server: "https://kubernetes.default.svc"
     namespace: kube-system
