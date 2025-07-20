@@ -1,0 +1,5 @@
+---
+namespace: argocd
+resources:
+  - 00-cilium.yaml
+  - 99-argocd-apps-helm.yaml
