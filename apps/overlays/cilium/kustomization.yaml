@@ -1,0 +1,6 @@
+---
+resources:
+  - ../../cilium
+
+patches:
+  - path: k8s.cilium-config.yaml

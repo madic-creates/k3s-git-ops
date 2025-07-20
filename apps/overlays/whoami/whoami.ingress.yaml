@@ -1,0 +1,47 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: whoami-auth
+  namespace: whoami
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+    traefik.ingress.kubernetes.io/router.middlewares: traefik-blockiframe@kubernetescrd
+    traefik.ingress.kubernetes.io/router.tls: "false"
+spec:
+  ingressClassName: traefik
+  tls: []
+  rules:
+    - host: whoami.k8s.local
+      http:
+        paths:
+          - path: /foo
+            pathType: Exact
+            backend:
+              service:
+                name: whoami
+                port:
+                  number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: whoami-non-auth
+  namespace: whoami
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+    traefik.ingress.kubernetes.io/router.middlewares: traefik-blockiframe@kubernetescrd
+    traefik.ingress.kubernetes.io/router.tls: "false"
+spec:
+  ingressClassName: traefik
+  tls: []
+  rules:
+    - host: whoami.k8s.local
+      http:
+        paths:
+          - path: /bar
+            pathType: Exact
+            backend:
+              service:
+                name: whoami
+                port:
+                  number: 80

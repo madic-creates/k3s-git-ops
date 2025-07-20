@@ -1,0 +1,5 @@
+resources:
+  - ../../whoami
+
+patches:
+  - path: whoami.ingress.yaml

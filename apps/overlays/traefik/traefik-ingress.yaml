@@ -4,10 +4,15 @@ kind: Ingress
 metadata:
   name: traefik
   namespace: kube-system
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+    traefik.ingress.kubernetes.io/router.middlewares: traefik-blockiframe@kubernetescrd
+    traefik.ingress.kubernetes.io/router.tls: "false"
 spec:
+  ingressClassName: traefik
   tls: []
   rules:
-    - host: new.custom-domain.example.com
+    - host: traefik.k8s.local
       http:
         paths:
           - path: /
