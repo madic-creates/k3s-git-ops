@@ -20,3 +20,4 @@ values.yaml
 !/ansible/host_vars/.gitkeep
 *.enc.tmp.yaml
 .ansible/*
+.vscode/*
