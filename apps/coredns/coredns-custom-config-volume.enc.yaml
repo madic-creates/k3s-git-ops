@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: coredns-custom
+    namespace: kube-system
+data:
+    conditional-forwarding.server: ENC[AES256_GCM,data:aRqUyJhwuHBoClgV/BVMQaQqHKESimVotvze3CmzThsIX8AAXo+sPY2SgEKo,iv:dEYceDvo5T2dUI0e5ol6SqTRF+wCi/HNCkgcZAY9W8E=,tag:15pE2yfZCa+SVXFWmOQdEg==,type:str]
+sops:
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBRd1FTWEpXVkM1UlY2YVY2
+            RnVWOGYybDd0S3BLZlpIRHdkY1hoTTR4TUNRClRnL1NXMzMvbTI2QWVmYXB0WVRt
+            KzFhUnAwWmhOSTZ5V3hHY1FjampzTzgKLS0tIE5WYlBxZGpOUHQ3SEFON1QwNUJZ
+            bktJaFhKZ0FRcUNrODhzdExvV01TRUEKeL9ugd42FFg68OvKnJDTK9OF9FbDhm8p
+            2X8jeWSxi+QrBX9KrvGdgVD/U5VYnxCATJRd79YDGTQM6Gbl2yO5Ow==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBzS1BSZzdIVys5Um1nSi9T
+            UnNNRzU3NFBQdnNJN3NOcXRCMUdHY0NYT2o4CjNwU3FRZEllU3paRHNUOEs0bSs1
+            QUJ0SlMyUmJkdVZndm1EaTdJSWpKMnMKLS0tIHdJYzRqbkVTWFUxd2dzd1ZVYXFX
+            MUpTb3FDbGRmZ1pwYmYvb1Jub05BV1kKoglqgEulOJgfcrKdxA+EmuB2XBq65Ron
+            Db4q/9WHzgGO50O2BItuJkePydgqVbLQPdizNoH42qxFYFkyWy7sjw==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-07-20T23:08:36Z"
+    mac: ENC[AES256_GCM,data:oL2/ib4zF7JUY99Cc7x+stAEKMG3KW4sqozUQNAPHpripzFV6XOzdF56CsilkZo5VPYUMtTp/KuW99OeDsb1DMTt/2MYlt9SeapEV3GFnVPd7bCHIP72/3aEa1JDBUkaIkMCS0EKvVo0tP7nT+umF+JJuQ+h4Cl6+EllKdILniU=,iv:zRX8b4TGCpHRIWVLC4Up2oGuIeaOrcd4XQiI/JMAXR8=,tag:fVxh8l57bYLJNGu9Efb5Tw==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
+    version: 3.10.2

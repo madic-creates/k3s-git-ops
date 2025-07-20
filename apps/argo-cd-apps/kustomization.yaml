@@ -1,6 +1,7 @@
 ---
 namespace: argocd
 resources:
+  - 00-coredns.yaml
   #- 00-kubevip-cloud-controller.yaml
   - 00-kubevip-ha.yaml
   - 01-certmanager.yaml
