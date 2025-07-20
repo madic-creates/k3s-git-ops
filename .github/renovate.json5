@@ -41,7 +41,8 @@
         "apps/kubevip-ha/**",
         "apps/paperless-ai/**",
         "apps/pihole/**",
-        "apps/monitoring-checkmk-server/**"
+        "apps/monitoring-checkmk-server/**",
+        "apps/argo-cd-apps-helm/**"
       ],
       "automerge": false
     },
