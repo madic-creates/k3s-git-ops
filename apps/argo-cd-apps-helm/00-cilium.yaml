@@ -17,7 +17,7 @@ spec:
     helm:
       releaseName: cilium
       valueFiles:
-        - values.cilium.yaml
+        - apps/argo-cd-apps-helm/values.cilium.yaml
   destination:
     server: "https://kubernetes.default.svc"
     namespace: kube-system
