@@ -29,6 +29,6 @@ k8sClientRateLimit:
     qps: 50
     burst: 200
 ingressController:
-    enabled: true
+    enabled: false
     default: true
     loadbalancerMode: dedicated
