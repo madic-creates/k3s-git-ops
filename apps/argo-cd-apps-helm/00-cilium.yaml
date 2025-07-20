@@ -40,9 +40,9 @@ spec:
                 clusterPoolIPv4PodCIDRList: 10.42.0.0/16
         # Configure L2 announcements (LB-IPAM configuration)
         l2announcements:
-            enabled: true
+            enabled: false
         externalIPs:
-            enabled: true
+            enabled: false
         devices: eno1
         # Increase the k8s api client rate limit to avoid being limited due to increased API usage
         k8sClientRateLimit:
