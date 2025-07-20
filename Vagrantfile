@@ -10,7 +10,7 @@ Vagrant.configure("2") do |config|
       ip: "192.168.33.11",
       memory: 4096,
       cpus: 4,
-      groups: { "k3s_server" => ["k3svm1"] }
+      groups: { "k3s_primary_server" => ["k3svm1"] }
     },
     "k3svm2" => {
       ip: "192.168.33.12",
@@ -66,7 +66,7 @@ Vagrant.configure("2") do |config|
           ansible.compatibility_mode = "2.0"
           ansible.config_file = "ansible/ansible.cfg"
           ansible.playbook = "ansible/install.yaml"
-          #ansible.extra_vars = "@ansible/vars/vagrant.yaml"
+          ansible.extra_vars = "@ansible/group_vars/all/main.yml"
           ansible.galaxy_role_file = "ansible/requirements.yaml"
           ansible.groups = all_groups
           ansible.become = true

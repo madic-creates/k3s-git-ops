@@ -3,6 +3,7 @@
 
 - name: K3S Remove
   hosts: all
+  become: true
 
   tasks:
     - name: Preparing | Checking existence of k3s-uninstall.sh

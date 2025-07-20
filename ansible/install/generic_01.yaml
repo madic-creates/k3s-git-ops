@@ -105,10 +105,10 @@
   args:
     creates: /tmp/k3s_install.sh
 
-- name: Installing | K3S Server
-  when: "'k3s_server' in group_names"
+- name: Installing | K3S primary server
+  when: "'k3s_primary_server' in group_names"
   block:
-    - name: K3S Server | Creating local config directory
+    - name: K3S primary Server | Creating local config directory
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
@@ -118,9 +118,9 @@
       become: false
       delegate_to: localhost
       with_items:
-        - ../shared/{{ groups['k3s_server'][0] }}
+        - ../shared/{{ groups['k3s_primary_server'][0] }}
 
-    - name: K3S Server | Copying configuration to /etc/rancher/k3s/
+    - name: K3S primary Server | Copying configuration to /etc/rancher/k3s/
       ansible.builtin.copy:
         content: "{{ item.content }}"
         dest: "/etc/rancher/k3s/{{ item.name }}"
@@ -132,18 +132,40 @@
       with_items:
         - "{{ K3S_SERVER_CONFIG}}"
 
-    - name: K3S Server | Installing
+    - name: K3S primary Server | Installing
       ansible.builtin.command: "/tmp/k3s_install.sh"
       environment:
         K3S_TOKEN: "{{ K3S_TOKEN }}"
       changed_when: true
 
-    - name: K3S Server | Fetching ca certificate
+    - name: K3S primary Server | Fetching ca certificate
       ansible.builtin.fetch:
         src: /var/lib/rancher/k3s/server/tls/server-ca.crt
-        dest: ../shared/{{ groups['k3s_server'][0] }}/
+        dest: ../shared/{{ groups['k3s_primary_server'][0] }}/
         flat: true
       run_once: true
+
+- name: Installing | K3S secondary server
+  when: "'k3s_secondary_server' in group_names"
+  block:
+    - name: K3S secondary Server | Copying configuration to /etc/rancher/k3s/
+      ansible.builtin.copy:
+        content: "{{ item.content }}"
+        dest: "/etc/rancher/k3s/{{ item.name }}"
+        owner: root
+        group: root
+        mode: "0644"
+      # Do not display in ansible output
+      no_log: true
+      with_items:
+        - "{{ K3S_SERVER_CONFIG}}"
+
+    - name: K3S secondary Server | Installing
+      ansible.builtin.command: "/tmp/k3s_install.sh server"
+      environment:
+        K3S_TOKEN: "{{ K3S_TOKEN }}"
+        K3S_URL: "https://{{ K3S_IP_ADDRESS }}:6443"
+      changed_when: true
 
 - name: Installing | K3S Agent
   when: "'k3s_agent' in group_names"
