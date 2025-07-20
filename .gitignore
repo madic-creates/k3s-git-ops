@@ -15,6 +15,7 @@ ansible/vars/*
 !ansible/vars/vagrant.yaml
 values.yaml
 /ansible/group_vars/all/*.yml
+/ansible/group_vars/all/*.yaml
 !/ansible/group_vars/all/main.yml
 /ansible/host_vars/*.yml
 !/ansible/host_vars/.gitkeep
