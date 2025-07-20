@@ -62,7 +62,7 @@ spec:
           enabled: true
           type: wireguard
         loadBalancer:
-          mode: dsr
+          mode: hybrid
           dsrDispatch: geneve
   destination:
     server: "https://kubernetes.default.svc"
