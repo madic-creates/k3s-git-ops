@@ -20,6 +20,11 @@ helmCharts:
 generators:
   - kustomize-secret-generator.yaml
 
+configMapGenerator:
+  - name: checkmk-pre-start-hook
+    files:
+      - requirements.txt
+
 patches:
   - target:
       group: apps

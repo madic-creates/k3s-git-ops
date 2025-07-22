@@ -1,0 +1,1 @@
+https://github.com/madic-creates/ansible_callback_notify_ntfy.git
