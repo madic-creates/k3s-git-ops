@@ -21,7 +21,7 @@ generators:
   - kustomize-secret-generator.yaml
 
 configMapGenerator:
-  - name: checkmk-pre-start-hook
+  - name: semaphore-requirements-txt
     files:
       - requirements.txt
 
