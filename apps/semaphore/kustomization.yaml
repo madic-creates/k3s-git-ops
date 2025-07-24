@@ -12,7 +12,7 @@ commonAnnotations:
 helmCharts:
   - name: semaphore
     repo: oci://ghcr.io/semaphoreui/charts/
-    version: 16.0.1
+    version: 16.0.2
     releaseName: ansible-semaphore
     namespace: ansible
     valuesFile: values.yaml
