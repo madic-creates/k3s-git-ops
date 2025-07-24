@@ -19,6 +19,14 @@ loki:
               # we're storing on filesystem so there's no real persistence here.
               object_store: filesystem
               schema: v13
+    compactor:
+        retention-enabled: true
+        compaction_interval: 10m
+        retention_delete_delay: 2h
+        retention_delete_worker_count: 150
+        delete_request_store: gcs
+    limits_config:
+        retention_period: 744h
 singleBinary:
     replicas: 1
 read:
@@ -33,27 +41,30 @@ monitoring:
         namespace: monitoring
     serviceMonitor:
         enabled: true
+table_manager:
+    retention_deletes_enabled: true
+    retention_period: 360h
 sops:
     age:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBWeTBnZ2t4aTMyNGlnTnQ4
-            dHJGcWROeHV2SENLbS9sL2hpeVZ2a0swbWc4ClY0cHlnVHdVNWEyQ1JpUGdxQ0Jh
-            Z0IyckNHMFF6WnhYWEw2WTIzVXp2eW8KLS0tIEM1WGFEcTYzeklIbE10d2ZrdGpC
-            eHVnL1NZamg5dWlsK21LV0pGNnd3Qk0KWXqKzZBdTOyZNkgtNUk451v61dUlRIVY
-            UUOUTNepPJXhES5GK60swV6Auuj/GcLHbyM9FL5mvL5yFNABynaP0g==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBxM2QrUlMzT2NOZG9PQXRh
+            ZktBaklnMzV6WlRQdlhpTnVlZHFsR1JxRndnClFmK241eCtaOHYvTXNUOXFtNy8y
+            Y0Z5YUFmMDFQK0RMNnoxdE9IR0NaK3MKLS0tIEpiOWV1NUFFdklDd05kZGFhWFNX
+            Z3NVTEs1UFZHSFdPbW9JaHBQcHZkOGsKfZ1lHqO4NeoopZcN4AbA5XVgIz0LaRB2
+            NI5DCgHppd5i9UZipOUCbfuGaRTZL1WwmRLjAkPfn3hN/54dRtE7Fg==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBlTlJ6SUFWeXBrSEU2dFBC
-            T3B6MGR4V3JRM1ZuWitQaUNQaGJjL2FsV3owCkxLbU1xWnZyOTlZbVFzNUlYMGlq
-            N3BxRFVkTkd0K2g1UXIvZGtWT3pic0EKLS0tIDdPSGxQZWdRNnlEcU91eUR2Mm9E
-            UVpwZGlsQXlnQ2liMEdTUTFHa1hjTE0KZ/4Hjy8Cgl26fe1t8IvSCJpMYe86T7bH
-            sHY9dMAF/q/DpudF+2LIIr0bMjG58uuVVCuRVg2XhvjF9dx1Iib2+Q==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBnZTF6ays0R0YxT1pRS2NT
+            ZTR2VHY4S0JDaDhTZUMzTkZrOFRjT2tEVlU0CkJWWEhBcGNQZ3B2M25ra3FjclNs
+            T3FvYkRSV0ZpYTdVWk5BYnlpWld2c2cKLS0tIHc2bmRFbFNlUWo1Vm5QS1NiTTJL
+            L3BuQmQvRDdSbXRJUzducnpzc21Uc2sKvOu2BazuXIv4yx2IHMjlj40eW85RwMw2
+            hypVowB5A5/6a6kyFi1iykf3Enu7UOMSaHMG/lQdTUagb2G6TMWdjQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-06-17T11:46:42Z"
-    mac: ENC[AES256_GCM,data:T1ChSmIeDUMitrdRFpwjwTOsFIuCZkyWkJtQA44VN/O+IyiItjjoM2H1ASeLiPym8MJjaz4JgNfdb/gTUu0JCrns6TlbMAWmeBCfLsFC962SJd9YZjtB+h+UF54XrSTFkeDWBxkBcsIPM7z9s6UStWAiA5EBKNO0Ad0Gi+xV0r8=,iv:g9tY3bGL/mfTY3TK3LFpNmfalVMhPVd8FBg2nfVeagc=,tag:CRMMyQh75BwK6wCThkA3ig==,type:str]
+    lastmodified: "2025-07-21T14:03:47Z"
+    mac: ENC[AES256_GCM,data:qIwNBPuhQMwN/qA+9cwS2IPYjflULYm/LPVkXzLYECQioBA/arXT6u3sjBJL2u1e+UBn+XOjvaKsBbtwj7ui3ARBSVyLGhtKaO/sjIr6AdOG9bjE9tJuYMaUoqW6a9tIo5g6/ORh7Fqa/8Zsipc4gCsiGazK9eucCyjTWqBCqNE=,iv:HzTEJUVia75zoJ6K3udC0WfdJNVuRHjDecsJa24aCxE=,tag:WSqm3uUNMF1xxP9oK6NyIA==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
     version: 3.10.2
