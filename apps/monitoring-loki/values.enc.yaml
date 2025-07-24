@@ -41,7 +41,7 @@ monitoring:
         namespace: monitoring
     serviceMonitor:
         enabled: true
-table_manager:
+tableManager:
     retention_deletes_enabled: true
     retention_period: 360h
 sops:
@@ -49,22 +49,22 @@ sops:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBkVERqL01ML3hJeUpyYTE1
-            ZUdkRGtzYUJVay9sUUJaL3p4bWtoajcyTXlNCnh1WUUweFp6cEh4Vkt1Z0tuTHJP
-            cEZHc0p3UFRtekhpZS9PSHFxQkY0alUKLS0tIDFRWnd5ZWtvMm5mdVBIS00wSUVJ
-            NE1BTHlITk5qa2l4a09CZDQwWWhnNjAKiZnQDdzdneacW2rJUKP/JAkYZBXzUH2m
-            YzTNEQeLe+AETnxtUMi2j8ll4NOMtAqdzt5L3SZwUPHOwPpWcM00sA==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBJMTRPU3RvNzBoTnJjbG55
+            L0QzVURyTWFRdi9pYUM4ZjFGR3lKcGRBZWhZCkp1a2pKY1NqSTgvemJGUGt4dkMz
+            R25XQVk0aVlYWWgzM1MxalVhTWhOK1EKLS0tIHNKRFV4dHlaOGZ0VnAzaXEwekd4
+            RW00cWtIWEx2b0JCWktjSytVV2RIcEUK9H+UX0Ut+SJzmt6jniPHg8xDTtoffRki
+            KmX3DYd3Rt7YTpi1YPO6X/NLNZ87yNz+thcc/2RbAjUqACbs1P1zFA==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBFQytKVmdKZkd1R0J0dVlN
-            RTJ5ZDVrc1Y1TFRnUUdhWXcwcjViZC9ibVIwCnJYZHZlZmlEWUg0R2RiRWlhanlw
-            UDAzUGF3eVZJYmV6d0EySkxjb09CRFkKLS0tIHlSNVVpVHQ1N0NDUE56cGE2RGtr
-            bEFnT2VtOHJoWW9UNnhpc2c3eFo5dTgKdWF9VbKYxbCVjC6vDZdGc9z19orphbYa
-            DiLErwZ5WCvqu+J1DRE+DWdAEY6mn0gh8+ClfNAMYGopfcA7wCmVig==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBuQThubmpvWTZtNC8xaDhl
+            Zm1tWXZRelBXbjM2WFFScHVTT2M3dDVPVkVZClV2cC9UNWVpZmVMeko1SlQ3Q3h1
+            Vm1NRzBFMytBSDhhM05INVVnMnE0dGMKLS0tIG15S0xROUZMVU9yaDQ3dEsxSFZ2
+            QkJjZWpXR3hqNjZiZEpzNUxuN2ZQTlEKAzCwkS7dx+w19O5DPM0qZ8qXljuZJBij
+            po+r9qGQOvkEleyWD4kU4TR9EjrF0d6V6anukUk4MDMQyBSdLFaFHw==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-07-24T23:06:28Z"
-    mac: ENC[AES256_GCM,data:vvqDzVUymIsLswxC2XlsSWrxYiGaAAcTvZw8aKNKKy+MVhQR4kGLxZT25zCvvMlAUHOhAmrQPy4uz7PI6bqfikAQoi7IUHK55iqiyePN4D7NN2m9HlX/7MCoAzxFoWzMmyBcs1bp23nGf1nOs1YQNkRN+DSBBhuENwt8DWVr0ug=,iv:wf/aRBdaxZGyTMvYgHxrkVtrLLrFtqwR+ljt7DqxwqY=,tag:W40Xe9HDPcw1GP6VTphufA==,type:str]
+    lastmodified: "2025-07-24T23:13:01Z"
+    mac: ENC[AES256_GCM,data:NSCWXSwvsnBYN/bJWzeHbBr8woTUbGtkzXoGi2o1KJmWXfmxETz8ZnujDvpkB9IbShdmHe/cHCQJo87euG9z65RvY9cmMD9ZxTc2RrrktQ+goJ78C/WjA0GhbotC8b9r51oew/4Pee75TbWW7uVjd4Zx5ypTfKnXObNReUOW+K8=,iv:jeFtSskmAJ/qtKxjf1KiqzaFMAose/d/ORpjWWzooGo=,tag:Is0mqXAZ9XFAGTFEkBcB2w==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
     version: 3.10.2
