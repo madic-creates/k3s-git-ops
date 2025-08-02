@@ -4,6 +4,14 @@
 This documentation is at a very early stage.
 ///
 
+This documentation provides an overview of my K3s GitOps home lab repository, explaining the high-level architecture, core principles, and system capabilities. The repository implements a fully automated Kubernetes home lab using GitOps practices with ArgoCD as the deployment orchestrator.
+
+For detailed information about specific subsystems, see GitOps Platform for ArgoCD configuration, Infrastructure Services for foundational components, Authentication & Identity for SSO implementation, Monitoring & Observability for the monitoring stack, Applications for user-facing services, and Backup & Data Protection for data protection strategies.
+
+## GitOps principles
+
+The cluster operates on GitOps principles with ArgoCD serving as the primary deployment controller. All infrastructure and application configurations are stored as code in the GitHub repository, with ArgoCD continuously monitoring for changes and maintaining the desired cluster state.
+
 ## Important used technologies
 
 - [K3S](https://k3s.io/){target=_blank}
@@ -37,6 +45,17 @@ Excerpt of features this cluster provides:
 - Alerting via alertmanager to a selfhosted ntfy
 - Storage managed via longhorn
 - Vagrant based virtual test environment
+
+| Feature Category | Components | Key Capabilities |
+| --- | --- | --- |
+| High Availability | KubeVIP, Traefik, Cilium | HA control plane, load balancing, VIP management, Network Policies |
+| Authentication | Authelia, LLDAP | Single Sign-On, LDAP directory, forward authentication |
+| Storage | Longhorn | Distributed block storage |
+| Monitoring | kube-prometheus-stack, Loki, CheckMK | Metrics collection, log aggregation, alerting |
+| Backup | Velero, Restic | Cluster backups, application data protection |
+| Media Services | Emby, NextPVR | Media streaming, TV recording, transcoding |
+| Automation | RenovateBot, Semaphore | Dependency updates, playbook execution |
+| Security | SOPS, cert-manager | Secret encryption, TLS certificate management |
 
 ## ToDos
 

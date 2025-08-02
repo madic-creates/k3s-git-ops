@@ -1,11 +1,33 @@
 # ArgoCD
 
+ArgoCD serves as the central control plane for the entire cluster, implementing a pull-based deployment model where Argo CD monitors the Git repository and synchronizes the cluster state to match the declared configuration.
+
 ## Dependencies
 
 ArgoCD does not support "real" dependencies. Therefore, I use the ArgoCD feature [sync waves](https://argo-cd.readthedocs.io/en/stable/user-guide/sync-waves/){target=_blank}. Sync waves determine the order in which ArgoCD apps are installed.
 
 Example:
 In my case argo-cd requires a Configuration Management Plugin to be installed first. Without the Configurationmanagementplugin, the argo-cd repo-server container won't start.
+
+| Sync Wave Range | Purpose | Examples |
+| -- | -- | -- |
+| 0-5 | Infrastructure Foundation | kubevip-ha, cert-manager |
+| 8-15 | Core Services | mariadb, redis, longhorn |
+| 12-17 | Network & DNS | pihole, traefik |
+| 16-17 | Monitoring | monitoring, loki |
+| 20-60 | Applications | emby, nextpvr, semaphore |
+| 96-99 | GitOps Platform | argo-cd, argo-cd-apps |
+
+All Argo CD applications are defined in the [apps/argo-cd-apps](https://github.com/madic-creates/k3s-git-ops/tree/main/apps/argo-cd-apps){target=_blank} directory where the argo-cd-apps application manages all individual application definitions.
+
+``` mermaid
+graph LR
+  A[Start] --> B{Error?};
+  B -->|Yes| C[Hmm...];
+  C --> D[Debug];
+  D --> B;
+  B ---->|No| E[Yay!];
+```
 
 ## Getting ArgoCD admin password
 
