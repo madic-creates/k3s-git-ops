@@ -6,13 +6,13 @@ metadata:
     lldap: https://github.com/lldap/lldap
     k8s: https://github.com/Evantage-WS/lldap-kubernetes
   labels:
-    app: lldap
+    app.kubernetes.io/name: lldap
   name: lldap
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: lldap
+      app.kubernetes.io/name: lldap
   revisionHistoryLimit: 2
   strategy:
     type: RollingUpdate
@@ -22,7 +22,7 @@ spec:
         lldap: https://github.com/lldap/lldap
         k8s: https://github.com/Evantage-WS/lldap-kubernetes
       labels:
-        app: lldap
+        app.kubernetes.io/name: lldap
     spec:
       containers:
         - env:

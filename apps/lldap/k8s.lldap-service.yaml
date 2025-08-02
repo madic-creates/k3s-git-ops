@@ -6,7 +6,7 @@ metadata:
     lldap: https://github.com/lldap/lldap
     k8s: https://github.com/Evantage-WS/lldap-kubernetes
   labels:
-    app: lldap
+    app.kubernetes.io/name: lldap
   name: lldap
 spec:
   ports:
@@ -17,4 +17,4 @@ spec:
       port: 17170
       targetPort: 17170
   selector:
-    app: lldap
+    app.kubernetes.io/name: lldap
