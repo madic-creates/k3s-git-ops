@@ -2,21 +2,21 @@
 apiVersion: "cilium.io/v2"
 kind: CiliumNetworkPolicy
 metadata:
-  name: allow-access-lldap
-  namespace: authelia
+  name: allow-to-redis
+  namespace: databases
 spec:
   endpointSelector:
     matchLabels:
-      "k8s:app.kubernetes.io/name": lldap
+      app.kubernetes.io/name: redis
   ingress:
   - fromEndpoints:
     - matchLabels:
         "k8s:io.kubernetes.pod.namespace": authelia
         "k8s:app.kubernetes.io/name": authelia
     - matchLabels:
-        "k8s:io.kubernetes.pod.namespace": media
-        "k8s:app.kubernetes.io/name": emby
+        "k8s:io.kubernetes.pod.namespace": paper
+        "k8s:app.kubernetes.io/name": paperless
     toPorts:
     - ports:
-      - port: "3890"
+      - port: "6379"
         protocol: TCP

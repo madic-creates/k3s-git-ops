@@ -2,24 +2,21 @@
 apiVersion: "cilium.io/v2"
 kind: CiliumNetworkPolicy
 metadata:
-  name: allow-access-mariadb
-  namespace: databases
+  name: allow-to-lldap
+  namespace: authelia
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: mariadb
+      "k8s:app.kubernetes.io/name": lldap
   ingress:
   - fromEndpoints:
     - matchLabels:
         "k8s:io.kubernetes.pod.namespace": authelia
         "k8s:app.kubernetes.io/name": authelia
     - matchLabels:
-        "k8s:io.kubernetes.pod.namespace": authelia
-        "k8s:app.kubernetes.io/name": lldap
-    - matchLabels:
-        "k8s:io.kubernetes.pod.namespace": ansible
-        "k8s:app.kubernetes.io/name": semaphore
+        "k8s:io.kubernetes.pod.namespace": media
+        "k8s:app.kubernetes.io/name": emby
     toPorts:
     - ports:
-      - port: "3306"
+      - port: "3890"
         protocol: TCP

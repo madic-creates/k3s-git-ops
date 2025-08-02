@@ -1,4 +1,5 @@
 ---
 resources:
-  - allow-access-mariadb.yaml
-  - allow-access-lldap.yaml
+  - allow-to-lldap.yaml
+  - allow-to-mariadb.yaml
+  - allow-to-redis.yaml
