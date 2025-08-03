@@ -8,12 +8,15 @@ metadata:
     #    kustomize.config.k8s.io/needs-hash: "false"
 spec:
     secretName: wildcard-cloudflare-production-01
+    privateKey:
+        algorithm: ECDSA
+        size: 256
     issuerRef:
         name: cloudflare-issuer-production
         kind: ClusterIssuer
-    commonName: ENC[AES256_GCM,data:/7MvzV0+TkzfOWs6lVqdBM5n,iv:v4LbPVD1fG8UTeohHU0gwqu/TN66ypfCuqBxQ0PImaY=,tag:GurzH6J08vDhmKn6FzplYg==,type:str]
+    commonName: ENC[AES256_GCM,data:faVpuwIhKLl0ybkr2xftClDY,iv:7NXdH0DDiFD7QnFrie3s2psk37oYH70qockPu9gMSFg=,tag:cp86CexuHK0pI/mot4qQbg==,type:str]
     dnsNames:
-        - ENC[AES256_GCM,data:Bg/PHbxLZc/Tp/WApAeuCvD7,iv:6o91Y2X5Dvk5r4yJEl6h+qI+zUy9oOCiU8lq8EZDeIQ=,tag:3NJ4GXChICqPko1Noj2C8w==,type:str]
+        - ENC[AES256_GCM,data:3HtUuGIOktCiVFp7wonJdKKe,iv:d4Km9wqLT7MUehWCVzVzt3m6OTUT2yMmzDF/s4JFbx0=,tag:fDULXlc2poAePrOh8+f99Q==,type:str]
     secretTemplate:
         annotations:
             reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
@@ -22,31 +25,26 @@ spec:
             reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
             #reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: "dev,staging,prod" # Control auto-reflection namespaces
 sops:
-    kms: []
-    gcp_kms: []
-    azure_kv: []
-    hc_vault: []
     age:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB0Q0NmRDBHQVdsVW54WFpm
-            b3p5UktzMHFyUGV3MlJRN0RIN3QwSGs0dVJjCjBuZG5NY216Zkdiand5WW5PZ01X
-            eFNpZithbkVRdG8vRlR0d3kxSWgyRVkKLS0tIFNNeWRyRXZ6eGRxU2xDUUZ2dmwv
-            ajFEWGxGVEN3WHBFWURBbmdaMXAvRVkK1P7KtJC6GpP+awrQTBKZzHemm5QfrsSF
-            w77oFMsja+Anj9r+WESHYGR/R5fy+/cdqU5ZVQpKTqyzw58kMUcSqw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBGVE1Od3BXK3VLd0JHcmI2
+            cWIwYlQ2YU9BRlV0dGtmZzNHc3ErMXdlVjNjCnVKQXgwSytuSTNReTN4R0ExRU13
+            WnFUUWtYbHZ4K01XOWdBejAzNkxMbzAKLS0tIHlGQ0YvbkkwVGVkNDNVUVVPMnEr
+            dUdSdlJkbU5NMzVrRER3dVIybnRTUlkKxLpOozTLrCyZBZ/h3BOKuoC4gCIV1cku
+            uL3OvhSpfobxNbYTVnc5t9SN/fpV5v892noA6cK54JGv1eLmFc90qQ==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAxRmxYZC9JUGIrNGhvMHhl
-            N0E5YWVhYkptVlVUNDdld3V4VC9GMG5UM1M0CnVVWjVld0liSmNFRERDVGsrYytD
-            VTEvM3VTM0pZREpBVEIzQjArVFhONlkKLS0tIGhFcjEyZXViU0h4bzgzQVY4c2JO
-            NDNqTnd4VWtNY3FGMktPVHBVZGhDc1EKfmoq4zm+3N7IlTdRfz2lLmSK9dGsRpjf
-            XONvgJ8oI66nUATKT1n9uuN7c72XVCmqkpftiIB+R+Wlv71n5DUYYA==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBhc1pydGhSY1BhdTA5Q1I3
+            NUJ0SXpnVHVXcm1hMFRzUmh4V3hCM0ZZY1RBCkNUTW52Q0VCTXBja3V4UkZwUjlO
+            QWFHWXppWmVhYk93VTd3ZFlhR2JRWmMKLS0tIGhvUW9xc0N2TGZoMjUvWGJ4aFIr
+            aC9kUzQrcHg4WktkajIweXM5TkxMY3MKxUHuzh6/rZ3GKiHRDujHBkhOz9yz0WBR
+            29ELcR7X+gvE5SBkBWcJBAE2WGjGqiTLx/yCgo/5DXQCQUfckRCnMg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-11-04T20:56:08Z"
-    mac: ENC[AES256_GCM,data:7+lOKTNv3NjHNX2zSMJFGOgMdTmCTfItSZ3QaJOwilrP+XrbfNu5HIadfrWVaBNmoUe+0BYhTciekrKdjZV91xi/1yMqqLhQReS986QURsqOcmpuNC1Qq9SyqaboQKADxTwIAELDwdrCFCqiGr0G2hNW9o1E8uAPkl050DKAoHI=,iv:jwggGJNYpnAel2hGRFvWoox8rTVr/SoVzq68LtwA7/k=,tag:yvYrIYWIferSTOHxhNE6cQ==,type:str]
-    pgp: []
-    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|clientSecret|argocdServerAdminPassword|oidc.config|commonName|literals)$
-    version: 3.9.1
+    lastmodified: "2025-08-03T15:04:51Z"
+    mac: ENC[AES256_GCM,data:xdPdzgdJfD8BHxzkrfWN1HCxFbw2gkQxW+B7AdiKf9oxPCwGGtSbvjMxjhncZey5J3GPsxonVQGFLtXc/RoOVRSSLBRNttkh+RPUtHdahDpdUrrwty/Ff7SxzgpYH8FmJqQ6lv0YM+jrWGzUdvZl1ppSyvxOrY95vlPVzqRtuyU=,iv:OWvVoBcTlniYklOh9QiO6qqXG0irjh02WK/Lc/0l3Xk=,tag:JdAx/2PmE3pMfuEjZORJaA==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
+    version: 3.10.2
