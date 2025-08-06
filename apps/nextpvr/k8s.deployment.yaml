@@ -5,7 +5,7 @@ metadata:
   name: nextpvr
   namespace: media
   labels:
-    app: nextpvr
+    app.kubernetes.io/name: nextpvr
 spec:
   replicas: 1
   revisionHistoryLimit: 3
@@ -13,11 +13,11 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      app: nextpvr
+      app.kubernetes.io/name: nextpvr
   template:
     metadata:
       labels:
-        app: nextpvr
+        app.kubernetes.io/name: nextpvr
     spec:
       hostNetwork: true
       ## Use cluster internal dns config for lookup of e.g. pushgateway

@@ -5,7 +5,7 @@ metadata:
   name: nextpvr
   namespace: media
   labels:
-    app: nextpvr
+    app.kubernetes.io/name: nextpvr
 spec:
   type: ClusterIP
   ports:
@@ -18,4 +18,4 @@ spec:
     #  protocol: UDP
     #  name: udp-port
   selector:
-    app: nextpvr
+    app.kubernetes.io/name: nextpvr
