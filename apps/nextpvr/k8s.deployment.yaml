@@ -35,11 +35,11 @@ spec:
               mountPath: /config
             - mountPath: /vol_raidz1/video
               name: video
-          #resources:
-          #  limits:
-          #    gpu.intel.com/i915: "1"
-          #  requests:
-          #    gpu.intel.com/i915: "1"
+          resources:
+            limits:
+              gpu.intel.com/i915: "1"
+            requests:
+              gpu.intel.com/i915: "1"
         - name: backup-sidecar
           image: ghcr.io/restic/restic:0.18.0
           envFrom:
