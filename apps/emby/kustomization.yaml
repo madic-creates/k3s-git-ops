@@ -89,6 +89,7 @@ helmCharts:
                     values:
                       - argocd-application-controller
                       - jellyfin
+                      - nextpvr
               topologyKey: "kubernetes.io/hostname"
       additionalContainers:
         - name: backup-sidecar
