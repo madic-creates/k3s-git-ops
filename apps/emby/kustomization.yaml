@@ -108,7 +108,7 @@ helmCharts:
               subPath: backup.sh
             - mountPath: /backup/config
               name: config
-              readOnly: true
+              #readOnly: true
 
 patches:
   # Add volumes to Deployment
