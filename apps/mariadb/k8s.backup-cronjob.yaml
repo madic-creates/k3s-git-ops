@@ -79,7 +79,7 @@ spec:
                   subPath: backup.sh
                 - name: backup
                   mountPath: /backup
-                  readOnly: true
+                  #readOnly: true
               securityContext:
                 allowPrivilegeEscalation: false
                 capabilities:
