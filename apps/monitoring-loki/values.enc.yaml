@@ -9,9 +9,9 @@ loki:
         replication_factor: 1
     storage:
         type: filesystem
-        admin_api_directory: /var/loki/admin
-        #chunks_directory: /var/loki/chunks
-        #rules_directory: /var/loki/rules
+        filesystem:
+            # Temporary workaround for https://github.com/grafana/loki/issues/18729
+            admin_api_directory: null
     schemaConfig:
         configs:
             - from: "2024-01-01"
@@ -52,22 +52,22 @@ sops:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA1TjFYZjRlVm9kUWNIVWF5
-            NVFmSndVVzgwQi8zUGd6bm1rV1BCVzNQZEF3CitFWUN0YnRiV3NQTHBZY1BxT1px
-            Q0dmY24zNDJLQ3hPV1FabnVYZEt3SmsKLS0tIHZZdzRsb09ENzVFUm0rbG9ZWkdo
-            QlIwY3UwTjk4N0VUK1pyZVZzTFV3Q2sK8SQ+ynY5U5JqqZz9xAjh9x8dGBGsAjwU
-            /jHt3ibUmqz88DohoAKvfNR9DHzonNAbMrlVkwQvvUfhvWX/hmwPkw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBQNVh5Tk9zRml3Nzd0Znlz
+            UDJEd1Y1UlV5RXhvY1licC9OTmdwQmdIdEZRCnVVSjVnamh6Wld3Z2ZlVTZqUi9U
+            cVhZaXovK1psYmwvb1JKczhJeEpJOWMKLS0tIGprYzhEMG5iRWFScUlCdHRLZUFP
+            dkcxTkFwQVIxdVBNdWxLU1l1MXpDd0UKrDPPck51BTm3GKoYlDMEwsqGFDMwor6S
+            GS7D8ngv1WfqvOe9z9qIEby53vv1oWSHC+1oLlASDXWjT95hXlHd9Q==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBMdlRiNjIwclJhUWw0Wm1I
-            UmZiUSt3M2s3K1d1N3ZtUEY0VmFNM2x2ZFhrCmZQMnlmdGFBQVJKd2ozYlFYeGhU
-            dmFJT2Rvc0w0ODJjd1Q0NW9iVGJySTAKLS0tIHdWL0VqaytFL0ZtN3JhQ0ZwbjEv
-            NjRHQmdOVWlsZ3doUkxOemxSQkNyQlkKkAPuCIbnJPf3iJ0ZDL72l4e6U1AkGjcV
-            UoZkY/Eebr+G/qdxov8Jb25kjmd7JDg4aT5KbRUynPyZgCHPykrJMA==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB6WDZwZ2pnVE5kdkhPQ0FM
+            WjVNUGNqMWJTRTZsejRERzhxam9LZjZhS2dJCk16WXZ5clBGZ3owUHRjeHlGWExn
+            M0oveHFXb0duL3JYd2htajVlUWRrWWsKLS0tIHc2VDlnUndDdS9NS3pYdkxLT1Zq
+            N0VpeWI4b2orbC9LWUtrSXJCZnVBZ2cKhs5yOxDMAiWQaq0KQS4z6tRrueSjbMc+
+            cOCRMw+7EXxhlAB9/fXTALQFr5xmavx6xHnAGoX4bG9DleH9sObsOA==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-08-11T16:51:17Z"
-    mac: ENC[AES256_GCM,data:T7zARlqU9ZWivEt/OYO6ipMTMvvom2uyT9rzIEOHAsVgC1bFCxl/pVeQJUiX5mES+2Dsi5NdHU840nY0JpvazwzddypyglbwJ+JlmqSMMl9JDYT9E+biYHky6hSOli4nxPiWgHYMdp7M8kSdZKl0WgrbmI2V/2D/uijLoG4ntjQ=,iv:cZ2zJpBTemuJVM2sjiFckB4xmsySPw+eoKLL0JH1gzY=,tag:Y1xjZCEYqfkBL8XE6EHbqw==,type:str]
+    lastmodified: "2025-08-11T16:55:48Z"
+    mac: ENC[AES256_GCM,data:JUIbGiH5V7qz+IFd8qJrWvN+nfR9Zdop8qLECwRLbssbGqfp70UOuC1giplDQLSks1fouRqboZnfR2RICCEJ1/2StLaXeSbKY9h2xc8eYmJYvFwGRpScY59WOLrSY/9p2QXBQZwdJZUjPqRKgbkpRorwyGAucqpplN1ET6hGS2Q=,iv:gZO7YsNG59/Z68+Xm3P7vDW/IG/Y3aYUQfMASJb9VOc=,tag:v57TqeQRHEw4akFXpq7ngw==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
     version: 3.10.2
