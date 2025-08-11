@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: dhcphelper
-          image: homeall/dhcphelper:latest@sha256:3b48b01053e6d881d0f5896aa0db658cd76a0a9d4265e2bb7dc6878953783654
+          image: homeall/dhcphelper:latest@sha256:7c9c9a621c94bec4df9abca0f8e9a8eb33fcd7ac1e60f0299b34a96c76fe1296
           env:
             - name: IP
               value: "192.168.1.232"
