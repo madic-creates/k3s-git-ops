@@ -9,34 +9,29 @@ spec:
         customRequestHeaders:
             X-Forwarded-Proto: https
 sops:
-    kms: []
-    gcp_kms: []
-    azure_kv: []
-    hc_vault: []
     age:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBrTWNSU1o4WXJLK3pJQWNj
-            Q1FQcWkwVVJTOWt0Z2UyOEVuemxZMWVFL1ZzClVHYlVDb1pWaTVNVXB6REtKV0d3
-            d3ZmQU1tU3gxR3haejBWUlFWcUk0Nm8KLS0tIExNM3FzZU81clJuT25SZnRoL3hm
-            OGZGK1NvcnhMWGpNM2FCNjZZSlRXMVkK4ePQrZcd1PW+h21DvFQI827nGnHtE3Ho
-            xhxX3fQsGD8bXEk2SbERxG9v5LEPhnVqeNdW4xGCn3FDlyUsKPX77w==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBLSjgzbm9DcWRMUTBSeHJG
+            RG00RXcrbnZQK0wwWHFHbEJDZFlLcS9QQzNZCkc2WTNKSEh3RFRlbXRxSzZ1cWFU
+            SkhlMHN0KytBOE9tUzRITXhNTk9TS1EKLS0tIEl1VG03WEoxY2pnMDVMU1lCYjUr
+            RW45azlhU3VmQlZLM2QwYUFPOGg4QW8KdvJtNTyhfRNdvNKEWy/be6JoqZTRKkMA
+            d+aPJrDzVDNjG2qZdHD3SQvwMbvHuKpnvh4nU7StzUBfUhavBT74GQ==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBXK2hYbDJnQjVhZ296T2JK
-            ekFPRm9mckd6VURhUUk2UTF1M1FvREVRWkNnCmxvMjQrS2pvdDVKL2s0ZDk2Uytw
-            d1Z2MFcvZnVGeWJyK2szVkJtUnIxUEEKLS0tIHBSUkF6QzIxc3phOGRHZFhvSDQ5
-            Q2hPQXFzV216MkRaM0l0emcrM0JoL3MKXXCx2ko8nsCExACoF/4oJXUhq6LdtULo
-            g9qS9hphFTl0puqfjg8VBQxFR4x283dkjC+4onDEMwr/EOff3jPoQw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSByWlpubUtMdC85SVdPTGMx
+            dnhxSGREV3VSN3FUY1JzcUw1eWFYNmhHaG1vCjBiWXkvZlhNbGJUZTZ0V1BZVk91
+            RllvT0tMYldreC9qZ2xUc1pINjRGRkUKLS0tIFQ0T0psQWQ2ZGNLbDdWd2hwandJ
+            QVVVNHFJb0I2anlHcGZmc1lVRUQ0Z2sKvYOAkSyjsu989v7Bhmy3lZzLoYyTIUYy
+            6nkjVV1BGHM6u4oDyF1WD1nP1W6I89avWZS32Z1Fc5aWxi3K8BlOLQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-10-25T05:20:37Z"
-    mac: ENC[AES256_GCM,data:eotrovM+pD5NAU82P1X0nJxCWGN65DLVGGr3eddVDlF8t3uClLfTWrFNOPHJ6Ke1s8yxh1oDhc2n0dNvl6yB7ncnDTNhJjQhDP0AzhXG0EQDgEO4hQfm/XXdwLzZv3OvqZW9auip3Dc1bmxqLsIUV2X9PnmghISPjTSq+h6Uc9E=,iv:PzpYm+ThstOnJV775sl9tU/RRbWpo2PbYDL9JM8DTDU=,tag:MudgSfOyX0aU4bi2QZTBEg==,type:str]
-    pgp: []
-    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId)$
-    version: 3.9.0
+    lastmodified: "2025-08-11T15:20:40Z"
+    mac: ENC[AES256_GCM,data:zn3anwCgmZ3f8Se5cWV6SXAKDAJh5foAtwCNl0V8g40g7golzTYhwMGusJ4bzIeJ79IRUCaJ5GdUP/Mq3RNANGz79YTdgBGhw6MQLJ8KULcydpTql7SrG1an7UyOw6meyfbh4I+sE/N0/630MedcXyWpQTjmOxhS0BHD8hlBGJQ=,iv:/SFaj3HQPm27T5bWWy+lhqhpTr2DueO4ueWBPwxD+xM=,tag:aHdVITTXw03KpbO5t6Bcqg==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
+    version: 3.10.2
 ---
 # HTTPS Ingress
 apiVersion: networking.k8s.io/v1
@@ -57,10 +52,10 @@ metadata:
 spec:
     tls:
         - hosts:
-            - ENC[AES256_GCM,data:bOtoGyvSwC3dO1z+qVmc4kU2RnsFea6U,iv:ruIiprR3iWauIt/lkv6om9iJPSdy+AObHHeIK8cPV8Y=,tag:CfFUbZ6d8Ma25IvK2zwcxw==,type:str]
+            - ENC[AES256_GCM,data:HpomtCTxtXk6z60B3sYuc+vx+q+wAysS,iv:0MIUSFKQ7Co8cnMj/6ezxSAosmW8bMHOy4qSCBVLIFY=,tag:3MSpBLcwM73tmSV31Z6rUg==,type:str]
           secretName: wildcard-cloudflare-production-01
     rules:
-        - host: ENC[AES256_GCM,data:EC/YNSqaUbhRis+9pV/fD96TTPkN5Rum,iv:lN9meXo17OSCSmJgCGKM5YggrCbvFVvat+1/pPfZ9Jo=,tag:SpVEX8Y34dSLQQMY/+xrtw==,type:str]
+        - host: ENC[AES256_GCM,data:hvLSvkQbqKhXINnIc8pchQskLz3U0FDC,iv:KC/Nd22lupfTCKgZS3gN8XRJA33/Chg1vgDr26/5xdo=,tag:s+ZhTqnKTObkNfZDo7UZcw==,type:str]
           http:
             paths:
                 - path: /
@@ -71,34 +66,29 @@ spec:
                         port:
                             number: 80
 sops:
-    kms: []
-    gcp_kms: []
-    azure_kv: []
-    hc_vault: []
     age:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBrTWNSU1o4WXJLK3pJQWNj
-            Q1FQcWkwVVJTOWt0Z2UyOEVuemxZMWVFL1ZzClVHYlVDb1pWaTVNVXB6REtKV0d3
-            d3ZmQU1tU3gxR3haejBWUlFWcUk0Nm8KLS0tIExNM3FzZU81clJuT25SZnRoL3hm
-            OGZGK1NvcnhMWGpNM2FCNjZZSlRXMVkK4ePQrZcd1PW+h21DvFQI827nGnHtE3Ho
-            xhxX3fQsGD8bXEk2SbERxG9v5LEPhnVqeNdW4xGCn3FDlyUsKPX77w==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBLSjgzbm9DcWRMUTBSeHJG
+            RG00RXcrbnZQK0wwWHFHbEJDZFlLcS9QQzNZCkc2WTNKSEh3RFRlbXRxSzZ1cWFU
+            SkhlMHN0KytBOE9tUzRITXhNTk9TS1EKLS0tIEl1VG03WEoxY2pnMDVMU1lCYjUr
+            RW45azlhU3VmQlZLM2QwYUFPOGg4QW8KdvJtNTyhfRNdvNKEWy/be6JoqZTRKkMA
+            d+aPJrDzVDNjG2qZdHD3SQvwMbvHuKpnvh4nU7StzUBfUhavBT74GQ==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBXK2hYbDJnQjVhZ296T2JK
-            ekFPRm9mckd6VURhUUk2UTF1M1FvREVRWkNnCmxvMjQrS2pvdDVKL2s0ZDk2Uytw
-            d1Z2MFcvZnVGeWJyK2szVkJtUnIxUEEKLS0tIHBSUkF6QzIxc3phOGRHZFhvSDQ5
-            Q2hPQXFzV216MkRaM0l0emcrM0JoL3MKXXCx2ko8nsCExACoF/4oJXUhq6LdtULo
-            g9qS9hphFTl0puqfjg8VBQxFR4x283dkjC+4onDEMwr/EOff3jPoQw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSByWlpubUtMdC85SVdPTGMx
+            dnhxSGREV3VSN3FUY1JzcUw1eWFYNmhHaG1vCjBiWXkvZlhNbGJUZTZ0V1BZVk91
+            RllvT0tMYldreC9qZ2xUc1pINjRGRkUKLS0tIFQ0T0psQWQ2ZGNLbDdWd2hwandJ
+            QVVVNHFJb0I2anlHcGZmc1lVRUQ0Z2sKvYOAkSyjsu989v7Bhmy3lZzLoYyTIUYy
+            6nkjVV1BGHM6u4oDyF1WD1nP1W6I89avWZS32Z1Fc5aWxi3K8BlOLQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-10-25T05:20:37Z"
-    mac: ENC[AES256_GCM,data:eotrovM+pD5NAU82P1X0nJxCWGN65DLVGGr3eddVDlF8t3uClLfTWrFNOPHJ6Ke1s8yxh1oDhc2n0dNvl6yB7ncnDTNhJjQhDP0AzhXG0EQDgEO4hQfm/XXdwLzZv3OvqZW9auip3Dc1bmxqLsIUV2X9PnmghISPjTSq+h6Uc9E=,iv:PzpYm+ThstOnJV775sl9tU/RRbWpo2PbYDL9JM8DTDU=,tag:MudgSfOyX0aU4bi2QZTBEg==,type:str]
-    pgp: []
-    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId)$
-    version: 3.9.0
+    lastmodified: "2025-08-11T15:20:40Z"
+    mac: ENC[AES256_GCM,data:zn3anwCgmZ3f8Se5cWV6SXAKDAJh5foAtwCNl0V8g40g7golzTYhwMGusJ4bzIeJ79IRUCaJ5GdUP/Mq3RNANGz79YTdgBGhw6MQLJ8KULcydpTql7SrG1an7UyOw6meyfbh4I+sE/N0/630MedcXyWpQTjmOxhS0BHD8hlBGJQ=,iv:/SFaj3HQPm27T5bWWy+lhqhpTr2DueO4ueWBPwxD+xM=,tag:aHdVITTXw03KpbO5t6Bcqg==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
+    version: 3.10.2
 ---
 # Wasabi Credentials
 # Uses the following endpoint: https://s3.eu-central-2.wasabisys.com
@@ -109,9 +99,9 @@ metadata:
     namespace: longhorn
 type: Opaque
 data:
-    AWS_ACCESS_KEY_ID: ENC[AES256_GCM,data:JUklynF1DRIfgOTVRkOeaGy/nTbC3XnBWNimWA==,iv:SPRk/VnTw6sJfQaga6vVDsrHw+H5Q1DfUqmlHWz02pI=,tag:BJVM43ZWJYOEuohZ2jXe7g==,type:str]
-    AWS_SECRET_ACCESS_KEY: ENC[AES256_GCM,data:PkNxYcyR2i0g8n1/gnIniGqH+Ylig01seXuQZTUTIg5GjiA8+ulSPjhG2+8BtI0Ty9ChKbEKJUc=,iv:DqCIjOq9eerIV7jGIvlBJ3uphoru1lvKG8IGs69sRkg=,tag:BwpM+3oWqIERQaqYD8qwqA==,type:str]
-    AWS_ENDPOINTS: ENC[AES256_GCM,data:ecUUHvwNqbyPj0eXlAsiJ362ITBuDfSXwj0tTvitQdqXE539ioOkpBwlrVyP+qE/GY6rHQ==,iv:LQm1H2F6Bbo8lh5F+Ci62V/EmlyUjQi8+zHnzhGEuWk=,tag:xLPFtROFH5n7MVhad70AlQ==,type:str]
+    AWS_ACCESS_KEY_ID: ENC[AES256_GCM,data:5fI9iiE1yL2z9/EmK2rJUqkJElSXt7XfauHDcA==,iv:0PLU25RCvSrirD98KMQOfM4VjTclWTYuIXeL/LMssak=,tag:7P1kgqpHPdtjiEEMiqR8kA==,type:str]
+    AWS_SECRET_ACCESS_KEY: ENC[AES256_GCM,data:ZxUGihx746wrE5IAHUMsVt1MfId3g8SJtfaxZ1E3gT7JxwMS2KT8DnzlBxoKTHbyheS3/ZQHnzg=,iv:/WZHCTo79iJWGn4FQh+zifvjdOBloMpYAtEcnHMoAhY=,tag:VUl6r7G51l31Wlqg15jhCg==,type:str]
+    AWS_ENDPOINTS: ENC[AES256_GCM,data:Cju2kTvnkEmSOVwQDKF6PT8I2D4BVUFu1QeF9boC5ZxelCcEVZxUcZyI3SgMznBM082Ckg==,iv:DSYy8B26jcGsRNv7dhpe4qbAq2sgQXSKOfozN6hJKvI=,tag:CLE30A8sjdJK4IbAPI9wFg==,type:str]
 # Daily Backup
 #---
 #apiVersion: longhorn.io/v1beta1
@@ -131,36 +121,31 @@ data:
 #    schedule: "daily"
 # Trim Filesystem
 sops:
-    kms: []
-    gcp_kms: []
-    azure_kv: []
-    hc_vault: []
     age:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBrTWNSU1o4WXJLK3pJQWNj
-            Q1FQcWkwVVJTOWt0Z2UyOEVuemxZMWVFL1ZzClVHYlVDb1pWaTVNVXB6REtKV0d3
-            d3ZmQU1tU3gxR3haejBWUlFWcUk0Nm8KLS0tIExNM3FzZU81clJuT25SZnRoL3hm
-            OGZGK1NvcnhMWGpNM2FCNjZZSlRXMVkK4ePQrZcd1PW+h21DvFQI827nGnHtE3Ho
-            xhxX3fQsGD8bXEk2SbERxG9v5LEPhnVqeNdW4xGCn3FDlyUsKPX77w==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBLSjgzbm9DcWRMUTBSeHJG
+            RG00RXcrbnZQK0wwWHFHbEJDZFlLcS9QQzNZCkc2WTNKSEh3RFRlbXRxSzZ1cWFU
+            SkhlMHN0KytBOE9tUzRITXhNTk9TS1EKLS0tIEl1VG03WEoxY2pnMDVMU1lCYjUr
+            RW45azlhU3VmQlZLM2QwYUFPOGg4QW8KdvJtNTyhfRNdvNKEWy/be6JoqZTRKkMA
+            d+aPJrDzVDNjG2qZdHD3SQvwMbvHuKpnvh4nU7StzUBfUhavBT74GQ==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBXK2hYbDJnQjVhZ296T2JK
-            ekFPRm9mckd6VURhUUk2UTF1M1FvREVRWkNnCmxvMjQrS2pvdDVKL2s0ZDk2Uytw
-            d1Z2MFcvZnVGeWJyK2szVkJtUnIxUEEKLS0tIHBSUkF6QzIxc3phOGRHZFhvSDQ5
-            Q2hPQXFzV216MkRaM0l0emcrM0JoL3MKXXCx2ko8nsCExACoF/4oJXUhq6LdtULo
-            g9qS9hphFTl0puqfjg8VBQxFR4x283dkjC+4onDEMwr/EOff3jPoQw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSByWlpubUtMdC85SVdPTGMx
+            dnhxSGREV3VSN3FUY1JzcUw1eWFYNmhHaG1vCjBiWXkvZlhNbGJUZTZ0V1BZVk91
+            RllvT0tMYldreC9qZ2xUc1pINjRGRkUKLS0tIFQ0T0psQWQ2ZGNLbDdWd2hwandJ
+            QVVVNHFJb0I2anlHcGZmc1lVRUQ0Z2sKvYOAkSyjsu989v7Bhmy3lZzLoYyTIUYy
+            6nkjVV1BGHM6u4oDyF1WD1nP1W6I89avWZS32Z1Fc5aWxi3K8BlOLQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-10-25T05:20:37Z"
-    mac: ENC[AES256_GCM,data:eotrovM+pD5NAU82P1X0nJxCWGN65DLVGGr3eddVDlF8t3uClLfTWrFNOPHJ6Ke1s8yxh1oDhc2n0dNvl6yB7ncnDTNhJjQhDP0AzhXG0EQDgEO4hQfm/XXdwLzZv3OvqZW9auip3Dc1bmxqLsIUV2X9PnmghISPjTSq+h6Uc9E=,iv:PzpYm+ThstOnJV775sl9tU/RRbWpo2PbYDL9JM8DTDU=,tag:MudgSfOyX0aU4bi2QZTBEg==,type:str]
-    pgp: []
-    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId)$
-    version: 3.9.0
+    lastmodified: "2025-08-11T15:20:40Z"
+    mac: ENC[AES256_GCM,data:zn3anwCgmZ3f8Se5cWV6SXAKDAJh5foAtwCNl0V8g40g7golzTYhwMGusJ4bzIeJ79IRUCaJ5GdUP/Mq3RNANGz79YTdgBGhw6MQLJ8KULcydpTql7SrG1an7UyOw6meyfbh4I+sE/N0/630MedcXyWpQTjmOxhS0BHD8hlBGJQ=,iv:/SFaj3HQPm27T5bWWy+lhqhpTr2DueO4ueWBPwxD+xM=,tag:aHdVITTXw03KpbO5t6Bcqg==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
+    version: 3.10.2
 ---
-apiVersion: longhorn.io/v1beta1
+apiVersion: longhorn.io/v1beta2
 kind: RecurringJob
 metadata:
     name: trim-filesystem
@@ -176,34 +161,29 @@ spec:
         type: trim
         schedule: daily
 sops:
-    kms: []
-    gcp_kms: []
-    azure_kv: []
-    hc_vault: []
     age:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBrTWNSU1o4WXJLK3pJQWNj
-            Q1FQcWkwVVJTOWt0Z2UyOEVuemxZMWVFL1ZzClVHYlVDb1pWaTVNVXB6REtKV0d3
-            d3ZmQU1tU3gxR3haejBWUlFWcUk0Nm8KLS0tIExNM3FzZU81clJuT25SZnRoL3hm
-            OGZGK1NvcnhMWGpNM2FCNjZZSlRXMVkK4ePQrZcd1PW+h21DvFQI827nGnHtE3Ho
-            xhxX3fQsGD8bXEk2SbERxG9v5LEPhnVqeNdW4xGCn3FDlyUsKPX77w==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBLSjgzbm9DcWRMUTBSeHJG
+            RG00RXcrbnZQK0wwWHFHbEJDZFlLcS9QQzNZCkc2WTNKSEh3RFRlbXRxSzZ1cWFU
+            SkhlMHN0KytBOE9tUzRITXhNTk9TS1EKLS0tIEl1VG03WEoxY2pnMDVMU1lCYjUr
+            RW45azlhU3VmQlZLM2QwYUFPOGg4QW8KdvJtNTyhfRNdvNKEWy/be6JoqZTRKkMA
+            d+aPJrDzVDNjG2qZdHD3SQvwMbvHuKpnvh4nU7StzUBfUhavBT74GQ==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBXK2hYbDJnQjVhZ296T2JK
-            ekFPRm9mckd6VURhUUk2UTF1M1FvREVRWkNnCmxvMjQrS2pvdDVKL2s0ZDk2Uytw
-            d1Z2MFcvZnVGeWJyK2szVkJtUnIxUEEKLS0tIHBSUkF6QzIxc3phOGRHZFhvSDQ5
-            Q2hPQXFzV216MkRaM0l0emcrM0JoL3MKXXCx2ko8nsCExACoF/4oJXUhq6LdtULo
-            g9qS9hphFTl0puqfjg8VBQxFR4x283dkjC+4onDEMwr/EOff3jPoQw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSByWlpubUtMdC85SVdPTGMx
+            dnhxSGREV3VSN3FUY1JzcUw1eWFYNmhHaG1vCjBiWXkvZlhNbGJUZTZ0V1BZVk91
+            RllvT0tMYldreC9qZ2xUc1pINjRGRkUKLS0tIFQ0T0psQWQ2ZGNLbDdWd2hwandJ
+            QVVVNHFJb0I2anlHcGZmc1lVRUQ0Z2sKvYOAkSyjsu989v7Bhmy3lZzLoYyTIUYy
+            6nkjVV1BGHM6u4oDyF1WD1nP1W6I89avWZS32Z1Fc5aWxi3K8BlOLQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-10-25T05:20:37Z"
-    mac: ENC[AES256_GCM,data:eotrovM+pD5NAU82P1X0nJxCWGN65DLVGGr3eddVDlF8t3uClLfTWrFNOPHJ6Ke1s8yxh1oDhc2n0dNvl6yB7ncnDTNhJjQhDP0AzhXG0EQDgEO4hQfm/XXdwLzZv3OvqZW9auip3Dc1bmxqLsIUV2X9PnmghISPjTSq+h6Uc9E=,iv:PzpYm+ThstOnJV775sl9tU/RRbWpo2PbYDL9JM8DTDU=,tag:MudgSfOyX0aU4bi2QZTBEg==,type:str]
-    pgp: []
-    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId)$
-    version: 3.9.0
+    lastmodified: "2025-08-11T15:20:40Z"
+    mac: ENC[AES256_GCM,data:zn3anwCgmZ3f8Se5cWV6SXAKDAJh5foAtwCNl0V8g40g7golzTYhwMGusJ4bzIeJ79IRUCaJ5GdUP/Mq3RNANGz79YTdgBGhw6MQLJ8KULcydpTql7SrG1an7UyOw6meyfbh4I+sE/N0/630MedcXyWpQTjmOxhS0BHD8hlBGJQ=,iv:/SFaj3HQPm27T5bWWy+lhqhpTr2DueO4ueWBPwxD+xM=,tag:aHdVITTXw03KpbO5t6Bcqg==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
+    version: 3.10.2
 ---
 # CSI VolumeSnapshot Associated With Longhorn Backup
 kind: VolumeSnapshotClass
@@ -217,31 +197,26 @@ deletionPolicy: Delete
 parameters:
     type: bak
 sops:
-    kms: []
-    gcp_kms: []
-    azure_kv: []
-    hc_vault: []
     age:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBrTWNSU1o4WXJLK3pJQWNj
-            Q1FQcWkwVVJTOWt0Z2UyOEVuemxZMWVFL1ZzClVHYlVDb1pWaTVNVXB6REtKV0d3
-            d3ZmQU1tU3gxR3haejBWUlFWcUk0Nm8KLS0tIExNM3FzZU81clJuT25SZnRoL3hm
-            OGZGK1NvcnhMWGpNM2FCNjZZSlRXMVkK4ePQrZcd1PW+h21DvFQI827nGnHtE3Ho
-            xhxX3fQsGD8bXEk2SbERxG9v5LEPhnVqeNdW4xGCn3FDlyUsKPX77w==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBLSjgzbm9DcWRMUTBSeHJG
+            RG00RXcrbnZQK0wwWHFHbEJDZFlLcS9QQzNZCkc2WTNKSEh3RFRlbXRxSzZ1cWFU
+            SkhlMHN0KytBOE9tUzRITXhNTk9TS1EKLS0tIEl1VG03WEoxY2pnMDVMU1lCYjUr
+            RW45azlhU3VmQlZLM2QwYUFPOGg4QW8KdvJtNTyhfRNdvNKEWy/be6JoqZTRKkMA
+            d+aPJrDzVDNjG2qZdHD3SQvwMbvHuKpnvh4nU7StzUBfUhavBT74GQ==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBXK2hYbDJnQjVhZ296T2JK
-            ekFPRm9mckd6VURhUUk2UTF1M1FvREVRWkNnCmxvMjQrS2pvdDVKL2s0ZDk2Uytw
-            d1Z2MFcvZnVGeWJyK2szVkJtUnIxUEEKLS0tIHBSUkF6QzIxc3phOGRHZFhvSDQ5
-            Q2hPQXFzV216MkRaM0l0emcrM0JoL3MKXXCx2ko8nsCExACoF/4oJXUhq6LdtULo
-            g9qS9hphFTl0puqfjg8VBQxFR4x283dkjC+4onDEMwr/EOff3jPoQw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSByWlpubUtMdC85SVdPTGMx
+            dnhxSGREV3VSN3FUY1JzcUw1eWFYNmhHaG1vCjBiWXkvZlhNbGJUZTZ0V1BZVk91
+            RllvT0tMYldreC9qZ2xUc1pINjRGRkUKLS0tIFQ0T0psQWQ2ZGNLbDdWd2hwandJ
+            QVVVNHFJb0I2anlHcGZmc1lVRUQ0Z2sKvYOAkSyjsu989v7Bhmy3lZzLoYyTIUYy
+            6nkjVV1BGHM6u4oDyF1WD1nP1W6I89avWZS32Z1Fc5aWxi3K8BlOLQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-10-25T05:20:37Z"
-    mac: ENC[AES256_GCM,data:eotrovM+pD5NAU82P1X0nJxCWGN65DLVGGr3eddVDlF8t3uClLfTWrFNOPHJ6Ke1s8yxh1oDhc2n0dNvl6yB7ncnDTNhJjQhDP0AzhXG0EQDgEO4hQfm/XXdwLzZv3OvqZW9auip3Dc1bmxqLsIUV2X9PnmghISPjTSq+h6Uc9E=,iv:PzpYm+ThstOnJV775sl9tU/RRbWpo2PbYDL9JM8DTDU=,tag:MudgSfOyX0aU4bi2QZTBEg==,type:str]
-    pgp: []
-    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId)$
-    version: 3.9.0
+    lastmodified: "2025-08-11T15:20:40Z"
+    mac: ENC[AES256_GCM,data:zn3anwCgmZ3f8Se5cWV6SXAKDAJh5foAtwCNl0V8g40g7golzTYhwMGusJ4bzIeJ79IRUCaJ5GdUP/Mq3RNANGz79YTdgBGhw6MQLJ8KULcydpTql7SrG1an7UyOw6meyfbh4I+sE/N0/630MedcXyWpQTjmOxhS0BHD8hlBGJQ=,iv:/SFaj3HQPm27T5bWWy+lhqhpTr2DueO4ueWBPwxD+xM=,tag:aHdVITTXw03KpbO5t6Bcqg==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
+    version: 3.10.2
