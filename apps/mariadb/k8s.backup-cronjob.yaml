@@ -62,7 +62,7 @@ spec:
                 - -c
                 - |
                   POD_NAME=$(kubectl get pods -n databases -l app.kubernetes.io/name=mariadb -o jsonpath="{.items[0].metadata.name}")
-                  kubectl exec -n databases $POD_NAME -- bash -c "mariadb-backup --skip-ssl-verify-server-cert --host 127.0.0.1 --user=root --password=\$(cat \$MARIADB_ROOT_PASSWORD_FILE) --backup --target-dir=/backup --stream=xbstream > /backup/mariadb.xb"
+                  kubectl exec -n databases $POD_NAME -- bash -c "rm -f /backup/mariadb.xb && mariadb-backup --skip-ssl-verify-server-cert --host 127.0.0.1 --user=root --password=\$(cat \$MARIADB_ROOT_PASSWORD_FILE) --backup --target-dir=/backup --stream=xbstream > /backup/mariadb.xb"
           containers:
             - name: restic
               image: ghcr.io/restic/restic:0.18.0
