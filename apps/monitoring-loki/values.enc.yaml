@@ -9,9 +9,9 @@ loki:
         replication_factor: 1
     storage:
         type: filesystem
-        filesystem:
-            # Temporary workaround for https://github.com/grafana/loki/issues/18729
-            admin_api_directory: null
+        #filesystem:
+        #    # Temporary workaround for https://github.com/grafana/loki/issues/18729
+        #    admin_api_directory: null
     schemaConfig:
         configs:
             - from: "2024-01-01"
@@ -52,22 +52,22 @@ sops:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBQNVh5Tk9zRml3Nzd0Znlz
-            UDJEd1Y1UlV5RXhvY1licC9OTmdwQmdIdEZRCnVVSjVnamh6Wld3Z2ZlVTZqUi9U
-            cVhZaXovK1psYmwvb1JKczhJeEpJOWMKLS0tIGprYzhEMG5iRWFScUlCdHRLZUFP
-            dkcxTkFwQVIxdVBNdWxLU1l1MXpDd0UKrDPPck51BTm3GKoYlDMEwsqGFDMwor6S
-            GS7D8ngv1WfqvOe9z9qIEby53vv1oWSHC+1oLlASDXWjT95hXlHd9Q==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBtQks2aXluRUlKVXFWQjEz
+            YUFYdUkwbjZoVkZLdGo3K01vYVpKUWxvcHpNCktSUitGNzlRSFNrS3NFOWExZE44
+            Z2J3YmNYU2lMNTBHRVVNbm5PdGRhekUKLS0tIGdpWDJJOWwwdks3Y1VvdG9UdG5s
+            dXlWUlBVRitKWkU4aFJRclBKMWpWN3cK4ZaFmDr7lkS+avnqn2Yib1hpQcC5tbKZ
+            yfIfAwG3J+ptflW9P04bRf11qmOldtGqu0hQj2ZD52u83hqfkSz8dw==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB6WDZwZ2pnVE5kdkhPQ0FM
-            WjVNUGNqMWJTRTZsejRERzhxam9LZjZhS2dJCk16WXZ5clBGZ3owUHRjeHlGWExn
-            M0oveHFXb0duL3JYd2htajVlUWRrWWsKLS0tIHc2VDlnUndDdS9NS3pYdkxLT1Zq
-            N0VpeWI4b2orbC9LWUtrSXJCZnVBZ2cKhs5yOxDMAiWQaq0KQS4z6tRrueSjbMc+
-            cOCRMw+7EXxhlAB9/fXTALQFr5xmavx6xHnAGoX4bG9DleH9sObsOA==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBkdDJKL0drY20wVWdPNUpV
+            MWx1Z0VuV0JMcllmRHhIQmh0TWVBWnZTZlZVCk1aUzJFQVc2R01SM2VxcjlzdUNP
+            OTYzcVhoN0pxdHdnbkxKYkJLejdMZGcKLS0tIERIS0sxd0lRanY1RWQ4NkFSL2R3
+            UVdBMTNndUVjdS9pTDdYNERKbUdoQkUKtBnb49cqBRZ512q34T3eIbN3jPz3aQz8
+            zd7eEjbUM4wRoWMT7tW1Xw0Iqpeu/JyCqEqBf4vrkeTYHqtRSxE9Gg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-08-11T16:55:48Z"
-    mac: ENC[AES256_GCM,data:JUIbGiH5V7qz+IFd8qJrWvN+nfR9Zdop8qLECwRLbssbGqfp70UOuC1giplDQLSks1fouRqboZnfR2RICCEJ1/2StLaXeSbKY9h2xc8eYmJYvFwGRpScY59WOLrSY/9p2QXBQZwdJZUjPqRKgbkpRorwyGAucqpplN1ET6hGS2Q=,iv:gZO7YsNG59/Z68+Xm3P7vDW/IG/Y3aYUQfMASJb9VOc=,tag:v57TqeQRHEw4akFXpq7ngw==,type:str]
-    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
+    lastmodified: "2025-08-12T10:57:04Z"
+    mac: ENC[AES256_GCM,data:c1lg0dO7b1nXQISGjvT5XRkfrb0i9U9oLWZUv+WDz5xHqrZLN/qjFXbabGtS8YlLFF45v7uTJn5N/3SIU7JeTPihNATX5w0fPX58qZ5dUBbFsxnP+wXzAahY+wCv+e0YE2N+hIcX6G59LAD4JURkDtvN+lkHugma4dTje2jrhwQ=,iv:MJjFTDuJbm4O2dDleB2punBkfy1xvZ+D5w2flHSL298=,tag:sh5R9vz5QO7NyeHq0HA3Ig==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap)$
     version: 3.10.2
