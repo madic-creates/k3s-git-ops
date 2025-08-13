@@ -33,6 +33,56 @@ spec:
                 secretKeyRef:
                   name: versitygw-root-credentials
                   key: ROOT_SECRET_ACCESS_KEY
+            - name: VGW_IAM_LDAP_URL
+              valueFrom:
+                secretKeyRef:
+                  name: versitygw-iam-ldap
+                  key: VGW_IAM_LDAP_URL
+            - name: VGW_IAM_LDAP_BIND_DN
+              valueFrom:
+                secretKeyRef:
+                  name: versitygw-iam-ldap
+                  key: VGW_IAM_LDAP_BIND_DN
+            - name: VGW_IAM_LDAP_BIND_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: versitygw-iam-ldap
+                  key: VGW_IAM_LDAP_BIND_PASS
+            - name: VGW_IAM_LDAP_QUERY_BASE
+              valueFrom:
+                secretKeyRef:
+                  name: versitygw-iam-ldap
+                  key: VGW_IAM_LDAP_QUERY_BASE
+            - name: VGW_IAM_LDAP_OBJECT_CLASSES
+              valueFrom:
+                secretKeyRef:
+                  name: versitygw-iam-ldap
+                  key: VGW_IAM_LDAP_OBJECT_CLASSES
+            - name: VGW_IAM_LDAP_ACCESS_ATR
+              valueFrom:
+                secretKeyRef:
+                  name: versitygw-iam-ldap
+                  key: VGW_IAM_LDAP_ACCESS_ATR
+            - name: VGW_IAM_LDAP_SECRET_ATR
+              valueFrom:
+                secretKeyRef:
+                  name: versitygw-iam-ldap
+                  key: VGW_IAM_LDAP_SECRET_ATR
+            - name: VGW_IAM_LDAP_ROLE_ATR
+              valueFrom:
+                secretKeyRef:
+                  name: versitygw-iam-ldap
+                  key: VGW_IAM_LDAP_ROLE_ATR
+            - name: VGW_IAM_LDAP_USER_ID_ATR
+              valueFrom:
+                secretKeyRef:
+                  name: versitygw-iam-ldap
+                  key: VGW_IAM_LDAP_USER_ID_ATR
+            - name: VGW_IAM_LDAP_GROUP_ID_ATR
+              valueFrom:
+                secretKeyRef:
+                  name: versitygw-iam-ldap
+                  key: VGW_IAM_LDAP_GROUP_ID_ATR
           volumeMounts:
             - mountPath: /data
               name: data
