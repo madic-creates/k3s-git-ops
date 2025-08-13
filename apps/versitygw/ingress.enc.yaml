@@ -5,7 +5,7 @@ metadata:
     annotations:
         traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
         traefik.ingress.kubernetes.io/router.tls: "true"
-        traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect@kubernetescrd, authelia-forwardauth-authelia@kubernetescrd
+        traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect@kubernetescrd
     labels:
         app.kubernetes.io/name: versitygw
 spec:
@@ -45,7 +45,7 @@ sops:
             V3AraE1Wbi80QjA3ZDdrRjlmRDgxYUEKgo5kzc1s0Ki8Elys9+OIpDySn6LZty8R
             ELoWtEXidc+zKjIMNqxqwL2+yuHpPIAfDfgfX3DjPNHH90DbV1PXgw==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-08-13T17:40:02Z"
-    mac: ENC[AES256_GCM,data:Q+G+XhSxqQX2l+z/SpNCm11VpwuUDvtmUYAk3qdRWzJRufef31ecQo+lCO2z7a9A4Q31zSlH6mVb4vEZ1PtrLUoKZPbroZYhpATE9hIsIcXzxfw4GCdMiiN1Uus+KYuL1u+cXp3yzDPl8P+s/E6nNJEgoeV9GMurw1lEsWPs7Ew=,iv:+wPh+oIsXYEwMp4i7C1XrTV34/oipv7DwRLY1gTAckE=,tag:M6WVMPNRTw9sahE50m2aWw==,type:str]
+    lastmodified: "2025-08-13T19:00:38Z"
+    mac: ENC[AES256_GCM,data:9dOzFzLHcyveKLdHeNHfnpCze3WpULCFQ5HK9KLZRGRAoTfGUvkd/daZylZ0SJUL33F+6ZCuABENAYnDgkDfsZcSJsyzzmaKkVftVSqYtC4yD+zYaxcB4U3E2I9hrJmBuO8v1yPd92Ff88o86cAMBfXo2jfuhS3pzjaeYWldxDw=,iv:319hWYgyl5cUXVtOpfgXnDQC0Y+S0PaNjLeakxAT7jo=,tag:knhCpk+5AnghnYeKeimg5Q==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap)$
     version: 3.10.2

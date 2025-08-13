@@ -21,6 +21,7 @@ spec:
       containers:
         - name: versitygw
           image: ghcr.io/versity/versitygw:latest
+          imagePullPolicy: IfNotPresent
           args: ["posix", "/data"]
           env:
             - name: ROOT_ACCESS_KEY_ID
@@ -83,6 +84,22 @@ spec:
                 secretKeyRef:
                   name: versitygw-iam-ldap
                   key: VGW_IAM_LDAP_GROUP_ID_ATR
+            - name: VGW_HEALTH
+              value: /health
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 7070
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 7070
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            failureThreshold: 3
           volumeMounts:
             - mountPath: /data
               name: data
