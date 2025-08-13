@@ -94,7 +94,7 @@ spec:
             - name: VGW_CHOWN_GID
               value: true
             - name: VGW_DIR_PERMS
-              value: 0750
+              value: "0750"
           readinessProbe:
             httpGet:
               path: /health
