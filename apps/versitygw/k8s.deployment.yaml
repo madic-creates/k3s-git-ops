@@ -5,6 +5,7 @@ metadata:
   name: versitygw
 spec:
   replicas: 1
+  revisionHistoryLimit: 2
   selector:
     matchLabels:
       app.kubernetes.io/name: versitygw
