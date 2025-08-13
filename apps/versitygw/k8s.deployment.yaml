@@ -87,6 +87,8 @@ spec:
                   key: VGW_IAM_LDAP_GROUP_ID_ATR
             - name: VGW_HEALTH
               value: /health
+            - name: VGW_REGION
+              value: us-east-1
           readinessProbe:
             httpGet:
               path: /health
