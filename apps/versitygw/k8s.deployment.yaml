@@ -89,6 +89,12 @@ spec:
               value: /health
             - name: VGW_REGION
               value: us-east-1
+            - name: VGW_CHOWN_UID
+              value: true
+            - name: VGW_CHOWN_GID
+              value: true
+            - name: VGW_DIR_PERMS
+              value: 0750
           readinessProbe:
             httpGet:
               path: /health
