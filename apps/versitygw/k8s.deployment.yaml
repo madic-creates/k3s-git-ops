@@ -1,0 +1,57 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: versitygw
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: versitygw
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: versitygw
+    spec:
+      tolerations:
+        - key: "dedicated"
+          operator: "Equal"
+          value: "prox01"
+          effect: "NoSchedule"
+      containers:
+        - name: versitygw
+          image: ghcr.io/versity/versitygw:latest
+          args: ["posix", "/data"]
+          env:
+            - name: ROOT_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: versitygw-root-credentials
+                  key: ROOT_ACCESS_KEY_ID
+            - name: ROOT_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: versitygw-root-credentials
+                  key: ROOT_SECRET_ACCESS_KEY
+          volumeMounts:
+            - mountPath: /data
+              name: data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: local-path-versitygw
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: versitygw
+  labels:
+      app.kubernetes.io/name: versitygw
+spec:
+  selector:
+    app.kubernetes.io/name: versitygw
+  ports:
+    - protocol: TCP
+      port: 7070
+      targetPort: 7070
+  type: ClusterIP

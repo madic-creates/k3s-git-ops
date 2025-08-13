@@ -1,0 +1,30 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: local-path-versitygw
+  labels:
+    app.kubernetes.io/name: versitygw
+spec:
+  storageClassName: local-path
+  capacity:
+    storage: 50Gi
+  accessModes:
+  - ReadWriteOnce
+  hostPath:
+    path: /vol_raidz1/container-scheduler/local-path/versitygw
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: local-path-versitygw
+spec:
+  storageClassName: local-path
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: versitygw

@@ -1,0 +1,12 @@
+---
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "16"
+
+namespace: longhorn
+
+resources:
+  - k8s.deployment.yaml
+  - k8s.pvc.yaml
+
+generators:
+  - kustomize-secret-generator.yaml
