@@ -47,6 +47,12 @@ monitoring:
 tableManager:
     retention_deletes_enabled: true
     retention_period: 360h
+lokiCanary:
+    tolerations:
+        - key: dedicated
+          operator: Equal
+          value: prox01
+          effect: NoSchedule
 sops:
     age:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
@@ -67,7 +73,7 @@ sops:
             UVdBMTNndUVjdS9pTDdYNERKbUdoQkUKtBnb49cqBRZ512q34T3eIbN3jPz3aQz8
             zd7eEjbUM4wRoWMT7tW1Xw0Iqpeu/JyCqEqBf4vrkeTYHqtRSxE9Gg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-08-12T10:57:04Z"
-    mac: ENC[AES256_GCM,data:c1lg0dO7b1nXQISGjvT5XRkfrb0i9U9oLWZUv+WDz5xHqrZLN/qjFXbabGtS8YlLFF45v7uTJn5N/3SIU7JeTPihNATX5w0fPX58qZ5dUBbFsxnP+wXzAahY+wCv+e0YE2N+hIcX6G59LAD4JURkDtvN+lkHugma4dTje2jrhwQ=,iv:MJjFTDuJbm4O2dDleB2punBkfy1xvZ+D5w2flHSL298=,tag:sh5R9vz5QO7NyeHq0HA3Ig==,type:str]
+    lastmodified: "2025-08-14T11:30:51Z"
+    mac: ENC[AES256_GCM,data:Uhkv2qWr1WkNQsHvendQLl0VaL1x8aCwbqyrqJaLhG+Zu5w+kFXAVZ9+T1Y+u3DQiWCKJzzKUkWOPw1ipfIFm0YLo2ZwG27S6f/IWt3BQkEoWPytOp8xR+AvjErMOmec1KhU90uMuqvUYrYF5Gcigd4ffdFSLCqmDS41FlUgRQw=,iv:q+VU7IZFCftZ8PzIa2OLEulET7nHuX3x5Bvo9puzI6s=,tag:fEzoI1cJIPSWtc/gJBt5wg==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap)$
     version: 3.10.2

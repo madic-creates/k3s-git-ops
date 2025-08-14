@@ -32,6 +32,10 @@ helmCharts:
         pullPolicy: IfNotPresent
       priorityClassName: "system-cluster-critical"
       tolerations:
+        #- key: "dedicated"
+        #  operator: "Equal"
+        #  value: "prox01"
+        #  effect: "NoSchedule"
         - key: "CriticalAddonsOnly"
           operator: "Exists"
         - key: "node-role.kubernetes.io/control-plane"

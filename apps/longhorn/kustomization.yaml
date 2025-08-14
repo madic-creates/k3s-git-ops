@@ -6,6 +6,12 @@ helmCharts:
     releaseName: longhorn
     namespace: longhorn
     valuesInline:
+      global:
+        tolerations:
+          - key: "dedicated"
+            operator: "Equal"
+            value: "prox01"
+            effect: "NoSchedule"
       defaultSettings:
         backupTarget: s3://k3s-at-home-01@eu-central-2/
         backupTargetCredentialSecret: wasabi-secret

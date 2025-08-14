@@ -16,6 +16,8 @@ spec:
       labels:
         app.kubernetes.io/name: kube-vip-ds
     spec:
+      tolerations:
+        - operator: "Exists"
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
