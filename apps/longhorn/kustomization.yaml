@@ -29,6 +29,8 @@ helmCharts:
       longhornRecoveryBackend:
         revisionHistoryLimit: 2
         replicas: 1
+      longhornDriver:
+        revisionHistoryLimit: 2
       persistence:
         reclaimPolicy: Retain
       preUpgradeChecker:
