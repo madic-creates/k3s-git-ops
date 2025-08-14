@@ -18,19 +18,14 @@ helmCharts:
         orphanAutoDeletion: true
         removeSnapshotsDuringFilesystemTrim: true
       longhornUI:
-        revisionHistoryLimit: 2
         replicas: 1
       longhornConversionWebhook:
-        revisionHistoryLimit: 2
         replicas: 1
       longhornAdmissionWebhook:
-        revisionHistoryLimit: 2
         replicas: 1
       longhornRecoveryBackend:
-        revisionHistoryLimit: 2
         replicas: 1
       longhornDriver:
-        revisionHistoryLimit: 2
       persistence:
         reclaimPolicy: Retain
       preUpgradeChecker:
@@ -54,6 +49,39 @@ patches:
         name: longhorn-storageclass
         annotations:
           storageclass.kubernetes.io/is-default-class: "true"
+  - target:
+      version: v1
+      kind: DaemonSet
+      name: longhorn-manager
+    patch: |-
+      apiVersion: apps/v1
+      kind: DaemonSet
+      metadata:
+        name: longhorn-manager
+      spec:
+        revisionHistoryLimit: 2
+  - target:
+      version: v1
+      kind: Deployment
+      name: longhorn-driver-deployer
+    patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: longhorn-driver-deployer
+      spec:
+        revisionHistoryLimit: 2
+  - target:
+      version: v1
+      kind: Deployment
+      name: longhorn-ui
+    patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: longhorn-ui
+      spec:
+        revisionHistoryLimit: 2
 
 generators:
   - kustomize-secret-generator.yaml
