@@ -18,12 +18,16 @@ helmCharts:
         orphanAutoDeletion: true
         removeSnapshotsDuringFilesystemTrim: true
       longhornUI:
+        revisionHistoryLimit: 2
         replicas: 1
       longhornConversionWebhook:
+        revisionHistoryLimit: 2
         replicas: 1
       longhornAdmissionWebhook:
+        revisionHistoryLimit: 2
         replicas: 1
       longhornRecoveryBackend:
+        revisionHistoryLimit: 2
         replicas: 1
       persistence:
         reclaimPolicy: Retain
