@@ -25,7 +25,12 @@ helmCharts:
         replicas: 1
       longhornRecoveryBackend:
         replicas: 1
-      longhornDriver:
+      csi:
+        taintToleration:
+          - key: "dedicated"
+            operator: "Equal"
+            value: "prox01"
+            effect: "NoSchedule"
       persistence:
         reclaimPolicy: Retain
       preUpgradeChecker:
