@@ -15,20 +15,20 @@ resources:
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "13"
 
-#patches:
-#  - target:
-#      group: apps
-#      version: v1
-#      kind: DaemonSet
-#      name: nfd-worker
-#    patch: |-
-#      apiVersion: apps/v1
-#      kind: DaemonSet
-#      metadata:
-#        name: nfd-worker
-#        namespace: node-feature-discovery
-#      spec:
-#        template:
-#          spec:
-#            tolerations:
-#              - operator: "Exists"
+patches:
+  - target:
+      group: apps
+      version: v1
+      kind: DaemonSet
+      name: nfd-worker
+    patch: |-
+      apiVersion: apps/v1
+      kind: DaemonSet
+      metadata:
+        name: nfd-worker
+        namespace: node-feature-discovery
+      spec:
+        template:
+          spec:
+            tolerations:
+              - operator: "Exists"
