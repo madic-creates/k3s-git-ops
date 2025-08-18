@@ -21,7 +21,7 @@ spec:
           effect: "NoSchedule"
       containers:
         - name: versitygw
-          image: ghcr.io/versity/versitygw:latest
+          image: ghcr.io/versity/versitygw:v1.0.16
           imagePullPolicy: IfNotPresent
           args: ["posix", "/data"]
           env:
