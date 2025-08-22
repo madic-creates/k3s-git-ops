@@ -22,7 +22,7 @@ spec:
       containers:
         - name: versitygw
           #image: ghcr.io/versity/versitygw:v1.0.16
-          image: forge.geekbundle.org/madic/versitygw:19220a5f437ee89a66c65b149974c34c36807d7a5ffdd3aabd481c443312ff0b
+          image: forge.geekbundle.org/madic/versitygw@sha256:19220a5f437ee89a66c65b149974c34c36807d7a5ffdd3aabd481c443312ff0b
           imagePullPolicy: IfNotPresent
           args: ["posix", "/data"]
           env:
