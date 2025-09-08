@@ -60,6 +60,8 @@ spec:
   mountOptions:
     - dir_mode=0770
     - file_mode=0660
+    - uid=1000
+    - gid=1002
     - vers=3.1.1
     - nobrl
     - mfsymlinks
