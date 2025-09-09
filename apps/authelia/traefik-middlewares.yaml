@@ -2,19 +2,7 @@
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: authelia-forwardauth-legacy
-  namespace: authelia
-spec:
-  forwardAuth:
-    address: http://authelia.authelia.svc.cluster.local/api/verify?rd=https://auth.k8s.neese-web.de/
-    trustForwardHeader: true
-    authResponseHeaders:
-      - Remote-User
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: authelia-basicauth-legacy
+  name: basicauth-legacy
   namespace: authelia
 spec:
   forwardAuth:
