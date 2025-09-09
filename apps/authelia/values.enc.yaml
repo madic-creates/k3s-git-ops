@@ -48,6 +48,10 @@ configMap:
         rules:
             - domain: ENC[AES256_GCM,data:yrv11FkPaJJFK3J7CXUd3rvn,iv:bQaR21xqZnxGpngMh++iOC4sVtMkWqp4pS9Sl0fL0tE=,tag:XXiAmtt8EOrQmkuNCulwOA==,type:str]
               policy: two_factor
+            - domain: ENC[AES256_GCM,data:jzl6AQ0HNeLrt7MUgZA3LFQUDsWl/A==,iv:add60e8r6JYyHdnGQVSfhh2UJ9NM0I7xpjzQO0YZIZM=,tag:EvDiDGm+spD3v9FnmcvGOw==,type:str]
+              policy: one_factor
+              resources:
+                - ^/rest/.*
     session:
         name: authelia_session
         #secret: Tu6mithie4BaiXaec6gei0Iewoota1ie
@@ -215,7 +219,7 @@ sops:
             d3Jadnl2Y1ZOZFBzb3VBRkQrYkJyZHcKGJCPmaQehW3N7chPoVM/oGNPggRZ2qBh
             HPyDNX1F57FsM6eJYhjrWCtyxUQfQ8+8y7XqHv7ampgAoBYM5VixNA==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-07-26T08:33:21Z"
-    mac: ENC[AES256_GCM,data:HtusDnUbfrSPdwmdy0VypEIpaTXS4dES0vDL9QS5lQtRWIo+EKViUhquN+FaWX8SCQnol/9w7TCRaqoa0xSLwsASWr0nwDI261Gcm0LGwmSy/A7UxLmrXZqGafTXd/denERVFK+Ve1JlXmvEBBpmOv2jQfG2l2ws5lrFhqs1GXE=,iv:cSNSIN6PRmEGUPc45TmMWVkCGVc3ThyL25J4/tj5Lq8=,tag:07++/O8KwAvMufTtZM0j9w==,type:str]
+    lastmodified: "2025-09-09T16:45:20Z"
+    mac: ENC[AES256_GCM,data:Hv8vwJL2tb+0mMiZpuphMPLbYI3m59FwHBjz4t9Dc4I1cTqvN9SXWViO4hYld+r3SaL1rsSKBdi18Ma3jWX6aYC3WjPRk1PKtraUzGnY6ZGuvdqNO8qhLe96QInB0tyeLrPOU6Z5bH8ATN8w1CeLu6dGvtN5GbfRpB2Yq5SGkVk=,iv:X1IG0RMNLm5me+WkmrtSajZZFXQ6DamA8X3toOBfDMo=,tag:ufVMlyaiWa6dqrLjZLLuXA==,type:str]
     encrypted_regex: ^(value|domain|subdomain|default_redirection_url|base_dn|user|secret|sender|redirect_uris|client_secret)$
     version: 3.10.2
