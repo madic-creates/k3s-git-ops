@@ -17,6 +17,7 @@ helmCharts:
         backupTargetCredentialSecret: wasabi-secret
         orphanAutoDeletion: true
         removeSnapshotsDuringFilesystemTrim: true
+        taintToleration: dedicated=prox01:NoSchedule
       longhornUI:
         replicas: 1
       longhornConversionWebhook:
@@ -25,8 +26,14 @@ helmCharts:
         replicas: 1
       longhornRecoveryBackend:
         replicas: 1
-      csi:
-        taintToleration:
+      longhornManager:
+        tolerations:
+          - key: "dedicated"
+            operator: "Equal"
+            value: "prox01"
+            effect: "NoSchedule"
+      longhornDriver:
+        tolerations:
           - key: "dedicated"
             operator: "Equal"
             value: "prox01"
