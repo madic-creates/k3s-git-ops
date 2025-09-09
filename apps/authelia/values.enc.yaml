@@ -51,7 +51,11 @@ configMap:
             - domain: ENC[AES256_GCM,data:jzl6AQ0HNeLrt7MUgZA3LFQUDsWl/A==,iv:add60e8r6JYyHdnGQVSfhh2UJ9NM0I7xpjzQO0YZIZM=,tag:EvDiDGm+spD3v9FnmcvGOw==,type:str]
               policy: one_factor
               resources:
-                - ^/rest/.*
+                - ^/rest/.*$
+            - domain: ENC[AES256_GCM,data:jzl6AQ0HNeLrt7MUgZA3LFQUDsWl/A==,iv:add60e8r6JYyHdnGQVSfhh2UJ9NM0I7xpjzQO0YZIZM=,tag:EvDiDGm+spD3v9FnmcvGOw==,type:str]
+              policy: bypass
+              resources:
+                - ^/favicon.ico$
     session:
         name: authelia_session
         #secret: Tu6mithie4BaiXaec6gei0Iewoota1ie
@@ -219,7 +223,7 @@ sops:
             d3Jadnl2Y1ZOZFBzb3VBRkQrYkJyZHcKGJCPmaQehW3N7chPoVM/oGNPggRZ2qBh
             HPyDNX1F57FsM6eJYhjrWCtyxUQfQ8+8y7XqHv7ampgAoBYM5VixNA==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-09-09T16:45:20Z"
-    mac: ENC[AES256_GCM,data:Hv8vwJL2tb+0mMiZpuphMPLbYI3m59FwHBjz4t9Dc4I1cTqvN9SXWViO4hYld+r3SaL1rsSKBdi18Ma3jWX6aYC3WjPRk1PKtraUzGnY6ZGuvdqNO8qhLe96QInB0tyeLrPOU6Z5bH8ATN8w1CeLu6dGvtN5GbfRpB2Yq5SGkVk=,iv:X1IG0RMNLm5me+WkmrtSajZZFXQ6DamA8X3toOBfDMo=,tag:ufVMlyaiWa6dqrLjZLLuXA==,type:str]
+    lastmodified: "2025-09-09T17:28:32Z"
+    mac: ENC[AES256_GCM,data:of3GiwfHWzdPkiJnNp1iun048AdFS6G15DyrLtQg/EA6CNSCDKEaoDhrBWHZ+jBd8IWCMIoXGtsXCcQY5uNrQJgyrHSYcnQr5blUDaJ9hD1wEUiNWilHrrKlIIP0n9R5VdtekwfwqrP8nG2ViLXE5tp9r4g6O1HptnxzpnCtqd0=,iv:wDPh/smChL94r3dbeT21vD/+wUqWFOSkxX00Okb8jPI=,tag:TXIR3MuYjue3o9CMTqwyzg==,type:str]
     encrypted_regex: ^(value|domain|subdomain|default_redirection_url|base_dn|user|secret|sender|redirect_uris|client_secret)$
     version: 3.10.2
