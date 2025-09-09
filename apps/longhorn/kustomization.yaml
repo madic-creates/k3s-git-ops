@@ -26,6 +26,12 @@ helmCharts:
         replicas: 1
       longhornRecoveryBackend:
         replicas: 1
+      csi:
+        tolerations:
+          - key: "dedicated"
+            operator: "Equal"
+            value: "prox01"
+            effect: "NoSchedule"
       longhornManager:
         tolerations:
           - key: "dedicated"
@@ -94,6 +100,23 @@ patches:
         name: longhorn-ui
       spec:
         revisionHistoryLimit: 2
+  - target:
+      version: v1
+      kind: DaemonSet
+      name: longhorn-csi-plugin
+    patch: |-
+      apiVersion: apps/v1
+      kind: DaemonSet
+      metadata:
+        name: longhorn-csi-plugin
+      spec:
+        template:
+          spec:
+            tolerations:
+              - key: "dedicated"
+                operator: "Equal"
+                value: "prox01"
+                effect: "NoSchedule"
 
 generators:
   - kustomize-secret-generator.yaml
