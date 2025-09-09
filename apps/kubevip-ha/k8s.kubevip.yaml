@@ -16,8 +16,6 @@ spec:
       labels:
         app.kubernetes.io/name: kube-vip-ds
     spec:
-      tolerations:
-        - operator: "Exists"
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -86,6 +84,7 @@ spec:
       hostNetwork: true
       serviceAccountName: kube-vip
       tolerations:
+        - operator: "Exists"
         - effect: NoSchedule
           operator: Exists
         - effect: NoExecute
