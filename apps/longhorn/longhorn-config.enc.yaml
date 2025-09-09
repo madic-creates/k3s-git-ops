@@ -28,8 +28,8 @@ sops:
             QVVVNHFJb0I2anlHcGZmc1lVRUQ0Z2sKvYOAkSyjsu989v7Bhmy3lZzLoYyTIUYy
             6nkjVV1BGHM6u4oDyF1WD1nP1W6I89avWZS32Z1Fc5aWxi3K8BlOLQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-08-11T15:20:40Z"
-    mac: ENC[AES256_GCM,data:zn3anwCgmZ3f8Se5cWV6SXAKDAJh5foAtwCNl0V8g40g7golzTYhwMGusJ4bzIeJ79IRUCaJ5GdUP/Mq3RNANGz79YTdgBGhw6MQLJ8KULcydpTql7SrG1an7UyOw6meyfbh4I+sE/N0/630MedcXyWpQTjmOxhS0BHD8hlBGJQ=,iv:/SFaj3HQPm27T5bWWy+lhqhpTr2DueO4ueWBPwxD+xM=,tag:aHdVITTXw03KpbO5t6Bcqg==,type:str]
+    lastmodified: "2025-09-09T19:47:11Z"
+    mac: ENC[AES256_GCM,data:pPSM0M+ViVpUnDVP+U45m7ZzbZ8zw5jQKthc0rhQHhhNEDrNEzIwvR02sgfZdQAIDADUH/KbVAUNJtmqRyQBxl6WuVHg62hC+Pdv3Cd3aQf3d+Wco+dkCLNzHfo2dI+9Ocn2hV7hiZ6VImKo+MMmy5gLEsWi08McdSwZ/ICOfFw=,iv:feYLSkw95o2b2gBy2v8zkv9iqufokQMpkLxQS+WNOnI=,tag:CKU2CHaAjmBcor1JOiM7LQ==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
     version: 3.10.2
 ---
@@ -85,8 +85,8 @@ sops:
             QVVVNHFJb0I2anlHcGZmc1lVRUQ0Z2sKvYOAkSyjsu989v7Bhmy3lZzLoYyTIUYy
             6nkjVV1BGHM6u4oDyF1WD1nP1W6I89avWZS32Z1Fc5aWxi3K8BlOLQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-08-11T15:20:40Z"
-    mac: ENC[AES256_GCM,data:zn3anwCgmZ3f8Se5cWV6SXAKDAJh5foAtwCNl0V8g40g7golzTYhwMGusJ4bzIeJ79IRUCaJ5GdUP/Mq3RNANGz79YTdgBGhw6MQLJ8KULcydpTql7SrG1an7UyOw6meyfbh4I+sE/N0/630MedcXyWpQTjmOxhS0BHD8hlBGJQ=,iv:/SFaj3HQPm27T5bWWy+lhqhpTr2DueO4ueWBPwxD+xM=,tag:aHdVITTXw03KpbO5t6Bcqg==,type:str]
+    lastmodified: "2025-09-09T19:47:11Z"
+    mac: ENC[AES256_GCM,data:pPSM0M+ViVpUnDVP+U45m7ZzbZ8zw5jQKthc0rhQHhhNEDrNEzIwvR02sgfZdQAIDADUH/KbVAUNJtmqRyQBxl6WuVHg62hC+Pdv3Cd3aQf3d+Wco+dkCLNzHfo2dI+9Ocn2hV7hiZ6VImKo+MMmy5gLEsWi08McdSwZ/ICOfFw=,iv:feYLSkw95o2b2gBy2v8zkv9iqufokQMpkLxQS+WNOnI=,tag:CKU2CHaAjmBcor1JOiM7LQ==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
     version: 3.10.2
 ---
@@ -140,8 +140,8 @@ sops:
             QVVVNHFJb0I2anlHcGZmc1lVRUQ0Z2sKvYOAkSyjsu989v7Bhmy3lZzLoYyTIUYy
             6nkjVV1BGHM6u4oDyF1WD1nP1W6I89avWZS32Z1Fc5aWxi3K8BlOLQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-08-11T15:20:40Z"
-    mac: ENC[AES256_GCM,data:zn3anwCgmZ3f8Se5cWV6SXAKDAJh5foAtwCNl0V8g40g7golzTYhwMGusJ4bzIeJ79IRUCaJ5GdUP/Mq3RNANGz79YTdgBGhw6MQLJ8KULcydpTql7SrG1an7UyOw6meyfbh4I+sE/N0/630MedcXyWpQTjmOxhS0BHD8hlBGJQ=,iv:/SFaj3HQPm27T5bWWy+lhqhpTr2DueO4ueWBPwxD+xM=,tag:aHdVITTXw03KpbO5t6Bcqg==,type:str]
+    lastmodified: "2025-09-09T19:47:11Z"
+    mac: ENC[AES256_GCM,data:pPSM0M+ViVpUnDVP+U45m7ZzbZ8zw5jQKthc0rhQHhhNEDrNEzIwvR02sgfZdQAIDADUH/KbVAUNJtmqRyQBxl6WuVHg62hC+Pdv3Cd3aQf3d+Wco+dkCLNzHfo2dI+9Ocn2hV7hiZ6VImKo+MMmy5gLEsWi08McdSwZ/ICOfFw=,iv:feYLSkw95o2b2gBy2v8zkv9iqufokQMpkLxQS+WNOnI=,tag:CKU2CHaAjmBcor1JOiM7LQ==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
     version: 3.10.2
 ---
@@ -180,8 +180,8 @@ sops:
             QVVVNHFJb0I2anlHcGZmc1lVRUQ0Z2sKvYOAkSyjsu989v7Bhmy3lZzLoYyTIUYy
             6nkjVV1BGHM6u4oDyF1WD1nP1W6I89avWZS32Z1Fc5aWxi3K8BlOLQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-08-11T15:20:40Z"
-    mac: ENC[AES256_GCM,data:zn3anwCgmZ3f8Se5cWV6SXAKDAJh5foAtwCNl0V8g40g7golzTYhwMGusJ4bzIeJ79IRUCaJ5GdUP/Mq3RNANGz79YTdgBGhw6MQLJ8KULcydpTql7SrG1an7UyOw6meyfbh4I+sE/N0/630MedcXyWpQTjmOxhS0BHD8hlBGJQ=,iv:/SFaj3HQPm27T5bWWy+lhqhpTr2DueO4ueWBPwxD+xM=,tag:aHdVITTXw03KpbO5t6Bcqg==,type:str]
+    lastmodified: "2025-09-09T19:47:11Z"
+    mac: ENC[AES256_GCM,data:pPSM0M+ViVpUnDVP+U45m7ZzbZ8zw5jQKthc0rhQHhhNEDrNEzIwvR02sgfZdQAIDADUH/KbVAUNJtmqRyQBxl6WuVHg62hC+Pdv3Cd3aQf3d+Wco+dkCLNzHfo2dI+9Ocn2hV7hiZ6VImKo+MMmy5gLEsWi08McdSwZ/ICOfFw=,iv:feYLSkw95o2b2gBy2v8zkv9iqufokQMpkLxQS+WNOnI=,tag:CKU2CHaAjmBcor1JOiM7LQ==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
     version: 3.10.2
 ---
@@ -216,7 +216,7 @@ sops:
             QVVVNHFJb0I2anlHcGZmc1lVRUQ0Z2sKvYOAkSyjsu989v7Bhmy3lZzLoYyTIUYy
             6nkjVV1BGHM6u4oDyF1WD1nP1W6I89avWZS32Z1Fc5aWxi3K8BlOLQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-08-11T15:20:40Z"
-    mac: ENC[AES256_GCM,data:zn3anwCgmZ3f8Se5cWV6SXAKDAJh5foAtwCNl0V8g40g7golzTYhwMGusJ4bzIeJ79IRUCaJ5GdUP/Mq3RNANGz79YTdgBGhw6MQLJ8KULcydpTql7SrG1an7UyOw6meyfbh4I+sE/N0/630MedcXyWpQTjmOxhS0BHD8hlBGJQ=,iv:/SFaj3HQPm27T5bWWy+lhqhpTr2DueO4ueWBPwxD+xM=,tag:aHdVITTXw03KpbO5t6Bcqg==,type:str]
+    lastmodified: "2025-09-09T19:47:11Z"
+    mac: ENC[AES256_GCM,data:pPSM0M+ViVpUnDVP+U45m7ZzbZ8zw5jQKthc0rhQHhhNEDrNEzIwvR02sgfZdQAIDADUH/KbVAUNJtmqRyQBxl6WuVHg62hC+Pdv3Cd3aQf3d+Wco+dkCLNzHfo2dI+9Ocn2hV7hiZ6VImKo+MMmy5gLEsWi08McdSwZ/ICOfFw=,iv:feYLSkw95o2b2gBy2v8zkv9iqufokQMpkLxQS+WNOnI=,tag:CKU2CHaAjmBcor1JOiM7LQ==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
     version: 3.10.2
