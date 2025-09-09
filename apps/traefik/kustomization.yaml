@@ -59,6 +59,7 @@ helmCharts:
         - "--api.insecure=true"
         - "--entryPoints.web.proxyProtocol.insecure"
         - "--entryPoints.web.forwardedHeaders.insecure"
+        - "--accesslog=true"
       experimental:
         plugins:
           # Required for correct thruk redirect. Thruk sends in our scenario http redirect but we need to replace that with https
