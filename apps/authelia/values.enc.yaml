@@ -54,7 +54,7 @@ configMap:
             - domain: ENC[AES256_GCM,data:jzl6AQ0HNeLrt7MUgZA3LFQUDsWl/A==,iv:add60e8r6JYyHdnGQVSfhh2UJ9NM0I7xpjzQO0YZIZM=,tag:EvDiDGm+spD3v9FnmcvGOw==,type:str]
               policy: bypass
               resources:
-                - ^/favicon.ico$
+                - ^/favicon.*$
             - domain: ENC[AES256_GCM,data:yrv11FkPaJJFK3J7CXUd3rvn,iv:bQaR21xqZnxGpngMh++iOC4sVtMkWqp4pS9Sl0fL0tE=,tag:XXiAmtt8EOrQmkuNCulwOA==,type:str]
               policy: two_factor
     session:
@@ -224,7 +224,7 @@ sops:
             d3Jadnl2Y1ZOZFBzb3VBRkQrYkJyZHcKGJCPmaQehW3N7chPoVM/oGNPggRZ2qBh
             HPyDNX1F57FsM6eJYhjrWCtyxUQfQ8+8y7XqHv7ampgAoBYM5VixNA==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-09-09T18:19:14Z"
-    mac: ENC[AES256_GCM,data:yX6XR1/OJsGgYGVw2KW9FhxPHcGkSYO97dGu1FCG31BFzmcltSxXh+kUL4jLY9fHwoBod8cLFn3OMprpR9crGeKTsqGW9Q/IUnDLhfnYlekWASHMYyp/w7515QntXnhoAjn84t2IGw5g8h0DlN8kHGnOYlJBB1mGLBciqIoV5zo=,iv:odJfigoYaC/BdIl9KVBE3eSRYPQn9iXzTPl0DzdgU9w=,tag:uZWFF4CgiS1OGKJ4+HRVLg==,type:str]
+    lastmodified: "2025-09-09T18:57:06Z"
+    mac: ENC[AES256_GCM,data:0vzHOZ1rESo2zdvesIjIrKit90HJ4owf+Dwhs3oCfTBOIVAbAylsfv/VDN5L1dkvKdU14/ByOu+k/O8wZaRXu1ARsPDf8jfhMBnYzP8KFMT06vNlKzy21Hkner1suM7xMvEG1N1r7vMzHzGWVLCxDzoYezLDsSMPUmYuk9Gi1ew=,iv:LYXo40g7lgeCGno1nwrbyY/Fim3mfYRplLqlZAoXphU=,tag:4M99tx6ODlvCbtdDSl62Og==,type:str]
     encrypted_regex: ^(value|domain|subdomain|default_redirection_url|base_dn|user|secret|sender|redirect_uris|client_secret)$
     version: 3.10.2
