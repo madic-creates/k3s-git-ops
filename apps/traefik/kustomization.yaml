@@ -9,13 +9,13 @@ commonAnnotations:
 helmCharts:
   - name: traefik
     repo: https://traefik.github.io/charts
-    version: 27.0.2
+    version: 37.1.0
     releaseName: traefik
     namespace: kube-system
     includeCRDs: true
     valuesInline:
-      #core:
-      #  defaultRuleSyntax: v2
+      core:
+        defaultRuleSyntax: v2
       deployment:
         kind: DaemonSet
       service:
