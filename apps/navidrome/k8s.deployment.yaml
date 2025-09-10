@@ -1,0 +1,76 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: navidrome
+  namespace: media
+  labels:
+    app.kubernetes.io/name: navidrome
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: navidrome
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: navidrome
+    spec:
+      securityContext:
+        fsGroup: 1002
+        runAsUser: 1001
+        runAsGroup: 1002
+        fsGroupChangePolicy: OnRootMismatch
+      containers:
+        - name: navidrome
+          image: deluan/navidrome:0.58.0
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: ND_SCANSCHEDULE
+              value: "@every 1h"
+            - name: ND_LOGLEVEL
+              value: info
+            - name: ND_MUSICFOLDER
+              value: "/vol_raidz1/music/My Music"
+            - name: ND_DATAFOLDER
+              value: /data
+            - name: ND_REVERSEPROXYWHITELIST
+              value: "10.42.0.0/16"
+            - name: ND_ENABLEUSEREDITING
+              value: "false"
+            - name: TZ
+              value: Europe/Berlin
+            - name: ND_LASTFM_APIKEY
+              valueFrom:
+                secretKeyRef:
+                  name: navidrome-secrets
+                  key: ND_LASTFM_APIKEY
+            - name: ND_LASTFM_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: navidrome-secrets
+                  key: ND_LASTFM_SECRET
+          ports:
+            - containerPort: 4533
+              name: http
+          volumeMounts:
+            - name: config-vol
+              mountPath: /data
+            - name: music-vol
+              mountPath: /vol_raidz1/music
+      tolerations:
+        - key: "dedicated"
+          operator: "Equal"
+          value: "prox01"
+          effect: "NoSchedule"
+      restartPolicy: Always
+      volumes:
+        - name: config-vol
+          persistentVolumeClaim:
+            claimName: local-path-navidrome-config
+        - name: music-vol
+          persistentVolumeClaim:
+            claimName: local-path-music-navidrome
