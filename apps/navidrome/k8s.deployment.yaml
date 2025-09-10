@@ -41,6 +41,8 @@ spec:
               value: "10.42.0.0/16"
             - name: ND_ENABLEUSEREDITING
               value: "false"
+            - name: ND_ENABLESHARING
+              value: "true"
             - name: TZ
               value: Europe/Berlin
             - name: ND_LASTFM_APIKEY
