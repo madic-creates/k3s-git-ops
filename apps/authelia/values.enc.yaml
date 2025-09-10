@@ -18,6 +18,28 @@ ingress:
 configMap:
     log:
         level: debug
+    server:
+        endpoints:
+            authz:
+                auth-request:
+                    implementation: AuthRequest
+                ext-authz:
+                    implementation: ExtAuthz
+                forward-auth:
+                    implementation: ForwardAuth
+                    authn_strategies:
+                        - name: HeaderAuthorization
+                          schemes:
+                            - Basic
+                          scheme_basic_cache_lifespan: 0
+                        - name: CookieSession
+                basic-forward-auth:
+                    implementation: ForwardAuth
+                    authn_strategies:
+                        - name: HeaderAuthorization
+                          schemes:
+                            - Basic
+                          scheme_basic_cache_lifespan: 0
     identity_validation:
         reset_password:
             secret:
@@ -224,7 +246,7 @@ sops:
             d3Jadnl2Y1ZOZFBzb3VBRkQrYkJyZHcKGJCPmaQehW3N7chPoVM/oGNPggRZ2qBh
             HPyDNX1F57FsM6eJYhjrWCtyxUQfQ8+8y7XqHv7ampgAoBYM5VixNA==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-09-09T21:15:20Z"
-    mac: ENC[AES256_GCM,data:CCYgCVXpX5e2LViNJ4cRKeS8+9bI+zI343dbUc86kzz8tfWqcIc6paK1xAiVXdwHDxyrb7QEP427OiPqAzeAOyMex7l3Xpj5kuK2/CCBzDnhdai0bHbYuVS1vP0PiTENR81IhWX7y+fPpBS99BzKf9qdTWdbrZo28FFrb/WAw0M=,iv:Aa7VB5vW3vl+qtSOAK9Z0RRIG2FkOi+POR8trKfOaZI=,tag:Upk3lut1f/r1lfcT0VKdMQ==,type:str]
+    lastmodified: "2025-09-10T06:55:34Z"
+    mac: ENC[AES256_GCM,data:g71vtdPeL/WgNq9wbaVkX18QuP5pRUTOJSLRqWQaCHxLTv3B4/Gl+5hDhXPrBJBk6fPfH2blrc0rG25LV8IVsQlbcmnY9ywDzNM+Q8joiYbgNKRCGvzlw50xe8qgyeLpg4v6KZ5PRFiHTjolRBRps5uw3Hkpdwv9g7BUNdjp9UQ=,iv:hu8exKffssA9c8PrpriwCOx3cZAHrXCFpH0NocSlMR0=,tag:NxogpkfaGUU37YlrrtNBmA==,type:str]
     encrypted_regex: ^(value|domain|subdomain|default_redirection_url|base_dn|user|secret|sender|redirect_uris|client_secret)$
     version: 3.10.2
