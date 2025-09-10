@@ -71,6 +71,10 @@ spec:
           operator: "Equal"
           value: "prox01"
           effect: "NoSchedule"
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
       restartPolicy: Always
       volumes:
         - name: config-vol
