@@ -53,6 +53,11 @@ spec:
                 secretKeyRef:
                   name: navidrome-secrets
                   key: ND_LASTFM_SECRET
+            - name: ND_PASSWORDENCRYPTIONKEY
+              valueFrom:
+                secretKeyRef:
+                  name: navidrome-secrets
+                  key: ND_PASSWORDENCRYPTIONKEY
           ports:
             - containerPort: 4533
               name: http
