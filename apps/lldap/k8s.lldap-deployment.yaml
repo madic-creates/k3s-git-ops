@@ -62,7 +62,7 @@ spec:
             - name: LLDAP_IGNORED_USER_ATTRIBUTES
               value: '[ "sAMAccountName" ]'
           # https://github.com/lldap/lldap/pkgs/container/lldap
-          image: ghcr.io/lldap/lldap:latest-alpine@sha256:56388653e27d4ff134d66afcc65ea2c3bdba06b25d7ca9ae74127d793ea0470a
+          image: ghcr.io/lldap/lldap:latest-alpine@sha256:aa71419b4df68e6485bcb19826cd3e35f0966142cfe17d69dc357f54ee370175
           name: lldap
           ports:
             # LDAP
