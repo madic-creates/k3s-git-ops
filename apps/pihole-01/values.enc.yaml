@@ -112,6 +112,8 @@ dnsmasq:
         #- dhcp-host=net:youtubedns,48:43:DD:6E:CC:2D,Fire-Cube-wlan
         - dhcp-host=net:youtubedns,F0:27:2D:D7:41:97,Fire-Guest
         - dhcp-host=net:youtubedns,00:e0:4c:7b:c2:98,Sanctuary
+        - dhcp-host=net:youtubedns,8c:8c:aa:32:ce:7a,IONB000201752-LAN
+        - dhcp-host=net:youtubedns,4e:80:5d:ae:a9:dd,IONB000201752-WLAN
         # HTTP Boot
         #- dhcp-match=set:efi-x86_64_http,option:vendor-class-identifier,0,10
         #- dhcp-boot=tag:efi-x86_64_http,"http://192.168.1.45:8043/ipxe.efi"
@@ -184,7 +186,7 @@ sops:
             S3hxTTNKZXdHKytiQ0VrNW1IU0c2UDQKCoa3QBGWzUNlfgionj1jgWDDEx3hfN3b
             ZE1H6doOwdkf/Q7QXrLEgncKEGY7LcyZH+5tozRBPyvDGwPBX6m8xQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-08-11T14:05:40Z"
-    mac: ENC[AES256_GCM,data:aJPttfwD6Q4/IyJMqN648oXSJTIBNOQIU4hXNSd7DTUuMwDmGqVJb1fnyDj2L8eGgfy5uWH9DauDcT5osxtpjrtiE+EKKQJTAyvcIElK6O0Btx9HHSsZXoK+dxpFj5XH6KPw2uggBPQaVkIO2ZwOYJ3DRINSwmubRn9XuBfbjyc=,iv:aI5fylLeeTDgDmargGhc1DSNB3SxNOn7hzpuw+n83YI=,tag:v2CmPkcxPGrL+Zo5Fof/Eg==,type:str]
+    lastmodified: "2025-09-22T07:27:55Z"
+    mac: ENC[AES256_GCM,data:6caSchNfZ4pd87vzU+osw6apvBKVFk9+gaKk2DAi6R9hhj3bLcPQrWZUOpXzgKIZ6bi3KdmXcn1l6IFkx+haNo/NhxveNw0ageJIMo12WiHew0dWbgZd0oGtMspQli9tARLucrL2JMV2YJf3GlMSolCfUQ+banJv0d2t3QqK5GQ=,iv:eK9c0yYVDbj4ZTbjfT/dI4sUahAjs/J3WWbufj0Nics=,tag:zeu122ec5wz+Bfm1ohvLsQ==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
     version: 3.10.2

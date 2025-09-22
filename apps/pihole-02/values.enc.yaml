@@ -104,6 +104,8 @@ dnsmasq:
         #- dhcp-host=net:youtubedns,48:43:DD:6E:CC:2D,Fire-Cube-wlan
         - dhcp-host=net:youtubedns,F0:27:2D:D7:41:97,Fire-Guest
         - dhcp-host=net:youtubedns,00:e0:4c:7b:c2:98,Sanctuary
+        - dhcp-host=net:youtubedns,8c:8c:aa:32:ce:7a,IONB000201752-LAN
+        - dhcp-host=net:youtubedns,4e:80:5d:ae:a9:dd,IONB000201752-WLAN
 affinity:
     podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -134,7 +136,7 @@ sops:
             V3ZONzFGcE1vdmRaMTRhRERvdkthUncKBeD+dNgljrM4n000vfHhz2WUpjSn110+
             z/cSJmkZKCf2yIjFJlkCLpOlCy8BRYxEGpWJSYFEGiCgqz6fOFxkvA==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-08-11T14:06:06Z"
-    mac: ENC[AES256_GCM,data:Tyl7VyoE0qPzdynYfZ6bkTPQANZhso3XvceBJvzj4CYj50Ex4/8PiG0dWB1N8kEqb5L2uO4httK3D1NHd/cXGr8KSWoLnPBv0OKqPV4OV8fJjBSAcN5KCLpupPil2ytbmq6wew+v5CV4OES/rlMLbgJYD1LN4ymud9Q220W0XYw=,iv:QF14oW1m4bUKyTZef+ryIACLeJL9HBxCUOojSplTMMQ=,tag:4kYBWJOWWyOunBYBZIp/2A==,type:str]
+    lastmodified: "2025-09-22T07:26:57Z"
+    mac: ENC[AES256_GCM,data:+YYJzwblEwqrxvf7QWlUCtlg6oquUgsW6+p3sm56bMaKB4d5/De8+S8M3aSbRmEzNx93CDuW0QYNCJh65UUydoy+tCftrN+Eu2eERaauKBXgGvfpDZzPdOWRhOc5/ZglFgEm8W5XgQxPRPV4mXK6Q0Qp3m9uDzIebpgQmDVppPg=,iv:sBk5SEZ0uMKWnvIqLB2MSqVPVXVkrFga0ttA3yoKg4U=,tag:LNLOb1ifTuzDrMUnpb6rXQ==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
     version: 3.10.2
