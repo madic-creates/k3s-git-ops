@@ -1,6 +1,6 @@
 image:
     repository: ghcr.io/paperless-ngx/paperless-ngx
-    tag: 2.16.2
+    tag: 2.18.4
 env:
     - name: TZ
       value: Europe/Berlin
@@ -84,7 +84,7 @@ sops:
             Tm5UdnQrQjhMZkVqR2lIWVl3MGlmSU0K+nUbeH0oDF0axEQrKWG0dd2yMvXT1FBD
             UQHbNsxHVU3OqrX61NUzyRyacNHRblfL51EXZGpzXuNFdpUpkbux1w==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-05-30T11:36:39Z"
-    mac: ENC[AES256_GCM,data:o0IxYPJb+hge3e/vimMBcdpgr5gnoyhCSBxkqq9d1dUkDU9hbRPGbzyhPQUX3rESnLF5+93HhmlTkshQ3gRQZg30H8oR+/1B9uNIifb1+KgMAu8eWZ5X8BreR0MYNmQ//7m9Zv7qjuyINQJzJWkYRPDtqYD7VlG8f3HwujDkxgI=,iv:Bbj060lhyNOn7yqcV4H0sJONfd/R2gxHz+FagNWIDNs=,tag:NXKg534NcQ7iEDEOIA2pXA==,type:str]
+    lastmodified: "2025-09-22T19:34:29Z"
+    mac: ENC[AES256_GCM,data:w9LLMnKEgwHALN8E+JlmRW9BYYAVdRkmjtpmTckU1SgebO3b2+HV/cheIuPjgo+8U8ivPEvbkQjmSVLybFZCYgFqX0DC1IsLsNmqxgHrrzrvUDEfOUqnz+h0uU7VuRyKxX6BpC2/RalT7O0Vq9jGMPgAbZwWlKsJjJTN+7nCZ9s=,iv:egfPv+trmhgxvDKiEJoSij5taGEngvP3ij6UcvGu/r8=,tag:JbLros8wX8ce7X+BJ5Jh1w==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
     version: 3.10.2
