@@ -1,0 +1,28 @@
+---
+# code: language=ansible
+
+- name: "K3s Agent | Copy K3s agent configurations"
+  ansible.builtin.copy:
+    content: "{{ item.content }}"
+    dest: "/etc/rancher/k3s/{{ item.name }}"
+    owner: root
+    group: root
+    mode: "0644"
+  no_log: true
+  with_items:
+    - "{{ K3S_AGENT_CONFIG }}"
+    - "{{ K3S_REGISTRIES }}"
+    - "{{ K3S_KUBELET }}"
+
+- name: "K3s Agent | Check if K3s is already installed"
+  ansible.builtin.stat:
+    path: /usr/local/bin/k3s
+  register: k3s_binary_agent
+
+- name: "K3s Agent | Install K3s agent"
+  ansible.builtin.command: "/tmp/k3s_install.sh"
+  environment:
+    K3S_TOKEN: "{{ k3s_token }}"
+    K3S_URL: "https://{{ k3s.network.vip }}:6443"
+  changed_when: true
+  when: not k3s_binary_agent.stat.exists

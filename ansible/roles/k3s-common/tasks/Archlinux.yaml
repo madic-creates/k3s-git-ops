@@ -1,13 +1,13 @@
 ---
 # code: language=ansible
 
-- name: Arch | Updating archlinux-keyring
+- name: "Archlinux | Update archlinux-keyring"
   community.general.pacman:
     name:
       - archlinux-keyring
     state: latest
 
-- name: Arch | Installing Packages
+- name: "Archlinux | Install packages"
   community.general.pacman:
     name:
       - nano
@@ -16,22 +16,16 @@
       - k9s
       - nfs-utils
 
-- name: Arch | Installing qemu-guest-agent on KVM
+- name: "Archlinux | Install qemu-guest-agent on KVM"
   community.general.pacman:
     name: qemu-guest-agent
   when: ansible_virtualization_type == "kvm"
 
-- name: Arch | Comment out DNS servers from vagrant image
+- name: "Archlinux | Comment out DNS servers from vagrant image"
   ansible.builtin.lineinfile:
     path: /etc/systemd/resolved.conf
     regexp: '^DNS=4\.2\.2\.1 4\.2\.2\.2 208\.67\.220\.220'
     line: '#DNS=4.2.2.1 4.2.2.2 208.67.220.220'
     backrefs: true
     state: present
-  register: dns_lineinfile_result
-
-- name: Arch | Restart systemd-resolved if DNS configuration changed
-  ansible.builtin.service:
-    name: systemd-resolved
-    state: restarted
-  when: dns_lineinfile_result.changed
+  notify: "Restart systemd-resolved"

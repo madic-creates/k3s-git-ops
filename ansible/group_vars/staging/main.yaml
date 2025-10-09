@@ -1,0 +1,6 @@
+---
+# code: language=yaml
+
+k3s_version: "v1.29.0+k3s1"
+cluster_name: "staging-k3s"
+k3s_vip: "192.168.1.240"

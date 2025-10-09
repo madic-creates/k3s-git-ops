@@ -1,0 +1,103 @@
+---
+# code: language=ansible
+
+- name: "Common | Generate K3s token if not provided via vault"
+  set_fact:
+    k3s_token_generated: "{{ lookup('password', '/dev/null chars=ascii_letters,digits length=32') }}"
+  run_once: true
+  when: vault_k3s_token is not defined or vault_k3s_token == "" or "replace-with" in vault_k3s_token
+
+- name: "Common | Set K3s token fact"
+  set_fact:
+    k3s_token: "{{ vault_k3s_token | default(k3s_token_generated, true) }}"
+  run_once: true
+
+- name: "Common | Include OS-specific tasks"
+  ansible.builtin.include_tasks: "{{ ansible_os_family }}.yaml"
+
+- name: "Common | Enable iscsid for Longhorn"
+  ansible.builtin.systemd:
+    state: started
+    name: iscsid.service
+    enabled: true
+
+- name: "Common | Disable and stop firewalld"
+  ansible.builtin.systemd:
+    name: firewalld
+    state: stopped
+    enabled: false
+  register: result_systemd_stop
+  failed_when: "result_systemd_stop is failed and 'Could not find the requested service' not in result_systemd_stop.msg"
+
+- name: "Common | Disable SELinux"
+  when: ansible_selinux.status == "enabled"
+  block:
+    - name: "Common | Set SELinux to permissive"
+      ansible.posix.selinux:
+        policy: targeted
+        state: permissive
+
+    - name: "Common | Deactivate SELinux on boot"
+      ansible.builtin.lineinfile:
+        path: /etc/selinux/config
+        regexp: "^SELINUX=.*$"
+        line: "SELINUX=disabled"
+
+- name: "Common | Add localhost to /etc/hosts for kubectl port-forwarding"
+  ansible.builtin.lineinfile:
+    dest: /etc/hosts
+    line: "127.0.0.1 localhost"
+    state: present
+    backup: true
+    insertbefore: BOF
+
+- name: "Common | Get service facts"
+  ansible.builtin.service_facts:
+
+- name: "Common | Check if /etc/resolv.conf exists"
+  ansible.builtin.stat:
+    path: /etc/resolv.conf
+  register: resolv_conf
+
+- name: "Common | Configure systemd-resolved to manage /etc/resolv.conf"
+  when:
+    - ansible_facts.services.get('systemd-resolved.service', {}).get('status', 'disabled') == 'enabled'
+    - resolv_conf.stat.exists
+    - not resolv_conf.stat.islnk or resolv_conf.stat.lnk_source != '/run/systemd/resolve/stub-resolv.conf'
+  block:
+    - name: "Common | Backup /etc/resolv.conf"
+      ansible.builtin.copy:
+        src: /etc/resolv.conf
+        dest: /etc/resolv.conf.bak
+        remote_src: true
+
+    - name: "Common | Delete /etc/resolv.conf"
+      ansible.builtin.file:
+        path: /etc/resolv.conf
+        state: absent
+
+    - name: "Common | Link systemd-resolved to resolv.conf"
+      ansible.builtin.file:
+        src: /run/systemd/resolve/stub-resolv.conf
+        dest: /etc/resolv.conf
+        state: link
+      when: not ansible_check_mode
+
+- name: "Common | Create K3s directories"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  with_items:
+    - /etc/rancher/k3s
+    - /root/.kube
+
+- name: "Common | Download K3s installation script"
+  ansible.builtin.shell:
+    cmd: curl -sfL https://get.k3s.io -o /tmp/k3s_install.sh && chmod 0750 /tmp/k3s_install.sh
+  args:
+    creates: /tmp/k3s_install.sh
+  run_once: true
+  delegate_to: localhost

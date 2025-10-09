@@ -1,15 +1,15 @@
 ---
 # code: language=ansible
 
-- name: Arch | Installing | K3S Server ca
+- name: "Archlinux | Copy server CA certificate"
   ansible.builtin.copy:
-    src: ../shared/{{ groups['k3s_primary_server'][0] }}/server-ca.crt
+    src: "../shared/{{ groups['k3s_primary_server'][0] }}/server-ca.crt"
     dest: /etc/ca-certificates/trust-source/anchors/
     owner: root
     group: root
     mode: "0644"
   register: arch_ca_cert
 
-- name: Arch | Installing | K3S Server ca import
+- name: "Archlinux | Update CA trust"
   ansible.builtin.command: /usr/bin/trust extract-compat
   when: arch_ca_cert.changed

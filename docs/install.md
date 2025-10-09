@@ -16,14 +16,12 @@ git clone https://github.com/madic-creates/k3s-git-ops
 ```
 
 - Configure [pre-commit-hooks](pre-commit-hooks.md)
-- Adapt ansible vars to your needs. For this, copy the "group_vars/all/main.yml" to e.g. ""group_vars/all/own.yml" to override the default vars
+- Adapt ansible vars to your needs. The default variables are located in `ansible/group_vars/all/main.yaml`. You can override them by creating environment-specific variable files in `ansible/group_vars/production/` or `ansible/group_vars/staging/`.
 
-```shell
-cd ansible
-cp group_vars/all/main.yml group_vars/all/own.yml
+For example, to set the VIP for your production environment, create `ansible/group_vars/production/main.yaml` with the following content:
+```yaml
+k3s_vip: "192.168.1.230"
 ```
-
-A short explanation of the vars can be found in the vars file. Because they tend to change, I wont document them here.
 
 - Install required ansible modules
 
@@ -33,29 +31,33 @@ ansible-galaxy collection install -r requirements.yaml
 
 ### Ansible inventory
 
-This playbook requires the following host groups:
+The inventory is now structured by environment (e.g., `production`, `staging`) inside the `ansible/inventory/` directory. This playbook requires the following host groups:
 
-- k3s_server
-- k3s_agent
+- `k3s_primary_server`: The first server node that initializes the cluster.
+- `k3s_secondary_server`: Additional server nodes to join the cluster for HA.
+- `k3s_agent`: The agent/worker nodes.
 
-Example:
+Example for `ansible/inventory/production/hosts`:
 
 ```ini
-[k3s_server]
-k3svm1
+[k3s_primary_server]
+node01.example.com
+
+[k3s_secondary_server]
+node02.example.com
+node03.example.com
 
 [k3s_agent]
-k3svm2
-k3svm3
+agent01.example.com
 ```
 
 ## Installation
 
-Run ansible from within the ansible folder
+Run ansible from within the ansible folder. Specify the inventory for your target environment.
 
 ```shell
 cd ansible
-ansible-playbook install.yaml -i inventory --diff
+ansible-playbook playbooks/install.yaml -i inventory/production/hosts --diff
 ```
 
 Ansible downloads the kubeconfig file to the folder **./shared/${HOSTNAME}/k3s.yaml** file. You can use this file to access the cluster.
@@ -77,7 +79,7 @@ awk -v now=$(date +%s) '{printf "%.0f\n", ($1-now)/86400}') days"
 
 ```shell
 cd ansible
-ansible-playbook remove.yaml -i inventory -l node01.example.com -K --diff
+ansible-playbook playbooks/remove.yaml -i inventory/production/hosts -l node01.example.com -K --diff
 ```
 
 ## ArgoCD
