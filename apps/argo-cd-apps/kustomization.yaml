@@ -34,7 +34,7 @@ resources:
   - 40-paperless-ai.yaml
   - 40-paperless-ngx.yaml
   - 60-semaphore.yaml
-  - 70-descheduler.yaml
+  #- 70-descheduler.yaml
   - 80-whoami.yaml
   - 86-kube-doom.yaml
   - 90-gethomepage.yaml
