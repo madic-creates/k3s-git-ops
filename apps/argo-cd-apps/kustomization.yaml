@@ -23,7 +23,7 @@ resources:
   - 16-ntfy-alertmanager.yaml
   - 16-versitygw.yaml
   - 17-monitoring-kubernetes-event-exporter.yaml
-  - 17-monitoring-loki.yaml
+  #- 17-monitoring-loki.yaml
   - 17-monitoring-pushgateway.yaml
   - 18-monitoring-checkmk.yaml
   - 20-csi-smb.yaml
@@ -34,7 +34,7 @@ resources:
   - 40-paperless-ai.yaml
   - 40-paperless-ngx.yaml
   - 60-semaphore.yaml
-  #- 70-descheduler.yaml
+  - 70-descheduler.yaml
   - 80-whoami.yaml
   - 86-kube-doom.yaml
   - 90-gethomepage.yaml
