@@ -111,6 +111,7 @@ nav:
       - Cert-Manager: certmanager.md
       - Databases: databases.md
       - Kube DOOM: kubedoom.md
+      - Network: network.md
       - LoadBalancer: loadbalancer.md
       - Monitoring: monitoring.md
       - Reflector: reflector.md
