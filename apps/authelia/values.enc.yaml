@@ -79,6 +79,8 @@ configMap:
                 - ^/favicon.*$
             - domain: ENC[AES256_GCM,data:yrv11FkPaJJFK3J7CXUd3rvn,iv:bQaR21xqZnxGpngMh++iOC4sVtMkWqp4pS9Sl0fL0tE=,tag:XXiAmtt8EOrQmkuNCulwOA==,type:str]
               policy: two_factor
+            - domain: ENC[AES256_GCM,data:g6TdZGbEAXxMrKVVQzkrz7NFn3WogjE=,iv:SRJfanNxIzLA2JQtKfNM/SkATwpdv4UpdfmDEAJQwMY=,tag:hTUKWPkRX5KLTWPc1MrmQA==,type:str]
+              policy: two_factor
     session:
         name: authelia_session
         #secret: Tu6mithie4BaiXaec6gei0Iewoota1ie
@@ -246,7 +248,7 @@ sops:
             d3Jadnl2Y1ZOZFBzb3VBRkQrYkJyZHcKGJCPmaQehW3N7chPoVM/oGNPggRZ2qBh
             HPyDNX1F57FsM6eJYhjrWCtyxUQfQ8+8y7XqHv7ampgAoBYM5VixNA==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-09-10T07:08:05Z"
-    mac: ENC[AES256_GCM,data:8nP2tJvSne4ao6k2A7lsvFaQsYpcsDTNC3KirZwBdF6MF9Ya/91v+cXYcTRyS6pTRn8jvjuPO3DBN2FKxhxI6GDyI53Ziy3dtWKKVt1XlXkyAdg5UR0qLcviTZkVDrtULR00nt5Fvf5gdhIrhkgvEiMtVZxpLMV39My5pPEFFe8=,iv:H8ydVZ3iG/X1Uqg9s3QvBCc5Ymu0d935JpjNG5gskhU=,tag:ACruF45nEbHUWVBDNNGegQ==,type:str]
+    lastmodified: "2025-10-13T19:36:20Z"
+    mac: ENC[AES256_GCM,data:KHmCShbnJ5o1vXIH5wAsYzHp//JKKw5eyFDW/C3Glk0HrzZ6ofKFZTPeWchgX+8m+7SC4325l/Yiw4qqSwrrj4LwabbRn51ILlt7qd6ITFyyfAr38cspC90mwmtFieFy8xl3hlIXqOrG5id/EQcvDC2/YwZ9V7INfUaAHFh9SUw=,iv:4lKWCuJZQZDtt1wJVdrUrW+Y+0BNpOdNmpm2djkv34k=,tag:AJRSr8Yj2aTnSaDW4f5oNQ==,type:str]
     encrypted_regex: ^(value|domain|subdomain|default_redirection_url|base_dn|user|secret|sender|redirect_uris|client_secret)$
-    version: 3.10.2
+    version: 3.11.0
