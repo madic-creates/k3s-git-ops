@@ -6,7 +6,7 @@ helmCharts:
     releaseName: longhorn
     namespace: longhorn
     valuesInline:
-      global:
+      #global:
         #tolerations:
         #  - key: "dedicated"
         #    operator: "Equal"
