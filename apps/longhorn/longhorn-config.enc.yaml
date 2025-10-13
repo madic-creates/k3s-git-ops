@@ -28,10 +28,10 @@ sops:
             QVVVNHFJb0I2anlHcGZmc1lVRUQ0Z2sKvYOAkSyjsu989v7Bhmy3lZzLoYyTIUYy
             6nkjVV1BGHM6u4oDyF1WD1nP1W6I89avWZS32Z1Fc5aWxi3K8BlOLQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-09-09T19:47:11Z"
-    mac: ENC[AES256_GCM,data:pPSM0M+ViVpUnDVP+U45m7ZzbZ8zw5jQKthc0rhQHhhNEDrNEzIwvR02sgfZdQAIDADUH/KbVAUNJtmqRyQBxl6WuVHg62hC+Pdv3Cd3aQf3d+Wco+dkCLNzHfo2dI+9Ocn2hV7hiZ6VImKo+MMmy5gLEsWi08McdSwZ/ICOfFw=,iv:feYLSkw95o2b2gBy2v8zkv9iqufokQMpkLxQS+WNOnI=,tag:CKU2CHaAjmBcor1JOiM7LQ==,type:str]
+    lastmodified: "2025-10-13T19:19:55Z"
+    mac: ENC[AES256_GCM,data:T9RkufFJfylLeh5sxfobWrImCVaueK4gIoaHsPFcwrjnRU4Sa0ffxkEkUyjiaU+MHiQOxdgxe7puTdEUU70WOFNoSR8Oj+RIqLYIcriWcsAPxqMuG1PcHP4jaUZi3205pgNM1EMR3XwSbh09K1Ud1Iwg2HtzFSwcXNU5SyWWCFc=,iv:ALNM7acDzweX532IsesW24jdVfOHBpVDjG8iT0buG+s=,tag:uYeBCc222p7sjDw1sWG8jg==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
-    version: 3.10.2
+    version: 3.11.0
 ---
 # HTTPS Ingress
 apiVersion: networking.k8s.io/v1
@@ -41,7 +41,7 @@ metadata:
     namespace: longhorn
     annotations:
         # HTTPS as entry point
-        traefik.ingress.kubernetes.io/router.entrypoints: websecure
+        traefik.ingress.kubernetes.io/router.entrypoints: web239, websecure239
         # Enable TLS
         traefik.ingress.kubernetes.io/router.tls: "true"
         # Use Basic Auth Midleware configured
@@ -85,10 +85,10 @@ sops:
             QVVVNHFJb0I2anlHcGZmc1lVRUQ0Z2sKvYOAkSyjsu989v7Bhmy3lZzLoYyTIUYy
             6nkjVV1BGHM6u4oDyF1WD1nP1W6I89avWZS32Z1Fc5aWxi3K8BlOLQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-09-09T19:47:11Z"
-    mac: ENC[AES256_GCM,data:pPSM0M+ViVpUnDVP+U45m7ZzbZ8zw5jQKthc0rhQHhhNEDrNEzIwvR02sgfZdQAIDADUH/KbVAUNJtmqRyQBxl6WuVHg62hC+Pdv3Cd3aQf3d+Wco+dkCLNzHfo2dI+9Ocn2hV7hiZ6VImKo+MMmy5gLEsWi08McdSwZ/ICOfFw=,iv:feYLSkw95o2b2gBy2v8zkv9iqufokQMpkLxQS+WNOnI=,tag:CKU2CHaAjmBcor1JOiM7LQ==,type:str]
+    lastmodified: "2025-10-13T19:19:55Z"
+    mac: ENC[AES256_GCM,data:T9RkufFJfylLeh5sxfobWrImCVaueK4gIoaHsPFcwrjnRU4Sa0ffxkEkUyjiaU+MHiQOxdgxe7puTdEUU70WOFNoSR8Oj+RIqLYIcriWcsAPxqMuG1PcHP4jaUZi3205pgNM1EMR3XwSbh09K1Ud1Iwg2HtzFSwcXNU5SyWWCFc=,iv:ALNM7acDzweX532IsesW24jdVfOHBpVDjG8iT0buG+s=,tag:uYeBCc222p7sjDw1sWG8jg==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
-    version: 3.10.2
+    version: 3.11.0
 ---
 # Wasabi Credentials
 # Uses the following endpoint: https://s3.eu-central-2.wasabisys.com
@@ -140,10 +140,10 @@ sops:
             QVVVNHFJb0I2anlHcGZmc1lVRUQ0Z2sKvYOAkSyjsu989v7Bhmy3lZzLoYyTIUYy
             6nkjVV1BGHM6u4oDyF1WD1nP1W6I89avWZS32Z1Fc5aWxi3K8BlOLQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-09-09T19:47:11Z"
-    mac: ENC[AES256_GCM,data:pPSM0M+ViVpUnDVP+U45m7ZzbZ8zw5jQKthc0rhQHhhNEDrNEzIwvR02sgfZdQAIDADUH/KbVAUNJtmqRyQBxl6WuVHg62hC+Pdv3Cd3aQf3d+Wco+dkCLNzHfo2dI+9Ocn2hV7hiZ6VImKo+MMmy5gLEsWi08McdSwZ/ICOfFw=,iv:feYLSkw95o2b2gBy2v8zkv9iqufokQMpkLxQS+WNOnI=,tag:CKU2CHaAjmBcor1JOiM7LQ==,type:str]
+    lastmodified: "2025-10-13T19:19:55Z"
+    mac: ENC[AES256_GCM,data:T9RkufFJfylLeh5sxfobWrImCVaueK4gIoaHsPFcwrjnRU4Sa0ffxkEkUyjiaU+MHiQOxdgxe7puTdEUU70WOFNoSR8Oj+RIqLYIcriWcsAPxqMuG1PcHP4jaUZi3205pgNM1EMR3XwSbh09K1Ud1Iwg2HtzFSwcXNU5SyWWCFc=,iv:ALNM7acDzweX532IsesW24jdVfOHBpVDjG8iT0buG+s=,tag:uYeBCc222p7sjDw1sWG8jg==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
-    version: 3.10.2
+    version: 3.11.0
 ---
 apiVersion: longhorn.io/v1beta2
 kind: RecurringJob
@@ -180,10 +180,10 @@ sops:
             QVVVNHFJb0I2anlHcGZmc1lVRUQ0Z2sKvYOAkSyjsu989v7Bhmy3lZzLoYyTIUYy
             6nkjVV1BGHM6u4oDyF1WD1nP1W6I89avWZS32Z1Fc5aWxi3K8BlOLQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-09-09T19:47:11Z"
-    mac: ENC[AES256_GCM,data:pPSM0M+ViVpUnDVP+U45m7ZzbZ8zw5jQKthc0rhQHhhNEDrNEzIwvR02sgfZdQAIDADUH/KbVAUNJtmqRyQBxl6WuVHg62hC+Pdv3Cd3aQf3d+Wco+dkCLNzHfo2dI+9Ocn2hV7hiZ6VImKo+MMmy5gLEsWi08McdSwZ/ICOfFw=,iv:feYLSkw95o2b2gBy2v8zkv9iqufokQMpkLxQS+WNOnI=,tag:CKU2CHaAjmBcor1JOiM7LQ==,type:str]
+    lastmodified: "2025-10-13T19:19:55Z"
+    mac: ENC[AES256_GCM,data:T9RkufFJfylLeh5sxfobWrImCVaueK4gIoaHsPFcwrjnRU4Sa0ffxkEkUyjiaU+MHiQOxdgxe7puTdEUU70WOFNoSR8Oj+RIqLYIcriWcsAPxqMuG1PcHP4jaUZi3205pgNM1EMR3XwSbh09K1Ud1Iwg2HtzFSwcXNU5SyWWCFc=,iv:ALNM7acDzweX532IsesW24jdVfOHBpVDjG8iT0buG+s=,tag:uYeBCc222p7sjDw1sWG8jg==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
-    version: 3.10.2
+    version: 3.11.0
 ---
 # CSI VolumeSnapshot Associated With Longhorn Backup
 kind: VolumeSnapshotClass
@@ -216,7 +216,7 @@ sops:
             QVVVNHFJb0I2anlHcGZmc1lVRUQ0Z2sKvYOAkSyjsu989v7Bhmy3lZzLoYyTIUYy
             6nkjVV1BGHM6u4oDyF1WD1nP1W6I89avWZS32Z1Fc5aWxi3K8BlOLQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-09-09T19:47:11Z"
-    mac: ENC[AES256_GCM,data:pPSM0M+ViVpUnDVP+U45m7ZzbZ8zw5jQKthc0rhQHhhNEDrNEzIwvR02sgfZdQAIDADUH/KbVAUNJtmqRyQBxl6WuVHg62hC+Pdv3Cd3aQf3d+Wco+dkCLNzHfo2dI+9Ocn2hV7hiZ6VImKo+MMmy5gLEsWi08McdSwZ/ICOfFw=,iv:feYLSkw95o2b2gBy2v8zkv9iqufokQMpkLxQS+WNOnI=,tag:CKU2CHaAjmBcor1JOiM7LQ==,type:str]
+    lastmodified: "2025-10-13T19:19:55Z"
+    mac: ENC[AES256_GCM,data:T9RkufFJfylLeh5sxfobWrImCVaueK4gIoaHsPFcwrjnRU4Sa0ffxkEkUyjiaU+MHiQOxdgxe7puTdEUU70WOFNoSR8Oj+RIqLYIcriWcsAPxqMuG1PcHP4jaUZi3205pgNM1EMR3XwSbh09K1Ud1Iwg2HtzFSwcXNU5SyWWCFc=,iv:ALNM7acDzweX532IsesW24jdVfOHBpVDjG8iT0buG+s=,tag:uYeBCc222p7sjDw1sWG8jg==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
-    version: 3.10.2
+    version: 3.11.0

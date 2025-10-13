@@ -7,7 +7,7 @@ metadata:
         app.kubernetes.io/name: nextpvr
     annotations:
         # HTTPS entrypoint enabled
-        traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+        traefik.ingress.kubernetes.io/router.entrypoints: web239,websecure239
         # TLS enabled
         traefik.ingress.kubernetes.io/router.tls: "true"
         traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect@kubernetescrd, authelia-forwardauth-authelia@kubernetescrd
@@ -48,7 +48,7 @@ sops:
             aFNaRkM5MFRaV2J3RHZoeEhhK2g5NlkKvj0iF6RXP0A1fDINQznkyS6pq648MhXC
             JUepuSHTPVU3UPygyMpDgFn1LhKu+M+kOHfRIxhhWeSxrKMr/mcfYg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-08-06T22:45:36Z"
-    mac: ENC[AES256_GCM,data:lGKDMfENblP08NfCY9gdN6FTpNe8MPU8ye6mgV309+ar1zmNXq9Ol26xCE22oIOSCiuoRaYNx35R+8MllesYE0JP/NUCEelKZAZSg1TfQfjze7jv2ffYhjXfdjCPD7XCcTBBuBmA4C4dDTLhng2bJVRbQWIVnUYSoiUs4L6meu0=,iv:UN5IaslyPleZwjK/C51Y66gzJUlFUqL4CUrpMumir2k=,tag:TVJe255IqHpvfur2lOgmEw==,type:str]
+    lastmodified: "2025-10-13T19:20:39Z"
+    mac: ENC[AES256_GCM,data:QdPsI+RPvgwXtKD8MSn0R7ucD02HXXwC65wPIRUFcPmlCiH7miEjbYeqyDDFNxNYx8r30bAXJtVTpR7SxVkLexHolS2U8FsWO7BRfcav9nFOVS0YNqSms3v5mVIG6EOkWbx+GxopF1HVR6+QtJd6V7ejWABOI1v/NpopzMWbvYw=,iv:0sswP/3tcIJ37gEfgvkQ9BQOheyQEuqqV1DYe+reqS8=,tag:EK8IRek8eJ1MOqNmSgGzeg==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
-    version: 3.10.2
+    version: 3.11.0

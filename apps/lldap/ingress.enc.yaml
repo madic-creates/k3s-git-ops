@@ -4,7 +4,7 @@ metadata:
     name: lldap
     annotations:
         # HTTPS entrypoint enabled
-        traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+        traefik.ingress.kubernetes.io/router.entrypoints: web239,websecure239
         # TLS enabled
         traefik.ingress.kubernetes.io/router.tls: "true"
         traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect@kubernetescrd
@@ -26,10 +26,6 @@ spec:
                         port:
                             number: 17170
 sops:
-    kms: []
-    gcp_kms: []
-    azure_kv: []
-    hc_vault: []
     age:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
@@ -49,8 +45,7 @@ sops:
             ZWtzcWYzL0o1eEk5aUJETEFCcEx5Rm8KENXh7K/nWW9SOFT7VVxpANVRbfSPYw/t
             oyQ7VRLRAicb0enWt3Z9z2dd3SuSa5pBFh/HsX9/GhIK4VBh1J0EEQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-10-24T21:10:32Z"
-    mac: ENC[AES256_GCM,data:WBEyqyf/o2sGzZvYTHeU6q1AfVKRjSH9KVSMokuFFfe5YFSGKIRL1qFMVZ3/kTyjYYJNqa8YUHYtH05IDc6knX3dJD1TEjAIZq+lP/kBbLa8DxUvkHc5Mzy7Oz0a+C/Q5l4MW6FpzJ1EtbDDBQn0LcjfH7N9WilGhclqDYYIYlA=,iv:OItkwxL5XUAPWSJLJGZgqdyAvqJExamQt0clE7TGSoY=,tag:4vs4kryoiYcnlC6lUCDBxg==,type:str]
-    pgp: []
+    lastmodified: "2025-10-13T19:18:24Z"
+    mac: ENC[AES256_GCM,data:R8CW9AcD3x2PHjf4mj2LJPizwF3/ahlqSCvMb128AvkrE51D+eLyQqWX4cT9+ekRPGT8+NIQo69ofyZf522sIQgBEOFEuSuwAmaQeTJKElKH768xpeV6G0NZ45p95BrLn7hsmriQnkyIt2HnDTqALbf0Jn56iDrXaHoNi7LMw80=,iv:erYty1ITHAsQ9vyPfQ9OPJ9Lp5V2D5CH+4Yhf+/5Atk=,tag:m8UsjSAZdFD5B7iRCVKN/Q==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId)$
-    version: 3.9.0
+    version: 3.11.0

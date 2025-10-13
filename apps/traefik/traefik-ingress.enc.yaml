@@ -6,7 +6,7 @@ metadata:
     namespace: kube-system
     annotations:
         # HTTPS as entry point
-        traefik.ingress.kubernetes.io/router.entrypoints: websecure
+        traefik.ingress.kubernetes.io/router.entrypoints: web239, websecure239
         # Enable TLS
         traefik.ingress.kubernetes.io/router.tls: "true"
         # Use authelia authentication
@@ -28,10 +28,6 @@ spec:
                         port:
                             number: 9000
 sops:
-    kms: []
-    gcp_kms: []
-    azure_kv: []
-    hc_vault: []
     age:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
@@ -51,8 +47,7 @@ sops:
             UVo2U3M2RGJmSnFGUTBKYThmM3pjTW8KD6B9nygpKX0ptpDNL87vtWRkOB1hmrrH
             BV/TTmJlmLl3OA6m38kMKTA7O0FH6hrI9GnKuISFWyDVmZov7CGsEQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-10-25T10:18:38Z"
-    mac: ENC[AES256_GCM,data:dKjKg28SYSgYSyH0ywpEssBh5Q+DnFVuCleZTw0yT6RK5HMYDxK0IyNzXoluvKv7xZAFw1LYr72TVAnTfNlcQvpsAgT0oRDjbQdFIE45wpHrA9SZxc1x+4IpP0Hq+LsibDaBi2e0ervnl5XuDJm3mwI3mZCfP9EbOxIgQ4+4XiQ=,iv:k22uPxvlvxJnoTxag8M4bVThdvet2C0XArjDlwykrAo=,tag:09MU9PZX+I/xvd+3wnKmhg==,type:str]
-    pgp: []
+    lastmodified: "2025-10-13T19:19:37Z"
+    mac: ENC[AES256_GCM,data:ctjbyrBQus7uaQetP9B9CRSVrMT33M2hVoyT5FLcoeYuHJUVxrqbUsRORW5lv3Q6YKFfKKJTD1k1Xkmk5dmZoWYgY3PFT5oc3XRRVbb3tcMG1fE+bqvsikGE43wDc0lL3Ksb2mW5XZkVi3324hruzjfyUhFHPrA8+hTfS/S6UFE=,iv:avgLm6zvq7F3JF7qhcfcPLfRJATYij1TZ0/7GJyqEVg=,tag:/QI2I/XVQuEtoTkqZuUDbQ==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url)$
-    version: 3.9.0
+    version: 3.11.0

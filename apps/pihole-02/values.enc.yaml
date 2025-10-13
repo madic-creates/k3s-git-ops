@@ -20,7 +20,7 @@ ingress:
           hosts:
             - ENC[AES256_GCM,data:g4vMYEPhtbYr7heojVH6i00nIUri46iBzA==,iv:5VPQ6/EvAaM5ahReC8UdmTpMcTNFcOaqJ0ehdL6ji+0=,tag:oJVMOnhTH6llRlTAVtI3Sw==,type:str]
     annotations:
-        traefik.ingress.kubernetes.io/router.entrypoints: websecure
+        traefik.ingress.kubernetes.io/router.entrypoints: web239, websecure239
         traefik.ingress.kubernetes.io/router.tls: "true"
         traefik.ingress.kubernetes.io/router.middlewares: authelia-forwardauth-authelia@kubernetescrd, traefik-root-to-admin@kubernetescrd
 resources:
@@ -136,7 +136,7 @@ sops:
             V3ZONzFGcE1vdmRaMTRhRERvdkthUncKBeD+dNgljrM4n000vfHhz2WUpjSn110+
             z/cSJmkZKCf2yIjFJlkCLpOlCy8BRYxEGpWJSYFEGiCgqz6fOFxkvA==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-09-22T07:26:57Z"
-    mac: ENC[AES256_GCM,data:+YYJzwblEwqrxvf7QWlUCtlg6oquUgsW6+p3sm56bMaKB4d5/De8+S8M3aSbRmEzNx93CDuW0QYNCJh65UUydoy+tCftrN+Eu2eERaauKBXgGvfpDZzPdOWRhOc5/ZglFgEm8W5XgQxPRPV4mXK6Q0Qp3m9uDzIebpgQmDVppPg=,iv:sBk5SEZ0uMKWnvIqLB2MSqVPVXVkrFga0ttA3yoKg4U=,tag:LNLOb1ifTuzDrMUnpb6rXQ==,type:str]
+    lastmodified: "2025-10-13T19:19:06Z"
+    mac: ENC[AES256_GCM,data:hsROuK3+DbynxE3d8XaGWbdnX8pYy0ue6B0/bLBbrOyfHOjKgNgMmKd2DwyUTdU7rFrh1+KAh/S+t2XGWtsuuWPH/czS2t4bUvTHhItzus/sNMox3H/zdjIXatkKirxT2W29qC8Z/VbdNYyj0jYOwqaAVvKQYMRmomrXgaFY4+w=,iv:P4RmafO3joDeKY1fn3U6d+GxWBzvsjjdo52YGhj2Vks=,tag:oOwYgSROpvfpXIyeqyW9Cg==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
-    version: 3.10.2
+    version: 3.11.0
