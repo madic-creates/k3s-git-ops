@@ -4,17 +4,17 @@ metadata:
     name: paperless-ai
     namespace: paper
     annotations:
-        traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+        traefik.ingress.kubernetes.io/router.entrypoints: web239,websecure239
         traefik.ingress.kubernetes.io/router.tls: "true"
         traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect@kubernetescrd
         #, authelia-forwardauth-authelia@kubernetescrd
 spec:
     tls:
         - hosts:
-            - ENC[AES256_GCM,data:GoIA0jsDk9YBEeWy3uIxFDECYaAA+S1g+pbExQ==,iv:XZccHyrODTA+aGiWEjziJb2Ye9xnSPHpSVW0eb+EHss=,tag:YqnA4HrOh6XITKRY2UsgdQ==,type:str]
-          secretName: wildcard-cloudflare-production-01
+            - ENC[AES256_GCM,data:rLjptkhtPE02vTqq0IROFd6WK78Wuob4JdiCs7KsBvjR,iv:GP1yWmYodVse/XwppyqZwVA4DtlEKXFYYcBgKHKW1/k=,tag:FgeLOpwvd9XncfIJvKsAzQ==,type:str]
+          secretName: wildcard-cloudflare-production-02
     rules:
-        - host: ENC[AES256_GCM,data:SamU+gxoz8aBx1q3NMpfcwa8xo2hA2Z308uUwQ==,iv:30buKkcEMfE8WB8n6QQTGKUQYQtxg3pnjVWOTnDWFHA=,tag:h0c7xBQp5zzR2Xcs3UtFww==,type:str]
+        - host: ENC[AES256_GCM,data:74SbS8GmUkNUYMRBG7jjWBwW+hJrprrskd3fLinmAaPh,iv:uK+1dupG7NozLWICSgHqThc/nKnA4+K6actJX8IZlhM=,tag:flL/qe0ihvlFAF1N0B4IzQ==,type:str]
           http:
             paths:
                 - path: /
@@ -25,10 +25,6 @@ spec:
                         port:
                             number: 3000
 sops:
-    kms: []
-    gcp_kms: []
-    azure_kv: []
-    hc_vault: []
     age:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
@@ -48,8 +44,7 @@ sops:
             b3lQSzZ3U2YvMWx4eE9lWVlMRHRYZjAKgD2M8jZqJPDVYuLTaVZpW59P1Wv4DpZi
             uv45PWxVySbHW/EV3vwU4vwGegmQu6mWdcnv4n3ocQNS0BtBleguYw==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-01-15T14:32:04Z"
-    mac: ENC[AES256_GCM,data:/6KqFgUreZJaCOUqSkskqmAJmFPMfsBzQw73Etx3TVyp55fwgITLLOAqU53NOY2+1ZvvM+UBZeO45J88YRvFaXB7RjKcx13hFb9orybgalFYFBDQm9F6HEyj6o/SzX+Hh5t72RzOss4/NNbBMNU5DpNa3JNuw26nXYd7x8vQ6wQ=,iv:9MPJBXQXUkmw8XPvE8opv5/W5WfaUwqeq8GO00Gp6qs=,tag:GaXh266RUa1yV8wagKhw9g==,type:str]
-    pgp: []
+    lastmodified: "2025-10-13T19:47:36Z"
+    mac: ENC[AES256_GCM,data:pONgX2epVBZ5Rp4mvaeVD5Ilwphca+pDzfqqdYvjL0VidbpgjzG/+4XLhkoEFU7OGsnTNQzHxPEI0JDpk9TX8qX+7bk/FIg2HMU8031Y7iPjiuQUtr3jTXt0mqRDU4VhtTI+oh53oMicu1L31cn5Fcb59tBFyorQnTFUIUcqfb4=,iv:6nhff5t8kl36ZwVmiNPZlzPU73r3R46QuYw+BnVMjG4=,tag:Z+iI39cPbMMbcA23h3K21Q==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients)$
-    version: 3.8.1
+    version: 3.11.0

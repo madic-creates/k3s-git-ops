@@ -4,7 +4,7 @@ metadata:
     name: whoami-auth
     namespace: whoami
     annotations:
-        traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+        traefik.ingress.kubernetes.io/router.entrypoints: web239,websecure239
         traefik.ingress.kubernetes.io/router.tls: "true"
         traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect@kubernetescrd, authelia-forwardauth-authelia@kubernetescrd
         #kustomize.config.k8s.io/needs-hash: "false"
@@ -13,10 +13,10 @@ spec:
     ingressClassName: traefik
     tls:
         - hosts:
-            - ENC[AES256_GCM,data:MsiO8XWBFXMRvCp7mLPGIhIrTdnH/mA=,iv:RfF/GvTodgNTJvid2O+1SSvFVAFHJttidN59IYBAx+U=,tag:Ltm92AR0pbVLpEMZQNrs+g==,type:str]
-          secretName: wildcard-cloudflare-production-01
+            - ENC[AES256_GCM,data:23gSqGb7J1Y79cKlHXYgJOECXUZBaN0SY5Lvdw==,iv:KWy0RIeCKLp2onO5FvVxsR0KGBYmt33bEngasLoMkB8=,tag:BpjGwQeIrmmiRltvpSFUJw==,type:str]
+          secretName: wildcard-cloudflare-production-02
     rules:
-        - host: ENC[AES256_GCM,data:kDJLtIsvYh+ghj6aPxDibz4l4MyOIGk=,iv:B+lGKXDRLtpDCucc7Lti1S14OAT2XYf8XjZISvFQ/Gw=,tag:brwlYgnDroTd5+Zl/UuZ0w==,type:str]
+        - host: ENC[AES256_GCM,data:csKTuF2nQQSSseDuspl13ljkf7dH1pELN78PUA==,iv:plbei1pISqIjkhGbz0xyE5dQZktr+THggYJxVdbtlr8=,tag:gRFLk0iVhly5XMU1ylEOhQ==,type:str]
           http:
             paths:
                 - path: /foo
@@ -27,10 +27,6 @@ spec:
                         port:
                             number: 80
 sops:
-    kms: []
-    gcp_kms: []
-    azure_kv: []
-    hc_vault: []
     age:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
@@ -50,11 +46,10 @@ sops:
             QmpyOXh1YzJRZ3IzMmpNRHU3UlhlWUkKSv9/61b1vcOpyroko0K7ndPPxgsuDDW1
             IjaeqhThDgpr9lMaku10q5Ppey5VF+iqKn165iUjXcNLariakyYc5g==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-11-04T21:01:20Z"
-    mac: ENC[AES256_GCM,data:F/HWXoNmv6ByDrYQbFpGto0BQJkwNAy5qgHpIl3px7+9CeXUKI/gtgN/ECb9kUjaBnE4PI7laHVjaUx8hEivWq1nBrnN0iIdHlflzfn4+Ikz0erWrURmosLJNBRlhzdaCDRCrMOMROTn/ia4rkfhH7bZhOsAs87Z6z84AWHjF64=,iv:pPTnW/cgnpYNiZwfV8lWqZxeY0KaXcU1gaWgIs9dNiI=,tag:iTZgRt2vhCnI4HmfMkLiOQ==,type:str]
-    pgp: []
+    lastmodified: "2025-10-13T19:48:18Z"
+    mac: ENC[AES256_GCM,data:4y58p6Z1Bhzq8UWoYOmqi8cbVzFHabNwrv793zAiCFV9zwnUW9hrmtkqSonJzpAIugYS2JqN3NEL3XnlVKNAqGF0f1x1wpqrcQSS6WWxcLoFtOhK4InuYwKpqg5QuajqzkdsN7fgtGvn0Y60/BKfG/mmcQAIx7G9TPygnn+5dSc=,iv:YAxKucyxGY1lTIt1Y2KzvxLTWnp9yzpGWI5Wxi0JweM=,tag:5urVM6fYguWne26eebYL3w==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|clientSecret|argocdServerAdminPassword|oidc.config|commonName|literals)$
-    version: 3.9.1
+    version: 3.11.0
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -62,7 +57,7 @@ metadata:
     name: whoami-non-auth
     namespace: whoami
     annotations:
-        traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+        traefik.ingress.kubernetes.io/router.entrypoints: web239,websecure239
         traefik.ingress.kubernetes.io/router.tls: "true"
         traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect@kubernetescrd
         #kustomize.config.k8s.io/needs-hash: "false"
@@ -71,10 +66,10 @@ spec:
     ingressClassName: traefik
     tls:
         - hosts:
-            - ENC[AES256_GCM,data:MsiO8XWBFXMRvCp7mLPGIhIrTdnH/mA=,iv:RfF/GvTodgNTJvid2O+1SSvFVAFHJttidN59IYBAx+U=,tag:Ltm92AR0pbVLpEMZQNrs+g==,type:str]
-          secretName: wildcard-cloudflare-production-01
+            - ENC[AES256_GCM,data:4DH0Jf0Sz3aj7xu6tYeUGACtKsREUtq53gnPyQ==,iv:Lwpr/zj1OJwI34GqRHQq1WqD/4GgyvqOKgkeY9i4E78=,tag:nt+CnkOU2Sv2J2hK6oLKMg==,type:str]
+          secretName: wildcard-cloudflare-production-02
     rules:
-        - host: ENC[AES256_GCM,data:kDJLtIsvYh+ghj6aPxDibz4l4MyOIGk=,iv:B+lGKXDRLtpDCucc7Lti1S14OAT2XYf8XjZISvFQ/Gw=,tag:brwlYgnDroTd5+Zl/UuZ0w==,type:str]
+        - host: ENC[AES256_GCM,data:KmcP7/dr6oRSwmmYaobLy4UixkePSHSAj8IgOw==,iv:Asdfrnv5cLamaoUdJl64YRpmG1QjLE7NPfwmHeT0tSU=,tag:TCnXdEHQLg1+fQlai2Jpog==,type:str]
           http:
             paths:
                 - path: /bar
@@ -85,10 +80,6 @@ spec:
                         port:
                             number: 80
 sops:
-    kms: []
-    gcp_kms: []
-    azure_kv: []
-    hc_vault: []
     age:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
@@ -108,8 +99,7 @@ sops:
             QmpyOXh1YzJRZ3IzMmpNRHU3UlhlWUkKSv9/61b1vcOpyroko0K7ndPPxgsuDDW1
             IjaeqhThDgpr9lMaku10q5Ppey5VF+iqKn165iUjXcNLariakyYc5g==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-11-04T21:01:20Z"
-    mac: ENC[AES256_GCM,data:F/HWXoNmv6ByDrYQbFpGto0BQJkwNAy5qgHpIl3px7+9CeXUKI/gtgN/ECb9kUjaBnE4PI7laHVjaUx8hEivWq1nBrnN0iIdHlflzfn4+Ikz0erWrURmosLJNBRlhzdaCDRCrMOMROTn/ia4rkfhH7bZhOsAs87Z6z84AWHjF64=,iv:pPTnW/cgnpYNiZwfV8lWqZxeY0KaXcU1gaWgIs9dNiI=,tag:iTZgRt2vhCnI4HmfMkLiOQ==,type:str]
-    pgp: []
+    lastmodified: "2025-10-13T19:48:18Z"
+    mac: ENC[AES256_GCM,data:4y58p6Z1Bhzq8UWoYOmqi8cbVzFHabNwrv793zAiCFV9zwnUW9hrmtkqSonJzpAIugYS2JqN3NEL3XnlVKNAqGF0f1x1wpqrcQSS6WWxcLoFtOhK4InuYwKpqg5QuajqzkdsN7fgtGvn0Y60/BKfG/mmcQAIx7G9TPygnn+5dSc=,iv:YAxKucyxGY1lTIt1Y2KzvxLTWnp9yzpGWI5Wxi0JweM=,tag:5urVM6fYguWne26eebYL3w==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|clientSecret|argocdServerAdminPassword|oidc.config|commonName|literals)$
-    version: 3.9.1
+    version: 3.11.0
