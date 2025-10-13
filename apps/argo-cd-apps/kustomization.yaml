@@ -38,7 +38,7 @@ resources:
   - 70-descheduler.yaml
   - 80-whoami.yaml
   - 86-kube-doom.yaml
-  - 90-gethomepage.yaml
+  #- 90-gethomepage.yaml
   #- 90-goldilocks.yaml
   #- 91-vpa.yaml
   - 96-system-upgrade-controller-plans.yaml
