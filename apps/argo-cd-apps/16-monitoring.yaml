@@ -17,6 +17,25 @@ spec:
   destination:
     server: "https://kubernetes.default.svc"
     namespace: default
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      name: kube-prometheus-stack-grafana
+      namespace: monitoring
+      jsonPointers:
+        - /spec/replicas
+    - group: apps
+      kind: StatefulSet
+      name: kube-prometheus-stack-alertmanager
+      namespace: monitoring
+      jsonPointers:
+        - /spec/replicas
+    - group: apps
+      kind: StatefulSet
+      name: kube-prometheus-stack-prometheus
+      namespace: monitoring
+      jsonPointers:
+        - /spec/replicas
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true

@@ -17,6 +17,13 @@ spec:
   destination:
     server: "https://kubernetes.default.svc"
     namespace: default
+  ignoreDifferences:
+    - group: apps
+      kind: StatefulSet
+      name: redis
+      namespace: databases
+      jsonPointers:
+        - /spec/replicas
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
