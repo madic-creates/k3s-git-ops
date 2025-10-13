@@ -20,7 +20,7 @@ spec:
   ignoreDifferences:
     - group: apps
       kind: StatefulSet
-      name: redis
+      name: redis-master
       namespace: databases
       jsonPointers:
         - /spec/replicas
