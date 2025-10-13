@@ -50,7 +50,7 @@ spec:
             burst: 200
         ingressController:
             enabled: false
-            default: true
+            default: false
             loadbalancerMode: dedicated
         hubble:
           relay:
