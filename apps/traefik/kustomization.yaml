@@ -19,15 +19,48 @@ helmCharts:
       deployment:
         kind: DaemonSet
       service:
+        type: LoadBalancer
+        annotations:
+          kube-vip.io/loadbalancerIPs: "192.168.1.231"
         ipFamilyPolicy: PreferDualStack
         spec:
+          loadBalancerIP: "192.168.1.231"
           externalTrafficPolicy: Local
-      #ports:
-      #  dns:
-      #    port: 53
-      #    expose: false
-      #    exposedPort: 53
-      #    protocol: UDP
+        additionalServices:
+          vip239:
+            type: LoadBalancer
+            annotations:
+              kube-vip.io/loadbalancerIPs: "192.168.1.239"
+            spec:
+              loadBalancerIP: "192.168.1.239"
+              externalTrafficPolicy: Local
+      ports:
+        web:
+          port: 8000
+          expose:
+            default: true
+          exposedPort: 80
+        websecure:
+          port: 8443
+          expose:
+            default: true
+          exposedPort: 443
+          tls:
+            enabled: true
+        web239:
+          port: 8010
+          expose:
+            default: false
+            vip239: true
+          exposedPort: 80
+        websecure239:
+          port: 8444
+          expose:
+            default: false
+            vip239: true
+          exposedPort: 443
+          tls:
+            enabled: true
       image:
         pullPolicy: IfNotPresent
       priorityClassName: "system-cluster-critical"
@@ -59,6 +92,8 @@ helmCharts:
         - "--api.insecure=true"
         - "--entryPoints.web.proxyProtocol.insecure"
         - "--entryPoints.web.forwardedHeaders.insecure"
+        - "--entryPoints.web239.proxyProtocol.insecure"
+        - "--entryPoints.web239.forwardedHeaders.insecure"
         #- "--accesslog=true"
       experimental:
         plugins:
