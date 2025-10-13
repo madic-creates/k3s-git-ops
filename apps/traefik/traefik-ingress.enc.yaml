@@ -14,10 +14,10 @@ metadata:
 spec:
     tls:
         - hosts:
-            - ENC[AES256_GCM,data:yLvi6KaOB4jzyoXiOmgJzTL3XwTPU72h,iv:TQVT1sa1ieUM7ZfIhCdlU8SuK5A8r7LCgOS9Ts450/s=,tag:RwNg2DXhSdsQVY75UBfG5Q==,type:str]
-          secretName: wildcard-cloudflare-production-01
+            - ENC[AES256_GCM,data:UxebQvmDefLScaxIiy6cqA1jakYLsguRJqi7LG0=,iv:uKT+Xtnld0zCw6+O2AL7I4SKjbLTA5xSLqWFCVKN5Bc=,tag:zdiU+K5NCq96FKCWsOz20Q==,type:str]
+          secretName: wildcard-cloudflare-production-02
     rules:
-        - host: ENC[AES256_GCM,data:znIREz/AQ01mUdkmk++oomlOZEhL/HYq,iv:JT8vo8c0QRz97ZlMfXBr4wQx4/5zYx+wZD9U50qFJ5k=,tag:uqoYIczMIDpCkh04F/pN1A==,type:str]
+        - host: ENC[AES256_GCM,data:1IdE75Xp2iXEphx15Y0mEfUK60AC3NnfdbuiNPI=,iv:Mn6NtoD/Jml99wwWxxlzZBpSTtNJzUAMFGF4p5SsAkc=,tag:yrChpOlN2lN62hHoNuPn0Q==,type:str]
           http:
             paths:
                 - path: /
@@ -47,7 +47,7 @@ sops:
             UVo2U3M2RGJmSnFGUTBKYThmM3pjTW8KD6B9nygpKX0ptpDNL87vtWRkOB1hmrrH
             BV/TTmJlmLl3OA6m38kMKTA7O0FH6hrI9GnKuISFWyDVmZov7CGsEQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-10-13T19:19:37Z"
-    mac: ENC[AES256_GCM,data:ctjbyrBQus7uaQetP9B9CRSVrMT33M2hVoyT5FLcoeYuHJUVxrqbUsRORW5lv3Q6YKFfKKJTD1k1Xkmk5dmZoWYgY3PFT5oc3XRRVbb3tcMG1fE+bqvsikGE43wDc0lL3Ksb2mW5XZkVi3324hruzjfyUhFHPrA8+hTfS/S6UFE=,iv:avgLm6zvq7F3JF7qhcfcPLfRJATYij1TZ0/7GJyqEVg=,tag:/QI2I/XVQuEtoTkqZuUDbQ==,type:str]
+    lastmodified: "2025-10-13T19:32:32Z"
+    mac: ENC[AES256_GCM,data:M1sJFY4QBPcrOjPveNLA+S4gkhygJB951nGVB46bh7q73VNzPTqsfibcoor97C0P/P88zD9d4xPn1kDNPsadMVdOf06snL+u44ZM8eAaPWjCLgVoc73bPMdcNnQdBXaDcWQ91ahSAWOQ8ItV8F6dFIRJ1O1Irk0HeVlPue2Pdu0=,iv:022JwUJQuKmSTAkbRvTWb4s4OuMsSGOKVnqHKGVTbBg=,tag:avmD3e/xy8RWF4+kQMHU7g==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url)$
     version: 3.11.0

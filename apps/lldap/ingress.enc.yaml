@@ -12,10 +12,10 @@ spec:
     ingressClassName: traefik
     tls:
         - hosts:
-            - ENC[AES256_GCM,data:4amL99iDTddouf5La0EGJzNtfxyHzQ==,iv:NStdl6s7Yt2sWecshTEf0GhFX+ySWdANbX6O7YgQUGI=,tag:rhFj36K32vaazNN7S4wFOA==,type:str]
-          secretName: wildcard-cloudflare-production-01
+            - ENC[AES256_GCM,data:uvNtzjmTo8xRvNys4ffQpOlmKsqa7qME2VHB,iv:BRFBSyXOQa2fpC/iNV6XsnxGxsjYjBWwlnOcx6F5IqQ=,tag:DmSJfHLu6LDPTnwh/wSNmw==,type:str]
+          secretName: wildcard-cloudflare-production-02
     rules:
-        - host: ENC[AES256_GCM,data:y7LO0Z55DdRDD0AEhNKbvEv6ZW0YQw==,iv:3y/LG1mYIDgK0QTm6Vo+4481B9E3se7QmHVPDb32tfs=,tag:DDv7v+xrMtjeo2zhYn9U9g==,type:str]
+        - host: ENC[AES256_GCM,data:mCXGhtkx+Bu78+aixaBr3VuQAVZDrjOiphG2,iv:M2nHbsgcueNT6AAZSnIyiIHsTPNn/XwLe8pmoh1wDgs=,tag:EAD5t+wzUcMr67TgvwtgQQ==,type:str]
           http:
             paths:
                 - path: /
@@ -45,7 +45,7 @@ sops:
             ZWtzcWYzL0o1eEk5aUJETEFCcEx5Rm8KENXh7K/nWW9SOFT7VVxpANVRbfSPYw/t
             oyQ7VRLRAicb0enWt3Z9z2dd3SuSa5pBFh/HsX9/GhIK4VBh1J0EEQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-10-13T19:18:24Z"
-    mac: ENC[AES256_GCM,data:R8CW9AcD3x2PHjf4mj2LJPizwF3/ahlqSCvMb128AvkrE51D+eLyQqWX4cT9+ekRPGT8+NIQo69ofyZf522sIQgBEOFEuSuwAmaQeTJKElKH768xpeV6G0NZ45p95BrLn7hsmriQnkyIt2HnDTqALbf0Jn56iDrXaHoNi7LMw80=,iv:erYty1ITHAsQ9vyPfQ9OPJ9Lp5V2D5CH+4Yhf+/5Atk=,tag:m8UsjSAZdFD5B7iRCVKN/Q==,type:str]
+    lastmodified: "2025-10-13T19:31:16Z"
+    mac: ENC[AES256_GCM,data:CfOELxhI0NL8Glqz9YwIcYMr7XaJ06xg7DSxWtfBEshFLC3brf3Zhk4cSFoRxQMoFfH9MN2EcnJtA259lK/zkdIYn+XJMajqtXFBRXng+k46OzcEGvysJAmduAAe3ird+BD2K5OVh77XCOfFsHmZ13zl36+j3pt2udBhPKKUePQ=,iv:TO5WTBnFVUHYvVTWHZ1BVyu73eGGoZhDGWDLAeWzdrs=,tag:bVoB4WYq4LbVl4v1CaTfdg==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId)$
     version: 3.11.0

@@ -17,16 +17,16 @@ serviceDhcp:
         lbipam.cilium.io/ips: 192.168.1.232
         lbipam.cilium.io/sharing-key: piholednsdhcp
     type: LoadBalancer
-virtualHost: ENC[AES256_GCM,data:Zi2df7voYw452ZMFbj6NJPh4gQm4W8w=,iv:VbL8KwXyAhNxXuORNZNB2zAwwV1gHcbtBr+WeG+vca8=,tag:cOeu5xUZLZu3jmsYNI6xqw==,type:str]
+virtualHost: ENC[AES256_GCM,data:TA6IfdbSdNypwXzcSKNUW5kmO9WbCvBIc2Kpzw==,iv:E+SIzHUFDwjJYJjzWF0ArCjZp+zOdeS096oyiVtqEe8=,tag:vcO/IQiicqq/zjn+wvOnVA==,type:str]
 ingress:
     enabled: true
     ingressClassName: traefik
     hosts:
-        - ENC[AES256_GCM,data:UI7qQjx+NZpLfPFonAor3pTw/Xs3SxQ=,iv:Y2/Be2OSqpDQ5kcRylSuwb0msE1+RTRkACVlD7rGRiQ=,tag:NiUSUPvV910QjfdPnwJkuw==,type:str]
+        - ENC[AES256_GCM,data:uOP1CByfCHR8BxHldah3y6aIZemTDVBKXkviXw==,iv:+oVlJ1QK2Mh7n/OOg6FQdvoL3f7QRCT1YTlI9VKQA0o=,tag:D6VugAoLNhbETTtedmtOcA==,type:str]
     tls:
-        - secretName: wildcard-cloudflare-production-01
+        - secretName: wildcard-cloudflare-production-02
           hosts:
-            - ENC[AES256_GCM,data:YNQxE1OxDJmXCipQ8jX8oGipD+JK1QE=,iv:ES4DPfAXT3EehszOphYYYSvWI93NfdvX/j08bMY73xc=,tag:1KxyrQDUw8k3FgKAeHxNMw==,type:str]
+            - ENC[AES256_GCM,data:l3H/4d8dwlPWmb58W6mpVPL+DazaOzcRJD6Zzg==,iv:Y6vi1BkL5M6LR+pXChZElzfgL/9+EDjXRLzhYiEkawk=,tag:MLCWSmLkC8oRE3P8OiWqEA==,type:str]
     annotations:
         traefik.ingress.kubernetes.io/router.entrypoints: web239, websecure239
         traefik.ingress.kubernetes.io/router.tls: "true"
@@ -188,7 +188,7 @@ sops:
             S3hxTTNKZXdHKytiQ0VrNW1IU0c2UDQKCoa3QBGWzUNlfgionj1jgWDDEx3hfN3b
             ZE1H6doOwdkf/Q7QXrLEgncKEGY7LcyZH+5tozRBPyvDGwPBX6m8xQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-10-13T19:27:33Z"
-    mac: ENC[AES256_GCM,data:PPe0JNp3RmOYa+NZYnn1wkicfhWgf2PwCQJ4zTtwCOy0sXoEysLHo+OummJ3fPv/lOJi5AKK49ObzMHbsVj7lX1r2o+NInawlXdBrcFoJROgIIHkz/+BVxyetxc7q5rWJx8r/2Zn1lyy1E2PX+2sxXnZE4s0OTZ4kXiF1ms36LY=,iv:M3apOG3eKC/pPoxuvsSM5cTv8QTdoGMeiN8Cs6xrc/Y=,tag:47mYufdIB8H+cUEevR+2GQ==,type:str]
+    lastmodified: "2025-10-13T19:32:09Z"
+    mac: ENC[AES256_GCM,data:sVKWX8w6cV/1qPLyyf0agRhFKsj29ooZupbljzGSJ90jgpvpd8Tdv2FkfkiAYkEIHcEkWSDTmbqQUoz6iQ7XUYi5Odpw/pOtAGikMqix2aCDKuKWnLp/NemKxkZG7JMqhLONfv7/RtccVAUoYFeUz3EwkvnwJNK2DOkm/i+YiU8=,iv:JQ2Un2KXKp5w20v5CIYwh1ueRz1TBN1aSfQDp/K9EAI=,tag:91tp493cXfiwbJz8k8TnFQ==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
     version: 3.11.0

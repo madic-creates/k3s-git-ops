@@ -9,16 +9,16 @@ serviceDns:
     #type: ClusterIP
 serviceDhcp:
     enabled: false
-virtualHost: ENC[AES256_GCM,data:PSjdZWhDxoMQ8Hl//2KPXKBedyMMb/mP6w==,iv:5bNRTJ17eET9LLM0PdfImDCxA9ybY6QNZhnxKXvdvNs=,tag:8HfuffOn4JGQ3OWgcfOQgA==,type:str]
+virtualHost: ENC[AES256_GCM,data:vs5GruJOAMUgvuNjtA/gDjLe0W0iM4pa2Q2aghGF,iv:d10Ogkxp+Jl6NxCL1zxuf2Vf0Rt+wk3Gjj7X8B83UXc=,tag:9lyKGjTvUtDdbheH/CcfQg==,type:str]
 ingress:
     enabled: true
     ingressClassName: traefik
     hosts:
-        - ENC[AES256_GCM,data:mbZ7yIrV9M2KrsMzgzfZLIEC6yLL84K54w==,iv:cGCLGclVZohN9Z9eZM2MGaXmTa628LL5TSjRFGp1fZ4=,tag:D9XDyKqge4UBWlCMXoeXkQ==,type:str]
+        - ENC[AES256_GCM,data:Gu3Js9ACtPuiEr0ZIfc8TUL4XgehNjcNbqRaid8F,iv:Mh/V8yZm2TF0WZCaUoHwWJ17bvMcYCG6iFXqu4ldsHA=,tag:scBhaEq5ITI8CqxECrUGvA==,type:str]
     tls:
-        - secretName: wildcard-cloudflare-production-01
+        - secretName: wildcard-cloudflare-production-02
           hosts:
-            - ENC[AES256_GCM,data:g4vMYEPhtbYr7heojVH6i00nIUri46iBzA==,iv:5VPQ6/EvAaM5ahReC8UdmTpMcTNFcOaqJ0ehdL6ji+0=,tag:oJVMOnhTH6llRlTAVtI3Sw==,type:str]
+            - ENC[AES256_GCM,data:Whd3qo1L5j3c/9nlDCVbi204GiNQiNGD7CBJLn5v,iv:CATX1hNbUKBnol/mIdq5d+KX2blvCf/BFOuvbxd6c8g=,tag:RdNFTQ5Kn3qssSar1djE9A==,type:str]
     annotations:
         traefik.ingress.kubernetes.io/router.entrypoints: web239, websecure239
         traefik.ingress.kubernetes.io/router.tls: "true"
@@ -138,7 +138,7 @@ sops:
             V3ZONzFGcE1vdmRaMTRhRERvdkthUncKBeD+dNgljrM4n000vfHhz2WUpjSn110+
             z/cSJmkZKCf2yIjFJlkCLpOlCy8BRYxEGpWJSYFEGiCgqz6fOFxkvA==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-10-13T19:27:45Z"
-    mac: ENC[AES256_GCM,data:oYd+TCSQXD4mhrRXuIUrL/v6PieFE9UjeUgNNHVF+jkoYo2EVwKP8dllV/Tmw8buQtShBKynNBlOpUrP+ikutjKqFE20XdU3jgi0TK9mAdhbDFW6LSsqVOAvL+DoMbBf96SkykIyzuosGsvygTGG0zGxXZzPv4MJouWp/5mz0N8=,iv:Tuxouqp2zXvEIq/yea2raE0LaGGRdsd3OEOC/anaGuw=,tag:Kg6hQc8H6/JGDpvgXytcMQ==,type:str]
+    lastmodified: "2025-10-13T19:32:18Z"
+    mac: ENC[AES256_GCM,data:Il0OfAicF+q3tl1X9WP1kWrZ9ce8mRiYzHUCky5tp6kHyoJCLlbZxh4rgEMYeELaHpmLg+w/LHPNYNvKbWf1tFgdmk0PTV8hIsE7xcvLKhVsPC86jDJn0XzHnuwWBce2hOouZR2bhoryXEkIpez5C8glqYAXvV5vHy9vsbM+EXk=,iv:KGj0NxVOkuIr6bNnds8GcL9eyZs3ZmerfZOTdLpZjV4=,tag:ljEJI1VfUQctuFYbPpWF8g==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
     version: 3.11.0

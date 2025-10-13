@@ -15,10 +15,10 @@ spec:
     ingressClassName: traefik
     tls:
         - hosts:
-            - ENC[AES256_GCM,data:Sg48OHNl+/w51YreMHmynucJ/0AJExCj,iv:cSVl2JaXjDN5T8PeL8TOOvZJoPA84oKOLwneUa+pGVE=,tag:e6jtlzMXtjeN5xxmOwgD6w==,type:str]
-          secretName: wildcard-cloudflare-production-01
+            - ENC[AES256_GCM,data:OW0QGh2oIPhXzF+deVShCB8QNU8WthB5OAlnCek=,iv:Ys4pSCYlsD44ESHj+QcDO45R0pVEm/qPPYHLUyrhGX0=,tag:JCXKV0o5+sVp1FfPLTI0/A==,type:str]
+          secretName: wildcard-cloudflare-production-02
     rules:
-        - host: ENC[AES256_GCM,data:acZ1Sv/5AXIkhMvSC0EpNs5UesvXMqIW,iv:2PObOHT5r1TC9WY24Igdfkwr7SI2w4NJ6s13weJkbQw=,tag:Sm6vcTpKeIv8XfZGc4rEug==,type:str]
+        - host: ENC[AES256_GCM,data:fO5npoLIVjtNw4cgiQNFGWPTYlV/pe2KzcLzU8I=,iv:rvNrPkE8I9VqBHyWY4xDngBcoYnuGjwvBGRWtXRCpPU=,tag:I23rvi6S0cdjswlAjVbRTg==,type:str]
           http:
             paths:
                 - path: /
@@ -48,7 +48,7 @@ sops:
             aFNaRkM5MFRaV2J3RHZoeEhhK2g5NlkKvj0iF6RXP0A1fDINQznkyS6pq648MhXC
             JUepuSHTPVU3UPygyMpDgFn1LhKu+M+kOHfRIxhhWeSxrKMr/mcfYg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-10-13T19:20:39Z"
-    mac: ENC[AES256_GCM,data:QdPsI+RPvgwXtKD8MSn0R7ucD02HXXwC65wPIRUFcPmlCiH7miEjbYeqyDDFNxNYx8r30bAXJtVTpR7SxVkLexHolS2U8FsWO7BRfcav9nFOVS0YNqSms3v5mVIG6EOkWbx+GxopF1HVR6+QtJd6V7ejWABOI1v/NpopzMWbvYw=,iv:0sswP/3tcIJ37gEfgvkQ9BQOheyQEuqqV1DYe+reqS8=,tag:EK8IRek8eJ1MOqNmSgGzeg==,type:str]
+    lastmodified: "2025-10-13T19:31:48Z"
+    mac: ENC[AES256_GCM,data:1uEMiMe2PBi0JlOHlsqUuyNlBPGtQvwernVCZD8iUo4hm3JOrpjKXN9YXA6J0kxAduZEVPZYQuaP8SR3WDlctxJ5kIPm68qXGJdh4OLdoqmrx+f2/rPPYsIH5GWmzseoYi1tsDf3ArU8Z3bGB6G0zskl1B+8R7ThwT5hM1i/GcA=,iv:ByxojOGaVTTkACxMpel35DVcedug+/3LZTtNpITEjXY=,tag:SAODH55gndQr03ZJH5v6tA==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
     version: 3.11.0
