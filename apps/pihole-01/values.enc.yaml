@@ -73,6 +73,8 @@ dnsmasq:
         - ENC[AES256_GCM,data:2FR9X0ejjIFOqOZLL02NLyZ3H0JfDbKuaA==,iv:r0l4n5rC7k0T4CI1DghwFl7sXOQN2L8Q8TQ7E28jvrA=,tag:D+//uN2hJXxO+u1ge4544w==,type:str]
         - ENC[AES256_GCM,data:9yMZX571lfOmvA0UPY33csdZT3gviVkSWCgVvb0jtVbApjWyFa0NCQ==,iv:7gwRhW+o0rKnwBXT9Ndwkh3LxzIJeBfArrctn7WsAHs=,tag:hcbSVGYjfLYtXAweK4RGkg==,type:str]
         - ENC[AES256_GCM,data:GBxDPB56GGP/+ZemDxTV/V47C1oDLG+zDOrAf1o=,iv:U+XhQFy6y0xYVS7NY0VayuU2u1GL+2PN29Ho21iT3oQ=,tag:lXysi08DXDI3/tz+ShPcYg==,type:str]
+        - ENC[AES256_GCM,data:bY648EMexF0PV8tCx3VIL312sY0gAPrTmXd6Kzb6ScxlreoFW8uaNGFPrtCN,iv:7ZSB5uO3yw0hxHyov21xT8tHkB5Hi8l2Q7h5k3MH2cI=,tag:d2J8b98Y9GmOx4HswTFnSw==,type:str]
+        - ENC[AES256_GCM,data:eLxKayN2NM97mHAWMYvB4H01s9001M8ZOtQ6UR5nJYW7eg==,iv:fmNiLWFg8qBNrf7FVib74yQNmrdIdr8hG/23QE9e82Y=,tag:DJU8+6fDoTjaTQz4reYj1Q==,type:str]
         - ENC[AES256_GCM,data:HARrxYkhMqX8hGu0U7ow2aTkdsKfqNdHq2mA88tbRKur64oA5BNsXPG6vKEpybk=,iv:yEnZWX64px5jAdCf9XMiXmzxtCpoufwU4e+cpC9NSao=,tag:/qtTXqdjnYPc7oK5k9XODA==,type:str]
         - ENC[AES256_GCM,data:Sd+73KiRO4lBBkOlL07q9h273nuep7uHvD0IW2mDQZleGtUZ5x8v+ncqCVKBlZ0HtRM/KdrF,iv:Zq+9dnltEz8y32w4ZSiTUWJE5jqA+1u/97kIlUUQUPk=,tag:QJU1V10YAuMP4bOFJ71PJw==,type:str]
         - ENC[AES256_GCM,data:RSGBK+uAEE5g8ViOU1ZNcIj81WXW/d/kBkWXtJZnUJtQ88LUYXhF,iv:hM6SIB4OaV7gQU7zp/u9HquQkole89LjlMDNoENyDcM=,tag:KlKGpLxwroIVYvco1JBqXg==,type:str]
@@ -186,7 +188,7 @@ sops:
             S3hxTTNKZXdHKytiQ0VrNW1IU0c2UDQKCoa3QBGWzUNlfgionj1jgWDDEx3hfN3b
             ZE1H6doOwdkf/Q7QXrLEgncKEGY7LcyZH+5tozRBPyvDGwPBX6m8xQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-10-13T19:18:57Z"
-    mac: ENC[AES256_GCM,data:uHrqBfYt+hqs/ZsD1+OpPWE3eLqLDrSnLXwReAlg9XqdrHpFPDTyljBlSXk/Ohq1X4VDnT9ZrmqbDarHnRGzFrpHZkKKx5YT6WL02ASygb7jhCbk0r9e2X2GKxS3o9n0r6UmP2SwSr8Yb/QRdkp6Td4CKCSUIrR/w4CXRuelktw=,iv:4hNVyE9dt0hK81jfdaOZYZ7wX5hcI+p47W0Kal+ob0o=,tag:Jn+0uLdQlS0GvTgh7cV3qg==,type:str]
+    lastmodified: "2025-10-13T19:27:33Z"
+    mac: ENC[AES256_GCM,data:PPe0JNp3RmOYa+NZYnn1wkicfhWgf2PwCQJ4zTtwCOy0sXoEysLHo+OummJ3fPv/lOJi5AKK49ObzMHbsVj7lX1r2o+NInawlXdBrcFoJROgIIHkz/+BVxyetxc7q5rWJx8r/2Zn1lyy1E2PX+2sxXnZE4s0OTZ4kXiF1ms36LY=,iv:M3apOG3eKC/pPoxuvsSM5cTv8QTdoGMeiN8Cs6xrc/Y=,tag:47mYufdIB8H+cUEevR+2GQ==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
     version: 3.11.0
