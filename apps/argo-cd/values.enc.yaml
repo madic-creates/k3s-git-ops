@@ -26,7 +26,7 @@ configs:
     cm:
         admin.enabled: true
         kustomize.buildOptions: --enable-helm --enable-alpha-plugins --enable-exec
-        url: ENC[AES256_GCM,data:zd2FRUcyELnpt/qvEOIH8WlL6+STxTNk1uEApgnYbw==,iv:bEDRcS2lidK0eU2JbiZR52/TPupEwvdkJdSoAyGxgE4=,tag:UFfOfO2A2KKBisWLqelFFw==,type:str]
+        url: ENC[AES256_GCM,data:ffRm0jGtf21Tl/J237t4FrfnwSjKdZOhl1+q3ML3/W/luOuD,iv:KjLN64P6gX8fxvq6W/ctzAtbUzDzYv08JDblgW0Ljko=,tag:choMCLC6pquzSy7P26eXDQ==,type:str]
         # Enable ArgoCD sync waves between apps in Kubernetes
         # https://argo-cd.readthedocs.io/en/stable/operator-manual/health/#argocd-app
         resource.customizations.health.argoproj.io_Application: |
@@ -83,12 +83,12 @@ server:
         annotations:
             #cert-manager.io/cluster-issuer: netcup-issuer-staging
             #cert-manager.io/cluster-issuer: ca-issuer
-            traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
-        hostname: ENC[AES256_GCM,data:vzGhej+jSx2ECa+2JLpY28SXW7D84Yg=,iv:1Bm3NQq0KepnX3nJufuAZRUpID6jRZjkGZWH/nZH7FI=,tag:ZSi7MkKNQhIEgLydGIlfpA==,type:str]
+            traefik.ingress.kubernetes.io/router.entrypoints: web239,websecure239
+        hostname: ENC[AES256_GCM,data:gb4WVD/Fk1OcHIGwOsnAwv2xUPFg7AwfQf7OBg==,iv:issWh2SIEd28BaTbv8boMCmsr8g4huDtui6kn6IX9AU=,tag:bbnvTbrRR/M8SLrgVH5Ycw==,type:str]
         extraTls:
             - hosts:
-                - ENC[AES256_GCM,data:aEmSPDyfHk6Eh5zNeSCG/0cwnvHUoms=,iv:KqWGwFPK2Of5TxhN6bXeIoFJEd08drOR4tVcw8yyTTg=,tag:YJgZq/sqdI3pARDuWVsO5g==,type:str]
-              secretName: wildcard-cloudflare-production-01
+                - ENC[AES256_GCM,data:qK24Ed0CNV4AiD0bbesE5N4R6NqOnm5NHlVoiA==,iv:ko3lp9NZpLsF1njE08D3lM/WW1T5dKVyjuvrXo5eFes=,tag:aovk2EDbLdgjjWMlLINcMA==,type:str]
+              secretName: wildcard-cloudflare-production-02
 repoServer:
     # Use init containers to configure custom tooling
     # https://argoproj.github.io/argo-cd/operator-manual/custom_tools/
@@ -239,7 +239,7 @@ sops:
             ckFoNFNSUTEyS0U2bWE4bGFFTzhUajAKTurwd7B5A+X1cRdH1Wb1dx7bv98UL/ZL
             ULxMyS4LfDArC3Lbp3YDZyBVTMXnEp5ZMIg9VouMo6IP0WIIeELxog==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-07-27T14:57:49Z"
-    mac: ENC[AES256_GCM,data:tdkJE5gTiZxp6hDbVQ16SxIJ+SSHyniDJ5nCZywAD4YWPrjMH+ojADW+oeIJPC0hJZ2QIXBvki9pgEvRP8+r9Z6TvgQXuZdMU4+gzjUhn8E3kfQZCq1bTBO3iTQosKb6EoKWExZl8A3tvTWsohiV63a2ESMfB8gmkP3D+8u0BS4=,iv:TtAcTuH0vprsNaYkzV5IM1pzG31BSJteH1v0EI4sJ1Q=,tag:z/w4WyPp+aYKUabtU1noUQ==,type:str]
+    lastmodified: "2025-10-13T19:51:01Z"
+    mac: ENC[AES256_GCM,data:8KHQWox/OAo5ECI4/E9IJfLvO3pAhw2Cgt2NgBf7IdG/YdDgVyozITLds6lFb/sKSFFimDYkkWaaqj4GIhZuZQqflI+zRU6lzo2z58hAVbDgB6EkcVhT/JfRxQX5jhDFSppIJzHC+inFhDkwok6W3LyIb5F/94pH7twj0mgYRAo=,iv:B6nj9pSNi+1qyrocjjVSOtmZ4MRsuq8I2l7Nh+NDMCY=,tag:p7Ke6o85aokH28EzEB0hkw==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
-    version: 3.10.2
+    version: 3.11.0

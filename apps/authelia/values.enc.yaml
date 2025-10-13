@@ -172,7 +172,7 @@ configMap:
                   authorization_policy: two_factor
                   #pre_configured_consent_duration: 1M
                   redirect_uris:
-                    - ENC[AES256_GCM,data:6wxFzcgZSkknc+Ey34HyeZckRKV6iurYpTovkZTJy8KxGFcn7dSNvaOoB5aU,iv:lYYLzc5NXCJXc4cOyKDBRUN5F0y9KxxOdlt2Zi+jnGQ=,tag:m7fY3Um3B29kr/hdcMle1Q==,type:str]
+                    - ENC[AES256_GCM,data:KyxT8vXE5FlDulmPTIxzIvwrulAEAV3/0J75hKA5UFtLJaeStJl/cQfRhd7NpbOZy0Q=,iv:kn86E8SjtdLyjhryxRQjMUovufdbcwFWlhcaEQYr+z4=,tag:wYfZxjgLSdD2m/SUgVsAxA==,type:str]
                   scopes:
                     - openid
                     - profile
@@ -248,7 +248,7 @@ sops:
             d3Jadnl2Y1ZOZFBzb3VBRkQrYkJyZHcKGJCPmaQehW3N7chPoVM/oGNPggRZ2qBh
             HPyDNX1F57FsM6eJYhjrWCtyxUQfQ8+8y7XqHv7ampgAoBYM5VixNA==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-10-13T19:43:53Z"
-    mac: ENC[AES256_GCM,data:XNMj8unlvVY1qOZtuWwapZw4et+Nq3doKIZa2AEt1OMVfoTjVOn5K6w7pYaNxzBmgaFl6x1QegAOl3tZb3+OYcOZPF3ww8DQz7oY7dplQPsvfp9G9yt9BMqoQJxi54ZTmqjbamkWM4UcsB1W5SrhmhO8d1sVQrdnHmNjQUgbxGw=,iv:0PiTxW3oJppZ1H7HwNFf75mAltbmnSd3p3vZQXTsEAA=,tag:/BRHALr6EpPQWV871vrGAg==,type:str]
+    lastmodified: "2025-10-13T19:50:28Z"
+    mac: ENC[AES256_GCM,data:0ZutCl74MxgvCy+vlJaswb+A+siCORBIy7qIIu90W/uArt9cf8VT9tmlzERXmRt8xzF+NPoKoY5rIIHC6/6ER5WRYXZ4PBg0EvH4TPxbBaBMraELelgp+TwK3JdArltMC+kqRVE1yf9KPyjVGZhKnaFK2sAThCrYzGgU+nCQBH8=,iv:qqrUT4agX/mpkj0XCVA8PTMkdNCh02+Jli3A2epMdHA=,tag:DSB/AbKfAIWk0ymR+6qemA==,type:str]
     encrypted_regex: ^(value|domain|subdomain|default_redirection_url|base_dn|user|secret|sender|redirect_uris|client_secret)$
     version: 3.11.0
