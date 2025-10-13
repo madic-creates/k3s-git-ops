@@ -1,4 +1,5 @@
 ---
+# https://github.com/seriohub/vui-ui
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "17"
 
