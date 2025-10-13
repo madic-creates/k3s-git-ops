@@ -18,11 +18,11 @@ resources:
 # Temporary workaround until following is fixed:
 # - https://github.com/authelia/chartrepo/issues/362
 # - https://github.com/authelia/chartrepo/pull/363
-patches:
-  - target:
-      kind: Service
-      name: authelia
-      namespace: authelia
-    patch: |-
-      - op: remove
-        path: /spec/externalTrafficPolicy
+#patches:
+#  - target:
+#      kind: Service
+#      name: authelia
+#      namespace: authelia
+#    patch: |-
+#      - op: remove
+#        path: /spec/externalTrafficPolicy
