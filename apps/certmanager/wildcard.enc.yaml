@@ -44,7 +44,58 @@ sops:
             aC9kUzQrcHg4WktkajIweXM5TkxMY3MKxUHuzh6/rZ3GKiHRDujHBkhOz9yz0WBR
             29ELcR7X+gvE5SBkBWcJBAE2WGjGqiTLx/yCgo/5DXQCQUfckRCnMg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-08-03T15:04:51Z"
-    mac: ENC[AES256_GCM,data:xdPdzgdJfD8BHxzkrfWN1HCxFbw2gkQxW+B7AdiKf9oxPCwGGtSbvjMxjhncZey5J3GPsxonVQGFLtXc/RoOVRSSLBRNttkh+RPUtHdahDpdUrrwty/Ff7SxzgpYH8FmJqQ6lv0YM+jrWGzUdvZl1ppSyvxOrY95vlPVzqRtuyU=,iv:OWvVoBcTlniYklOh9QiO6qqXG0irjh02WK/Lc/0l3Xk=,tag:JdAx/2PmE3pMfuEjZORJaA==,type:str]
+    lastmodified: "2025-10-13T19:26:24Z"
+    mac: ENC[AES256_GCM,data:kwk5/IBQFIW2kqGGzl8QtQq7utuLfMnjtkaiNHZRqV3xCis4BjSV+i6wP2pS5wxsRorF+CFD6r9UzODgWSz5V+S5R2YNAHdwcuMWYcEKHFZnNgBggGWg+107SJrvJj7JKOo9KZbwNabLZTNZ7E536PwN8EO76WAsoxSL84HNYmg=,iv:sKSqxnIyRS5SooSEpf/OeWrP5CASolJB1rIg/n5YwTQ=,tag:PTLL4U6Avck1y5rrEt673A==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
-    version: 3.10.2
+    version: 3.11.0
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+    name: wildcard-cloudflare-production-02
+    namespace: certmanager
+    #annotations:
+    #    kustomize.config.k8s.io/behavior: replace
+    #    kustomize.config.k8s.io/needs-hash: "false"
+spec:
+    secretName: wildcard-cloudflare-production-02
+    privateKey:
+        algorithm: ECDSA
+        size: 256
+    issuerRef:
+        name: cloudflare-issuer-production
+        kind: ClusterIssuer
+    commonName: ENC[AES256_GCM,data:DHMRZVFgTVJ8R/tF8L3nXb1uxkWyHdo=,iv:OTRpva80GPKjgIffv6H/WlAgaswklQDWmNm5BWSMpkw=,tag:1SXt2yV/ZZgC10GE6TkfCA==,type:str]
+    dnsNames:
+        - ENC[AES256_GCM,data:BxeP0UsgXmHW5pg3SH00PqLF4GnmWPM=,iv:gSbnK4VnEhRObov3QKNYVj11UNmUWVg89EV4Fjig8jQ=,tag:yNN7AWiAYBOJNixKvQgXWw==,type:str]
+    secretTemplate:
+        annotations:
+            reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
+            #reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "certmanager" # Control destination namespaces
+            # Auto create reflection for matching namespaces
+            reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
+            #reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: "dev,staging,prod" # Control auto-reflection namespaces
+sops:
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBGVE1Od3BXK3VLd0JHcmI2
+            cWIwYlQ2YU9BRlV0dGtmZzNHc3ErMXdlVjNjCnVKQXgwSytuSTNReTN4R0ExRU13
+            WnFUUWtYbHZ4K01XOWdBejAzNkxMbzAKLS0tIHlGQ0YvbkkwVGVkNDNVUVVPMnEr
+            dUdSdlJkbU5NMzVrRER3dVIybnRTUlkKxLpOozTLrCyZBZ/h3BOKuoC4gCIV1cku
+            uL3OvhSpfobxNbYTVnc5t9SN/fpV5v892noA6cK54JGv1eLmFc90qQ==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBhc1pydGhSY1BhdTA5Q1I3
+            NUJ0SXpnVHVXcm1hMFRzUmh4V3hCM0ZZY1RBCkNUTW52Q0VCTXBja3V4UkZwUjlO
+            QWFHWXppWmVhYk93VTd3ZFlhR2JRWmMKLS0tIGhvUW9xc0N2TGZoMjUvWGJ4aFIr
+            aC9kUzQrcHg4WktkajIweXM5TkxMY3MKxUHuzh6/rZ3GKiHRDujHBkhOz9yz0WBR
+            29ELcR7X+gvE5SBkBWcJBAE2WGjGqiTLx/yCgo/5DXQCQUfckRCnMg==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-10-13T19:26:24Z"
+    mac: ENC[AES256_GCM,data:kwk5/IBQFIW2kqGGzl8QtQq7utuLfMnjtkaiNHZRqV3xCis4BjSV+i6wP2pS5wxsRorF+CFD6r9UzODgWSz5V+S5R2YNAHdwcuMWYcEKHFZnNgBggGWg+107SJrvJj7JKOo9KZbwNabLZTNZ7E536PwN8EO76WAsoxSL84HNYmg=,iv:sKSqxnIyRS5SooSEpf/OeWrP5CASolJB1rIg/n5YwTQ=,tag:PTLL4U6Avck1y5rrEt673A==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
+    version: 3.11.0
