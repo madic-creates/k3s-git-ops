@@ -117,6 +117,8 @@ nav:
       - Secret Management: secretmanagement.md
       - Storage: storage.md
       - Updates: updates.md
+  - Operations:
+      - Longhorn Maintenance: operations/longhorn-maintenance.md
   - Tools:
       - Helm: helm.md
       - Secrets: secrets.md

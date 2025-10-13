@@ -1,0 +1,49 @@
+workloads:
+  - id: checkmk
+    namespace: monitoring
+    kind: Deployment
+    name: checkmk
+  - id: pihole-01
+    namespace: dns
+    kind: Deployment
+    name: pihole
+  - id: pihole-02
+    namespace: dns
+    kind: Deployment
+    name: pihole-02
+  - id: emby
+    namespace: media
+    kind: Deployment
+    name: emby
+  - id: kube-prometheus-stack-grafana
+    namespace: monitoring
+    kind: Deployment
+    name: kube-prometheus-stack-grafana
+  - id: kube-prometheus-stack-alertmanager
+    namespace: monitoring
+    kind: Alertmanager
+    name: kube-prometheus-stack-alertmanager
+  - id: kube-prometheus-stack-prometheus
+    namespace: monitoring
+    kind: Prometheus
+    name: kube-prometheus-stack-prometheus
+  - id: paperless-ai
+    namespace: paper
+    kind: Deployment
+    name: paperless-ai
+  - id: mariadb
+    namespace: databases
+    kind: StatefulSet
+    name: mariadb
+  - id: nextpvr
+    namespace: media
+    kind: Deployment
+    name: nextpvr
+  - id: ansible-semaphore
+    namespace: ansible
+    kind: Deployment
+    name: ansible-semaphore
+  - id: redis
+    namespace: databases
+    kind: StatefulSet
+    name: redis-master
