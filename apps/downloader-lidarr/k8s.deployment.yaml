@@ -1,0 +1,52 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lidarr
+  namespace: media
+  labels:
+    app.kubernetes.io/name: lidarr
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: lidarr
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: lidarr
+    spec:
+      containers:
+        - name: lidarr
+          image: lscr.io/linuxserver/lidarr:2.14.5
+          env:
+            - name: PUID
+              value: "1001"
+            - name: PGID
+              value: "1002"
+            - name: TZ
+              value: Europe/Berlin
+          ports:
+            - containerPort: 8686
+              name: http
+          volumeMounts:
+            - name: config-vol
+              mountPath: /config
+            - name: music-vol
+              mountPath: /vol_raidz1/music
+      tolerations:
+        - key: "dedicated"
+          operator: "Equal"
+          value: "prox01"
+          effect: "NoSchedule"
+      restartPolicy: Always
+      volumes:
+        - name: config-vol
+          persistentVolumeClaim:
+            claimName: local-path-lidarr-config
+        - name: music-vol
+          persistentVolumeClaim:
+            claimName: local-path-music
