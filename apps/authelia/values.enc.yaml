@@ -158,7 +158,7 @@ configMap:
                   authorization_policy: two_factor
                   #pre_configured_consent_duration: 1M
                   redirect_uris:
-                    - ENC[AES256_GCM,data:6PJvdFhSjNvoZhnfmTE/jtorPpyhuX1U2baYuVZdRUloKFeM49KxTAqngdHJ3namdMuHVw==,iv:fERl3iNZ3PuQUH8gGN70k56x39/Aw4aAOIaI8LWcd40=,tag:4tTDl9dbkO8P9N+0qneV5A==,type:str]
+                    - ENC[AES256_GCM,data:bPv51gEiPMsm5yPXJiqzhwB98WGRpzK7DVWsYoUo2TTOPGRI/89JWePknoqNPfoaFH0MPf0L+ecI,iv:ZGYS6CmzkGpfuiFLjvoVQv/8Z3sxSxZtmt1KCREZWP8=,tag:9iWmdsqL81f8FEqJqb75jg==,type:str]
                   scopes:
                     - openid
                     - profile
@@ -202,7 +202,7 @@ configMap:
                   authorization_policy: two_factor
                   #pre_configured_consent_duration: 1M
                   redirect_uris:
-                    - ENC[AES256_GCM,data:m4cWJpRhRAzA/1evbAcvNWknRLe715zB7bvkrQjDG8bfpM3mGLYgQQ7thhoi3cMf7R0xCW82AgAVYlm5DpVioT+3,iv:ir9/ESzQZYNXND2DeRII9fAuHl06mkjhciGA9VkJ6iM=,tag:HgPLhM960KUKyQrLZa456g==,type:str]
+                    - ENC[AES256_GCM,data:BBx9s3U8LxRuW974fBuYqARW6kbTOUYvE334TuPft/1XsEMU+u8AqyfKaM9MMLVr1hoW8xfDfbRsKJg69dFRO7uxqZ8XpT8=,iv:df1nDMAC1W1GtC93TttoL+q90P7jUKy2xxUr/BSkpRQ=,tag:l4GDZeltfHnzE4QJkCV5Dw==,type:str]
                   scopes:
                     - openid
                     - profile
@@ -248,7 +248,7 @@ sops:
             d3Jadnl2Y1ZOZFBzb3VBRkQrYkJyZHcKGJCPmaQehW3N7chPoVM/oGNPggRZ2qBh
             HPyDNX1F57FsM6eJYhjrWCtyxUQfQ8+8y7XqHv7ampgAoBYM5VixNA==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-10-13T19:36:20Z"
-    mac: ENC[AES256_GCM,data:KHmCShbnJ5o1vXIH5wAsYzHp//JKKw5eyFDW/C3Glk0HrzZ6ofKFZTPeWchgX+8m+7SC4325l/Yiw4qqSwrrj4LwabbRn51ILlt7qd6ITFyyfAr38cspC90mwmtFieFy8xl3hlIXqOrG5id/EQcvDC2/YwZ9V7INfUaAHFh9SUw=,iv:4lKWCuJZQZDtt1wJVdrUrW+Y+0BNpOdNmpm2djkv34k=,tag:AJRSr8Yj2aTnSaDW4f5oNQ==,type:str]
+    lastmodified: "2025-10-13T19:43:53Z"
+    mac: ENC[AES256_GCM,data:XNMj8unlvVY1qOZtuWwapZw4et+Nq3doKIZa2AEt1OMVfoTjVOn5K6w7pYaNxzBmgaFl6x1QegAOl3tZb3+OYcOZPF3ww8DQz7oY7dplQPsvfp9G9yt9BMqoQJxi54ZTmqjbamkWM4UcsB1W5SrhmhO8d1sVQrdnHmNjQUgbxGw=,iv:0PiTxW3oJppZ1H7HwNFf75mAltbmnSd3p3vZQXTsEAA=,tag:/BRHALr6EpPQWV871vrGAg==,type:str]
     encrypted_regex: ^(value|domain|subdomain|default_redirection_url|base_dn|user|secret|sender|redirect_uris|client_secret)$
     version: 3.11.0

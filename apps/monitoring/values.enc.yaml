@@ -6,15 +6,15 @@ alertmanager:
         enabled: true
         ingressClassName: traefik
         annotations:
-            traefik.ingress.kubernetes.io/router.entrypoints: websecure
+            traefik.ingress.kubernetes.io/router.entrypoints: web239,websecure239
             traefik.ingress.kubernetes.io/router.tls: "true"
             traefik.ingress.kubernetes.io/router.middlewares: authelia-forwardauth-authelia@kubernetescrd
         hosts:
-            - ENC[AES256_GCM,data:3rmMGLnJLGejf2WynsZP4A5Z30jvsBhi7vdDOUA=,iv:XHQRRW9D/iJQjakZMqMhKF/W8jDfff41x/E7uCZcsxY=,tag:xCmRtF84BVQo53X/LUzzgg==,type:str]
+            - ENC[AES256_GCM,data:cU5DpLCozjyVdGTG57SBzCtKmPdfwmNTJ8dcC9pHmXM+LA==,iv:Ha0V5A1wBVR0pAjUMdPSCfFZnnjw1XZw0gGBCc/xx14=,tag:RL9mbullgQtdumdPUVnwtw==,type:str]
         tls:
-            - secretName: wildcard-cloudflare-production-01
+            - secretName: wildcard-cloudflare-production-02
               hosts:
-                - ENC[AES256_GCM,data:D7VlyLLZzuTQub/SgN+X12LDtkOF6Z67wogeijs=,iv:eprflHpQHzR3wWC6UnfdrwEPoLmfUi9rkr+d+Bp1wqA=,tag:nGA442MehEq9Cef8oU4bXA==,type:str]
+                - ENC[AES256_GCM,data:7gFQNJZKbEofwC8Zg11vHwsev6Wrko9HrQgY5odCXPTBIA==,iv:O6f6gtlAUXSbVr6lt1wwA2PCGnxFw9b1QjlMKl5HXWs=,tag:p/t2ITPAB1OyV6l+qur31g==,type:str]
     alertmanagerSpec:
         # PVC configuration
         storage:
@@ -286,7 +286,7 @@ grafana:
             oauth_allow_insecure_email_lookup: true
             disable_login_form: true
         server:
-            root_url: ENC[AES256_GCM,data:04BNYRve8dxffKvI5G3hRWXIXFKnfQ07WKnmge2CTkM=,iv:HAnuGBec/8uEDgdqFgVkCEty+Na8wRlAfsH+n1TLt4M=,tag:L719rNnc4G+Fp3ysvYHVIg==,type:str]
+            root_url: ENC[AES256_GCM,data:jwcy9evnnoeoa3O3hu6Lh1+wZ8Qoq/yf2/mhd04VIO6jSuuiCQ==,iv:5ep9luvCK3RF1RSbZerkqoi94GpHCd490Yd71J56Abc=,tag:YOYjg0CZpOz3h26qqDtwCA==,type:str]
         auth.generic_oauth:
             enabled: true
             name: Authelia
@@ -341,7 +341,7 @@ sops:
             b21ocjJqcXhLVVNkbExDclpDdnhYdk0KbalfIDvgAzOiIc1xEv/xHM3ijF8/NNW6
             L9jVYtLS55rkjY47RJpUn81FPLNLd17Q2Wji6P185b1y5NobDHL0Eg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-07-20T13:37:24Z"
-    mac: ENC[AES256_GCM,data:Xg3v1GNx1XDKf/Hh6MbZLwZ12SVCTu5FjeZCXe1oG/PjjQykk1HSZA/wD17zXNDyvCvOSPBQ7UitWEqjI/Vpq+6v+NBKg1VKf5f7X1pgW66j8nOAsq5I/USc4nv6n5tmaxcpV5tyiruLpeh4uPr5wxNOAzN+wLD0PfXElPNOEIA=,iv:lVp/Cz7xrdAtTSUKSMONp6zNy2RZxYJn6GT6ycgOXUg=,tag:+etrNhIquDdzA29gY2WWpg==,type:str]
+    lastmodified: "2025-10-13T19:43:03Z"
+    mac: ENC[AES256_GCM,data:u2j2ih8fTwVi/S1pDFwLuuDurAMqCPEJw4wjaoQBeMAqu8MZS1HQGsJikFP6Z+IDrdPyWWsAaW+kUMxpQTdLhm4LilP3i+Rqs3eyof/gEUQaCxZh84F8jBYihEodePdvFftYue8RCBsHx804ToknQuaITL75VOTshOl4vasR6DM=,iv:nILxxrELZ7xhc5frGe5wM/aSek9KELSQl4br1rZi6KY=,tag:tIzAsAGOOrjZDNCVSL2Lgw==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
-    version: 3.10.2
+    version: 3.11.0

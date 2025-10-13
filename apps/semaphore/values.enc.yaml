@@ -1,26 +1,26 @@
 ingress:
     enabled: true
     annotations:
-        traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+        traefik.ingress.kubernetes.io/router.entrypoints: web239,websecure239
         traefik.ingress.kubernetes.io/router.tls: "true"
         traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect@kubernetescrd
     className: traefik
     hosts:
-        - host: ENC[AES256_GCM,data:1HxOW0BP05XtQjj3cxwt4N4g8LCAnPhM/UA=,iv:fESXZ1IbpeTKFR42oiR/iFe2yaLd57rNIphMVR/qwUg=,tag:kDYY1pa0J1FsSodvtx+Ktg==,type:str]
+        - host: ENC[AES256_GCM,data:fHogGDaH2jx4PExf+QItf+JNLXnvhFL58TQ5zccuPw==,iv:6W3KojrMjmWVFeb0HqTVwPQbus8x+4ZWyB3yRSL7iA8=,tag:YxntBU0yLXyX38KelBVQTA==,type:str]
           paths:
             - path: ENC[AES256_GCM,data:Fg==,iv:X1XZu6Z7nMp/Be4qYzs0KO6yFyu9BY29DE4ewhPz51g=,tag:c1hD/Wd1WXTNj7geVHoCGw==,type:str]
               pathType: ENC[AES256_GCM,data:qy/Tum4Y,iv:AAiNzbrZD+oRSCQwlEnopTxLoYnhuBqvEv4vdf0Ze3Y=,tag:RLF4lKqIIagCNQ9H8uZaQw==,type:str]
     tls:
         - hosts:
-            - ENC[AES256_GCM,data:asi/3AJeOXMOAmVWmvLR4lBaHm0xl+q5IEA=,iv:gWPK8/NUgCzf+V6b8hQvfXkUXldZMz+dFPpL+7qcIt4=,tag:vFEfh5ydF4vmOpKWp4R+FQ==,type:str]
-          secretName: wildcard-cloudflare-production-01
+            - ENC[AES256_GCM,data:tuDBgxoiHYp646Wr1jibUr+AcCe1QOzy9uRv0CgnwA==,iv:a9H/8Jqp8OL0RSw9W0MqVFemB6kBCbJMZv65gRHLNS0=,tag:C/CfCWuD3gjQJLCaqELAeg==,type:str]
+          secretName: wildcard-cloudflare-production-02
 oidc:
     enable: true
     providers:
         authelia:
             display_name: Authelia
             provider_url: ENC[AES256_GCM,data:c5oZV34hZRWigNLYEwmUqcS8noCVTJdZQ/7G5LM=,iv:g4PYoX8yikh6Vp7A9NUiFkvixpDKt2nAet9KdEGGkzY=,tag:sRjkYGyg80INxyfn/kgnaQ==,type:str]
-            redirect_url: ENC[AES256_GCM,data:kPrRX/oSj7kV5yeXNTBtNhlZ2MmFT9snJq9741ruI6g9tnPw/rp2inHpzym2YVjQ6EchqYZaS3wxc/33QjkvjHfN,iv:VH8Aq7ruZfx34MugHc2RsRKYzQ8gbXHux0NVIY4DwOQ=,tag:RqbcP6c9PW79Oc3op1UKuw==,type:str]
+            redirect_url: ENC[AES256_GCM,data:ppGmsAhFzTNKgKjGRab274iGQDRzW6vZMnZRuO9MhYWaCuVWsnV4ZycyJvlFhajRmIJZmfH2OBmP1xKnuqxriw2327+6/e0=,iv:l/37FQcUf6TiY2YwOg2lxheu/iQTHVpPN9gLUVP0a6o=,tag:s4+Aj+3sspQ/mdV8pKf5FA==,type:str]
             client_id: semaphore
             client_secret: ENC[AES256_GCM,data:SJcYOA7wfmGCZtagTfIPtSYXJz51BalNAbY2yeGivmQlmdEobN0Z9jETlgi2MDFGCn0OxRIZaipj52YfS5SEEH4sSawHhebC,iv:599/So9X3/5B8gFxkhZcrRLRKUDWbTMtzmf1NXLTo1A=,tag:ZeKDTmScFvJcyJFmcP+8AA==,type:str]
 admin:
@@ -45,7 +45,7 @@ secrets:
 runner:
     token: ENC[AES256_GCM,data:FdE9TrZU8wUXf0X7gL+i1CttOnpxcCroUVUm6EiCOHXNCHenVrIVUAJtDUo=,iv:p9XUpq1+gJNzzoqGLBm1vfmv2RfHKxHX8Hb1XTQWQto=,tag:iM2PN2QTtNdE7NaUOy1JZQ==,type:str]
 extraEnvVariables:
-    SEMAPHORE_WEB_ROOT: ENC[AES256_GCM,data:KeBq6N7VzCboxEw3rJAVQDt4W/FycrlQq0ktGHMZzaL6wA==,iv:lAD1TG6+TT5NK+ILRsPfm3pMWsPTeVaUxj3Ratk/zXY=,tag:vIzNNdWzyocQ1vWRzKaczQ==,type:str]
+    SEMAPHORE_WEB_ROOT: ENC[AES256_GCM,data:0wCeTCuKL7QeolC8aAdiF6COfC8qGN+9JPL5wFn9Znhue1XwbKB7,iv:pqv84IELJkAJWtQ7ym9Xa86YnjeGWjRvEbN4WQD5S/g=,tag:nRITySuKC2aqobo7X87zBw==,type:str]
 extraVolumeMounts:
     - name: requirements-txt
       mountPath: /etc/semaphore/requirements.txt
@@ -77,7 +77,7 @@ sops:
             Y2hMTERZZ2MxS3p5MHcvSUE5ZzV6WmMKWHyXumvcnekZ69ig/4Opztk3+WB4WMtD
             lUGqf9u6cUoxU3gWlaKPdUiK4pyorgX4Cz2dlHFEYeVTypruKttMuw==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-07-22T14:32:44Z"
-    mac: ENC[AES256_GCM,data:9scs+2JTEXtDd5IyOqmODAeQ+Jm3E9akNMxRnoaaC/cPeg42FbEiihRh0Hj2WTo4jTdoewvZ+wb/PQ8AtL+INn5O7C4t5PyG/llwgLyowEmHa8kvk4ksYKNYKKfYxz5zMMB9+y2phxA6UGnn6NCY9cNL8gcdxzVsaUicNPWEKnk=,iv:yVT7o1K41T74gyRQ5yIRmprwArH/umxW9ZO1ul4Cj7U=,tag:G3eBYgUOGMjkuOScHCkC3w==,type:str]
+    lastmodified: "2025-10-13T19:40:46Z"
+    mac: ENC[AES256_GCM,data:JsqIWuLL8RKOQZyZ3zk+HEqQ/3lNzl+/At8pB26T+I1+vDfT7QCgzWyKf4qDesD+kllEH90mnNvmlQ4SjY7VlYaXoaxeS+B1JU0r1tkbf8QvAxkJ1GMwRPq3UAXM3GSLiS+hZkuI7uc1nyfZ1kzguJCEkNovDYI2zFK4E07Qk0M=,iv:46gxy6XSc7vEaU188sWR+A5aXSbQQKukJmLbWR/9gcQ=,tag:3UaenfbHKQdcBwkDlnXI0A==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
-    version: 3.10.2
+    version: 3.11.0
