@@ -120,6 +120,7 @@ nav:
       - Updates: updates.md
   - Operations:
       - Longhorn Maintenance: operations/longhorn-maintenance.md
+      - Migration to Cilium: operations/cilium-migration.md
   - Tools:
       - Helm: helm.md
       - Secrets: secrets.md
