@@ -1,0 +1,190 @@
+---
+resources:
+  - longhorn-media.yaml
+  - autorestart.yaml
+
+namespace: media
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "30"
+
+helmCharts:
+  - name: emby
+    repo: https://k8s-at-home.com/charts/
+    version: 3.4.2
+    releaseName: jellyfin
+    namespace: media
+    includeCRDs: true
+    valuesInline:
+      controller:
+        replicas: 1
+      env:
+        TZ: Europe/Berlin
+        UID: "0"
+        GID: "0"
+      image:
+        repository: ghcr.io/jellyfin/jellyfin
+        tag: 10.10.7
+        pullPolicy: IfNotPresent
+      resources:
+        requests:
+          gpu.intel.com/i915: 1
+          memory: "4Gi"
+          cpu: "1"
+        limits:
+          gpu.intel.com/i915: 1
+          memory: "12Gi"
+          # Units in mCPU. 6000m ~ 6 CPU
+          cpu: "6000m"
+      strategy:
+        type: Recreate
+      service:
+        main:
+          type: LoadBalancer
+          annotations:
+            lbipam.cilium.io/ips: 192.168.1.235
+          externalTrafficPolicy: Local
+          ports:
+            http:
+              nodePort: 8096
+            https:
+              nodePort: 8920
+      persistence:
+        config:
+          enabled: true
+          mountPath: /config
+          existingClaim: longhorn-pvc-jellyfin
+          retain: true
+        video:
+          enabled: true
+          mountPath: /vol_raidz1/video
+          existingClaim: smb-pvc-video
+          retain: true
+        music:
+          enabled: true
+          mountPath: /vol_raidz1/music
+          existingClaim: smb-pvc-music
+          retain: true
+        photo:
+          enabled: true
+          mountPath: /vol_raidz1/photo
+          existingClaim: smb-pvc-photo
+          retain: true
+        jellyfin-certificate-secret:
+          enabled: true
+          name: jellyfin-certificate-pkcs12
+          type: secret
+          item: keystore.p12
+          mountPath: /etc/ssl/certs/certificate
+          readOnly: true
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values:
+                      - emby
+                      - nextpvr
+              topologyKey: "kubernetes.io/hostname"
+      #additionalContainers:
+      #  - name: backup-sidecar
+      #    image: ghcr.io/restic/restic:0.18.0
+      #    envFrom:
+      #      - secretRef:
+      #          name: backup-env-configuration-emby
+      #    imagePullPolicy: IfNotPresent
+      #    command: ["/usr/sbin/crond", "-f", "-d", "6"]
+      #    volumeMounts:
+      #      - name: crontab-config
+      #        mountPath: /etc/crontabs/root
+      #        subPath: crontab
+      #      - name: backup-script
+      #        mountPath: /usr/local/bin/backup.sh
+      #        subPath: backup.sh
+      #      - mountPath: /backup/config
+      #        name: config
+      #        readOnly: true
+
+#patches:
+#  # Add volumes to Deployment
+#  - target:
+#      group: apps
+#      version: v1
+#      kind: Deployment
+#      name: jellyfin
+#    patch: |-
+#      apiVersion: aps/v1
+#      kind: Deployment
+#      metadata:
+#        name: jellyfin
+#        namespace: media
+#      spec:
+#        template:
+#          spec:
+#            volumes:
+#              - name: crontab-config
+#                configMap:
+#                  name: crontab-emby
+#              - name: backup-script
+#                configMap:
+#                  name: crontab-backup-script
+
+patches:
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: jellyfin-emby
+    patch: |-
+      apiVersion: aps/v1
+      kind: Deployment
+      metadata:
+        name: jellyfin
+        namespace: media
+        labels:
+          app.kubernetes.io/name: jellyfin
+      spec:
+        selector:
+          matchLabels:
+            app.kubernetes.io/name: jellyfin
+        template:
+          metadata:
+            labels:
+              app.kubernetes.io/name: jellyfin
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: jellyfin-emby
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: jellyfin
+  - target:
+      version: v1
+      kind: Service
+      name: jellyfin-emby
+    patch: |-
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: jellyfin
+        namespace: media
+        labels:
+          app.kubernetes.io/name: jellyfin
+      spec:
+        selector:
+          app.kubernetes.io/name: jellyfin
+  - target:
+      version: v1
+      kind: Service
+      name: jellyfin-emby
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: jellyfin
+
+generators:
+  - kustomize-secret-generator.yaml
