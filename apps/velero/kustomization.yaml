@@ -24,6 +24,7 @@ helmCharts:
             provider: aws
             bucket: velero-fra
             prefix: k3s-at-home
+            default: true
             credential:
               # Name of the secret. Default: velero
               name: velero
