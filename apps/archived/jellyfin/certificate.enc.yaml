@@ -1,0 +1,81 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+    name: jellyfin-certificate
+    namespace: media
+spec:
+    secretName: jellyfin-certificate-pkcs12
+    issuerRef:
+        name: cloudflare-issuer-production
+        kind: ClusterIssuer
+    commonName: ENC[AES256_GCM,data:V1nCD8kTHPvP2HgEq5DL7f6K,iv:xOSxKfHP4t5FOaPQxFzV+pFUYt64pLD/adtRqNX6dyc=,tag:/Rgnn6vbszyGWdGpMiWs9w==,type:str]
+    privateKey:
+        algorithm: ECDSA
+        size: 256
+    dnsNames:
+        - ENC[AES256_GCM,data:yVl0i4yqFe4qxWdZ6wr3AEqu,iv:ktlb2TvgtdVBXvcdzgJ1dMyRjQQD5VTPWDTSv0rziBY=,tag:aW+rrwtDz3hgHgPF3Z1qeg==,type:str]
+    keystores:
+        pkcs12:
+            create: true
+            passwordSecretRef:
+                name: jellyfin-certificate-secret
+                key: pkcs12-password-secret
+sops:
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAxN1lmWkp6REw5YUV6TDNJ
+            dTAwMWpGbnIwN1pqV1NRSzBiWkJSaXlPVkNVCmFhWnlFaTBlTUVGenVUTEtuTExO
+            aGIrb1loaGNGSVE2M1VTWHNkL0U3MncKLS0tIEtLelBjV2xhVmVVb2g3dVlDamFI
+            MDBVaWxJeEhMeEZPazlGbkhPZGlSS0kKG6x2yxpVFg5sz1bT5NgK6QYCJVtBvaGQ
+            8KHmZALlfbqjHNbSaJtNplKlDszSS2hR03CoZpHGU5lSUChtmVXQVg==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBmeVlhcDYvTjhBOERJaDk5
+            ZjFTQUdac0VJZkpqY0k2ZTdneFlIMTFkRWxrCk82djNBbWdaZlYwVWVkWUNvV2w3
+            UGczTzQ0UHVBNjF5Wnh3elRFVGRyTzgKLS0tIDFkOUpjcFpsL3BLYm10VVllYmxh
+            eXZoVE54ajVxQWQzRzh0NzRHbEpzNlkKYS9vblVFkOZiUvn073sf1Rp7GudzQZg0
+            eqb9UbJKl8+5b/tPsu/vUCYzKs3+3FUfwOX0iyuJic2n/xKqieSkSQ==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-08-06T20:44:02Z"
+    mac: ENC[AES256_GCM,data:jXZfYZlHFC+Ew8VBuNbrd2W5O3X5a7FguEVztKEnsbkMtHDVebn1QrcxEfmZwxYHRl7QOTCnkymlGUvsN5rkADJXI+KQtd1V0rr4dKnMwnignSN/GwhlU9t3Z6+tckroYafdpqk5lweShhcN4OmDAQLNX9ve/QepXvDxmkm90QY=,iv:U0EyJ7CpW1LC7sfB3tN4cgjyJ2U4o3lX8JTWKun8otk=,tag:0Joe742xZxYWC/CJFNmbGw==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
+    version: 3.10.2
+---
+apiVersion: v1
+kind: Secret
+metadata:
+    name: jellyfin-certificate-secret
+    namespace: media
+    #annotations:
+    #    kustomize.config.k8s.io/needs-hash: "false"
+    #    kustomize.config.k8s.io/behavior: merge
+stringData:
+    pkcs12-password-secret: ENC[AES256_GCM,data:WnhimdX8TJCC7HTwdS9wirPls4f7kvuWhs7dvORmCZA=,iv:DXieA+7nXD4RwSW77BxQeTRT1BrKPY/wvoctmkQwTJI=,tag:zXhW1ZFDLzzUPO3gXBH3ug==,type:str]
+sops:
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAxN1lmWkp6REw5YUV6TDNJ
+            dTAwMWpGbnIwN1pqV1NRSzBiWkJSaXlPVkNVCmFhWnlFaTBlTUVGenVUTEtuTExO
+            aGIrb1loaGNGSVE2M1VTWHNkL0U3MncKLS0tIEtLelBjV2xhVmVVb2g3dVlDamFI
+            MDBVaWxJeEhMeEZPazlGbkhPZGlSS0kKG6x2yxpVFg5sz1bT5NgK6QYCJVtBvaGQ
+            8KHmZALlfbqjHNbSaJtNplKlDszSS2hR03CoZpHGU5lSUChtmVXQVg==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBmeVlhcDYvTjhBOERJaDk5
+            ZjFTQUdac0VJZkpqY0k2ZTdneFlIMTFkRWxrCk82djNBbWdaZlYwVWVkWUNvV2w3
+            UGczTzQ0UHVBNjF5Wnh3elRFVGRyTzgKLS0tIDFkOUpjcFpsL3BLYm10VVllYmxh
+            eXZoVE54ajVxQWQzRzh0NzRHbEpzNlkKYS9vblVFkOZiUvn073sf1Rp7GudzQZg0
+            eqb9UbJKl8+5b/tPsu/vUCYzKs3+3FUfwOX0iyuJic2n/xKqieSkSQ==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-08-06T20:44:02Z"
+    mac: ENC[AES256_GCM,data:jXZfYZlHFC+Ew8VBuNbrd2W5O3X5a7FguEVztKEnsbkMtHDVebn1QrcxEfmZwxYHRl7QOTCnkymlGUvsN5rkADJXI+KQtd1V0rr4dKnMwnignSN/GwhlU9t3Z6+tckroYafdpqk5lweShhcN4OmDAQLNX9ve/QepXvDxmkm90QY=,iv:U0EyJ7CpW1LC7sfB3tN4cgjyJ2U4o3lX8JTWKun8otk=,tag:0Joe742xZxYWC/CJFNmbGw==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
+    version: 3.10.2
