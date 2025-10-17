@@ -85,11 +85,14 @@ spec:
           #  - mountPath: /data
           #    name: lldap-data
       restartPolicy: Always
+      # Set fsGroup so that the lldap user (1001) can read the TLS certificates
+      securityContext:
+        fsGroup: 1001
       volumes:
         - name: lldap-tls
           secret:
             secretName: lldap-tls
-            defaultMode: 0400
+            defaultMode: 0440
       #  - name: lldap-data
       #    persistentVolumeClaim:
       #      claimName: lldap-data
