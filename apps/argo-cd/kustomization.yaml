@@ -19,4 +19,4 @@ resources:
   - np.k8s.argocd-notifications-controller.yaml
   - np.k8s.argocd-redis.yaml
   - np.k8s.argocd-repo-server.yaml
-  - np.k8s.argocd-server.yaml
+  #- np.k8s.argocd-server.yaml
