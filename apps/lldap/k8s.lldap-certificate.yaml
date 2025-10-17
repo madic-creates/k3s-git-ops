@@ -1,0 +1,21 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: lldap-tls
+  namespace: authelia
+spec:
+  secretName: lldap-tls
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  issuerRef:
+    name: internal-ca-issuer
+    kind: ClusterIssuer
+  commonName: lldap.authelia.svc.cluster.local
+  dnsNames:
+    - lldap.authelia.svc.cluster.local
+    - lldap.authelia.svc
+    - lldap
+  # Internal cluster certificate
+  # This cert is for internal cluster communication to provide LDAPS for various services

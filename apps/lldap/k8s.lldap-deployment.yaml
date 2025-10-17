@@ -61,6 +61,13 @@ spec:
               value: "1001"
             - name: LLDAP_IGNORED_USER_ATTRIBUTES
               value: '[ "sAMAccountName" ]'
+            # LDAPS Configuration
+            - name: LLDAP_LDAPS_OPTIONS__ENABLED
+              value: "true"
+            - name: LLDAP_LDAPS_OPTIONS__CERT_FILE
+              value: /certs/tls.crt
+            - name: LLDAP_LDAPS_OPTIONS__KEY_FILE
+              value: /certs/tls.key
           # https://github.com/lldap/lldap/pkgs/container/lldap
           image: ghcr.io/lldap/lldap:latest-alpine@sha256:59e99ffb8ca3634a907945ad33c50c328cc188618fe6a2a10a22703694d14313
           name: lldap
@@ -71,11 +78,18 @@ spec:
             - containerPort: 6360
             # Web frontend
             - containerPort: 17170
-          #volumeMounts:
+          volumeMounts:
+            - mountPath: /certs
+              name: lldap-tls
+              readOnly: true
           #  - mountPath: /data
           #    name: lldap-data
       restartPolicy: Always
-      #volumes:
+      volumes:
+        - name: lldap-tls
+          secret:
+            secretName: lldap-tls
+            defaultMode: 0400
       #  - name: lldap-data
       #    persistentVolumeClaim:
       #      claimName: lldap-data

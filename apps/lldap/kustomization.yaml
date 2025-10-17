@@ -7,6 +7,7 @@ commonAnnotations:
   argocd.argoproj.io/sync-wave: "11"
 
 resources:
+  - k8s.lldap-certificate.yaml
   - k8s.lldap-deployment.yaml
   - k8s.lldap-service.yaml
 

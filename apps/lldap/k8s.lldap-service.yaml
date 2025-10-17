@@ -10,10 +10,13 @@ metadata:
   name: lldap
 spec:
   ports:
-    - name: "3890"
+    - name: ldap
       port: 3890
       targetPort: 3890
-    - name: "17170"
+    - name: ldaps
+      port: 6360
+      targetPort: 6360
+    - name: http
       port: 17170
       targetPort: 17170
   selector:
