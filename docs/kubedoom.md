@@ -1,7 +1,8 @@
 # Kube DOOM: Kubernetes Chaos Engineering, 1993 Style
 
-!!! warning "DOOM: The DevOps Spin-Off Nobody Asked For"
-    In 1993, id Software asked "What if we could kill demons with a shotgun?" In 2025, some absolute legend asked "What if we could kill pods with a shotgun?" And thus, Kube DOOM was born.
+/// warning | DOOM: The DevOps Spin-Off Nobody Asked For
+In 1993, id Software asked "What if we could kill demons with a shotgun?" In 2025, some absolute legend asked "What if we could kill pods with a shotgun?" And thus, Kube DOOM was born.
+///
 
 ## What Fresh Hell Is This?
 
@@ -11,8 +12,9 @@ Each pinky daemon in the game represents a pod in your cluster. When you frag a 
 
 Currently configured to target the `whoami` namespace, because apparently we need to answer life's fundamental question: "Who am I?" with "Someone who kills pods for fun."
 
-!!! tip "Therapeutic Pod Management"
-    Studies show that 87% of SREs experience immediate stress relief when replacing `kubectl delete` with a BFG9000. The other 13% are lying.
+/// tip | Therapeutic Pod Management
+Studies show that 87% of SREs experience immediate stress relief when replacing `kubectl delete` with a BFG9000. The other 13% are lying.
+///
 
 ## Why Does This Exist?
 
@@ -28,8 +30,9 @@ Chaos engineering meets nostalgia. Resilience testing meets dopamine release. Yo
 ### The Honest Answer
 Because we can. Because it's hilarious. Because the cluster can handle it (hopefully).
 
-!!! danger "Production Use Warning"
-    Should you run Kube DOOM in production? Technically, yes. Should you tell your manager? Absolutely not. Should you livestream it? Only if you've updated your LinkedIn profile recently.
+/// danger | Production Use Warning
+Should you run Kube DOOM in production? Technically, yes. Should you tell your manager? Absolutely not. Should you livestream it? Only if you've updated your LinkedIn profile recently.
+///
 
 ## Installation Status
 
@@ -55,8 +58,9 @@ First, tunnel into the hellscape:
 kubectl port-forward -n kubedoom service/kubedoom 5900:5900
 ```
 
-!!! info "Port Forwarding: The Gateway to Pod Hell"
-    Port 5900 is the standard VNC port. It's also coincidentally the number of times you've thought "there has to be a better way" before discovering this tool.
+/// info | Port Forwarding: The Gateway to Pod Hell
+Port 5900 is the standard VNC port. It's also coincidentally the number of times you've thought "there has to be a better way" before discovering this tool.
+///
 
 ### Step 2: Connect via VNC
 
@@ -68,8 +72,9 @@ Launch your VNC client and connect to:
 
 **VNC Password**: `idbehold`
 
-!!! tip "Authentication Comedy"
-    The password is literally a DOOM cheat code. This is either brilliant security through obscurity or a cry for help from the developer.
+/// tip | Authentication Comedy
+The password is literally a DOOM cheat code. This is either brilliant security through obscurity or a cry for help from the developer.
+///
 
 ### Step 3: Rip and Tear (Pods)
 
@@ -95,8 +100,9 @@ The classic DOOM cheats work in Kube DOOM, because why not add invincibility to 
 | `IDCHOPPERS` | Chainsaw | For those intimate, close-range pod terminations |
 | `IDCLIP` | No-clip mode (alternative) | RBAC is just a suggestion |
 
-!!! warning "With Great Cheats Comes Great Responsibility"
-    Using `IDKFA` in production is like using `sudo rm -rf /` - you *can* do it, but your future self will have opinions.
+/// warning | With Great Cheats Comes Great Responsibility
+Using `IDKFA` in production is like using `sudo rm -rf /` - you *can* do it, but your future self will have opinions.
+///
 
 ### Activation Instructions
 
@@ -185,14 +191,16 @@ In the end, Kube DOOM teaches us valuable lessons:
 4. **Visual feedback matters** - Sometimes you need to *see* the destruction to feel alive.
 5. **Nostalgia is powerful** - Combining 90s gaming with 2020s infrastructure is oddly satisfying.
 
-!!! quote "Ancient DevOps Proverb"
-    "Rip and tear, until your cluster is stable." - Doom Guy, probably
+/// quote | Ancient DevOps Proverb
+"Rip and tear, until your cluster is stable." - Doom Guy, probably
+///
 
 **Remember**: In the grim darkness of the Kubernetes cluster, there is only DOOM.
 
 ---
 
-!!! danger "Final Warning"
-    With great power comes great responsibility. With Kube DOOM comes great documentation for your incident post-mortem. Choose wisely.
+/// danger | Final Warning
+With great power comes great responsibility. With Kube DOOM comes great documentation for your incident post-mortem. Choose wisely.
+///
 
 *Now if you'll excuse me, I have some demons to kill in the `whoami` namespace. They know who they are.*
