@@ -1,5 +1,0 @@
----
-resources:
-  - allow-to-lldap.yaml
-  - allow-to-mariadb.yaml
-  - allow-to-redis.yaml
