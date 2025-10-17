@@ -1,0 +1,67 @@
+---
+# CoreDNS Network Policy
+# Controls DNS resolution traffic for the entire cluster
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: coredns
+  namespace: kube-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "00"
+spec:
+  endpointSelector:
+    matchLabels:
+      k8s-app: kube-dns
+  ingress:
+  # Allow DNS queries from all cluster pods on UDP port 53
+  - fromEndpoints:
+    - {}
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+  # Allow DNS queries from all cluster pods on TCP port 53
+  - fromEndpoints:
+    - {}
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: TCP
+  # Allow Prometheus to scrape CoreDNS metrics on port 9153
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: prometheus
+        k8s:io.kubernetes.pod.namespace: monitoring
+    toPorts:
+    - ports:
+      - port: "9153"
+        protocol: TCP
+  # Allow kubelet health checks from host network (port 8080 and 8181)
+  - fromEntities:
+    - host
+    toPorts:
+    - ports:
+      - port: "8080"
+        protocol: TCP
+      - port: "8181"
+        protocol: TCP
+  egress:
+  # Allow CoreDNS to forward DNS queries to external Pi-hole DNS server
+  # Used for conditional forwarding (neese-web.de domain)
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow CoreDNS to resolve queries using upstream resolvers from /etc/resolv.conf
+  - toFQDNs:
+    - matchPattern: "*"
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
