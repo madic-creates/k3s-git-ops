@@ -70,8 +70,6 @@ spec:
         k8s:app.kubernetes.io/name: lldap
     toPorts:
     - ports:
-      - port: '3890'
-        protocol: TCP
       - port: '6360'
         protocol: TCP
   # Allow backup sidecar to push metrics to Pushgateway
