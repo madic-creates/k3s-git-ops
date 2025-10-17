@@ -73,13 +73,12 @@ spec:
         protocol: TCP
       - port: '22'
         protocol: TCP
-  # Allow access to private Git servers on the cluster
+  # Authelia authentication
   - toEndpoints:
     - matchLabels:
-        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: git
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:app.kubernetes.io/name: traefik
     toPorts:
     - ports:
-      - port: '443'
-        protocol: TCP
-      - port: '22'
+      - port: '8443'
         protocol: TCP
