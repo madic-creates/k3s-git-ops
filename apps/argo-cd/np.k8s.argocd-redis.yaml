@@ -1,0 +1,57 @@
+---
+# ArgoCD Redis Network Policy
+# Allows Redis to be accessed by ArgoCD components
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: argocd-redis
+  namespace: argocd
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: argocd-redis
+  ingress:
+  # Allow ArgoCD Server to access Redis
+  - fromEndpoints:
+    - matchLabels:
+        app.kubernetes.io/name: argocd-server
+        k8s:io.kubernetes.pod.namespace: argocd
+    toPorts:
+    - ports:
+      - port: '6379'
+        protocol: TCP
+  # Allow repo-server to access Redis for caching
+  - fromEndpoints:
+    - matchLabels:
+        app.kubernetes.io/name: argocd-repo-server
+        k8s:io.kubernetes.pod.namespace: argocd
+    toPorts:
+    - ports:
+      - port: '6379'
+        protocol: TCP
+  # Allow application-controller to access Redis
+  - fromEndpoints:
+    - matchLabels:
+        app.kubernetes.io/name: argocd-application-controller
+        k8s:io.kubernetes.pod.namespace: argocd
+    toPorts:
+    - ports:
+      - port: '6379'
+        protocol: TCP
+  # Allow internal health checks
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: argocd
+  egress:
+  # Redis typically doesn't need egress, but allow DNS for troubleshooting
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: '53'
+        protocol: UDP
+      - port: '53'
+        protocol: TCP

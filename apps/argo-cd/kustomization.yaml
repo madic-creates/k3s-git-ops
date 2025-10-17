@@ -12,3 +12,11 @@ helmCharts:
     releaseName: argo-cd
     namespace: argocd
     valuesFile: values.yaml
+
+resources:
+  - np.k8s.argocd-application-controller.yaml
+  - np.k8s.argocd-applicationset-controller.yaml
+  - np.k8s.argocd-notifications-controller.yaml
+  - np.k8s.argocd-redis.yaml
+  - np.k8s.argocd-repo-server.yaml
+  - np.k8s.argocd-server.yaml
