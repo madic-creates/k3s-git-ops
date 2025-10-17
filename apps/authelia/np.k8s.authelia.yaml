@@ -1,0 +1,114 @@
+---
+# Authelia Network Policy
+# Controls network access for Authelia SSO/authentication service
+# Authelia is the central authentication provider for the entire cluster
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: authelia
+  namespace: authelia
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: authelia
+  ingress:
+  # Allow Traefik ingress controller to reach Authelia for:
+  # - ForwardAuth middleware (authentication for all protected services)
+  # - Web UI access (https://auth.k8s.neese-web.de)
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/instance: traefik-kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+    toPorts:
+    - ports:
+      - port: '9091'
+        protocol: TCP
+  # Allow Grafana to connect to Authelia for OIDC authentication
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: grafana
+        k8s:io.kubernetes.pod.namespace: monitoring
+    toPorts:
+    - ports:
+      - port: '9091'
+        protocol: TCP
+  # Allow ArgoCD Server to connect to Authelia for OIDC authentication
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: argocd-server
+        k8s:io.kubernetes.pod.namespace: argocd
+    toPorts:
+    - ports:
+      - port: '9091'
+        protocol: TCP
+  # Allow Semaphore to connect to Authelia for OIDC authentication
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: semaphore
+        k8s:io.kubernetes.pod.namespace: ansible
+    toPorts:
+    - ports:
+      - port: '9091'
+        protocol: TCP
+  # Allow internal health checks within the Authelia namespace
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: authelia
+  # Allow Prometheus to scrape metrics from Authelia
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: prometheus
+        k8s:io.kubernetes.pod.namespace: monitoring
+    toPorts:
+    - ports:
+      - port: '9091'
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: '53'
+        protocol: UDP
+      - port: '53'
+        protocol: TCP
+  # Allow access to LLDAP for user authentication via LDAPS
+  # IMPORTANT: Only LDAPS (port 6360) is allowed, NOT unencrypted LDAP (port 3890)
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: lldap
+        k8s:io.kubernetes.pod.namespace: authelia
+    toPorts:
+    - ports:
+      - port: '6360'
+        protocol: TCP
+  # Allow access to Redis for session storage
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: redis
+        k8s:io.kubernetes.pod.namespace: databases
+    toPorts:
+    - ports:
+      - port: '6379'
+        protocol: TCP
+  # Allow access to MariaDB for persistent data storage
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: mariadb
+        k8s:io.kubernetes.pod.namespace: databases
+    toPorts:
+    - ports:
+      - port: '3306'
+        protocol: TCP
+  # Allow SMTP for password reset emails and notifications
+  # SMTP server at 192.168.1.45:25 (specified in Authelia config)
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: '25'
+        protocol: TCP
