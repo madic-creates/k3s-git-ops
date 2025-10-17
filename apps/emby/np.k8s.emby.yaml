@@ -1,0 +1,76 @@
+---
+# Emby Media Server Network Policy
+# Allows Emby to stream media, fetch metadata, and perform backups
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: emby
+  namespace: media
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: emby
+  ingress:
+  # Allow external clients to access Emby via LoadBalancer service
+  - fromEntities:
+    - world
+    - cluster
+    toPorts:
+    - ports:
+      - port: '8096'
+        protocol: TCP
+      - port: '8920'
+        protocol: TCP
+  egress:
+  # Allow DNS resolution
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: '53'
+        protocol: UDP
+      - port: '53'
+        protocol: TCP
+  # Allow access to SMB/CIFS shares for media files
+  - toEndpoints:
+    - matchLabels:
+        k8s:app: csi-smb-node
+        k8s:io.kubernetes.pod.namespace: kube-system
+    toPorts:
+    - ports:
+      - port: '445'
+        protocol: TCP
+      - port: '139'
+        protocol: TCP
+  # Allow access to external SMB servers
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: '445'
+        protocol: TCP
+      - port: '139'
+        protocol: TCP
+  # Allow HTTPS for metadata providers (TMDB, TVDB, etc.)
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: '443'
+        protocol: TCP
+      - port: '80'
+        protocol: TCP
+  # Allow LLDAP for authentication
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: media
+        k8s:app.kubernetes.io/name: emby
+    toPorts:
+    - ports:
+      - port: '443'
+        protocol: TCP
+      - port: '80'
+        protocol: TCP
