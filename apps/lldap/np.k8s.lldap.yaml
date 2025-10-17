@@ -1,0 +1,77 @@
+---
+# LLDAP Network Policy
+# Enforces LDAPS-only connections by allowing only encrypted LDAP traffic on port 6360
+# and blocking unencrypted LDAP on port 3890
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: lldap
+  namespace: authelia
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: lldap
+  ingress:
+  # Allow Traefik ingress controller to reach LLDAP web UI on port 17170
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/instance: traefik-kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+    toPorts:
+    - ports:
+      - port: '17170'
+        protocol: TCP
+  # Allow Authelia to connect to LDAPS (port 6360) for authentication
+  # IMPORTANT: Only LDAPS (6360) is allowed, NOT unencrypted LDAP (3890)
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: authelia
+        k8s:io.kubernetes.pod.namespace: authelia
+    toPorts:
+    - ports:
+      - port: '6360'
+        protocol: TCP
+  # Allow Emby to connect to LDAPS (port 6360) for authentication
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: emby
+        k8s:io.kubernetes.pod.namespace: media
+    toPorts:
+    - ports:
+      - port: '6360'
+        protocol: TCP
+  # Allow VersityGW to connect to LDAPS (port 6360) for authentication
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: versitygw
+        k8s:io.kubernetes.pod.namespace: longhorn
+    toPorts:
+    - ports:
+      - port: '6360'
+        protocol: TCP
+  # Allow internal health checks within namespace
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: authelia
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: '53'
+        protocol: UDP
+      - port: '53'
+        protocol: TCP
+  # Allow access to MariaDB for LLDAP database storage
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: mariadb
+        k8s:io.kubernetes.pod.namespace: databases
+    toPorts:
+    - ports:
+      - port: '3306'
+        protocol: TCP

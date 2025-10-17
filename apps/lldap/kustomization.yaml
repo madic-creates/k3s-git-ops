@@ -10,6 +10,7 @@ resources:
   - k8s.lldap-certificate.yaml
   - k8s.lldap-deployment.yaml
   - k8s.lldap-service.yaml
+  - np.k8s.lldap.yaml
 
 generators:
   - kustomize-secret-generator.yaml
