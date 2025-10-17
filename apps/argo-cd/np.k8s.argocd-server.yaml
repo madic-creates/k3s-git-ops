@@ -84,3 +84,12 @@ spec:
         protocol: TCP
       - port: '9091'
         protocol: TCP
+  # Authelia authentication
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:app.kubernetes.io/name: traefik
+    toPorts:
+    - ports:
+      - port: '8443'
+        protocol: TCP
