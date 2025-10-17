@@ -4,6 +4,7 @@ namespace: ansible
 
 resources:
   - namespace.yaml
+  - np.k8s.semaphore.yaml
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "60"

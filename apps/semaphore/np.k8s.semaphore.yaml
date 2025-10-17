@@ -1,0 +1,75 @@
+---
+# Ansible Semaphore Network Policy
+# Allows Semaphore to execute Ansible playbooks, connect to databases, authenticate via Authelia,
+# and communicate with Git repositories and managed hosts
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: semaphore
+  namespace: ansible
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: semaphore
+  ingress:
+  # Allow Traefik ingress controller to reach Semaphore web UI
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/instance: traefik-kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+    toPorts:
+    - ports:
+      - port: '3000'
+        protocol: TCP
+  # Allow internal health checks within namespace
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: ansible
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: '53'
+        protocol: UDP
+      - port: '53'
+        protocol: TCP
+  # Allow access to MariaDB for Semaphore database
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: mariadb
+        k8s:io.kubernetes.pod.namespace: databases
+    toPorts:
+    - ports:
+      - port: '3306'
+        protocol: TCP
+  # Allow HTTPS access to external Git repositories (GitHub, GitLab, Gitea, etc.)
+  # and package managers (PyPI, apt, yum, etc.) for Ansible execution
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: '443'
+        protocol: TCP
+      - port: '80'
+        protocol: TCP
+  # Allow SSH access to managed hosts for Ansible playbook execution
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: '22'
+        protocol: TCP
+  # Authelia authentication
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:app.kubernetes.io/name: traefik
+    toPorts:
+    - ports:
+      - port: '8443'
+        protocol: TCP

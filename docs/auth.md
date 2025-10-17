@@ -90,7 +90,7 @@ authentication_backend:
   ldap:
     enabled: true
     implementation: custom
-    address: ldap://lldap.authelia.svc.cluster.local:3890
+    address: ldaps://lldap.authelia.svc.cluster.local:6360
     base_dn: DC=example,DC=com
     additional_users_dn: ou=people
     users_filter: (&({username_attribute}={input})(objectClass=person))
@@ -450,11 +450,14 @@ kubectl logs -n authelia -l app.kubernetes.io/name=authelia --tail=100
 # Check LLDAP logs
 kubectl logs -n authelia -l app.kubernetes.io/name=lldap --tail=100
 
-# Test LDAP connection from Authelia pod
-kubectl exec -n authelia deployment/authelia -- \
-  ldapsearch -H ldap://lldap.authelia.svc.cluster.local:3890 \
-  -D "uid=admin,ou=people,dc=neese-web,dc=de" \
-  -w "PASSWORD" -b "dc=neese-web,dc=de"
+# Test LDAP connection from netshoot pod
+kubectl exec -n kube-system deployment/netshoot -- \
+  apk add openldap-clients
+
+kubectl exec -n kube-system deployment/netshoot -- \
+ sh -c 'LDAPTLS_REQCERT=never ldapsearch -H ldaps://lldap.authelia.svc.cluster.local:6360 \
+  -D "uid=admin,ou=people,dc=example,dc=com" \
+  -w "PASSWORD" -b "dc=example,dc=com"'
 ```
 
 **Common Causes:**
