@@ -99,8 +99,8 @@ spec:
               value: "true"
             - name: VGW_DIR_PERMS
               value: "0750"
-            #- name: VGW_IAM_LDAP_TLS_SKIP_VERIFY
-            #  value: "true"
+            - name: VGW_IAM_LDAP_TLS_SKIP_VERIFY
+              value: "true"
           readinessProbe:
             httpGet:
               path: /health
