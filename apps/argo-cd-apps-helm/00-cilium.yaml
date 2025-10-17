@@ -53,10 +53,19 @@ spec:
             default: false
             loadbalancerMode: dedicated
         hubble:
+          enabled: true
           relay:
             enabled: true
           ui:
             enabled: true
+          # Event buffer capacity - number of recent flows to cache
+          # Must be one less than a power of 2, max 65535
+          # Default: 4095, Extended: 65535 for more flow history
+          eventBufferCapacity: 65535
+          # Event queue size - buffer for monitor events channel
+          # Prevents "queue is full; dropping messages" on loaded clusters
+          # If not set, uses default monitor queue size
+          eventQueueSize: 10000
         tunnelProtocol: geneve
         encryption:
           enabled: true
