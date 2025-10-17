@@ -98,6 +98,8 @@ spec:
               value: "true"
             - name: VGW_DIR_PERMS
               value: "0750"
+            - name: LDAPTLS_REQCERT
+              value: "never"
           readinessProbe:
             httpGet:
               path: /health
