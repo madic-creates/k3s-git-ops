@@ -72,3 +72,12 @@ spec:
     - ports:
       - port: '3890'
         protocol: TCP
+  # Allow backup sidecar to push metrics to Pushgateway
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: monitoring
+        k8s:app.kubernetes.io/name: prometheus-pushgateway
+    toPorts:
+    - ports:
+      - port: '9091'
+        protocol: TCP
