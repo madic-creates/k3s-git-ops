@@ -46,21 +46,6 @@ spec:
     customResponseHeaders:
       Content-Security-Policy: "frame-src none;"
 ---
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
-  name: forwardauth-authelia-basicauth
-  namespace: authelia
-spec:
-  forwardAuth:
-    address: http://authelia.authelia.svc.cluster.local/api/authz/auth-request
-    authResponseHeaders:
-      - Remote-User
-      - Remote-Name
-      - Remote-Email
-      - Remote-Groups
-    trustForwardHeader: true
----
 ## Cluster internal expose prometheus metrics
 apiVersion: v1
 kind: Service
