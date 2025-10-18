@@ -7,7 +7,7 @@ spec:
     entryPoints:
         - websecure
     routes:
-        - match: ENC[AES256_GCM,data:w7vfFUkQGEwoYR6jW244u5YW8EkrNUt95pjsH1Uvjg1ZXiPAf1+ccx6FH/ULa/t+kQ==,iv:bstpTh7U7CabF5u4yB3JsYRvbZpAgRepdSkRFs3SrWw=,tag:4JIRLpWJR0Nrwv073cyFHg==,type:str]
+        - match: ENC[AES256_GCM,data:sQeAJkIb8CtMu5uhMDJOEcu81ktzoCZksVMmS4G0yXaK00sZMrcc92TqxFGERp2G3w==,iv:EKrpSvJ/JFSACei4aESVJCrXeAtmAHHEwkB8lZ7uHUk=,tag:glhMf4XWivieOJL151LWxQ==,type:str]
           kind: Rule
           middlewares:
             - name: redirect
@@ -25,23 +25,23 @@ sops:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBnS0ZMRkVJZnR1bWx1Qnli
-            YVhXZ2NwVzJQVVR5MzBaS2puOU52eUhCZGxrCnVscWZHSmlPQ3BYQW5YdEUvUDJa
-            cDd5N01IOENIMDZzcHJ6VWVRUXhONnMKLS0tIE5ZY0hqc3BtQm5SUGxscG1BLzdp
-            dDRtYjl2VXNoUkM4T1dxbzF3ZkZxaGcK+FIOuu6ms7j78iy0yXycc/PdrhPlxhpE
-            +FK9TieH2lPMlqi2o6Y/kc8prIZudamgVSkeMDUPgmO+rMsKJfwHSw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBIWWY5eWVLUnNMdEVTU3Nw
+            SmNGRVdlZGI4c0FncWlJSUlBbVNOemRJNmtZCldjRzlNT01sUDUwbG5FQ0VRTlJw
+            RmhBbVg3YStpYVNwZFQvNVR5Qjc4QkkKLS0tIENEcFZVZ21VbmM0dkczUjlDSEhH
+            a2JzUlYzUE1uanhvOEd6REUzQmZpc2cKv8Zgs9+CEUpq0QGS2BIZf/bfGR8ofMwL
+            BVqxrXq/sYi7gwk0km846MBiXJfIc+RBkjYgOrKySm52oB3S2MsJsQ==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAvY0RWb255MjU4UjVNZmQw
-            dFdVVmUrWFlKNUprbERJaUtFZTJpeWlBdTM4CmRZcGJmaEl4S29MZW5sNElXWWdU
-            OWZQZlBBdVRFZ25hYlF3Ri9KNW9EYlkKLS0tIGZFUDV1bTdCZWFQRXFleE5Za3Iv
-            Ni8rMnRtNDVTMnBDNEh5RXRVV3huZ0kKYnua/Wt/C+/QsUMRgdLvNHmah2770AHY
-            AVk9+TFBhV4CbngGjZB8azO2hGdhS07mK/Bkmz59gxYojEykbN32dw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBSWHQ4NlpubE9IMG9HMUNO
+            eG5yMnJRNlZYMlZJRkhiWTlKQ1FyYWJveHpjCnJLa1dHUEhwMzNucmdTNDlMNENa
+            b3dmN0QwbE8rWGY2NFhJNDNxZ0doS1UKLS0tICtTWFBZc0dCQUZoUVRWaUFwTklt
+            UGxLZVdvUEtXZkRwYzduNUJuVkNISE0KSmQkuNq+SxutqJ+/ONeEr3G05MlkcUjp
+            f8OIS+UOpCUVXBBDDv+SOridvWVVHzDp81CDgAt2ermxwXFoAl6dqw==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-10-18T18:35:41Z"
-    mac: ENC[AES256_GCM,data:q9Txv5L+Y9qnJUjh1d86YrG2tQX+/RjMb3ipH5kjjpGoxyp/VQ4J5ZzqK2TpVjh96O9ue0mvmFoF3ak1iHBenJy1gS6C9NikS0ErZWmK5IiJNUBfJIAb+uB8QmNlPkx1w4QslskH/OVJ4PRx/P3oqrYL70yn5vqJFa8c0iA33Ew=,iv:1hSv1Hl/CzAKIj6rzWU6UNEw68mXthELUQOWH0qbDTE=,tag:WbC3KHr+SWgDpWKnSEWUpQ==,type:str]
+    lastmodified: "2025-10-18T19:48:08Z"
+    mac: ENC[AES256_GCM,data:7FFUBtzZBl8P5f4R/sxXKLOYeLLsdsJxTHX4fIn1AO2Z1Ssk4v8OSgEoFfJStaKy9M9TGiEfH+VdZj643jOY+LSPK/pRacCepzm7ZytDAYs5+qk2tzus0SK8tuqnNaoLexow4KZ+vazHYx4/ogjpJ9uiWKkDBzk5GbbiwPYJ8XA=,iv:NLk1M5DIfRkyEfYy3edntZsICCaXH0wHs4BwszWkqrI=,tag:k4isjsfb86ji3yobKbxIig==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match)$
     version: 3.11.0
 ---
@@ -54,12 +54,12 @@ spec:
     entryPoints:
         - websecure
     routes:
-        - match: ENC[AES256_GCM,data:pkSVNEArYM5yDVE5XyD+xWYXWe3uE+FsNWZqrQMVCxWka3v1j7xuqgVmXBV+UfLId1ngt0scdTITrumwfHljoGKhHfDjZpxkd1wvmH1RikTbA1g=,iv:O9ZkJ3lhgZymD59ovPpXVmkJxDaQsrKC2BrLK9c0iUo=,tag:X3Z1l19jIeuFHUPlizoqdw==,type:str]
+        - match: ENC[AES256_GCM,data:2++yZZvAHuoD4d3le0UEoycLvtbsOLDUitkgMPc3aqr93y6tfq1XilYQduVvUadbnWHNHSwpG74l5eU3xIduvxyqmo3XZLpsD1jWrVOvqL8bPzw=,iv:LRt2saYIPLfF/8e7ZcaaVVNlvhrI7nTuON6NE0DmvhU=,tag:23TMtKiB3JWUscOvKfRDAQ==,type:str]
           kind: Rule
           middlewares:
             - name: redirect
               namespace: traefik
-            - name: authelia-forwardauth-authelia-basicauth
+            - name: forwardauth-authelia-basicauth
               namespace: authelia
           services:
             - name: navidrome
@@ -72,23 +72,23 @@ sops:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBnS0ZMRkVJZnR1bWx1Qnli
-            YVhXZ2NwVzJQVVR5MzBaS2puOU52eUhCZGxrCnVscWZHSmlPQ3BYQW5YdEUvUDJa
-            cDd5N01IOENIMDZzcHJ6VWVRUXhONnMKLS0tIE5ZY0hqc3BtQm5SUGxscG1BLzdp
-            dDRtYjl2VXNoUkM4T1dxbzF3ZkZxaGcK+FIOuu6ms7j78iy0yXycc/PdrhPlxhpE
-            +FK9TieH2lPMlqi2o6Y/kc8prIZudamgVSkeMDUPgmO+rMsKJfwHSw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBIWWY5eWVLUnNMdEVTU3Nw
+            SmNGRVdlZGI4c0FncWlJSUlBbVNOemRJNmtZCldjRzlNT01sUDUwbG5FQ0VRTlJw
+            RmhBbVg3YStpYVNwZFQvNVR5Qjc4QkkKLS0tIENEcFZVZ21VbmM0dkczUjlDSEhH
+            a2JzUlYzUE1uanhvOEd6REUzQmZpc2cKv8Zgs9+CEUpq0QGS2BIZf/bfGR8ofMwL
+            BVqxrXq/sYi7gwk0km846MBiXJfIc+RBkjYgOrKySm52oB3S2MsJsQ==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAvY0RWb255MjU4UjVNZmQw
-            dFdVVmUrWFlKNUprbERJaUtFZTJpeWlBdTM4CmRZcGJmaEl4S29MZW5sNElXWWdU
-            OWZQZlBBdVRFZ25hYlF3Ri9KNW9EYlkKLS0tIGZFUDV1bTdCZWFQRXFleE5Za3Iv
-            Ni8rMnRtNDVTMnBDNEh5RXRVV3huZ0kKYnua/Wt/C+/QsUMRgdLvNHmah2770AHY
-            AVk9+TFBhV4CbngGjZB8azO2hGdhS07mK/Bkmz59gxYojEykbN32dw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBSWHQ4NlpubE9IMG9HMUNO
+            eG5yMnJRNlZYMlZJRkhiWTlKQ1FyYWJveHpjCnJLa1dHUEhwMzNucmdTNDlMNENa
+            b3dmN0QwbE8rWGY2NFhJNDNxZ0doS1UKLS0tICtTWFBZc0dCQUZoUVRWaUFwTklt
+            UGxLZVdvUEtXZkRwYzduNUJuVkNISE0KSmQkuNq+SxutqJ+/ONeEr3G05MlkcUjp
+            f8OIS+UOpCUVXBBDDv+SOridvWVVHzDp81CDgAt2ermxwXFoAl6dqw==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-10-18T18:35:41Z"
-    mac: ENC[AES256_GCM,data:q9Txv5L+Y9qnJUjh1d86YrG2tQX+/RjMb3ipH5kjjpGoxyp/VQ4J5ZzqK2TpVjh96O9ue0mvmFoF3ak1iHBenJy1gS6C9NikS0ErZWmK5IiJNUBfJIAb+uB8QmNlPkx1w4QslskH/OVJ4PRx/P3oqrYL70yn5vqJFa8c0iA33Ew=,iv:1hSv1Hl/CzAKIj6rzWU6UNEw68mXthELUQOWH0qbDTE=,tag:WbC3KHr+SWgDpWKnSEWUpQ==,type:str]
+    lastmodified: "2025-10-18T19:48:08Z"
+    mac: ENC[AES256_GCM,data:7FFUBtzZBl8P5f4R/sxXKLOYeLLsdsJxTHX4fIn1AO2Z1Ssk4v8OSgEoFfJStaKy9M9TGiEfH+VdZj643jOY+LSPK/pRacCepzm7ZytDAYs5+qk2tzus0SK8tuqnNaoLexow4KZ+vazHYx4/ogjpJ9uiWKkDBzk5GbbiwPYJ8XA=,iv:NLk1M5DIfRkyEfYy3edntZsICCaXH0wHs4BwszWkqrI=,tag:k4isjsfb86ji3yobKbxIig==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match)$
     version: 3.11.0
 ---
@@ -101,7 +101,7 @@ spec:
     entryPoints:
         - websecure
     routes:
-        - match: ENC[AES256_GCM,data:m5GPkoonRQFm/5Su4g7yloaqVXR+lasdu5Kjenmofa2B+ncnbP0lDIByOV8tNey9TI8c50Nh+w==,iv:s8AsIsArXDIrHY6qsmz3qy9RmMRxE1LxSZVwYU9P6rE=,tag:CAoe1Y3dZsPX89fk+yh97w==,type:str]
+        - match: ENC[AES256_GCM,data:7Eqh9hbbiJR1ZHtWJtQHSzni0cI3vkv/fPdr5v048SnMh9hHe0t77IpH49sJaSSG8Tzq9U043g==,iv:XwPOouKVqn8x0hDQEDQ/kDgBqubQCqHAO8adf5rmWpQ=,tag:KDoOk8PA6Z7Vu7AWhCY7Jg==,type:str]
           kind: Rule
           middlewares:
             - name: redirect
@@ -117,22 +117,22 @@ sops:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBnS0ZMRkVJZnR1bWx1Qnli
-            YVhXZ2NwVzJQVVR5MzBaS2puOU52eUhCZGxrCnVscWZHSmlPQ3BYQW5YdEUvUDJa
-            cDd5N01IOENIMDZzcHJ6VWVRUXhONnMKLS0tIE5ZY0hqc3BtQm5SUGxscG1BLzdp
-            dDRtYjl2VXNoUkM4T1dxbzF3ZkZxaGcK+FIOuu6ms7j78iy0yXycc/PdrhPlxhpE
-            +FK9TieH2lPMlqi2o6Y/kc8prIZudamgVSkeMDUPgmO+rMsKJfwHSw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBIWWY5eWVLUnNMdEVTU3Nw
+            SmNGRVdlZGI4c0FncWlJSUlBbVNOemRJNmtZCldjRzlNT01sUDUwbG5FQ0VRTlJw
+            RmhBbVg3YStpYVNwZFQvNVR5Qjc4QkkKLS0tIENEcFZVZ21VbmM0dkczUjlDSEhH
+            a2JzUlYzUE1uanhvOEd6REUzQmZpc2cKv8Zgs9+CEUpq0QGS2BIZf/bfGR8ofMwL
+            BVqxrXq/sYi7gwk0km846MBiXJfIc+RBkjYgOrKySm52oB3S2MsJsQ==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAvY0RWb255MjU4UjVNZmQw
-            dFdVVmUrWFlKNUprbERJaUtFZTJpeWlBdTM4CmRZcGJmaEl4S29MZW5sNElXWWdU
-            OWZQZlBBdVRFZ25hYlF3Ri9KNW9EYlkKLS0tIGZFUDV1bTdCZWFQRXFleE5Za3Iv
-            Ni8rMnRtNDVTMnBDNEh5RXRVV3huZ0kKYnua/Wt/C+/QsUMRgdLvNHmah2770AHY
-            AVk9+TFBhV4CbngGjZB8azO2hGdhS07mK/Bkmz59gxYojEykbN32dw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBSWHQ4NlpubE9IMG9HMUNO
+            eG5yMnJRNlZYMlZJRkhiWTlKQ1FyYWJveHpjCnJLa1dHUEhwMzNucmdTNDlMNENa
+            b3dmN0QwbE8rWGY2NFhJNDNxZ0doS1UKLS0tICtTWFBZc0dCQUZoUVRWaUFwTklt
+            UGxLZVdvUEtXZkRwYzduNUJuVkNISE0KSmQkuNq+SxutqJ+/ONeEr3G05MlkcUjp
+            f8OIS+UOpCUVXBBDDv+SOridvWVVHzDp81CDgAt2ermxwXFoAl6dqw==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-10-18T18:35:41Z"
-    mac: ENC[AES256_GCM,data:q9Txv5L+Y9qnJUjh1d86YrG2tQX+/RjMb3ipH5kjjpGoxyp/VQ4J5ZzqK2TpVjh96O9ue0mvmFoF3ak1iHBenJy1gS6C9NikS0ErZWmK5IiJNUBfJIAb+uB8QmNlPkx1w4QslskH/OVJ4PRx/P3oqrYL70yn5vqJFa8c0iA33Ew=,iv:1hSv1Hl/CzAKIj6rzWU6UNEw68mXthELUQOWH0qbDTE=,tag:WbC3KHr+SWgDpWKnSEWUpQ==,type:str]
+    lastmodified: "2025-10-18T19:48:08Z"
+    mac: ENC[AES256_GCM,data:7FFUBtzZBl8P5f4R/sxXKLOYeLLsdsJxTHX4fIn1AO2Z1Ssk4v8OSgEoFfJStaKy9M9TGiEfH+VdZj643jOY+LSPK/pRacCepzm7ZytDAYs5+qk2tzus0SK8tuqnNaoLexow4KZ+vazHYx4/ogjpJ9uiWKkDBzk5GbbiwPYJ8XA=,iv:NLk1M5DIfRkyEfYy3edntZsICCaXH0wHs4BwszWkqrI=,tag:k4isjsfb86ji3yobKbxIig==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match)$
     version: 3.11.0
