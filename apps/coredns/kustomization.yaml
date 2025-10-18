@@ -1,5 +1,5 @@
 generators:
   - kustomize-secret-generator.yaml
 
-resources:
-  - k8s.np.coredns.yaml
+#resources:
+#  - k8s.np.coredns.yaml
