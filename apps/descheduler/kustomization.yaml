@@ -2,6 +2,9 @@
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "70"
 
+resources:
+  - k8s.np.descheduler.yaml
+
 helmCharts:
   - name: descheduler
     repo: https://kubernetes-sigs.github.io/descheduler/
