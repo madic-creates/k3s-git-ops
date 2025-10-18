@@ -14,7 +14,7 @@ helmCharts:
 
 resources:
   - namespace.yaml
-  #- np.k8s.authelia.yaml
+  - k8s.np.authelia.yaml
 
 # Temporary workaround until following is fixed:
 # - https://github.com/authelia/chartrepo/issues/362
