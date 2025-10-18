@@ -13,18 +13,13 @@ spec:
     matchLabels:
       k8s-app: kube-dns
   ingress:
-  # Allow DNS queries from all cluster pods on UDP port 53
-  - fromEndpoints:
-    - {}
+  # Allow DNS queries from all cluster pods on UDP / TCP port 53
+  - fromEntities:
+    - cluster
     toPorts:
     - ports:
       - port: "53"
         protocol: UDP
-  # Allow DNS queries from all cluster pods on TCP port 53
-  - fromEndpoints:
-    - {}
-    toPorts:
-    - ports:
       - port: "53"
         protocol: TCP
   # Allow Prometheus to scrape CoreDNS metrics on port 9153
@@ -45,9 +40,33 @@ spec:
         protocol: TCP
       - port: "8181"
         protocol: TCP
+  # Allow responses from Kubernetes API server back to CoreDNS
+  # Required for the kubernetes plugin to receive watch events and API responses
+  - fromEntities:
+    - kube-apiserver
+    - host
   egress:
-  # Allow CoreDNS to forward DNS queries to external Pi-hole DNS server
-  # Used for conditional forwarding (neese-web.de domain)
+  # Allow CoreDNS to communicate with Kubernetes API server
+  # Required for service discovery and watching DNS-related resources
+  # Allows both direct kube-apiserver entity and host connections (for API server on host network)
+  - toEntities:
+    - kube-apiserver
+    - host
+  # Allow CoreDNS to forward DNS queries to cluster-internal Pi-hole DNS servers
+  # Used for conditional forwarding within the cluster
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: dns
+        k8s:io.kubernetes.pod.namespace: dns
+        k8s:app: pihole
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow CoreDNS to forward DNS queries to external/world DNS servers
+  # Used for upstream resolution (e.g., external forwarders, public DNS)
   - toEntities:
     - world
     toPorts:
@@ -57,6 +76,7 @@ spec:
       - port: "53"
         protocol: TCP
   # Allow CoreDNS to resolve queries using upstream resolvers from /etc/resolv.conf
+  # Enables FQDN-based resolution for any domain
   - toFQDNs:
     - matchPattern: "*"
     toPorts:
