@@ -2,6 +2,7 @@
 resources:
   - namespace.yaml
   - smb-storageclass.yml
+  - k8s.np.csi-smb.yaml
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "20"
