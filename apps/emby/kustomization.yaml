@@ -4,7 +4,7 @@ resources:
   - smb-media.yaml
   - longhorn-media.yaml
   - autorestart.yaml
-  - np.k8s.emby.yaml
+  - k8s.np.emby.yaml
 
 namespace: media
 
