@@ -1,0 +1,50 @@
+---
+# VersityGW Network Policy
+# Allows VersityGW (S3-compatible gateway) to receive traffic and authenticate via LDAP
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: versitygw
+  namespace: longhorn
+  annotations:
+    argocd.argoproj.io/sync-wave: "16"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: versitygw
+  ingress:
+  # Allow ingress from Traefik for S3 API access
+  # VersityGW exposes S3-compatible API on port 7070
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: traefik
+        k8s:io.kubernetes.pod.namespace: traefik
+        k8s:app.kubernetes.io/name: traefik
+    toPorts:
+    - ports:
+      - port: "7070"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow LDAPS for user authentication via LLDAP
+  # VersityGW uses LDAP for IAM (Identity and Access Management)
+  # Connection: ldaps://lldap.authelia.svc.cluster.local:6360
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: authelia
+        k8s:app.kubernetes.io/name: lldap
+    toPorts:
+    - ports:
+      - port: "6360"
+        protocol: TCP
