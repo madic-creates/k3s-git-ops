@@ -1,15 +1,48 @@
 ---
-K3S_IP_ADDRESS: 192.168.33.11
-K3S_VIP: 192.168.33.9
-K3S_TOKEN: VAGRANT
+# K3s Cluster Configuration
+# This file contains all available variables for k3s cluster deployment
+
+# =============================================================================
+# Security Configuration
+# =============================================================================
+
+# K3s cluster token for node authentication
+# Can be provided via vault_k3s_token or will be auto-generated
+vault_k3s_token: VAGRANT
+k3s_token: {{ vault_k3s_token }}
+
+# =============================================================================
+# Network Configuration
+# =============================================================================
+
+# K3s virtual IP (VIP) for HA cluster
+# This IP is used by KubeVIP for load balancing and HA
+k3s:
+  network:
+    vip: "192.168.33.9"
+
+# K3s version for k9s CLI tool
+# See: https://github.com/derailed/k9s/releases
+k9s_version: "v0.50.16"
+
+# =============================================================================
+# K3s Server Configuration
+# =============================================================================
+
+# K3s server configuration file content
+# This is deployed to /etc/rancher/k3s/config.yaml on server nodes
 K3S_SERVER_CONFIG:
   - name: config.yaml
     content: |
+      # Write kubeconfig with read permissions for users
       write-kubeconfig-mode: "0644"
+
+      # Disable default k3s components
       disable:
-        - "servicelb"
-        - "local-storage"
-        - "traefik"
+        - "servicelb"        # Use MetalLB or KubeVIP instead
+        - "local-storage"    # Use Longhorn instead
+        - "traefik"          # Deploy Traefik via ArgoCD
+
       # Bindings required for prometheus monitoring
       kube-controller-manager-arg:
         - "bind-address=0.0.0.0"
@@ -19,39 +52,92 @@ K3S_SERVER_CONFIG:
         - "bind-address=0.0.0.0"
       kubelet-arg:
         - "config=/etc/rancher/k3s/kubelet.config"
+
+      # Expose etcd metrics for monitoring
       etcd-expose-metrics: true
-      tls-san: "192.168.33.11, 192.168.33.12, 192.168.33.13"
+
+      # TLS SANs for certificate validation
+      # Add all server IPs and VIP
+      tls-san:
+        - "192.168.1.100"
+        - "192.168.1.101"
+        - "192.168.1.102"
+
+      # Use systemd-resolved DNS
       resolv-conf: "/run/systemd/resolve/resolv.conf"
+
+      # Enable embedded registry for caching images
       embedded-registry: true
+
+      # Flannel backend (options: vxlan, host-gw, wireguard, wireguard-native, none)
+      # Use 'none' if using Cilium as CNI
       flannel-backend: "wireguard-native"
+
+      # Initialize cluster (required for first server node)
       cluster-init: true
+
+# =============================================================================
+# K3s Agent Configuration
+# =============================================================================
+
+# K3s agent configuration file content
+# This is deployed to /etc/rancher/k3s/config.yaml on agent nodes
 K3S_AGENT_CONFIG:
   - name: config.yaml
     content: |
+      # Kubelet configuration
       kubelet-arg: "config=/etc/rancher/k3s/kubelet.config"
+
+      # Use systemd-resolved DNS
       resolv-conf: "/run/systemd/resolve/resolv.conf"
 
-# https://github.com/derailed/k9s/releases
-K3S_K9S_VERSION: v0.32.4
+# =============================================================================
+# Container Registry Configuration
+# =============================================================================
 
+# Container registry mirrors and configurations
+# This is deployed to /etc/rancher/k3s/registries.yaml
 K3S_REGISTRIES:
   - name: registries.yaml
     content: |
-      # This configures a local caching registry as a mirror for all docker.io hosted images to prevent rate limiting.
-      # Currently running official registry as caching mirror.
-      # Potential replacement to cache from every container registry: https://github.com/rpardini/docker-registry-proxy
+      # Configure container registry mirrors to prevent rate limiting
+      # Example: Local caching registry mirror for docker.io
       #mirrors:
       #  docker.io:
       #    endpoint:
-      #      - http://192.168.1.45:5000
+      #      - "http://192.168.1.50:5000"
+      #
+      # Private registry authentication
+      #configs:
+      #  "registry.example.com":
+      #    auth:
+      #      username: "username"
+      #      password: "password"
 
+# =============================================================================
+# Kubelet Configuration
+# =============================================================================
+
+# Kubelet configuration file content
+# This is deployed to /etc/rancher/k3s/kubelet.config
 K3S_KUBELET:
   - name: kubelet.config
     content: |
       apiVersion: kubelet.config.k8s.io/v1beta1
       kind: KubeletConfiguration
 
-      ## Enables kubelet to gracefully evict pods during a node shutdown
-      ## https://kubernetes.io/blog/2021/04/21/graceful-node-shutdown-beta/
+      # Graceful node shutdown configuration
+      # Enables kubelet to gracefully evict pods during node shutdown
+      # See: https://kubernetes.io/blog/2021/04/21/graceful-node-shutdown-beta/
       shutdownGracePeriod: 30s
       shutdownGracePeriodCriticalPods: 10s
+
+      # Additional kubelet settings can be added here:
+      # - maxPods: 110
+      # - podsPerCore: 0
+      # - enableControllerAttachDetach: true
+      # - imageGCHighThresholdPercent: 85
+      # - imageGCLowThresholdPercent: 80
+      # - evictionHard:
+      #     memory.available: "100Mi"
+      #     nodefs.available: "10%"
