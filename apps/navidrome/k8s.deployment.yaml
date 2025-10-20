@@ -80,8 +80,10 @@ spec:
       restartPolicy: Always
       volumes:
         - name: config-vol
-          persistentVolumeClaim:
-            claimName: local-path-navidrome-config
+          hostPath:
+            path: /vol_raidz1/container-scheduler/navidrome
+            type: DirectoryOrCreate
         - name: music-vol
-          persistentVolumeClaim:
-            claimName: local-path-music-navidrome
+          hostPath:
+            path: /vol_raidz1/music
+            type: Directory
