@@ -45,8 +45,10 @@ spec:
       restartPolicy: Always
       volumes:
         - name: config-vol
-          persistentVolumeClaim:
-            claimName: local-path-lidarr-config
+          hostPath:
+            path: /vol_raidz1/container-scheduler/downloader-lidarr
+            type: DirectoryOrCreate
         - name: music-vol
-          persistentVolumeClaim:
-            claimName: local-path-music
+          hostPath:
+            path: /vol_raidz1/music
+            type: Directory
