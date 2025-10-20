@@ -1,25 +1,23 @@
+## Mis
 charts/
 .vagrant/
 .envrc
-inventory
 shared/*
 !shared/.gitkeep
 site/
 .cache/
-apps/argo-cd-apps/argocd.secret*.yaml
-!apps/argo-cd-apps/argocd.secret*.enc.yaml
+values.yaml
+.vscode/*
+
+## Ansible
+.ansible/*
+/ansible/inventory/*
+!/ansible/inventory/vagrant
+
+## Different sops decrypted formats
+*.enc_decrypted.yaml
+*.enc.tmp.yaml
 *.decrypted~*.yaml
 *.decrypted.yaml
-ansible/vars/*
-!ansible/vars/example.yaml
-!ansible/vars/vagrant.yaml
-values.yaml
-/ansible/group_vars/all/*.yml
-/ansible/group_vars/all/*.yaml
-!/ansible/group_vars/all/main.yml
-/ansible/host_vars/*.yml
-!/ansible/host_vars/.gitkeep
-*.enc.tmp.yaml
-.ansible/*
-.vscode/*
-*.enc_decrypted.yaml
+apps/argo-cd-apps/argocd.secret*.yaml
+!apps/argo-cd-apps/argocd.secret*.enc.yaml
