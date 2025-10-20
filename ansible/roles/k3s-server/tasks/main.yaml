@@ -8,7 +8,7 @@
     owner: root
     group: root
     mode: "0644"
-  no_log: true
+  #no_log: true
   with_items:
     - "{{ K3S_SERVER_CONFIG }}"
     - "{{ K3S_REGISTRIES }}"
@@ -21,6 +21,7 @@
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
+        mode: '0750'
       become: false
       delegate_to: localhost
       with_items:
@@ -34,7 +35,7 @@
     - name: "K3s Server | Execute installation script on primary"
       ansible.builtin.command: "/tmp/k3s_install.sh"
       environment:
-        K3S_TOKEN: "{{ k3s_token }}"
+        K3S_TOKEN: "{{ vault_k3s_token }}"
       changed_when: true
       when: not k3s_binary_primary.stat.exists
 
@@ -57,12 +58,12 @@
     - not k3s_binary_secondary.stat.exists
   ansible.builtin.command: "/tmp/k3s_install.sh server"
   environment:
-    K3S_TOKEN: "{{ k3s_token }}"
+    K3S_TOKEN: "{{ vault_k3s_token }}"
     K3S_URL: "https://{{ k3s.network.vip }}:6443"
   changed_when: true
 
 - name: "K3s Server | Wait for K3s API to be ready"
-  uri:
+  ansible.builtin.uri:
     url: "https://{{ k3s.network.vip }}:6443/readyz"
     validate_certs: false
   register: k3s_ready
@@ -77,7 +78,7 @@
     path: /etc/rancher/k3s/config.yaml
     regexp: ".*cluster-init.*"
     state: absent
-  notify: restart k3s
+  notify: Handler | Restart k3s
 
 - name: "K3s Server | Copy kubeconfig to user directory"
   ansible.builtin.copy:

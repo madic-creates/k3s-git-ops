@@ -2,13 +2,13 @@
 # code: language=ansible
 
 - name: "Common | Generate K3s token if not provided via vault"
-  set_fact:
+  ansible.builtin.set_fact:
     k3s_token_generated: "{{ lookup('password', '/dev/null chars=ascii_letters,digits length=32') }}"
   run_once: true
   when: vault_k3s_token is not defined or vault_k3s_token == "" or "replace-with" in vault_k3s_token
 
 - name: "Common | Set K3s token fact"
-  set_fact:
+  ansible.builtin.set_fact:
     k3s_token: "{{ vault_k3s_token | default(k3s_token_generated, true) }}"
   run_once: true
 
@@ -69,6 +69,9 @@
       ansible.builtin.copy:
         src: /etc/resolv.conf
         dest: /etc/resolv.conf.bak
+        owner: root
+        group: root
+        mode: '0644'
         remote_src: true
 
     - name: "Common | Delete /etc/resolv.conf"
@@ -94,10 +97,20 @@
     - /etc/rancher/k3s
     - /root/.kube
 
+# - name: "Common | Download K3s installation script"
+#   ansible.builtin.shell:
+#     cmd: curl -sfL https://get.k3s.io -o /tmp/k3s_install.sh && chmod 0750 /tmp/k3s_install.sh
+#   args:
+#     creates: /tmp/k3s_install.sh
+#   run_once: true
+#   delegate_to: localhost
+
 - name: "Common | Download K3s installation script"
-  ansible.builtin.shell:
-    cmd: curl -sfL https://get.k3s.io -o /tmp/k3s_install.sh && chmod 0750 /tmp/k3s_install.sh
-  args:
-    creates: /tmp/k3s_install.sh
+  ansible.builtin.get_url:
+    url: https://get.k3s.io
+    dest: /tmp/k3s_install.sh
+    mode: '0750'
+  # args:
+  #   creates: /tmp/k3s_install.sh
   run_once: true
-  delegate_to: localhost
+  #delegate_to: localhost

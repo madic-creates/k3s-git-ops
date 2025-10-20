@@ -3,7 +3,7 @@
 
 - name: "Archlinux | Copy server CA certificate"
   ansible.builtin.copy:
-    src: "../shared/{{ groups['k3s_primary_server'][0] }}/server-ca.crt"
+    src: "../../shared/{{ groups['k3s_primary_server'][0] }}/server-ca.crt"
     dest: /etc/ca-certificates/trust-source/anchors/
     owner: root
     group: root
