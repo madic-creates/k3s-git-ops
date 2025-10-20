@@ -27,7 +27,7 @@ helmCharts:
         GID: "0"
       image:
         repository: emby/embyserver
-        tag: 4.9.2.3
+        tag: 4.9.2.4
         pullPolicy: IfNotPresent
       resources:
         requests:
