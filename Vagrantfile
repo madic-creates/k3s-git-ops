@@ -65,8 +65,8 @@ Vagrant.configure("2") do |config|
           ansible.limit = "all"
           ansible.compatibility_mode = "2.0"
           ansible.config_file = "ansible/ansible.cfg"
-          ansible.playbook = "ansible/install.yaml"
-          ansible.extra_vars = "@ansible/group_vars/all/main.yml"
+          ansible.playbook = "ansible/playbooks/install.yaml"
+          ansible.extra_vars = "@ansible/inventory/vagrant/group_vars/all/main.yml"
           ansible.galaxy_role_file = "ansible/requirements.yaml"
           ansible.groups = all_groups
           ansible.become = true
