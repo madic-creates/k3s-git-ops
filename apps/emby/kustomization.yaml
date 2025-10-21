@@ -1,6 +1,7 @@
 ---
 resources:
   - namespace.yaml
+  - k8s.np.media-default-deny.yaml
   - smb-media.yaml
   - longhorn-media.yaml
   - autorestart.yaml
