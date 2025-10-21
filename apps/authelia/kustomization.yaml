@@ -16,7 +16,6 @@ resources:
   - namespace.yaml
   - k8s.np.authelia-default-deny.yaml
   - k8s.np.authelia.yaml
-  - k8s.np.lldap.yaml
 
 # Temporary workaround until following is fixed:
 # - https://github.com/authelia/chartrepo/issues/362
