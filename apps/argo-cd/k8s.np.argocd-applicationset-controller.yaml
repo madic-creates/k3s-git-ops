@@ -1,15 +1,15 @@
 ---
-# ArgoCD Notifications Controller Network Policy
-# Allows notifications-controller to send notifications to external services
+# ArgoCD ApplicationSet Controller Network Policy
+# Allows applicationset-controller to manage ApplicationSets
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: argocd-notifications-controller
+  name: argocd-applicationset-controller
   namespace: argocd
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: argocd-notifications-controller
+      app.kubernetes.io/name: argocd-applicationset-controller
   ingress:
   # Allow internal health checks and metrics
   - fromEndpoints:
@@ -17,7 +17,9 @@ spec:
         k8s:io.kubernetes.pod.namespace: argocd
     toPorts:
     - ports:
-      - port: '9001'
+      - port: '7000'
+        protocol: TCP
+      - port: '8080'
         protocol: TCP
   # Allow Prometheus to scrape metrics
   - fromEndpoints:
@@ -26,21 +28,9 @@ spec:
         k8s:io.kubernetes.pod.namespace: monitoring
     toPorts:
     - ports:
-      - port: '9001'
+      - port: '8080'
         protocol: TCP
   egress:
-  # Allow DNS resolution
-  - toEndpoints:
-    - matchLabels:
-        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
-        k8s:io.kubernetes.pod.namespace: kube-system
-        k8s:k8s-app: kube-dns
-    toPorts:
-    - ports:
-      - port: '53'
-        protocol: UDP
-      - port: '53'
-        protocol: TCP
   # Allow Kubernetes API access
   - toEntities:
     - kube-apiserver
@@ -50,16 +40,10 @@ spec:
         protocol: TCP
       - port: '443'
         protocol: TCP
-  # Allow external notification services (Slack, email servers, webhooks, etc.)
+  # Allow external SCM providers (for Git generators)
   - toEntities:
     - world
     toPorts:
     - ports:
       - port: '443'
-        protocol: TCP
-      - port: '587'
-        protocol: TCP
-      - port: '465'
-        protocol: TCP
-      - port: '25'
         protocol: TCP

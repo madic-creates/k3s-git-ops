@@ -14,9 +14,10 @@ helmCharts:
     valuesFile: values.yaml
 
 resources:
-  - np.k8s.argocd-application-controller.yaml
-  - np.k8s.argocd-applicationset-controller.yaml
-  - np.k8s.argocd-notifications-controller.yaml
-  - np.k8s.argocd-redis.yaml
-  - np.k8s.argocd-repo-server.yaml
-  - np.k8s.argocd-server.yaml
+  - k8s.np.argocd-default-deny.yaml
+  - k8s.np.argocd-application-controller.yaml
+  - k8s.np.argocd-applicationset-controller.yaml
+  - k8s.np.argocd-notifications-controller.yaml
+  - k8s.np.argocd-redis.yaml
+  - k8s.np.argocd-repo-server.yaml
+  - k8s.np.argocd-server.yaml
