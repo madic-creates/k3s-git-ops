@@ -11,12 +11,12 @@ spec:
     matchLabels:
       app.kubernetes.io/name: argocd-redis-secret-init
   egress:
-  # Allow redis-init to access Redis
-  - toEndpoints:
-    - matchLabels:
-        k8s:app.kubernetes.io/name: argocd-redis
-        k8s:io.kubernetes.pod.namespace: argocd
+  # Allow kubernetes api access
+  - toEntities:
+    - kube-apiserver
     toPorts:
     - ports:
-      - port: '6379'
+      - port: '6443'
+        protocol: TCP
+      - port: '443'
         protocol: TCP
