@@ -1,6 +1,7 @@
 ---
 resources:
   - k8s.whoami.yaml
+  - k8s.np.whoami-default-deny.yaml
   - k8s.np.whoami.yaml
 
 commonAnnotations:
