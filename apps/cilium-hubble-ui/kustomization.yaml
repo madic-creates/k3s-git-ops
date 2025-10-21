@@ -8,6 +8,7 @@ commonAnnotations:
 
 resources:
   - k8s.np.cilium-hubble-ui.yaml
+  - k8s.np.hubble-relay.yaml
 
 generators:
   - kustomize-secret-generator.yaml
