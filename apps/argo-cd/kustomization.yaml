@@ -18,6 +18,7 @@ resources:
   - k8s.np.argocd-application-controller.yaml
   - k8s.np.argocd-applicationset-controller.yaml
   - k8s.np.argocd-notifications-controller.yaml
+  - k8s.np.argocd-redis-init.yaml
   - k8s.np.argocd-redis.yaml
   - k8s.np.argocd-repo-server.yaml
   - k8s.np.argocd-server.yaml
