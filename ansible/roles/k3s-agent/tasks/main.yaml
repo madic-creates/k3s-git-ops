@@ -23,6 +23,6 @@
   ansible.builtin.command: "/tmp/k3s_install.sh"
   environment:
     K3S_TOKEN: "{{ k3s_token }}"
-    K3S_URL: "https://{{ k3s.network.vip }}:6443"
+    K3S_URL: "https://{{ k3s.network.joinip }}:6443"
   changed_when: true
   when: not k3s_binary_agent.stat.exists

@@ -5,3 +5,4 @@
   ansible.builtin.service:
     name: k3s.service
     state: restarted
+  throttle: 1

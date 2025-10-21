@@ -97,20 +97,8 @@
     - /etc/rancher/k3s
     - /root/.kube
 
-# - name: "Common | Download K3s installation script"
-#   ansible.builtin.shell:
-#     cmd: curl -sfL https://get.k3s.io -o /tmp/k3s_install.sh && chmod 0750 /tmp/k3s_install.sh
-#   args:
-#     creates: /tmp/k3s_install.sh
-#   run_once: true
-#   delegate_to: localhost
-
 - name: "Common | Download K3s installation script"
   ansible.builtin.get_url:
     url: https://get.k3s.io
     dest: /tmp/k3s_install.sh
     mode: '0750'
-  # args:
-  #   creates: /tmp/k3s_install.sh
-  run_once: true
-  #delegate_to: localhost

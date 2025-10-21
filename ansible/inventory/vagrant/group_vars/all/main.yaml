@@ -9,7 +9,7 @@
 # K3s cluster token for node authentication
 # Can be provided via vault_k3s_token or will be auto-generated
 vault_k3s_token: VAGRANT
-k3s_token: {{ vault_k3s_token }}
+k3s_token: "{{ vault_k3s_token }}"
 
 # =============================================================================
 # Network Configuration
@@ -20,6 +20,8 @@ k3s_token: {{ vault_k3s_token }}
 k3s:
   network:
     vip: "192.168.33.9"
+    #joinip: "{{ ansible_default_ipv4.address | default(ansible_all_ipv4_addresses[0]) }}"
+    joinip: "192.168.33.11"
 
 # K3s version for k9s CLI tool
 # See: https://github.com/derailed/k9s/releases
@@ -59,9 +61,9 @@ K3S_SERVER_CONFIG:
       # TLS SANs for certificate validation
       # Add all server IPs and VIP
       tls-san:
-        - "192.168.1.100"
-        - "192.168.1.101"
-        - "192.168.1.102"
+        - "192.168.33.11"
+        - "192.168.33.12"
+        - "192.168.33.13"
 
       # Use systemd-resolved DNS
       resolv-conf: "/run/systemd/resolve/resolv.conf"
