@@ -1,0 +1,10 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: certmanager-default-deny
+  namespace: certmanager
+spec:
+  endpointSelector: {}  # Empty selector = matches ALL pods in this namespace
+  ingress: []
+  egress: []

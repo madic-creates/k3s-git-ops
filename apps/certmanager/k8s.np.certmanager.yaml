@@ -1,0 +1,174 @@
+---
+# Cert-Manager Controller Network Policy
+# Controls network access for the main cert-manager controller
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: cert-manager-controller
+  namespace: certmanager
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: cert-manager
+      app.kubernetes.io/component: controller
+  ingress:
+  # Allow Prometheus to scrape metrics from cert-manager controller
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: monitoring
+        k8s:app.kubernetes.io/name: prometheus
+    toPorts:
+    - ports:
+      - port: "9402"
+        protocol: TCP
+  # Allow pods within certmanager namespace to communicate with each other
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: certmanager
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow communication with Kubernetes API server
+  - toEntities:
+    - kube-apiserver
+  # Allow external DNS queries to configured recursive nameservers (9.9.9.9 and 1.1.1.1)
+  # Required for DNS01 ACME challenge validation
+  - toFQDNs:
+    - matchName: dns.quad9.net
+    - matchName: dns9.quad9.net
+    - matchPattern: "*.quad9.net"
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  - toCIDRSet:
+    - cidr: 9.9.9.9/32
+    - cidr: 1.1.1.1/32
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow HTTPS to external ACME servers (Let's Encrypt, etc.)
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+      - port: "80"
+        protocol: TCP
+---
+# Cert-Manager CA Injector Network Policy
+# Controls network access for the cert-manager cainjector component
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: cert-manager-cainjector
+  namespace: certmanager
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: cainjector
+      app.kubernetes.io/component: cainjector
+  ingress:
+  # Allow Prometheus to scrape metrics from cainjector
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: monitoring
+        k8s:app.kubernetes.io/name: prometheus
+    toPorts:
+    - ports:
+      - port: "9402"
+        protocol: TCP
+  # Allow pods within certmanager namespace to communicate with each other
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: certmanager
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow communication with Kubernetes API server
+  - toEntities:
+    - kube-apiserver
+---
+# Cert-Manager Webhook Network Policy
+# Controls network access for the cert-manager webhook component
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: cert-manager-webhook
+  namespace: certmanager
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: webhook
+      app.kubernetes.io/component: webhook
+  ingress:
+  # Allow Kubernetes API server to call the webhook for validation
+  - fromEntities:
+    - kube-apiserver
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+      - port: "6080"
+        protocol: TCP
+  # Allow Prometheus to scrape metrics from webhook
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: monitoring
+        k8s:app.kubernetes.io/name: prometheus
+    toPorts:
+    - ports:
+      - port: "9402"
+        protocol: TCP
+  # Allow pods within certmanager namespace to communicate with each other
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: certmanager
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow communication with Kubernetes API server
+  - toEntities:
+    - kube-apiserver
