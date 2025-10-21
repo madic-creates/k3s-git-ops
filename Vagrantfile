@@ -16,7 +16,7 @@ Vagrant.configure("2") do |config|
       ip: "192.168.33.12",
       memory: 2048,
       cpus: 2,
-      groups: { "k3s_agent" => ["k3svm2"] }
+      groups: { "k3s_secondary_server" => ["k3svm2"] }
     },
     "k3svm3" => {
       ip: "192.168.33.13",
@@ -59,17 +59,25 @@ Vagrant.configure("2") do |config|
       provision_all = running_machines.empty?
       provision_single = !running_machines.empty? && running_machines.include?(name)
 
-      # Configure Ansible provisioner
+      # Install Python on each VM individually
+      node.vm.provision "python-install", type: "shell", inline: <<-SHELL
+        pacman -Sy --noconfirm archlinux-keyring
+        pacman -Sy --noconfirm python openssl
+      SHELL
+
+      # Configure Ansible provisioner (only once for all VMs)
       if (provision_all && !provision_done) || provision_single
         node.vm.provision :ansible do |ansible|
           ansible.limit = "all"
           ansible.compatibility_mode = "2.0"
           ansible.config_file = "ansible/ansible.cfg"
           ansible.playbook = "ansible/playbooks/install.yaml"
-          ansible.extra_vars = "@ansible/inventory/vagrant/group_vars/all/main.yml"
+          ansible.extra_vars = "@ansible/inventory/vagrant/group_vars/all/main.yaml"
           ansible.galaxy_role_file = "ansible/requirements.yaml"
           ansible.groups = all_groups
           ansible.become = true
+          #ansible.raw_arguments = ['-vvv']
+          ansible.verbose = true
         end
         provision_done = true  # Set the flag to true after provisioning the first time
       end
