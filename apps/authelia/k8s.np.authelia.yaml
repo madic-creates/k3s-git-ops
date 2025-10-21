@@ -64,6 +64,27 @@ spec:
       - port: '9091'
         protocol: TCP
   egress:
+  # Allow DNS resolution
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: '53'
+        protocol: UDP
+      - port: '53'
+        protocol: TCP
+  # Allow access to LLDAP for LDAP authentication
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: lldap
+        k8s:io.kubernetes.pod.namespace: authelia
+    toPorts:
+    - ports:
+      - port: '6360'
+        protocol: TCP
   # Allow access to Redis for session storage
   - toEndpoints:
     - matchLabels:
