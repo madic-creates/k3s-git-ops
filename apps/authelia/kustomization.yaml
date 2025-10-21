@@ -14,6 +14,7 @@ helmCharts:
 
 resources:
   - namespace.yaml
+  - k8s.np.authelia-default-deny.yaml
   - k8s.np.authelia.yaml
 
 # Temporary workaround until following is fixed:
