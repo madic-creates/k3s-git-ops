@@ -6,5 +6,8 @@ namespace: kube-system
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "05"
 
+resources:
+  - k8s.np.cilium-hubble-ui.yaml
+
 generators:
   - kustomize-secret-generator.yaml
