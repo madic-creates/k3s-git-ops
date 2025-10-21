@@ -54,12 +54,21 @@ spec:
         protocol: UDP
       - port: "53"
         protocol: TCP
-  # Allow connections to Cilium agents via hubble-peer service (port 4244)
-  # Hubble Relay polls Cilium agents to aggregate network flow data
-  - toEndpoints:
-    - matchLabels:
-        k8s:k8s-app: cilium
-        k8s:io.kubernetes.pod.namespace: kube-system
+  # Allow connections to hubble-peer service
+  # The service fronts Cilium agents running in hostNetwork mode
+  # Service ClusterIP (10.43.37.32:443) forwards to node IPs on port 4244
+  # Note: Cilium agents run in hostNetwork, so we need both:
+  # 1. Access to service CIDR (for service connectivity)
+  # 2. Access to host network (where actual Cilium agents listen on port 4244)
+  - toCIDR:
+    - 10.43.0.0/16
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+  # Allow connections to host network where Cilium agents actually run
+  - toEntities:
+    - host
     toPorts:
     - ports:
       - port: "4244"
