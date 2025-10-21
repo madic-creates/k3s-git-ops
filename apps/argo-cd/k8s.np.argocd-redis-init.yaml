@@ -11,7 +11,28 @@ spec:
     matchLabels:
       app.kubernetes.io/name: argocd-redis-secret-init
   egress:
-  # Allow kubernetes api access
+  # Allow DNS resolution
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: '53'
+        protocol: UDP
+      - port: '53'
+        protocol: TCP
+  # Allow kubernetes api access via service (kubernetes.default.svc)
+  - toServices:
+    - k8sService:
+        serviceName: kubernetes
+        namespace: default
+    toPorts:
+    - ports:
+      - port: '443'
+        protocol: TCP
+  # Allow kubernetes api access via direct node endpoints (fallback)
   - toEntities:
     - kube-apiserver
     toPorts:
