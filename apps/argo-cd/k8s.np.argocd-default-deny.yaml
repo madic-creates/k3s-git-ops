@@ -10,30 +10,30 @@ metadata:
 spec:
   endpointSelector: {}  # Empty selector = matches ALL pods in this namespace
 
-  ingress:
+  ingress: []
   # Allow communication from pods within the same namespace
   # This enables namespace-internal service discovery and communication
-  - fromEndpoints:
-    - matchLabels:
-        k8s:io.kubernetes.pod.namespace: argocd
+  #- fromEndpoints:
+  #  - matchLabels:
+  #      k8s:io.kubernetes.pod.namespace: argocd
 
-  egress:
+  egress: []
   # Allow DNS resolution to CoreDNS for all pods
   # Required for service discovery and external name resolution
-  - toEndpoints:
-    - matchLabels:
-        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
-        k8s:io.kubernetes.pod.namespace: kube-system
-        k8s:k8s-app: kube-dns
-    toPorts:
-    - ports:
-      - port: "53"
-        protocol: UDP
-      - port: "53"
-        protocol: TCP
+  #- toEndpoints:
+  #  - matchLabels:
+  #      k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+  #      k8s:io.kubernetes.pod.namespace: kube-system
+  #      k8s:k8s-app: kube-dns
+  #  toPorts:
+  #  - ports:
+  #    - port: "53"
+  #      protocol: UDP
+  #    - port: "53"
+  #      protocol: TCP
 
   # Allow egress to pods within the same namespace
   # Enables pods to communicate with each other
-  - toEndpoints:
-    - matchLabels:
-        k8s:io.kubernetes.pod.namespace: argocd
+  #- toEndpoints:
+  #  - matchLabels:
+  #      k8s:io.kubernetes.pod.namespace: argocd
