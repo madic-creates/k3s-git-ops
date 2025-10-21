@@ -1,0 +1,60 @@
+---
+# Homepage Network Policy
+# Allows Homepage to access Kubernetes API, receive traffic from Traefik/Authelia, and resolve DNS
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: homepage
+  namespace: media
+  annotations:
+    argocd.argoproj.io/sync-wave: "90"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: homepage
+  ingress:
+  # Allow Traefik to reach Homepage service via Ingress
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/instance: traefik-kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+    toPorts:
+    - ports:
+      - port: "3000"
+        protocol: TCP
+  # Allow Authelia to reach Homepage for forward auth validation
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: authelia
+        k8s:io.kubernetes.pod.namespace: authelia
+    toPorts:
+    - ports:
+      - port: "3000"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to Kubernetes API server for cluster monitoring
+  # Homepage needs to query pods, nodes, ingresses, and metrics
+  - toEntities:
+    - kube-apiserver
+  # Allow HTTPS to external services for widgets and integrations
+  # (weather, status pages, external APIs, etc.)
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+      - port: "80"
+        protocol: TCP
