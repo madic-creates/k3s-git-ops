@@ -6,5 +6,8 @@ metadata:
   namespace: media
 spec:
   endpointSelector: {}  # Empty selector = matches ALL pods in this namespace
-  ingress: []
-  egress: []
+  # Default deny
+  ingress:
+    - {}
+  egress:
+    - {}
