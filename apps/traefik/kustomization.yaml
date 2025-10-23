@@ -2,6 +2,7 @@
 resources:
   - traefik-config.yaml
   - namespace.yaml
+  #- k8s.np.traefik.yaml
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "3"
@@ -47,6 +48,18 @@ helmCharts:
           exposedPort: 443
           tls:
             enabled: true
+        minecraft-java:
+          port: 25565
+          expose:
+            default: true
+          exposedPort: 25565
+          protocol: TCP
+        minecraft-bedrock:
+          port: 19132
+          expose:
+            default: true
+          exposedPort: 19132
+          protocol: UDP
         web239:
           port: 8010
           expose:
