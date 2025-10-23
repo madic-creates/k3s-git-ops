@@ -10,12 +10,16 @@ metadata:
 spec:
   endpointSelector: {}  # Empty selector = matches ALL pods in this namespace
 
-  # Deny every ingress attempt unless another policy explicitly allows it.
-  ingressDeny:
-  - fromEntities:
-    - all
+  # Use an allow rule that never matches to put pods into default-deny mode
+  ingress:
+    - {}
+  #- fromEndpoints:
+  #  - matchLabels:
+  #      cilium.io/default-deny: "never-match"
 
-  # Deny every egress attempt unless another policy explicitly allows it.
-  egressDeny:
-  - toEntities:
-    - all
+  # Same pattern for egress: no destinations match this label, so nothing is allowed by default
+  egress:
+    - {}
+  #- toEndpoints:
+  #  - matchLabels:
+  #      cilium.io/default-deny: "never-match"
