@@ -73,6 +73,13 @@ spec:
     - ports:
       - port: "4244"
         protocol: TCP
+  # Allow connections to remote nodes where Cilium agents listen on port 4244
+  - toEntities:
+    - remote-node
+    toPorts:
+    - ports:
+      - port: "4244"
+        protocol: TCP
   # Allow communication with Kubernetes API server for service account authentication
   - toEntities:
     - kube-apiserver
