@@ -18,7 +18,7 @@ spec:
   - fromEndpoints:
     - matchLabels:
         k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: traefik
-        k8s:io.kubernetes.pod.namespace: traefik
+        k8s:io.kubernetes.pod.namespace: kube-system
         k8s:app.kubernetes.io/name: traefik
     toPorts:
     - ports:
