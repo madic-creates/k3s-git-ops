@@ -17,9 +17,8 @@ spec:
   # VersityGW exposes S3-compatible API on port 7070
   - fromEndpoints:
     - matchLabels:
-        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: traefik
+        k8s:app.kubernetes.io/instance: traefik-kube-system
         k8s:io.kubernetes.pod.namespace: kube-system
-        k8s:app.kubernetes.io/name: traefik
     toPorts:
     - ports:
       - port: "7070"
