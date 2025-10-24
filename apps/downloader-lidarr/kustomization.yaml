@@ -3,7 +3,6 @@ commonAnnotations:
   argocd.argoproj.io/sync-wave: "64"
 
 resources:
-  - k8s.longhorn-config.yaml
   - k8s.deployment.yaml
   - k8s.service.yaml
 

@@ -1,0 +1,55 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: lidarr
+  namespace: media
+  annotations:
+    argocd.argoproj.io/sync-wave: "64"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: lidarr
+  ingress:
+  # Allow ingress from Traefik and any cluster components
+  - fromEntities:
+    - world
+    - cluster
+    toPorts:
+    - ports:
+      - port: "8686"
+        protocol: TCP
+  # Allow pods within media namespace to communicate with lidarr
+  #- fromEndpoints:
+  #  - matchLabels:
+  #      k8s:io.kubernetes.pod.namespace: media
+  #  toPorts:
+  #  - ports:
+  #    - port: "8686"
+  #      protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow HTTPS connections to external music metadata APIs (MusicBrainz, etc.)
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+      - port: "80"
+        protocol: TCP
+  # Allow communication with download clients in media namespace
+  #- toEndpoints:
+  #  - matchLabels:
+  #      k8s:io.kubernetes.pod.namespace: media
