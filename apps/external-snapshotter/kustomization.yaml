@@ -11,6 +11,7 @@ namespace: kube-system
 resources:
   - https://github.com/kubernetes-csi/external-snapshotter/client/config/crd/?ref=v8.3.0
   - https://github.com/kubernetes-csi/external-snapshotter/deploy/kubernetes/snapshot-controller/?ref=v8.3.0
+  - k8s.np.external-snapshotter.yaml
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "14"
