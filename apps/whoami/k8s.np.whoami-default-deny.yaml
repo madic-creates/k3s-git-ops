@@ -9,17 +9,8 @@ metadata:
   namespace: whoami
 spec:
   endpointSelector: {}  # Empty selector = matches ALL pods in this namespace
-
-  # Use an allow rule that never matches to put pods into default-deny mode
+  # Default deny
   ingress:
     - {}
-  #- fromEndpoints:
-  #  - matchLabels:
-  #      cilium.io/default-deny: "never-match"
-
-  # Same pattern for egress: no destinations match this label, so nothing is allowed by default
   egress:
     - {}
-  #- toEndpoints:
-  #  - matchLabels:
-  #      cilium.io/default-deny: "never-match"
