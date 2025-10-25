@@ -1,0 +1,16 @@
+---
+# Default Deny Network Policy for namespace
+# This policy applies to ALL pods in the namespace
+# It provides baseline security rules that all pods inherit
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: goldilocks-default-deny
+  namespace: goldilocks
+spec:
+  endpointSelector: {}  # Empty selector = matches ALL pods in this namespace
+  # Default deny
+  ingress:
+    - {}
+  egress:
+    - {}

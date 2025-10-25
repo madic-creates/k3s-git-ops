@@ -1,0 +1,95 @@
+---
+# Goldilocks Dashboard Network Policy
+# Goldilocks provides a dashboard for VPA (Vertical Pod Autoscaler) recommendations
+# It queries the Kubernetes API to read VPA objects and namespace information
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: goldilocks-dashboard
+  namespace: goldilocks
+  annotations:
+    argocd.argoproj.io/sync-wave: "90"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: goldilocks
+      app.kubernetes.io/component: dashboard
+  ingress:
+  # Allow Traefik ingress controller to reach Goldilocks dashboard web interface
+  # Users access Goldilocks through Traefik with Authelia SSO authentication
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: traefik
+        k8s:io.kubernetes.pod.namespace: traefik
+    toPorts:
+    - ports:
+      - port: "8080"
+        protocol: TCP
+  # Allow internal communication within goldilocks namespace
+  # This allows dashboard and controller pods to communicate if needed
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: goldilocks
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to Kubernetes API server for reading VPA objects and namespace labels
+  # Goldilocks dashboard queries the API to retrieve VPA recommendations
+  - toEntities:
+    - kube-apiserver
+  # Allow egress within goldilocks namespace for inter-pod communication
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: goldilocks
+---
+# Goldilocks Controller Network Policy
+# The controller watches namespaces with goldilocks.fairwinds.com/enabled label
+# and automatically creates VPA objects for workloads in those namespaces
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: goldilocks-controller
+  namespace: goldilocks
+  annotations:
+    argocd.argoproj.io/sync-wave: "90"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: goldilocks
+      app.kubernetes.io/component: controller
+  ingress:
+  # Allow internal communication within goldilocks namespace
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: goldilocks
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to Kubernetes API server for watching namespaces and creating VPA objects
+  # The controller needs write access to create and manage VPA resources
+  - toEntities:
+    - kube-apiserver
+  # Allow egress within goldilocks namespace for inter-pod communication
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: goldilocks
