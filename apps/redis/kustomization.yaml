@@ -9,3 +9,6 @@ helmCharts:
     releaseName: redis
     namespace: databases
     valuesFile: values.yaml
+
+resources:
+  - k8s.np.redis.yaml

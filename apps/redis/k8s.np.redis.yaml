@@ -1,0 +1,51 @@
+---
+# Redis Network Policy
+# Secures Redis access by allowing only authorized applications to connect
+# Redis serves as a cache and session store for multiple applications in the cluster
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: redis
+  namespace: databases
+  annotations:
+    argocd.argoproj.io/sync-wave: "09"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: redis
+  ingress:
+  # Allow Authelia to connect to Redis on port 6379 for session storage
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: authelia
+        k8s:io.kubernetes.pod.namespace: authelia
+    toPorts:
+    - ports:
+      - port: "6379"
+        protocol: TCP
+  # Allow Paperless to connect to Redis on port 6379 for caching and task queue
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: paperless
+        k8s:io.kubernetes.pod.namespace: paper
+    toPorts:
+    - ports:
+      - port: "6379"
+        protocol: TCP
+  # Allow internal health checks and operations within databases namespace
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: databases
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
