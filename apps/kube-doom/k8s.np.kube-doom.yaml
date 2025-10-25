@@ -1,0 +1,54 @@
+---
+# KubeDoom Network Policy
+# This policy controls network access for the kubedoom deployment.
+#
+# KubeDoom is a tool that allows you to kill Kubernetes pods by playing DOOM.
+# It runs with hostNetwork enabled and needs to:
+# 1. Communicate with the Kubernetes API server to list and delete pods
+# 2. Accept VNC connections on port 5900 (via host network)
+# 3. Access DNS for name resolution
+# 4. Monitor pods in the target namespace (whoami)
+#
+# Note: KubeDoom uses hostNetwork: true, so network policies have limited effect
+# on its network behavior, but this policy documents the intended traffic patterns.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: kubedoom
+  namespace: kubedoom
+  annotations:
+    argocd.argoproj.io/sync-wave: "86"
+spec:
+  endpointSelector:
+    matchLabels:
+      app: kubedoom
+  ingress:
+  # Allow health check probes from host/kubelet
+  # KubeDoom runs on hostNetwork, so kubelet can reach it directly
+  - fromEntities:
+    - host
+    toPorts:
+    - ports:
+      - port: "5900"
+        protocol: TCP
+  # Allow pods within kubedoom namespace to communicate with each other
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: kubedoom
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to Kubernetes API server (required for pod management operations)
+  # KubeDoom needs to list, watch, and delete pods in the monitored namespace
+  - toEntities:
+    - kube-apiserver

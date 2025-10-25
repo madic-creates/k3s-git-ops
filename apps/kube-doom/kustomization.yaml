@@ -9,6 +9,8 @@ commonAnnotations:
 
 resources:
   - https://github.com/storax/kubedoom/manifest
+  - k8s.np.kubedoom-default-deny.yaml
+  - k8s.np.kube-doom.yaml
 
 patches:
   - patch: |
