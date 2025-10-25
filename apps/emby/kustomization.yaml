@@ -6,6 +6,7 @@ resources:
   - longhorn-media.yaml
   - autorestart.yaml
   - k8s.np.emby.yaml
+  - k8s.np.restart-deployment.yaml
 
 namespace: media
 

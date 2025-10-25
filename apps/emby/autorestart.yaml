@@ -56,6 +56,9 @@ spec:
         600 # timeout, makes most sense with
         # "waiting for rollout" variant specified below
       template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: restart-deployment-emby
         spec:
           serviceAccountName:
             restart-deployment-emby # name of the service
