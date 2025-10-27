@@ -26,7 +26,7 @@ spec:
   # Allow backup from internal minecraft
   - fromEndpoints:
     - matchLabels:
-        k8s:app.kubernetes.io/app: minecraft-crossplay
+        k8s:app.kubernetes.io/name: minecraft-crossplay
         k8s:io.kubernetes.pod.namespace: minecraft
     toPorts:
     - ports:
