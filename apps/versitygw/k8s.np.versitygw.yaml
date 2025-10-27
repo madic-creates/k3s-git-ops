@@ -23,6 +23,15 @@ spec:
     - ports:
       - port: "7070"
         protocol: TCP
+  # Allow backup from internal minecraft
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/instance: minecraft
+        k8s:io.kubernetes.pod.namespace: minecraft
+    toPorts:
+    - ports:
+      - port: "7070"
+        protocol: TCP
   egress:
   # Allow DNS resolution via CoreDNS
   - toEndpoints:
