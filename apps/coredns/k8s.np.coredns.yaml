@@ -85,3 +85,38 @@ spec:
         protocol: UDP
       - port: "53"
         protocol: TCP
+  # ICMP to pihole
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: pihole
+        k8s:io.kubernetes.pod.namespace: dns
+    icmps:
+    - fields:
+      - type: EchoRequest
+        family: IPv4
+      - type: EchoReply
+        family: IPv4
+      - type: DestinationUnreachable
+        family: IPv4
+      - type: TimeExceeded
+        family: IPv4
+      - type: ParameterProblem
+        family: IPv4
+      - type: Redirect
+        family: IPv4
+      - type: EchoRequest
+        family: IPv6
+      - type: DestinationUnreachable
+        family: IPv6
+      - type: TimeExceeded
+        family: IPv6
+      - type: ParameterProblem
+        family: IPv6
+      - type: RedirectMessage
+        family: IPv6
+      - type: PacketTooBig
+        family: IPv6
+      - type: MulticastListenerQuery
+        family: IPv6
+      - type: MulticastListenerReport
+        family: IPv6
