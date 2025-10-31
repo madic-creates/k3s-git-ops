@@ -96,7 +96,7 @@ helmCharts:
               topologyKey: "kubernetes.io/hostname"
       additionalContainers:
         - name: backup-sidecar
-          image: ghcr.io/restic/restic:0.18.0
+          image: ghcr.io/restic/restic:0.18.1
           envFrom:
             - secretRef:
                 name: backup-env-configuration-emby
