@@ -6,7 +6,7 @@ namespace: databases
 helmCharts:
   - name: mariadb
     repo: oci://registry-1.docker.io/bitnamicharts
-    version: 22.0.0
+    version: 23.2.1
     releaseName: mariadb
     namespace: databases
     valuesFile: values.yaml
@@ -14,6 +14,8 @@ helmCharts:
 resources:
   - namespace.yaml
   - k8s.backup-pvc.yaml
+  - k8s.np.mariadb.yaml
+  - k8s.np.databases-default-deny.yaml
   #- k8s.backup-cronjob.yaml
 
 generators:

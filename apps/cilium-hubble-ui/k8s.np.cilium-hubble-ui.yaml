@@ -1,0 +1,61 @@
+---
+# Hubble UI Network Policy
+# Controls network access for Cilium Hubble UI (network observability dashboard)
+# Hubble UI provides visibility into network flows within the Kubernetes cluster
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: hubble-ui
+  namespace: kube-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "05"
+spec:
+  endpointSelector:
+    matchLabels:
+      k8s-app: hubble-ui
+  ingress:
+  # Allow Traefik ingress controller to reach Hubble UI web interface
+  # Users access Hubble UI through Traefik with Authelia SSO authentication
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/instance: traefik-kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+    toPorts:
+    - ports:
+      - port: "8081"
+        protocol: TCP
+  # Allow internal health checks and communication within kube-system namespace
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: kube-system
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow Hubble UI backend to connect to Hubble Relay for network flow data
+  # Hubble Relay aggregates flow data from all Cilium agents in the cluster
+  # Note: Service exposes port 80, but pod listens on 4245 (gRPC port)
+  - toEndpoints:
+    - matchLabels:
+        k8s:k8s-app: hubble-relay
+        k8s:io.kubernetes.pod.namespace: kube-system
+    toPorts:
+    - ports:
+      - port: "4245"
+        protocol: TCP
+  # Allow communication with Kubernetes API server for service account authentication
+  - toEntities:
+    - kube-apiserver
+    toPorts:
+    - ports:
+      - port: "6443"
+        protocol: TCP

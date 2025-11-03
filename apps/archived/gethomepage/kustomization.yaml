@@ -1,0 +1,29 @@
+---
+## https://gethomepage.dev
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "90"
+
+namespace: media
+
+resources:
+  - k8s.deployment.yaml
+  - k8s.rbac.yaml
+  - k8s.service.yaml
+  - k8s.np.gethomepage.yaml
+
+# Use configmapgenerator to auto restart pod upon confimap changes
+#configMapGenerator:
+#  - name: homepage
+#    files:
+#      - configmap/bookmarks.yaml
+#      - configmap/custom.css
+#      - configmap/custom.js
+#      - configmap/docker.yaml
+#      - configmap/kubernetes.yaml
+#      - configmap/services.yaml
+#      - configmap/settings.yaml
+#      - configmap/widgets.yaml
+
+generators:
+  - kustomize-secret-generator.yaml

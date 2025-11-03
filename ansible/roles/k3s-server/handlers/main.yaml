@@ -1,0 +1,8 @@
+---
+# code: language=ansible
+
+- name: "Handler | Restart k3s"
+  ansible.builtin.service:
+    name: k3s.service
+    state: restarted
+  throttle: 1

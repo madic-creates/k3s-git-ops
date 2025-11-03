@@ -1,0 +1,95 @@
+---
+# ArgoCD Server Network Policy
+# Allows ArgoCD Server to communicate with repo-server, redis, and receive traffic from Traefik
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: argocd-server
+  namespace: argocd
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: argocd-server
+  ingress:
+  # Allow Traefik ingress controller to reach ArgoCD Server
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/instance: traefik-kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+    toPorts:
+    - ports:
+      - port: '8080'
+        protocol: TCP
+  # Allow internal health checks
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: argocd
+  egress:
+  # Allow access to repo-server
+  - toEndpoints:
+    - matchLabels:
+        app.kubernetes.io/name: argocd-repo-server
+        k8s:io.kubernetes.pod.namespace: argocd
+    toPorts:
+    - ports:
+      - port: '8081'
+        protocol: TCP
+  # Allow access to Redis
+  - toEndpoints:
+    - matchLabels:
+        app.kubernetes.io/name: argocd-redis
+        k8s:io.kubernetes.pod.namespace: argocd
+    toPorts:
+    - ports:
+      - port: '6379'
+        protocol: TCP
+  # Allow access to application-controller
+  - toEndpoints:
+    - matchLabels:
+        app.kubernetes.io/name: argocd-application-controller
+        k8s:io.kubernetes.pod.namespace: argocd
+    toPorts:
+    - ports:
+      - port: '8082'
+        protocol: TCP
+  # Allow DNS resolution
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: '53'
+        protocol: UDP
+      - port: '53'
+        protocol: TCP
+  # Allow Kubernetes API access
+  - toEntities:
+    - kube-apiserver
+    toPorts:
+    - ports:
+      - port: '6443'
+        protocol: TCP
+      - port: '443'
+        protocol: TCP
+  # Allow ArgoCD Server to reach Authelia for SSO authentication
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: authelia
+        k8s:io.kubernetes.pod.namespace: authelia
+    toPorts:
+    - ports:
+      - port: '80'
+        protocol: TCP
+      - port: '9091'
+        protocol: TCP
+  # Authelia authentication
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:app.kubernetes.io/name: traefik
+    toPorts:
+    - ports:
+      - port: '8443'
+        protocol: TCP

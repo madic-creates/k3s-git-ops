@@ -5,17 +5,20 @@
   hosts: all
   become: true
   gather_facts: true
+  tags: common
   roles:
     - k3s-common
 
 - name: "K3s Install | Deploy K3s servers"
   hosts: k3s_primary_server, k3s_secondary_server
   become: true
+  tags: server
   roles:
     - k3s-server
 
 - name: "K3s Install | Deploy K3s agents"
   hosts: k3s_agent
   become: true
+  tags: agent
   roles:
     - k3s-agent

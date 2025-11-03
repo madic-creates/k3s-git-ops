@@ -21,10 +21,11 @@
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
+        mode: '0750'
       become: false
       delegate_to: localhost
       with_items:
-        - "../shared/{{ groups['k3s_primary_server'][0] }}"
+        - "../../shared/{{ groups['k3s_primary_server'][0] }}"
 
     - name: "K3s Server | Check if K3s is already installed on primary"
       ansible.builtin.stat:
@@ -34,50 +35,71 @@
     - name: "K3s Server | Execute installation script on primary"
       ansible.builtin.command: "/tmp/k3s_install.sh"
       environment:
-        K3S_TOKEN: "{{ k3s_token }}"
+        K3S_TOKEN: "{{ vault_k3s_token }}"
       changed_when: true
       when: not k3s_binary_primary.stat.exists
 
     - name: "K3s Server | Fetch CA certificate from primary"
       ansible.builtin.fetch:
         src: /var/lib/rancher/k3s/server/tls/server-ca.crt
-        dest: "../shared/{{ groups['k3s_primary_server'][0] }}/"
+        dest: "../../shared/{{ groups['k3s_primary_server'][0] }}/"
         flat: true
       run_once: true
 
-- name: "K3s Server | Check if K3s is already installed on secondary"
-  when: "'k3s_secondary_server' in group_names"
-  ansible.builtin.stat:
-    path: /usr/local/bin/k3s
-  register: k3s_binary_secondary
+    - name: "K3s Server | Fetch kubeconfig from primary"
+      ansible.builtin.fetch:
+        src: /etc/rancher/k3s/k3s.yaml
+        dest: "../../shared/{{ groups['k3s_primary_server'][0] }}/"
+        mode: "0600"
+        owner: 1000
+        group: 1000
+        remote_src: true
+        flat: true
+
+    - name: "K3s Server | Replace localhost IP with host primary address in kubeconfig"
+      ansible.builtin.replace:
+        path: "../../shared/{{ groups['k3s_primary_server'][0] }}/k3s.yaml"
+        regexp: "127.0.0.1"
+        replace: "{{ k3s.network.joinip }}"
+      become: false
+      delegate_to: localhost
+
+    - name: "K3s Server | Wait for K3s API to be ready"
+      ansible.builtin.uri:
+        url: "https://127.0.0.1:6443/readyz"
+        validate_certs: false
+        status_code:
+          - 401
+      register: k3s_ready
+      until: k3s_ready.status == 401
+      retries: 30
+      delay: 10
 
 - name: "K3s Server | Install secondary server"
-  when:
-    - "'k3s_secondary_server' in group_names"
-    - not k3s_binary_secondary.stat.exists
-  ansible.builtin.command: "/tmp/k3s_install.sh server"
-  environment:
-    K3S_TOKEN: "{{ k3s_token }}"
-    K3S_URL: "https://{{ k3s.network.vip }}:6443"
-  changed_when: true
+  when: "'k3s_secondary_server' in group_names"
+  block:
 
-- name: "K3s Server | Wait for K3s API to be ready"
-  uri:
-    url: "https://{{ k3s.network.vip }}:6443/readyz"
-    validate_certs: false
-  register: k3s_ready
-  until: k3s_ready.status == 200
-  retries: 30
-  delay: 10
-  when: "'k3s_primary_server' in group_names"
-  run_once: true
+    - name: "K3s Server | Check if K3s is already installed on secondary"
+      ansible.builtin.stat:
+        path: /usr/local/bin/k3s
+      register: k3s_binary_secondary
+
+    - name: "K3s Server | Install secondary server"
+      when:
+        - not k3s_binary_secondary.stat.exists
+      ansible.builtin.command: "/tmp/k3s_install.sh server"
+      environment:
+        K3S_TOKEN: "{{ vault_k3s_token }}"
+        K3S_URL: "https://{{ k3s.network.joinip }}:6443"
+      changed_when: true
+      ignore_errors: true
 
 - name: "K3s Server | Remove cluster-init from config"
   ansible.builtin.lineinfile:
     path: /etc/rancher/k3s/config.yaml
     regexp: ".*cluster-init.*"
     state: absent
-  notify: restart k3s
+  notify: Handler | Restart k3s
 
 - name: "K3s Server | Copy kubeconfig to user directory"
   ansible.builtin.copy:
@@ -88,27 +110,6 @@
     group: 1000
     remote_src: true
   ignore_errors: "{{ ansible_check_mode }}"
-
-- name: "K3s Server | Fetch kubeconfig from primary"
-  when: "'k3s_primary_server' in group_names"
-  block:
-    - name: "K3s Server | Download kubeconfig from primary"
-      ansible.builtin.fetch:
-        src: /etc/rancher/k3s/k3s.yaml
-        dest: "../shared/{{ groups['k3s_primary_server'][0] }}/"
-        mode: "0600"
-        owner: 1000
-        group: 1000
-        remote_src: true
-        flat: true
-
-    - name: "K3s Server | Replace localhost IP in fetched kubeconfig"
-      ansible.builtin.replace:
-        path: "../shared/{{ groups['k3s_primary_server'][0] }}/k3s.yaml"
-        regexp: "127.0.0.1"
-        replace: "{{ k3s.network.vip }}"
-      become: false
-      delegate_to: localhost
 
 - name: "K3s Server | Include OS-specific post-install tasks"
   ansible.builtin.include_tasks: "{{ ansible_os_family }}.yaml"

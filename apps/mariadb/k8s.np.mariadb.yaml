@@ -1,0 +1,86 @@
+---
+# MariaDB Network Policy
+# Secures database access by allowing only authorized applications to connect
+# MariaDB serves as the database backend for multiple applications in the cluster
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: mariadb
+  namespace: databases
+  annotations:
+    argocd.argoproj.io/sync-wave: "08"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: mariadb
+  ingress:
+  # Allow Authelia to connect to MariaDB on port 3306 for user authentication storage
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: authelia
+        k8s:io.kubernetes.pod.namespace: authelia
+    toPorts:
+    - ports:
+      - port: "3306"
+        protocol: TCP
+  # Allow Paperless to connect to MariaDB on port 3306 for document management storage
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: paperless
+        k8s:io.kubernetes.pod.namespace: paper
+    toPorts:
+    - ports:
+      - port: "3306"
+        protocol: TCP
+  # Allow Ansible Semaphore to connect to MariaDB on port 3306 for automation storage
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: semaphore
+        k8s:io.kubernetes.pod.namespace: ansible
+    toPorts:
+    - ports:
+      - port: "3306"
+        protocol: TCP
+  # Allow Minecraft to connect to MariaDB on port 3306
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: minecraft
+        k8s:io.kubernetes.pod.namespace: minecraft
+    toPorts:
+    - ports:
+      - port: "3306"
+        protocol: TCP
+  # Allow Prometheus to scrape MariaDB metrics from mysqld-exporter on port 9104
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: prometheus
+        k8s:io.kubernetes.pod.namespace: monitoring
+    toPorts:
+    - ports:
+      - port: "9104"
+        protocol: TCP
+  # Allow monitoring host to scrape MariaDB metrics from mysqld-exporter on port 9104
+  - fromCIDR:
+    - 10.42.2.184/32
+    toPorts:
+    - ports:
+      - port: "9104"
+        protocol: TCP
+  # Allow internal health checks and backup operations within databases namespace
+  # This includes the mariadb-backup CronJob that uses kubectl exec to run mariadb-backup
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: databases
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP

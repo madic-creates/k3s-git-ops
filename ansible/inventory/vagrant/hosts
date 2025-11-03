@@ -1,0 +1,9 @@
+[k3s_primary_server]
+node01.example.com
+
+[k3s_secondary_server]
+node02.example.com
+node03.example.com
+
+[k3s_agent]
+node04.example.com

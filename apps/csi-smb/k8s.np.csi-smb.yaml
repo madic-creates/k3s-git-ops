@@ -1,0 +1,98 @@
+---
+# CSI SMB Driver Network Policy
+# This policy controls network access for the CSI SMB driver components:
+# - csi-smb-controller: Manages volume provisioning and lifecycle
+# - csi-smb-node: Handles volume mounting on each node
+#
+# The CSI driver needs to:
+# 1. Communicate with the Kubernetes API server for CSI operations
+# 2. Access DNS for name resolution
+# 3. Access the external SMB server for storage operations
+# 4. Communicate internally between controller and node components
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: csi-smb-controller
+  namespace: csi-smb-provisioner
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+spec:
+  endpointSelector:
+    matchLabels:
+      app: csi-smb-controller
+  ingress:
+  # Allow pods within the namespace to communicate with the controller
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: csi-smb-provisioner
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to Kubernetes API server (required for CSI operations)
+  - toEntities:
+    - kube-apiserver
+  # Allow access to external SMB server for storage operations
+  - toCIDR:
+    - 192.168.1.45/32
+    toPorts:
+    - ports:
+      - port: "445"
+        protocol: TCP
+      - port: "139"
+        protocol: TCP
+---
+# Network policy for CSI SMB node daemonset
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: csi-smb-node
+  namespace: csi-smb-provisioner
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+spec:
+  endpointSelector:
+    matchLabels:
+      app: csi-smb-node
+  ingress:
+  # Allow pods within the namespace to communicate with the node driver
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: csi-smb-provisioner
+  # Allow kubelet to communicate with CSI node driver
+  - fromEntities:
+    - host
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to Kubernetes API server (required for CSI operations)
+  - toEntities:
+    - kube-apiserver
+  # Allow access to external SMB server for storage operations
+  - toCIDR:
+    - 192.168.1.45/32
+    toPorts:
+    - ports:
+      - port: "445"
+        protocol: TCP
+      - port: "139"
+        protocol: TCP

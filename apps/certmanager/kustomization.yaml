@@ -3,7 +3,7 @@
 helmCharts:
   - name: cert-manager
     repo: https://charts.jetstack.io
-    version: v1.19.0
+    version: v1.19.1
     releaseName: cert-manager
     namespace: certmanager
     valuesInline:
@@ -21,6 +21,9 @@ helmCharts:
 
 resources:
   - k8s.namespace.yaml
+  - k8s.np.certmanager-default-deny.yaml
+  - k8s.np.certmanager.yaml
+  - k8s.selfsigned-issuer.yaml
   #- k8s.cloudflare_issuer.enc.yaml
   #- k8s.wildcard.enc.yaml
   #- k8s.secrets.enc.yaml

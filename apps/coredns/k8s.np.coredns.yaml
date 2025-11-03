@@ -1,0 +1,122 @@
+---
+# CoreDNS Network Policy
+# Controls DNS resolution traffic for the entire cluster
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: coredns
+  namespace: kube-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "00"
+spec:
+  endpointSelector:
+    matchLabels:
+      k8s-app: kube-dns
+  ingress:
+  # Allow DNS queries from all cluster pods on UDP / TCP port 53
+  - fromEntities:
+    - cluster
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow Prometheus to scrape CoreDNS metrics on port 9153
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: prometheus
+        k8s:io.kubernetes.pod.namespace: monitoring
+    toPorts:
+    - ports:
+      - port: "9153"
+        protocol: TCP
+  # Allow kubelet health checks from host network (port 8080 and 8181)
+  - fromEntities:
+    - host
+    toPorts:
+    - ports:
+      - port: "8080"
+        protocol: TCP
+      - port: "8181"
+        protocol: TCP
+  # Allow responses from Kubernetes API server back to CoreDNS
+  # Required for the kubernetes plugin to receive watch events and API responses
+  - fromEntities:
+    - kube-apiserver
+    - host
+  egress:
+  # Allow CoreDNS to communicate with Kubernetes API server
+  # Required for service discovery and watching DNS-related resources
+  # Allows both direct kube-apiserver entity and host connections (for API server on host network)
+  - toEntities:
+    - kube-apiserver
+    - host
+  # Allow CoreDNS to forward DNS queries to cluster-internal Pi-hole DNS servers
+  # Used for conditional forwarding within the cluster
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: dns
+        k8s:io.kubernetes.pod.namespace: dns
+        k8s:app: pihole
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow CoreDNS to forward DNS queries to external/world DNS servers
+  # Used for upstream resolution (e.g., external forwarders, public DNS)
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow CoreDNS to resolve queries using upstream resolvers from /etc/resolv.conf
+  # Enables FQDN-based resolution for any domain
+  - toFQDNs:
+    - matchPattern: "*"
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # ICMP to pihole
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: pihole
+        k8s:io.kubernetes.pod.namespace: dns
+    icmps:
+    - fields:
+      - type: EchoRequest
+        family: IPv4
+      - type: EchoReply
+        family: IPv4
+      - type: DestinationUnreachable
+        family: IPv4
+      - type: TimeExceeded
+        family: IPv4
+      - type: ParameterProblem
+        family: IPv4
+      - type: Redirect
+        family: IPv4
+      - type: EchoRequest
+        family: IPv6
+      - type: DestinationUnreachable
+        family: IPv6
+      - type: TimeExceeded
+        family: IPv6
+      - type: ParameterProblem
+        family: IPv6
+      - type: RedirectMessage
+        family: IPv6
+      - type: PacketTooBig
+        family: IPv6
+      - type: MulticastListenerQuery
+        family: IPv6
+      - type: MulticastListenerReport
+        family: IPv6

@@ -7,13 +7,15 @@ commonAnnotations:
 helmCharts:
   - name: authelia
     repo: https://charts.authelia.com
-    version: 0.10.46
+    version: 0.10.47
     releaseName: authelia
     namespace: authelia
     valuesFile: values.yaml
 
 resources:
   - namespace.yaml
+  - k8s.np.authelia-default-deny.yaml
+  - k8s.np.authelia.yaml
 
 # Temporary workaround until following is fixed:
 # - https://github.com/authelia/chartrepo/issues/362

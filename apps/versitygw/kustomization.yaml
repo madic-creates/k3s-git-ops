@@ -7,6 +7,7 @@ namespace: longhorn
 resources:
   - k8s.deployment.yaml
   - k8s.pvc.yaml
+  - k8s.np.versitygw.yaml
 
 generators:
   - kustomize-secret-generator.yaml

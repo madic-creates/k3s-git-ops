@@ -26,7 +26,7 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
       containers:
         - name: navidrome
-          image: deluan/navidrome:0.58.0
+          image: ghcr.io/navidrome/navidrome:0.58.0
           imagePullPolicy: IfNotPresent
           env:
             - name: ND_SCANSCHEDULE
@@ -80,8 +80,10 @@ spec:
       restartPolicy: Always
       volumes:
         - name: config-vol
-          persistentVolumeClaim:
-            claimName: local-path-navidrome-config
+          hostPath:
+            path: /vol_raidz1/container-scheduler/navidrome
+            type: DirectoryOrCreate
         - name: music-vol
-          persistentVolumeClaim:
-            claimName: local-path-music-navidrome
+          hostPath:
+            path: /vol_raidz1/music
+            type: Directory

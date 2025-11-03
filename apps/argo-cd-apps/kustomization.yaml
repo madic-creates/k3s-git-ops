@@ -9,6 +9,7 @@ resources:
   - 02-reflector.yaml
   #- 03-cloudflare-tunnel-ingress-controller.yaml
   - 03-traefik.yaml
+  - 05-cilium-hubble-ui.yaml
   - 08-mariadb.yaml
   - 09-redis.yaml
   - 10-authelia.yaml

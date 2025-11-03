@@ -1,0 +1,16 @@
+---
+# Default Deny Network Policy for csi-smb namespace
+# This policy applies to ALL pods in the csi-smb namespace
+# It provides baseline security rules that all pods inherit
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: csi-smb-default-deny
+  namespace: csi-smb-provisioner
+spec:
+  endpointSelector: {}  # Empty selector = matches ALL pods in this namespace
+  # Default deny
+  ingress:
+    - {}
+  egress:
+    - {}

@@ -1,0 +1,39 @@
+---
+# Whoami Application-Specific Network Policy
+# This policy applies ONLY to the whoami application pods
+# It adds specific rules on top of the namespace default-deny policy
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: whoami
+  namespace: whoami
+spec:
+  endpointSelector:
+    matchLabels:
+      app: whoami
+
+  ingress:
+  # Allow Traefik ingress controller to reach whoami service
+  # This enables external HTTP access through the ingress
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/instance: traefik-kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+    toPorts:
+    - ports:
+      - port: "80"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution to CoreDNS for all pods
+  # Required for service discovery and external name resolution
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP

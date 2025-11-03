@@ -1,0 +1,54 @@
+---
+# Descheduler Network Policy
+# This policy controls network access for the descheduler deployment.
+#
+# The descheduler is a Kubernetes tool that evicts pods based on various policies
+# to rebalance cluster resources and enforce constraints. It needs to:
+# 1. Communicate with the Kubernetes API server for pod eviction and monitoring
+# 2. Accept health check probes from the kubelet (host)
+# 3. Access DNS for name resolution
+#
+# The descheduler does not have any ingress from Traefik or other services,
+# as it is an internal cluster management component.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: descheduler
+  namespace: kube-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "70"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: descheduler
+      app.kubernetes.io/instance: descheduler
+  ingress:
+  # Allow kubelet health check probes from host
+  # The descheduler exposes port 10258 for liveness/readiness probes
+  - fromEntities:
+    - host
+    toPorts:
+    - ports:
+      - port: "10258"
+        protocol: TCP
+  # Allow pods within kube-system namespace to communicate with descheduler
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: kube-system
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to Kubernetes API server (required for descheduling operations)
+  # The descheduler needs to list, watch, and evict pods via the API server
+  - toEntities:
+    - kube-apiserver

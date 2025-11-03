@@ -1,0 +1,16 @@
+---
+# Default Deny Network Policy for whoami namespace
+# This policy applies to ALL pods in the whoami namespace
+# It provides baseline security rules that all pods inherit
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: whoami-default-deny
+  namespace: whoami
+spec:
+  endpointSelector: {}  # Empty selector = matches ALL pods in this namespace
+  # Default deny
+  ingress:
+    - {}
+  egress:
+    - {}

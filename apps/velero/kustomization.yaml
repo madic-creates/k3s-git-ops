@@ -5,7 +5,7 @@ commonAnnotations:
 helmCharts:
   - name: velero
     repo: https://vmware-tanzu.github.io/helm-charts
-    version: 10.1.3
+    version: 11.1.1
     releaseName: velero
     namespace: longhorn
     includeCRDs: true
@@ -24,6 +24,7 @@ helmCharts:
             provider: aws
             bucket: velero-fra
             prefix: k3s-at-home
+            default: true
             credential:
               # Name of the secret. Default: velero
               name: velero

@@ -1,6 +1,8 @@
 ---
 resources:
   - k8s.whoami.yaml
+  - k8s.np.whoami-default-deny.yaml
+  - k8s.np.whoami.yaml
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "80"

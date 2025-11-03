@@ -1,0 +1,69 @@
+---
+# ArgoCD Application Controller Network Policy
+# Allows application-controller to sync applications to the cluster
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: argocd-application-controller
+  namespace: argocd
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: argocd-application-controller
+  ingress:
+  # Allow ArgoCD Server to reach application-controller
+  - fromEndpoints:
+    - matchLabels:
+        app.kubernetes.io/name: argocd-server
+        k8s:io.kubernetes.pod.namespace: argocd
+    toPorts:
+    - ports:
+      - port: '8082'
+        protocol: TCP
+  # Allow internal health checks
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: argocd
+  egress:
+  # Allow DNS resolution
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: '53'
+        protocol: UDP
+      - port: '53'
+        protocol: TCP
+  # Allow access to repo-server to fetch manifests
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: argocd-repo-server
+        k8s:io.kubernetes.pod.namespace: argocd
+    toPorts:
+    - ports:
+      - port: '8081'
+        protocol: TCP
+  # Allow access to Redis for caching and state
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: argocd-redis
+        k8s:io.kubernetes.pod.namespace: argocd
+    toPorts:
+    - ports:
+      - port: '6379'
+        protocol: TCP
+  # Allow Kubernetes API access (to sync applications)
+  - toEntities:
+    - kube-apiserver
+    toPorts:
+    - ports:
+      - port: '6443'
+        protocol: TCP
+      - port: '443'
+        protocol: TCP
+  # Allow access to all cluster services for application management
+  - toEndpoints:
+    - {}

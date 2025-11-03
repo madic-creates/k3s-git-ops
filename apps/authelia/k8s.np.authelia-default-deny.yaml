@@ -1,0 +1,16 @@
+---
+# Default Deny Network Policy for authelia namespace
+# This policy applies to ALL pods in the authelia namespace
+# It provides baseline security rules that all pods inherit
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: authelia-default-deny
+  namespace: authelia
+spec:
+  endpointSelector: {}  # Empty selector = matches ALL pods in this namespace
+  # Default deny
+  ingress:
+    - {}
+  egress:
+    - {}

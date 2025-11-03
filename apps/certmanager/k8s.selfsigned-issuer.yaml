@@ -1,0 +1,44 @@
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: selfsigned-issuer
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: internal-ca-issuer
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  ca:
+    secretName: internal-ca-key-pair
+---
+# Create a self-signed root CA certificate
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: internal-ca
+  namespace: certmanager
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  isCA: true
+  commonName: Internal Cluster CA
+  subject:
+    organizations:
+      - k3s-cluster
+  secretName: internal-ca-key-pair
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  duration: 87600h # 10 years
+  renewBefore: 8760h # 1 year
+  issuerRef:
+    name: selfsigned-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io

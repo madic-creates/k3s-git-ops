@@ -4,7 +4,7 @@ commonAnnotations:
 
 resources:
   - k8s.deployment.yaml
-  - k8s.pvc.yaml
+  - k8s.np.navidrome.yaml
   - k8s.service.yaml
 
 generators:

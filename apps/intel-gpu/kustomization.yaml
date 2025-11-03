@@ -2,6 +2,8 @@
 
 resources:
   - namespace.yaml
+  - k8s.np.intel-device-plugins-default-deny.yaml
+  - k8s.np.intel-gpu.yaml
 
 helmCharts:
   - name: intel-device-plugins-operator

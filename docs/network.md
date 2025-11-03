@@ -75,7 +75,7 @@ Cilium is deployed via Argo CD (`apps/argo-cd-apps-helm/00-cilium.yaml`) and rep
 
 ### Network Policy
 
-Reusable examples for CiliumNetworkPolicy objects live in `apps/cilium-network-policies/`. The Argo CD application definition is currently commented out in `apps/argo-cd-apps-helm/00-cilium.yaml`. These manifests are currently work in progress and will be used as templates when locking down namespace-to-namespace or service-to-service communications.
+Every ArgoCD App comes with its own sets of CiliumNetworkPolicies, allowing only the required incoming and outgoing pod connections.
 
 ## KubeVIP Roles
 
@@ -123,3 +123,11 @@ Ingress manifests remain otherwise unchanged; assigning them to the secondary IP
 Service IP address management is configured through the `kubevip` ConfigMap generated in `apps/kubevip-cloud-controller/kustomization.yaml`. When adding an IP range, update the `cidr-global` literal and keep it aligned with the DHCP exclusions on your router or firewall.
 
 For component-specific procedures (such as regenerating KubeVIP manifests), refer to [LoadBalancer](loadbalancer.md).
+
+## Troubleshooting
+
+`hubble observe` provides real-time insight in the network flow and allows filtering by e.g. dropped frames.
+
+```shell
+hubble observe --last 20 --namespace kube-system --verdict DROPPED -f
+```

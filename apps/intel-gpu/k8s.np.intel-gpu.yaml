@@ -1,0 +1,108 @@
+---
+# Intel Device Plugins Operator Network Policy
+# This policy controls network access for the Intel Device Plugins Operator controller manager.
+#
+# The Intel Device Plugins Operator manages Intel GPU device plugins in the cluster.
+# It needs to:
+# 1. Communicate with the Kubernetes API server to manage custom resources and device plugins
+# 2. Accept health check probes from the kubelet (host)
+# 3. Accept webhook requests from the Kubernetes API server on port 9443
+# 4. Expose metrics on port 8443 for monitoring (Prometheus)
+# 5. Access DNS for name resolution
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: intel-device-plugins-controller-manager
+  namespace: intel-device-plugins
+  annotations:
+    argocd.argoproj.io/sync-wave: "24"
+spec:
+  endpointSelector:
+    matchLabels:
+      control-plane: controller-manager
+  ingress:
+  # Allow health check probes from host (kubelet)
+  # The controller manager exposes port 8081 for liveness and readiness probes
+  - fromEntities:
+    - host
+    toPorts:
+    - ports:
+      - port: "8081"
+        protocol: TCP
+  # Allow webhook requests from Kubernetes API server
+  # The operator implements validating and mutating webhooks for device plugin resources
+  - fromEntities:
+    - kube-apiserver
+    toPorts:
+    - ports:
+      - port: "9443"
+        protocol: TCP
+  # Allow metrics scraping from Prometheus in monitoring namespace
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: monitoring
+        k8s:app.kubernetes.io/name: prometheus
+    toPorts:
+    - ports:
+      - port: "8443"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to Kubernetes API server
+  # The controller manager needs to manage custom resources and reconcile device plugin state
+  - toEntities:
+    - kube-apiserver
+---
+# Intel GPU Plugin Network Policy
+# This policy controls network access for the Intel GPU device plugin DaemonSet.
+#
+# The GPU device plugin runs on nodes with Intel GPUs and registers GPU resources
+# with the kubelet. It operates as a privileged DaemonSet with host access.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: intel-gpu-plugin
+  namespace: intel-device-plugins
+  annotations:
+    argocd.argoproj.io/sync-wave: "24"
+spec:
+  endpointSelector:
+    matchLabels:
+      app: intel-gpu-plugin
+  ingress:
+  # Allow communication from host (kubelet) to device plugin
+  # The device plugin registers with kubelet via the device plugin socket
+  - fromEntities:
+    - host
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow communication to host (kubelet)
+  # The device plugin communicates with kubelet via gRPC on the device plugin socket
+  - toEntities:
+    - host
+  # Allow access to Kubernetes API server
+  # The device plugin may need to query node resources and status
+  - toEntities:
+    - kube-apiserver

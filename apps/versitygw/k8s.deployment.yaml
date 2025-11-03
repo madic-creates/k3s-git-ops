@@ -6,6 +6,8 @@ metadata:
 spec:
   replicas: 1
   revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app.kubernetes.io/name: versitygw
@@ -21,8 +23,9 @@ spec:
           effect: "NoSchedule"
       containers:
         - name: versitygw
-          #image: ghcr.io/versity/versitygw:v1.0.16
-          image: forge.geekbundle.org/madic/versitygw@sha256:7338ee3fa270a76749d0eb1959c7e6b5e1ec374d3d47f9f1c56b59a5d16bb2b6
+          #image: ghcr.io/versity/versitygw:v1.0.18
+          #image: forge.geekbundle.org/madic/versitygw@sha256:7338ee3fa270a76749d0eb1959c7e6b5e1ec374d3d47f9f1c56b59a5d16bb2b6
+          image: forge.geekbundle.org/madic/versitygw:ldap-selfsigned
           imagePullPolicy: IfNotPresent
           args: ["posix", "/data"]
           env:
@@ -96,6 +99,8 @@ spec:
               value: "true"
             - name: VGW_DIR_PERMS
               value: "0750"
+            - name: VGW_IAM_LDAP_TLS_SKIP_VERIFY
+              value: "true"
           readinessProbe:
             httpGet:
               path: /health

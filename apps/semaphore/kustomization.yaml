@@ -4,6 +4,7 @@ namespace: ansible
 
 resources:
   - namespace.yaml
+  - np.k8s.semaphore.yaml
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "60"
@@ -12,7 +13,7 @@ commonAnnotations:
 helmCharts:
   - name: semaphore
     repo: oci://ghcr.io/semaphoreui/charts/
-    version: 16.0.5
+    version: 16.0.6
     releaseName: ansible-semaphore
     namespace: ansible
     valuesFile: values.yaml

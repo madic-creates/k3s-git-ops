@@ -7,7 +7,7 @@ Execute these commands in the shell of the MariaDB Container.
 Logging into the database:
 
 ```bash linenums="0"
-mariadb -u root --password=$MARIADB_ROOT_PASSWORD
+mariadb -u root --password=$(cat $MARIADB_ROOT_PASSWORD_FILE)
 ```
 
 Show all databases:

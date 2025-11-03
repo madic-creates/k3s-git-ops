@@ -1,9 +1,12 @@
 ---
 resources:
   - namespace.yaml
+  - k8s.np.media-default-deny.yaml
   - smb-media.yaml
   - longhorn-media.yaml
   - autorestart.yaml
+  - k8s.np.emby.yaml
+  - k8s.np.restart-deployment.yaml
 
 namespace: media
 
@@ -26,7 +29,7 @@ helmCharts:
         GID: "0"
       image:
         repository: emby/embyserver
-        tag: 4.9.2.1
+        tag: 4.9.2.6
         pullPolicy: IfNotPresent
       resources:
         requests:
@@ -93,7 +96,7 @@ helmCharts:
               topologyKey: "kubernetes.io/hostname"
       additionalContainers:
         - name: backup-sidecar
-          image: ghcr.io/restic/restic:0.18.0
+          image: ghcr.io/restic/restic:0.18.1
           envFrom:
             - secretRef:
                 name: backup-env-configuration-emby

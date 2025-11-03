@@ -1,0 +1,4 @@
+- name: "Handler | Restart k3s-agent"
+  ansible.builtin.service:
+    name: k3s-agent.service
+    state: restarted

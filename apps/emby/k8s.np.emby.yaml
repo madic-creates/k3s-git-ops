@@ -1,0 +1,88 @@
+---
+# Emby Media Server Network Policy
+# Allows Emby to stream media, fetch metadata, and perform backups
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: emby
+  namespace: media
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: emby
+  ingress:
+  # Allow external clients to access Emby via LoadBalancer service
+  # Emby uses a LoadBalancer (192.168.1.233) for direct client access
+  - fromEntities:
+    - world
+    - cluster
+    toPorts:
+    - ports:
+      - port: '8096'
+        protocol: TCP
+      - port: '8920'
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: '53'
+        protocol: UDP
+      - port: '53'
+        protocol: TCP
+  # Allow access to SMB/CIFS shares for media files
+  # Emby mounts video, music, and photo shares via SMB CSI driver
+  - toEndpoints:
+    - matchLabels:
+        k8s:app: csi-smb-node
+        k8s:io.kubernetes.pod.namespace: kube-system
+    toPorts:
+    - ports:
+      - port: '445'
+        protocol: TCP
+      - port: '139'
+        protocol: TCP
+  # Allow access to external SMB servers for media storage
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: '445'
+        protocol: TCP
+      - port: '139'
+        protocol: TCP
+  # Allow HTTPS for metadata providers (TMDB, TVDB, etc.)
+  # and HTTP for subtitle providers
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: '443'
+        protocol: TCP
+      - port: '80'
+        protocol: TCP
+  # Allow LLDAP for authentication (LDAPS on port 6360)
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: authelia
+        k8s:app.kubernetes.io/name: lldap
+    toPorts:
+    - ports:
+      - port: '6360'
+        protocol: TCP
+  # Allow backup sidecar to push metrics to Pushgateway
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: prometheus
+        k8s:app.kubernetes.io/name: prometheus-pushgateway
+    toPorts:
+    - ports:
+      - port: '9091'
+        protocol: TCP
