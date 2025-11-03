@@ -102,8 +102,8 @@ dnsmasq:
         - dhcp-option=net:youtubedns,6,192.168.1.234
         - dhcp-host=net:youtubedns,AC:3E:B1:A6:AF:D6,Pixel-7-Pro
         - dhcp-host=net:youtubedns,E0:80:6B:37:56:83,Redmi-Note-11
-        #- dhcp-host=net:youtubedns,74:58:F3:E7:3A:04,Fire-Cube-lan
-        #- dhcp-host=net:youtubedns,48:43:DD:6E:CC:2D,Fire-Cube-wlan
+        - dhcp-host=net:youtubedns,74:58:F3:E7:3A:04,Fire-Cube-lan
+        - dhcp-host=net:youtubedns,48:43:DD:6E:CC:2D,Fire-Cube-wlan
         - dhcp-host=net:youtubedns,F0:27:2D:D7:41:97,Fire-Guest
         - dhcp-host=net:youtubedns,00:e0:4c:7b:c2:98,Sanctuary
         - dhcp-host=net:youtubedns,8c:8c:aa:32:ce:7a,IONB000201752-LAN
@@ -138,7 +138,7 @@ sops:
             V3ZONzFGcE1vdmRaMTRhRERvdkthUncKBeD+dNgljrM4n000vfHhz2WUpjSn110+
             z/cSJmkZKCf2yIjFJlkCLpOlCy8BRYxEGpWJSYFEGiCgqz6fOFxkvA==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-10-13T19:32:18Z"
-    mac: ENC[AES256_GCM,data:Il0OfAicF+q3tl1X9WP1kWrZ9ce8mRiYzHUCky5tp6kHyoJCLlbZxh4rgEMYeELaHpmLg+w/LHPNYNvKbWf1tFgdmk0PTV8hIsE7xcvLKhVsPC86jDJn0XzHnuwWBce2hOouZR2bhoryXEkIpez5C8glqYAXvV5vHy9vsbM+EXk=,iv:KGj0NxVOkuIr6bNnds8GcL9eyZs3ZmerfZOTdLpZjV4=,tag:ljEJI1VfUQctuFYbPpWF8g==,type:str]
+    lastmodified: "2025-11-03T11:10:24Z"
+    mac: ENC[AES256_GCM,data:zLF9hVG8AQFQej4ae/3b5ELMJ2mgk0I6RYLtr24K6YwC0cvBNRt8dK8X97SVKm8A9ShPKQxCigCJzG77KxTFIQG5r6NVsUmY+e5gbwUK6UCBd2/d4dI1YrfedI1OwLASd+q0CBJkXoem24Xc+4ndegUYF2J3DQE3fvYMheErEn8=,iv:QSwwsFJZLqa4cXlqEHov32+ojLEOs20JFUnRcPSvl0w=,tag:BdfLTP48snoYfFo71JL/OQ==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
     version: 3.11.0
