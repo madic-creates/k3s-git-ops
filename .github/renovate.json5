@@ -1,96 +1,92 @@
-// code: language=jsonc
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "onboarding": false,
-  "requireConfig": "ignored",
-  "extends": [
-    "config:recommended"
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  onboarding: false,
+  requireConfig: 'ignored',
+  extends: [
+    'config:recommended',
   ],
-  "assignees": [
-    "madic-creates"
+  assignees: [
+    'madic-creates',
   ],
-  "repositories": [
-    "madic-creates/k3s-git-ops"
+  repositories: [
+    'madic-creates/k3s-git-ops',
   ],
-  "gitAuthor": "Renovate Bot <bot@renovateapp.com>",
-  "prConcurrentLimit": 0,
-  "prHourlyLimit": 0,
-  "platform": "github",
-  "kubernetes": {
-    "fileMatch": [
-      "apps\/.+\/k8s\\..*\\.yaml$"
-    ]
+  gitAuthor: 'Renovate Bot <bot@renovateapp.com>',
+  prConcurrentLimit: 0,
+  prHourlyLimit: 0,
+  platform: 'github',
+  kubernetes: {
+    managerFilePatterns: [
+      '/apps/.+/k8s\\..*\\.yaml$/',
+    ],
   },
-  "automerge": true,
-  "automergeType": "branch",
-  "ignoreTests": true,
-  "major": {
-    "automerge": false
+  automerge: true,
+  automergeType: 'branch',
+  ignoreTests: true,
+  major: {
+    automerge: false,
   },
-  "minor": {
-    "automerge": true
+  minor: {
+    automerge: true,
   },
-  "patch": {
-    "automerge": true
+  patch: {
+    automerge: true,
   },
-  "packageRules": [
+  packageRules: [
     {
-      "matchFileNames": [
-        "apps/mariadb/**",
-        "apps/traefik/**",
-        "apps/kubevip-ha/**",
-        "apps/paperless-ai/**",
-        "apps/pihole/**",
-        "apps/monitoring-checkmk-server/**",
-        "apps/argo-cd-apps-helm/**"
+      matchFileNames: [
+        'apps/mariadb/**',
+        'apps/traefik/**',
+        'apps/kubevip-ha/**',
+        'apps/paperless-ai/**',
+        'apps/pihole/**',
+        'apps/monitoring-checkmk-server/**',
+        'apps/argo-cd-apps-helm/**',
       ],
-      "automerge": false
+      automerge: false,
     },
     {
-      "matchDatasources": [
-        "helm"
+      matchDatasources: [
+        'helm',
       ],
-      "matchPackageNames": [
-        "longhorn"
+      matchPackageNames: [
+        'longhorn',
       ],
-      "minimumReleaseAge": "14 days",
-      "automerge": false
+      minimumReleaseAge: '14 days',
+      automerge: false,
     },
     {
-      "matchManagers": [
-        "pre-commit"
+      matchManagers: [
+        'pre-commit',
       ],
-      "automerge": false
-    }
+      automerge: false,
+    },
   ],
-  "customManagers": [
+  customManagers: [
     {
-      "customType": "regex",
-      "fileMatch": [
-        "apps\/.+\/kustomization\\.yaml$"
+      customType: 'regex',
+      managerFilePatterns: [
+        '/apps/.+/kustomization\\.yaml$/',
       ],
-      "matchStrings": [
-        "repository: (?<depName>.*)\\s.*tag: (?<currentValue>.*)"
+      matchStrings: [
+        'repository: (?<depName>.*)\\s.*tag: (?<currentValue>.*)',
       ],
-      //"matchStrings": [
-      //  "(?:repository:|image:)\\s*(?<depName>[^:\\s]+)(?::\\s*|\\s.*tag:\\s*)(?<currentValue>\\S+)"
-      //],
-      "datasourceTemplate": "docker"
+      datasourceTemplate: 'docker',
     },
     {
-      "customType": "regex",
-      "fileMatch": [
-        "apps\/.+\/kustomization\\.yaml$"
+      customType: 'regex',
+      managerFilePatterns: [
+        '/apps/.+/kustomization\\.yaml$/',
       ],
-      "matchStrings": [
-        "image:\\s*(?<depName>[^:\\s]+):(?<currentValue>.*)"
+      matchStrings: [
+        'image:\\s*(?<depName>[^:\\s]+):(?<currentValue>.*)',
       ],
-      "datasourceTemplate": "docker"
-    }
+      datasourceTemplate: 'docker',
+    },
   ],
-  "pre-commit": {
-    "enabled": true
+  'pre-commit': {
+    enabled: true,
   },
-  "minimumReleaseAge": "5 days",
-  "internalChecksFilter": "strict"
+  minimumReleaseAge: '5 days',
+  internalChecksFilter: 'strict',
 }
