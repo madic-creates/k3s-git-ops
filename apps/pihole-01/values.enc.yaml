@@ -1,7 +1,8 @@
 image:
-    repository: pihole/pihole
-    #tag: 2024.07.0
+    repository: ghcr.io/pi-hole/pihole
+    tag: 2025.11.0
     pullPolicy: IfNotPresent
+revisionHistoryLimit: 2
 serviceDns:
     mixedService: true
     annotations:
@@ -188,7 +189,7 @@ sops:
             S3hxTTNKZXdHKytiQ0VrNW1IU0c2UDQKCoa3QBGWzUNlfgionj1jgWDDEx3hfN3b
             ZE1H6doOwdkf/Q7QXrLEgncKEGY7LcyZH+5tozRBPyvDGwPBX6m8xQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-11-03T11:10:11Z"
-    mac: ENC[AES256_GCM,data:CWkyDHsH6/94yifXvqRHagX6ZYwtrvOpWzCD+8IFcKYPCezWOAfL3bx6c1yh2zkb1ttAQoDjlPUTW/d530mOu2F6VWX4qzq3K6F0eGghoro581Q1ZdpUfNO9CL2dKI0g3044NCzRYDvBVH14qyV1k8Og9ZhmTIyvrgtJhG4ojBw=,iv:DgUMASOkpkZkquCvL6Jl2at/juwfsQFVpT8MeF1CQLw=,tag:AnDgWHBEZSNncgc4juC6SQ==,type:str]
+    lastmodified: "2025-11-07T08:22:31Z"
+    mac: ENC[AES256_GCM,data:+d1xizmW/3Z7YTxHnPgNV+C7PdUUc8tEeRcbpY904tyEs7CNnPSuehw9kohGAhkBWyrER2uu16cOmyvdQ9KaIZIFEmzrwxMBKEp1BBxVV0A4sUF+xGCvNU2DIMxsct5N1obRadHcJh9KfRAr41g7A5jtXH6WN7lMcxMLbSIZYm4=,iv:lsQURNOgbH5r1J8v46BYmiwIVYxp2/SRcUnIQESRQLo=,tag:m5g77sasZf8vcD/vXUPTew==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
     version: 3.11.0
