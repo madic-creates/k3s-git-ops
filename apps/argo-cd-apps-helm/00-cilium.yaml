@@ -67,7 +67,7 @@ spec:
           # If not set, uses default monitor queue size
           eventQueueSize: 10000
         # Configure MTU for WireGuard compatibility (1500 - 80 bytes WireGuard overhead)
-        mtu: 1420
+        MTU: 1420
         tunnelProtocol: geneve
         encryption:
           enabled: true
