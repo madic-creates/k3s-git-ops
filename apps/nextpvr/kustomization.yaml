@@ -3,6 +3,7 @@ resources:
   - k8s.deployment.yaml
   - k8s.service.yaml
   - k8s.longhorn-config.yaml
+  - k8s.np.nextpvr.yaml
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "31"
