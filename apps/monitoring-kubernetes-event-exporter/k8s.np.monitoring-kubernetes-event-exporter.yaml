@@ -1,0 +1,62 @@
+---
+# Network Policy for kubernetes-event-exporter
+# This deployment watches Kubernetes events and forwards them to Loki
+# Requirements:
+# - Access to Kubernetes API server to watch events
+# - DNS resolution for internal service discovery
+# - Egress to Loki Gateway for log forwarding
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: kubernetes-event-exporter
+  namespace: monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "17"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: kubernetes-event-exporter
+  ingress:
+  # Allow Prometheus to scrape metrics endpoint
+  # Event exporter typically exposes metrics on port 2112
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: monitoring
+        k8s:app.kubernetes.io/name: prometheus
+    toPorts:
+    - ports:
+      - port: "2112"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  # Required for resolving loki-gateway service name
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to Kubernetes API server
+  # Event exporter watches Kubernetes events via API server
+  - toEntities:
+    - kube-apiserver
+    toPorts:
+    - ports:
+      - port: "6443"
+        protocol: TCP
+  # Allow access to Loki Gateway in monitoring namespace
+  # Event exporter forwards events to http://loki-gateway/loki/api/v1/push
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: monitoring
+        k8s:app.kubernetes.io/name: loki
+        k8s:app.kubernetes.io/component: gateway
+    toPorts:
+    - ports:
+      - port: "80"
+        protocol: TCP

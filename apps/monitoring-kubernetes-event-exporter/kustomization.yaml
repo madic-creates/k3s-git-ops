@@ -2,6 +2,9 @@
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "17"
 
+resources:
+  - k8s.np.monitoring-kubernetes-event-exporter.yaml
+
 helmCharts:
   - name: kubernetes-event-exporter
     repo: oci://registry-1.docker.io/bitnamicharts
