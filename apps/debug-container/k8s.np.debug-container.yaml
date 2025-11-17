@@ -1,0 +1,45 @@
+---
+# Netshoot Debug Container Network Policy
+# This is a debugging tool pod that needs network access for troubleshooting
+# It runs iperf server on port 9999 for network performance testing
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: netshoot
+  namespace: kube-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "99"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: netshoot
+  ingress:
+  # Allow any pod in the cluster to connect to netshoot for network testing
+  # This includes the iperf server running on port 9999
+  - fromEndpoints:
+    - {}
+    toPorts:
+    - ports:
+      - port: "9999"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow egress to entire cluster for debugging purposes
+  # Netshoot is a debugging tool that needs to test connectivity to all services
+  - toEndpoints:
+    - {}
+  # Allow egress to external networks for debugging external connectivity
+  # This is required for tools like curl, ping, traceroute, etc.
+  - toEntities:
+    - world
