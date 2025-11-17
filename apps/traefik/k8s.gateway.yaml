@@ -23,7 +23,10 @@ spec:
         namespaces:
           from: All
       tls:
-        mode: Passthrough
+        mode: Terminate
+        certificateRefs:
+          - name: wildcard-cloudflare-production-02
+            namespace: kube-system
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
@@ -49,4 +52,7 @@ spec:
         namespaces:
           from: All
       tls:
-        mode: Passthrough
+        mode: Terminate
+        certificateRefs:
+          - name: wildcard-cloudflare-production-01
+            namespace: kube-system
