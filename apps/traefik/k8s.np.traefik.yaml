@@ -41,10 +41,13 @@ spec:
         protocol: TCP
   # Allow health check probes from kubelet (host)
   # Traefik dashboard and metrics endpoints need to be accessible for health checks
+  # Port 8080 is the internal dashboard/API port, 9000 is exposed via service, 9100 is metrics
   - fromEntities:
     - host
     toPorts:
     - ports:
+      - port: "8080"
+        protocol: TCP
       - port: "9000"
         protocol: TCP
       - port: "9100"
@@ -59,6 +62,16 @@ spec:
     toPorts:
     - ports:
       - port: "9100"
+        protocol: TCP
+  # Allow Traefik pods to communicate with each other
+  # Required for DaemonSet coordination and internal dashboard access (port 8080)
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: traefik
+        k8s:app.kubernetes.io/instance: traefik-kube-system
+    toPorts:
+    - ports:
+      - port: "8080"
         protocol: TCP
   # Allow access to Traefik dashboard from within kube-system and cluster
   # The dashboard service (port 9000) is accessed internally by Traefik itself
