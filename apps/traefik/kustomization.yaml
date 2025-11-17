@@ -2,7 +2,8 @@
 resources:
   - traefik-config.yaml
   - namespace.yaml
-  #- k8s.np.traefik.yaml
+  - k8s.gateway.yaml
+  - k8s.np.traefik.yaml
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "3"
@@ -88,6 +89,8 @@ helmCharts:
         kubernetesCRD:
           enabled: true
           allowCrossNamespace: true
+        kubernetesGateway:
+          enabled: true
       additionalArguments:
         - "--api=true"
         - "--api.insecure=true"
@@ -97,6 +100,8 @@ helmCharts:
         - "--entryPoints.web239.forwardedHeaders.insecure"
         #- "--accesslog=true"
       experimental:
+        kubernetesGateway:
+          enabled: true
         plugins:
           # Required for correct thruk redirect. Thruk sends in our scenario http redirect but we need to replace that with https
           redirectLocation:

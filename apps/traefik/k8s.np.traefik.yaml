@@ -1,0 +1,139 @@
+---
+# Traefik Network Policy
+# Controls network access for the Traefik ingress controller
+#
+# Traefik is the main ingress controller for the cluster, deployed as a DaemonSet
+# in kube-system namespace. It needs to:
+# 1. Accept incoming HTTP/HTTPS traffic from external sources (world)
+# 2. Accept health check probes from kubelet (host)
+# 3. Forward requests to backend services across all namespaces
+# 4. Query Kubernetes API to discover services, endpoints, and ingress configurations
+# 5. Resolve service names via DNS (CoreDNS)
+# 6. Expose metrics for Prometheus scraping
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: traefik
+  namespace: kube-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: traefik
+      app.kubernetes.io/instance: traefik-kube-system
+  ingress:
+  # Allow external HTTP/HTTPS traffic to Traefik ingress endpoints
+  # Traefik serves as the main entry point for all cluster HTTP/HTTPS services
+  # Ports: 8000 (web/HTTP), 8010 (web239), 8443 (websecure/HTTPS), 8444 (websecure239)
+  - fromEntities:
+    - world
+    - cluster
+    toPorts:
+    - ports:
+      - port: "8000"
+        protocol: TCP
+      - port: "8010"
+        protocol: TCP
+      - port: "8443"
+        protocol: TCP
+      - port: "8444"
+        protocol: TCP
+  # Allow health check probes from kubelet (host)
+  # Traefik dashboard and metrics endpoints need to be accessible for health checks
+  - fromEntities:
+    - host
+    toPorts:
+    - ports:
+      - port: "8080"
+        protocol: TCP
+      - port: "9100"
+        protocol: TCP
+  # Allow Prometheus to scrape metrics from Traefik
+  # Traefik exposes metrics on port 9100 for monitoring
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: prometheus
+        k8s:io.kubernetes.pod.namespace: prometheus
+        k8s:app.kubernetes.io/name: prometheus
+    toPorts:
+    - ports:
+      - port: "9100"
+        protocol: TCP
+  # Allow access to Traefik dashboard from within kube-system
+  # The dashboard service (port 9000) is accessed internally
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: kube-system
+    toPorts:
+    - ports:
+      - port: "9000"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  # Required for resolving backend service names
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow communication with Kubernetes API server
+  # Required for service discovery, watching Ingress resources, and configuration
+  - toEntities:
+    - kube-apiserver
+  # Allow Traefik to forward requests to backend services in all namespaces
+  # Traefik needs to connect to services that have Ingress configurations
+  # This includes services in: argocd, authelia, dns, longhorn, media, monitoring, paper, whoami, etc.
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: argocd
+        k8s:io.kubernetes.pod.namespace: argocd
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: authelia
+        k8s:io.kubernetes.pod.namespace: authelia
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: dns
+        k8s:io.kubernetes.pod.namespace: dns
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: longhorn
+        k8s:io.kubernetes.pod.namespace: longhorn
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: media
+        k8s:io.kubernetes.pod.namespace: media
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: prometheus
+        k8s:io.kubernetes.pod.namespace: prometheus
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: paper
+        k8s:io.kubernetes.pod.namespace: paper
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: whoami
+        k8s:io.kubernetes.pod.namespace: whoami
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: ansible
+        k8s:io.kubernetes.pod.namespace: ansible
+  # Allow Traefik to communicate with services in kube-system namespace
+  # This includes the Traefik dashboard service and other system services
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: kube-system
+  # Allow Traefik to communicate with services in traefik namespace
+  # This includes middleware configurations and other Traefik-related resources
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: traefik
+        k8s:io.kubernetes.pod.namespace: traefik
