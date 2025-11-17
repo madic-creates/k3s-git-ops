@@ -1,0 +1,195 @@
+---
+# Loki Network Policy
+# Loki receives logs from Promtail agents and serves queries to Grafana
+# Running in SingleBinary deployment mode for simplicity
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: loki
+  namespace: monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "17"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: loki
+      app.kubernetes.io/component: single-binary
+  ingress:
+  # Allow Grafana to query Loki for log data
+  # Grafana datasource connects to Loki on port 3100
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: grafana
+        k8s:io.kubernetes.pod.namespace: monitoring
+    toPorts:
+    - ports:
+      - port: "3100"
+        protocol: TCP
+  # Allow Promtail agents to push logs to Loki
+  # Promtail runs as DaemonSet and sends logs to Loki on port 3100
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: promtail
+        k8s:io.kubernetes.pod.namespace: monitoring
+    toPorts:
+    - ports:
+      - port: "3100"
+        protocol: TCP
+  # Allow Prometheus to scrape Loki metrics
+  # Loki exposes Prometheus metrics on port 3100 /metrics endpoint
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: prometheus
+        k8s:io.kubernetes.pod.namespace: monitoring
+    toPorts:
+    - ports:
+      - port: "3100"
+        protocol: TCP
+  # Allow loki-canary to test Loki by writing and reading logs
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: loki
+        k8s:app.kubernetes.io/component: canary
+        k8s:io.kubernetes.pod.namespace: monitoring
+    toPorts:
+    - ports:
+      - port: "3100"
+        protocol: TCP
+  # Allow internal communication within monitoring namespace
+  # Useful for headless service discovery and inter-component communication
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: monitoring
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow egress within monitoring namespace for service discovery
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: monitoring
+---
+# Promtail Network Policy
+# Promtail runs as DaemonSet and collects logs from all pods on each node
+# It reads container logs from /var/log/pods and sends them to Loki
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: promtail
+  namespace: monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "17"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: promtail
+  ingress:
+  # Allow Prometheus to scrape Promtail metrics
+  # Promtail exposes Prometheus metrics on port 3101 /metrics endpoint
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: prometheus
+        k8s:io.kubernetes.pod.namespace: monitoring
+    toPorts:
+    - ports:
+      - port: "3101"
+        protocol: TCP
+  # Allow internal communication within monitoring namespace
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: monitoring
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow Promtail to push logs to Loki
+  # This is the primary function of Promtail
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: loki
+        k8s:app.kubernetes.io/component: single-binary
+        k8s:io.kubernetes.pod.namespace: monitoring
+    toPorts:
+    - ports:
+      - port: "3100"
+        protocol: TCP
+  # Allow egress within monitoring namespace
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: monitoring
+---
+# Loki Canary Network Policy
+# Loki Canary periodically writes test logs and verifies they can be read back
+# This provides synthetic monitoring and alerts if log ingestion is broken
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: loki-canary
+  namespace: monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "17"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: loki
+      app.kubernetes.io/component: canary
+  ingress:
+  # Allow Prometheus to scrape canary metrics
+  # Canary exposes metrics about log write/read latency and success rates
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: prometheus
+        k8s:io.kubernetes.pod.namespace: monitoring
+    toPorts:
+    - ports:
+      - port: "3500"
+        protocol: TCP
+  # Allow internal communication within monitoring namespace
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: monitoring
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow canary to write and query logs from Loki
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: loki
+        k8s:app.kubernetes.io/component: single-binary
+        k8s:io.kubernetes.pod.namespace: monitoring
+    toPorts:
+    - ports:
+      - port: "3100"
+        protocol: TCP
+  # Allow egress within monitoring namespace
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: monitoring

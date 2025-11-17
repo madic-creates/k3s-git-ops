@@ -16,3 +16,6 @@ helmCharts:
     releaseName: promtail
     namespace: monitoring
     includeCRDs: true
+
+resources:
+  - k8s.np.monitoring-loki.yaml
