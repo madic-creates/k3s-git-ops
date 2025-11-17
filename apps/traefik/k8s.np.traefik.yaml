@@ -45,7 +45,7 @@ spec:
     - host
     toPorts:
     - ports:
-      - port: "8080"
+      - port: "9000"
         protocol: TCP
       - port: "9100"
         protocol: TCP
