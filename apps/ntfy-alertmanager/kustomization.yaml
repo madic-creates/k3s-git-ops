@@ -2,5 +2,8 @@
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "16"
 
+resources:
+  - k8s.np.ntfy-alertmanager.yaml
+
 generators:
   - kustomize-secret-generator.yaml

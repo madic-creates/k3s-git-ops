@@ -1,0 +1,87 @@
+---
+# ntfy-alertmanager Network Policy
+# ntfy-alertmanager receives webhook notifications from Alertmanager and forwards them to ntfy
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: ntfy-alertmanager
+  namespace: monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "16"
+spec:
+  endpointSelector:
+    matchLabels:
+      app: ntfy-alertmanager
+  ingress:
+  # Allow Traefik to reach ntfy-alertmanager web UI for silence button functionality
+  # ntfy-alertmanager exposes a web interface on port 8080 for creating silences
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: traefik
+        k8s:io.kubernetes.pod.namespace: kube-system
+    toPorts:
+    - ports:
+      - port: "8080"
+        protocol: TCP
+  # Allow Alertmanager to send webhook notifications to ntfy-alertmanager
+  # Alertmanager forwards alerts to ntfy-alertmanager which then sends them to ntfy
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: monitoring
+        k8s:app.kubernetes.io/name: alertmanager
+    toPorts:
+    - ports:
+      - port: "8080"
+        protocol: TCP
+  # Allow Prometheus to scrape metrics from ntfy-alertmanager
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: monitoring
+        k8s:app.kubernetes.io/name: prometheus
+    toPorts:
+    - ports:
+      - port: "8080"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow ntfy-alertmanager to send notifications to external ntfy server
+  # ntfy-alertmanager forwards alerts to ntfy.geekbundle.org (external service)
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+      - port: "80"
+        protocol: TCP
+  # Allow ntfy-alertmanager to communicate with Alertmanager API for silence creation
+  # The silence button functionality requires ntfy-alertmanager to create silences via Alertmanager API
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: monitoring
+        k8s:app.kubernetes.io/name: alertmanager
+    toPorts:
+    - ports:
+      - port: "9093"
+        protocol: TCP
+  # Allow ntfy-alertmanager to connect to Redis for caching (optional, currently disabled)
+  # Redis is in databases namespace and used for alert deduplication when enabled
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: databases
+        k8s:app.kubernetes.io/name: redis
+    toPorts:
+    - ports:
+      - port: "6379"
+        protocol: TCP
