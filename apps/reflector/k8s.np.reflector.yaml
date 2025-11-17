@@ -1,0 +1,51 @@
+---
+# Reflector Network Policy
+# Controls network access for the reflector controller
+# Reflector is a Kubernetes operator that automatically reflects and mirrors
+# ConfigMaps and Secrets across namespaces based on annotations
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: reflector
+  namespace: reflector
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: reflector
+      app.kubernetes.io/instance: reflector
+  ingress:
+  # Allow health check probes from within the cluster
+  # (liveness, readiness, and startup probes on port 8080)
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: reflector
+    toPorts:
+    - ports:
+      - port: "8080"
+        protocol: TCP
+  # Allow health checks from Kubernetes nodes (kubelet)
+  - fromEntities:
+    - host
+    toPorts:
+    - ports:
+      - port: "8080"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow communication with Kubernetes API server
+  # Required for watching and reflecting ConfigMaps and Secrets across namespaces
+  - toEntities:
+    - kube-apiserver

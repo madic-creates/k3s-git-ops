@@ -10,6 +10,7 @@ helmCharts:
 
 resources:
   - namespace.yaml
+  - k8s.np.reflector.yaml
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "2"
