@@ -1,0 +1,188 @@
+---
+namespace: minecraft
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "35"
+
+resources:
+  - namespace.yaml
+  - k8s.np.default-deny.yaml
+  - k8s.np.minecraft.yaml
+
+helmCharts:
+  - name: minecraft
+    repo: https://itzg.github.io/minecraft-server-charts/
+    version: 5.0.0
+    releaseName: minecraft-crossplay
+    namespace: minecraft
+    includeCRDs: false
+    valuesInline:
+      image:
+        repository: ghcr.io/itzg/minecraft-server
+        tag: 2025.10.5-java21
+        pullPolicy: IfNotPresent
+        pullSecret: ""
+      resources:
+        requests:
+          memory: 1024Mi
+          cpu: 1000m
+      strategyType: Recreate
+      revisionHistoryLimit: 3
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - node02
+      persistence:
+        #storageClass: longhorn
+        dataDir:
+          enabled: true
+          Size: 10Gi
+          accessModes:
+            - ReadWriteOnce
+      envFrom:
+        - secretRef:
+            name: minecraft-crossplay-secrets
+      minecraftServer:
+        eula: true
+        levelSeed:
+        # https://www.leafmc.one/docs/benchmark/entity-performance
+        type: LEAF
+        TZ: Europe/Berlin
+        worldSaveName: SmallServerHub
+        version: "1.21.4"
+        memory: 6G
+        maxPlayers: 8
+        difficulty: normal
+        onlineMode: true
+        enforceSecureProfile: false
+        enableCommandBlock: true
+        motd: "Minecraft Java & Bedrock Cross-play"
+        pluginUrls:
+          # Geyser / Floodgate - https://geysermc.org/download/
+          - https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/latest/downloads/spigot
+          - https://download.geysermc.org/v2/projects/floodgate/versions/latest/builds/latest/downloads/spigot
+          # EssentialsX - https://essentialsx.net/downloads.html
+          - https://github.com/EssentialsX/Essentials/releases/download/2.21.2/EssentialsX-2.21.2.jar
+          # Fast Async World Edit - https://ci.athion.net/job/FastAsyncWorldEdit/
+          - https://ci.athion.net/job/FastAsyncWorldEdit/1204/artifact/artifacts/FastAsyncWorldEdit-Paper-2.14.1-SNAPSHOT-1217.jar
+          # Darker Nights - https://www.spigotmc.org/resources/darkernights.87814/ (Paid)
+          - http://192.168.1.45:8043/DarkerNights-2.7.4.jar
+          # Leveld Mobs - https://www.spigotmc.org/resources/levelledmobs.74304/
+          #- https://github.com/ArcanePlugins/LevelledMobs/releases/download/v4.3.2.1/LevelledMobs-4.3.2.1.b125.jar
+          - https://github.com/ArcanePlugins/LevelledMobs/releases/download/v4.3.0.1/LevelledMobs-4.3.0.1.b109.jar
+          # ProtocolLib - https://www.spigotmc.org/resources/protocollib.1997/ / https://github.com/dmulloy2/ProtocolLib/releases
+          - https://github.com/dmulloy2/ProtocolLib/releases/download/5.4.0/ProtocolLib.jar
+          # GriefDefender - https://www.spigotmc.org/resources/1-12-2-1-21-9-griefdefender-claim-plugin-grief-prevention-protection.68900/ (Paid)
+          - http://192.168.1.45:8043/griefdefender-bukkit-3.1.2.jar
+          - http://192.168.1.45:8043/gdhooks-bukkit-0.8-DEV39.jar
+          # SquareMap - https://github.com/jpenilla/squaremap
+          #- https://github.com/jpenilla/squaremap/releases/download/v1.3.9/squaremap-paper-mc1.21.10-1.3.9.jar
+          - https://github.com/jpenilla/squaremap/releases/download/v1.3.4/squaremap-paper-mc1.21.4-1.3.4.jar
+          # WorldEditSUI - https://www.spigotmc.org/resources/worldeditsui-visualize-your-selection.60726/ / https://github.com/kennytv/WorldEditSUI
+          - https://github.com/kennytv/WorldEditSUI/releases/download/1.7.4/WorldEditSUI-1.7.4.jar
+        modrinth:
+          projects:
+            - viaversion
+            - viabackwards
+            # https://mvplugins.org/download/
+            - multiverse-core
+            - multiverse-inventories
+            - multiverse-portals
+            - multiverse-netherportals
+            - multiverse-signportals
+            # https://modrinth.com/plugin/multiverse-commanddestination
+            - multiverse-commanddestination
+            # StellarProtect (CoreProtect Alternative) - https://modrinth.com/plugin/stellarprotect
+            - stellarprotect
+          downloadDependencies: required
+          allowedVersionType: default
+        spigetResources:
+          # Placeholder API - https://www.spigotmc.org/resources/placeholderapi.6245/
+          - 6245
+          # Essentials WarpGUI - https://www.spigotmc.org/resources/essentials-warp-gui.13571/
+          - 13571
+          # LuckPerms - https://www.spigotmc.org/resources/luckperms.28140/
+          - 28140
+          # AngelChest Free - https://www.spigotmc.org/resources/angelchest-free.60383/
+          - 60383
+          # Better Sleeping - https://www.spigotmc.org/resources/bettersleeping.60837/
+          - 60837
+          # TreeAssist - https://www.spigotmc.org/resources/treeassist.67436/
+          - 67436
+          # Decent Holograms -  https://www.spigotmc.org/resources/decentholograms-1-8-1-21-10-papi-support-no-dependencies.96927/
+          - 96927
+          # Chairs - https://www.spigotmc.org/resources/chairs.104881/
+          - 104881
+          # Simple TabList
+          - 101989
+        rcon:
+          enabled: true
+          existingSecret: minecraft-crossplay-rcon-secret
+          secretKey: rcon-password
+        serviceType: LoadBalancer
+        externalTrafficPolicy: Local
+        serviceAnnotations:
+          kube-vip.io/loadbalancerIPs: "192.168.1.235"
+        servicePort: 25565
+        loadBalancerIP: "192.168.1.235"
+        extraPorts:
+          - name: minerock
+            containerPort: 19132
+            protocol: UDP
+            service:
+              enabled: true
+              embedded: true
+              annotations:
+                kube-vip.io/loadbalancerIPs: "192.168.1.235"
+              type: LoadBalancer
+              port: 19132
+              loadBalancerSourceRanges: []
+              loadBalancerIP: "192.168.1.235"
+          - name: map
+            containerPort: 8080
+            protocol: TCP
+            service:
+              enabled: true
+              embedded: true
+              annotations:
+                kube-vip.io/loadbalancerIPs: "192.168.1.235"
+              type: LoadBalancer
+              port: 8080
+              loadBalancerSourceRanges: []
+              loadBalancerIP: "192.168.1.235"
+      mcbackup:
+        enabled: true
+        backupInterval: 12h
+        pruneBackupsDays: 7
+        excludes: "*.jar,cache,logs"
+        backupName: mc_home
+        # backup methods, see https://github.com/itzg/docker-mc-backup e.g. tar, rclone, restic, rsync
+        backupMethod: restic
+        resticRepository: "s3:http://versitygw.longhorn.svc.cluster.local:7070/backups-minecraft"
+        resticAdditionalTags: "mc_backups"
+        pruneResticRetention: "--keep-daily 7 --keep-weekly 5 --keep-monthly 12 --keep-yearly 75"
+        resticHostname: k8s-homelab
+        resticEnvs:
+          RESTIC_PASSWORD_FILE: /data/.resticpwd
+        envFrom:
+          - secretRef:
+              name: minecraft-crossplay-backup-secrets
+      extraVolumes:
+        - volumeMounts:
+            - name: restic-password
+              mountPath: /data/.resticpwd
+              subPath: .resticpwd
+              readOnly: true
+          volumes:
+            - name: restic-password
+              secret:
+                secretName: minecraft-restic-password
+
+generators:
+  - kustomize-secret-generator.yaml

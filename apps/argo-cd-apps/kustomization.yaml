@@ -32,6 +32,7 @@ resources:
   - 30-emby.yaml
   - 31-nextpvr.yaml
   - 33-navidrome.yaml
+  - 35-minecraft.yaml
   - 40-paperless-ai.yaml
   - 40-paperless-ngx.yaml
   - 60-semaphore.yaml

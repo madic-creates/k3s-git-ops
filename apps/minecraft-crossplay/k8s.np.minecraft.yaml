@@ -1,0 +1,79 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: minecraft-allow
+  namespace: minecraft
+spec:
+  endpointSelector:
+    matchLabels:
+      k8s:app.kubernetes.io/instance: minecraft-crossplay
+  ingress:
+  - fromEntities:
+    - world
+    - cluster
+    toPorts:
+    - ports:
+      # Java
+      - port: "25565"
+        protocol: TCP
+      # Bedrock
+      - port: "19132"
+        protocol: UDP
+      # Map
+      - port: "8080"
+        protocol: TCP
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: longhorn-system
+    toPorts:
+    - ports:
+      - port: "9500"
+        protocol: TCP
+  egress:
+  # DNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to MariaDB for persistent data storage
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: mariadb
+        k8s:io.kubernetes.pod.namespace: databases
+    toPorts:
+    - ports:
+      - port: "3306"
+        protocol: TCP
+  # Allow access to versitygw for backup
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: versitygw
+        k8s:io.kubernetes.pod.namespace: longhorn
+    toPorts:
+    - ports:
+      - port: "7070"
+        protocol: TCP
+  # Allow access to http / https
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+      - port: "80"
+        protocol: TCP
+  # Internal static http server
+  - toCIDR:
+    - 192.168.1.45/32
+    toPorts:
+    - ports:
+      - port: "8043"
+        protocol: TCP

@@ -1,0 +1,61 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: minecraft-crossplay
+  name: minecraft-crossplay
+  namespace: minecraft
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: minecraft-crossplay
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: minecraft-crossplay
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - preference:
+              matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - node02
+            weight: 100
+      containers:
+      - image: alpine:3.21
+        imagePullPolicy: IfNotPresent
+        name: minecraft-crossplay
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1024Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+        stdin: true
+        tty: true
+        volumeMounts:
+        - mountPath: /data
+          name: datadir
+      securityContext:
+        fsGroup: 2000
+        runAsGroup: 3000
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+      - name: datadir
+        persistentVolumeClaim:
+          claimName: minecraft-crossplay-datadir
