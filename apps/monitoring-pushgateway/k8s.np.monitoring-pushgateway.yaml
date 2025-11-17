@@ -1,0 +1,63 @@
+---
+# Network Policy for Prometheus Pushgateway
+# This service receives metrics from various sources via HTTP POST and stores them temporarily
+# for Prometheus to scrape. It acts as a metrics aggregation point for batch jobs and scripts.
+# Requirements:
+# - DNS resolution for internal service discovery
+# - Ingress from Prometheus for metrics scraping (port 9091)
+# - Ingress from backup scripts and other clients pushing metrics (port 9091)
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: prometheus-pushgateway
+  namespace: monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "17"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus-pushgateway
+  ingress:
+  # Allow Prometheus to scrape metrics from pushgateway
+  # Prometheus runs in the monitoring namespace and scrapes pushgateway on port 9091
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: monitoring
+        k8s:app.kubernetes.io/name: prometheus
+    toPorts:
+    - ports:
+      - port: "9091"
+        protocol: TCP
+  # Allow backup scripts and other applications to push metrics to pushgateway
+  # Backup scripts run in the longhorn namespace and push metrics via HTTP POST to port 9091
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: longhorn
+        k8s:app: restic-retentionpolicies
+    toPorts:
+    - ports:
+      - port: "9091"
+        protocol: TCP
+  # Allow any pod in the monitoring namespace to push metrics
+  # This enables other monitoring tools and exporters to use the pushgateway
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: monitoring
+    toPorts:
+    - ports:
+      - port: "9091"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  # Required for internal service discovery
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP

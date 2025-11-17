@@ -10,3 +10,6 @@ helmCharts:
     namespace: monitoring
     includeCRDs: true
     valuesFile: values.yaml
+
+resources:
+  - k8s.np.monitoring-pushgateway.yaml
