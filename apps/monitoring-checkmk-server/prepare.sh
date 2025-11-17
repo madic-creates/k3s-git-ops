@@ -9,8 +9,9 @@ apt-get -qq update && apt-get -qq install apt-utils && apt-get install -qqy lsb-
 curl -s "https://labs.consol.de/repo/stable/GPG-KEY-4096" -o /etc/apt/auth.conf.d/labs.consol.de-RPM-GPG-KEY
 echo "deb [signed-by=/etc/apt/auth.conf.d/labs.consol.de-RPM-GPG-KEY] http://labs.consol.de/repo/stable/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/labs-consol-stable.list
 rm -f /etc/apache2/conf-enabled/zzz_omd.conf
-apt-get -qq update && apt-get install -qqy thruk nano libipc-run-perl freeipmi jq file bc
+apt-get -qq update && apt-get install -qqy thruk nano libipc-run-perl freeipmi jq file bc htop
 apt-get -qq clean all
+mkdir /opt/backup
 
 echo "Use checkmk htpasswd for thruk"
 rm -f /etc/thruk/htpasswd && ln -s /opt/omd/sites/cmk/etc/htpasswd /etc/thruk/htpasswd
