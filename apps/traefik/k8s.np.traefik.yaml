@@ -60,11 +60,11 @@ spec:
     - ports:
       - port: "9100"
         protocol: TCP
-  # Allow access to Traefik dashboard from within kube-system
-  # The dashboard service (port 9000) is accessed internally
-  - fromEndpoints:
-    - matchLabels:
-        k8s:io.kubernetes.pod.namespace: kube-system
+  # Allow access to Traefik dashboard from within kube-system and cluster
+  # The dashboard service (port 9000) is accessed internally by Traefik itself
+  # and potentially from other monitoring/management tools
+  - fromEntities:
+    - cluster
     toPorts:
     - ports:
       - port: "9000"
