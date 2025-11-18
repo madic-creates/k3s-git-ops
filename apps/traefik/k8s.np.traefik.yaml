@@ -148,6 +148,10 @@ spec:
     - matchLabels:
         k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: ansible
         k8s:io.kubernetes.pod.namespace: ansible
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: monitoring
+        k8s:io.kubernetes.pod.namespace: monitoring
   # Allow Traefik to communicate with services in kube-system namespace
   # This includes the Traefik dashboard service and other system services
   - toEndpoints:
