@@ -158,7 +158,7 @@ helmCharts:
               loadBalancerIP: "192.168.1.235"
       mcbackup:
         enabled: true
-        backupInterval: 12h
+        backupInterval: 1h
         pruneBackupsDays: 7
         excludes: "*.jar,cache,logs"
         backupName: mc_home
@@ -166,7 +166,7 @@ helmCharts:
         backupMethod: restic
         resticRepository: "s3:http://versitygw.longhorn.svc.cluster.local:7070/backups-minecraft"
         resticAdditionalTags: "mc_backups"
-        pruneResticRetention: "--keep-daily 7 --keep-weekly 5 --keep-monthly 12 --keep-yearly 75"
+        pruneResticRetention: "--keep-hourly 72 --keep-daily 14 --keep-weekly 3 --keep-monthly 0 --keep-yearly 0"
         resticHostname: k8s-homelab
         resticEnvs:
           RESTIC_PASSWORD_FILE: /data/.resticpwd
