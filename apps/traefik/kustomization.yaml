@@ -100,8 +100,6 @@ helmCharts:
         - "--entryPoints.web239.forwardedHeaders.insecure"
         #- "--accesslog=true"
       experimental:
-        kubernetesGateway:
-          enabled: true
         plugins:
           # Required for correct thruk redirect. Thruk sends in our scenario http redirect but we need to replace that with https
           redirectLocation:
