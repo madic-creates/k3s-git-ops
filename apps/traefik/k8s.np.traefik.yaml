@@ -83,6 +83,15 @@ spec:
       - port: "9000"
         protocol: TCP
   egress:
+  # Allow HTTP(S) for plugin downloads
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: '443'
+        protocol: TCP
+      - port: '80'
+        protocol: TCP
   # Allow DNS resolution via CoreDNS
   # Required for resolving backend service names
   - toEndpoints:
