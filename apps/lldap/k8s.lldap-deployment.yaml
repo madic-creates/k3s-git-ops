@@ -69,7 +69,7 @@ spec:
             - name: LLDAP_LDAPS_OPTIONS__KEY_FILE
               value: /certs/tls.key
           # https://github.com/lldap/lldap/pkgs/container/lldap
-          image: ghcr.io/lldap/lldap:latest-alpine@sha256:9cb381acf57fea44b3b1643fdd102b4f3aac62b49db00cb3e7eeda2d4f299826
+          image: ghcr.io/lldap/lldap:latest-alpine@sha256:033161798f5592ac65ab62f406da51d1fa4272848be5535664ea19675b302f39
           name: lldap
           ports:
             # LDAP
