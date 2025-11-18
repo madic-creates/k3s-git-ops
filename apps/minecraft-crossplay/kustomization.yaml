@@ -70,7 +70,7 @@ helmCharts:
           # EssentialsX - https://essentialsx.net/downloads.html
           - https://github.com/EssentialsX/Essentials/releases/download/2.21.2/EssentialsX-2.21.2.jar
           # Fast Async World Edit - https://ci.athion.net/job/FastAsyncWorldEdit/
-          - https://ci.athion.net/job/FastAsyncWorldEdit/1204/artifact/artifacts/FastAsyncWorldEdit-Paper-2.14.1-SNAPSHOT-1217.jar
+          - https://ci.athion.net/job/FastAsyncWorldEdit/1217/artifact/artifacts/FastAsyncWorldEdit-Paper-2.14.1-SNAPSHOT-1217.jar
           # Darker Nights - https://www.spigotmc.org/resources/darkernights.87814/ (Paid)
           - http://192.168.1.45:8043/DarkerNights-2.7.4.jar
           # Leveld Mobs - https://www.spigotmc.org/resources/levelledmobs.74304/
