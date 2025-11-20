@@ -2,7 +2,7 @@
 resources:
   - traefik-config.yaml
   - namespace.yaml
-  - k8s.gateway.yaml
+  #- k8s.gateway.yaml
   - k8s.np.traefik.yaml
 
 commonAnnotations:
