@@ -1,0 +1,43 @@
+clusterCollector:
+    ingress:
+        enabled: true
+        className: traefik
+        annotations:
+            traefik.ingress.kubernetes.io/router.entrypoints: websecure
+            traefik.ingress.kubernetes.io/router.tls: "true"
+            traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect@kubernetescrd
+            kustomize.config.k8s.io/behavior: merge
+            kustomize.config.k8s.io/needs-hash: "false"
+        hosts:
+            - host: ENC[AES256_GCM,data:2B8tnjvJzAYrsMvjA4G/vBoPNCVqgHAbUFs0cAi+jUjTy0axt+gNs3v56DwVqcU=,iv:PTW7tuzsh6N2xXkVYfgsUx164xrS4GdN8xapbeYjy6U=,tag:scgBb3D3R1xM5dceb8m+5w==,type:str]
+              paths:
+                - path: ENC[AES256_GCM,data:HA==,iv:6ZDuOCBdqZ136YeNQ2c3mKOgWUzauhOXFtqJHu6OWVI=,tag:tz1BaFV9qomMBczfguwp8Q==,type:str]
+                  pathType: ENC[AES256_GCM,data:sEOgTYkC,iv:fW42pW4SpTtkfiUa+58kQV7Yx10+8XcbzYkxR21Y0oQ=,tag:J66kTnwUYSr1K3MGCg7lgA==,type:str]
+        tls:
+            - secretName: wildcard-cloudflare-production-02
+              hosts:
+                - ENC[AES256_GCM,data:GTlU3s79BL4TbXgKRDl6vapYn5uQMiSY6q0o5PlXu6dz1GKNBnsJTpUeEcVG/7o=,iv:Tk3FFq5+KakyRx70gQObGIlzwvmmFfpK5O+OjQnjv6w=,tag:Wc4FkSpMi8RZcugXE7qqIw==,type:str]
+sops:
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAyNDIwOTJyVzZIbnM2enY5
+            MXRFQStrUG10UGo0TFVDRHZtb3BYZ01ENEI0Ci9QTEcxNWI2aUUvTVRNRCtrYUFX
+            N3pmTHNTc0RKNlJwUjB2aGhJbFk3VEkKLS0tIDh4eWp1aWxKODdWSitnMlZFbkxy
+            QW9BNEh4b3Z2czByY1Q3bjc2STQvcE0Kfoeqj0TPUpPf3n6CDOOgODBL1PbD4e7r
+            W32I+E/q0H0bPbx2HYXuRebRIHut6iW6Sw82dmgEJcZjGuOCNcMjag==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBER1JvbnpiZGdGdWZZaVF0
+            eXJwWmRWSm5yVGZTZ0NKcWV0amdBTjFGdDJ3CnZUOCtvTEdEZDdyL2g2RnBtdktC
+            M0t0eVdTcDF1Mm5vVElraURTdnhUdUEKLS0tIDVLMzBKTnBFb0pFMTYyMW9hN1NK
+            NFRLQWgxeUZsWFZCMlNzeVV5bm90cG8KHduD71bPvyVVOoJ+clSYjIlUQQnphlI+
+            giRoE1cbnti8EKzu7QpZ+xW4ZlPw/cHQj847D5KWntygC4g2h7Qcdw==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-11-20T12:01:43Z"
+    mac: ENC[AES256_GCM,data:CFEyCoIeYgRelTXwrQhKthxp5xVZUcToA3Z79FHeD3JO/PrJ6XaC9HGxgm/b0+Sbx3iXcoGUCJKl/7qGEZV/xD3tdtl8BSNvDxjTx1rZpnGt9jGDRMJj9SGhNWc/k25FDdbJPcipBKbI3KTrebOCCJd5N3++7PpZFYVvU706Ib4=,iv:n7LfObHNxFL+nlULibLT5Ftkr01x29HAgWyicEFM/b0=,tag:9qdRl9UNbWXC+X8I9Ld5GA==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match)$
+    version: 3.11.0
