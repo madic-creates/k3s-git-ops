@@ -21,7 +21,8 @@ spec:
       containers:
       - name: monitoring
         # https://hub.docker.com/r/checkmk/check-mk-raw/tags
-        image: checkmk/check-mk-raw:2.2.0p44
+        #image: checkmk/check-mk-raw:2.2.0p44
+        image: checkmk/check-mk-raw:2.3.0p40
         env:
         - name: MAIL_RELAY_HOST
           valueFrom:
