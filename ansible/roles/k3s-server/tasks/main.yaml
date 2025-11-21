@@ -14,8 +14,25 @@
     - "{{ K3S_REGISTRIES }}"
     - "{{ K3S_KUBELET }}"
 
-- name: "K3s Server | Install primary server"
+- name: "K3s Server | Detect cluster reinstall scenario"
   when: "'k3s_primary_server' in group_names"
+  block:
+    - name: "K3s Server | Check if cluster already exists locally"
+      ansible.builtin.stat:
+        path: "../../shared/{{ groups['k3s_primary_server'][0] }}/k3s.yaml"
+      register: cluster_exists
+      delegate_to: localhost
+      become: false
+
+    - name: "K3s Server | Treat primary as secondary for reinstall"
+      when: cluster_exists.stat.exists
+      ansible.builtin.set_fact:
+        treat_as_secondary: true
+
+- name: "K3s Server | Install primary server (new cluster)"
+  when:
+    - "'k3s_primary_server' in group_names"
+    - not (treat_as_secondary | default(false))
   block:
     - name: "K3s Server | Create local config directory for primary"
       ansible.builtin.file:
@@ -76,7 +93,7 @@
       delay: 10
 
 - name: "K3s Server | Install secondary server"
-  when: "'k3s_secondary_server' in group_names"
+  when: "'k3s_secondary_server' in group_names or (treat_as_secondary | default(false))"
   block:
 
     - name: "K3s Server | Check if K3s is already installed on secondary"
