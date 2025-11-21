@@ -18,6 +18,8 @@ spec:
       labels:
         app: checkmk
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: prox01
       containers:
       - name: monitoring
         # https://hub.docker.com/r/checkmk/check-mk-raw/tags
