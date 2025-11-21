@@ -66,6 +66,8 @@ helmCharts:
       image:
         pullPolicy: IfNotPresent
       priorityClassName: "system-cluster-critical"
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: "true"
       tolerations:
         #- key: "dedicated"
         #  operator: "Equal"
