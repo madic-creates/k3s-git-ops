@@ -6,7 +6,7 @@ namespace: databases
 helmCharts:
   - name: mariadb
     repo: oci://registry-1.docker.io/bitnamicharts
-    version: 22.0.0
+    version: 23.2.4
     releaseName: mariadb
     namespace: databases
     valuesFile: values.yaml
