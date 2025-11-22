@@ -33,6 +33,12 @@ spec:
   # The backup job uses kubectl to get pods and exec into the MariaDB container
   - toEntities:
     - kube-apiserver
+    toPorts:
+    - ports:
+      - port: '6443'
+        protocol: TCP
+      - port: '443'
+        protocol: TCP
   # Allow access to MariaDB pod for backup operations
   # The kubectl exec command connects to the MariaDB pod to run mariadb-backup
   - toEndpoints:
