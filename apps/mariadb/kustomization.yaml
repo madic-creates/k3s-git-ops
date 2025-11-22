@@ -9,12 +9,13 @@ helmCharts:
     version: 22.0.0
     releaseName: mariadb
     namespace: databases
-    valuesFile: values.yaml
+    valuesFile: values.enc.yaml
 
 resources:
   - namespace.yaml
   - k8s.backup-pvc.yaml
   - k8s.np.mariadb.yaml
+  - k8s.np.mariadb-backup.yaml
   - k8s.np.databases-default-deny.yaml
   - k8s.backup-cronjob.yaml
 

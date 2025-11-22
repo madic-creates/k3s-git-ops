@@ -1,0 +1,41 @@
+---
+# Network Policy for MariaDB Backup CronJob
+# Allows the backup job to access the Kubernetes API server and MariaDB pod
+# The backup uses kubectl to exec into the MariaDB pod and run mariadb-backup
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: mariadb-backup
+  namespace: databases
+  annotations:
+    argocd.argoproj.io/sync-wave: "08"
+spec:
+  endpointSelector:
+    matchLabels:
+      batch.kubernetes.io/job-name: mariadb-backup
+  ingress:
+  # No ingress needed - backup job only makes outbound connections
+  - {}
+  egress:
+  # Allow DNS resolution via CoreDNS for service discovery
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to Kubernetes API server for kubectl operations
+  # The backup job uses kubectl to get pods and exec into the MariaDB container
+  - toEntities:
+    - kube-apiserver
+  # Allow access to MariaDB pod for backup operations
+  # The kubectl exec command connects to the MariaDB pod to run mariadb-backup
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: mariadb
+        k8s:io.kubernetes.pod.namespace: databases
