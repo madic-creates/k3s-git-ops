@@ -12,7 +12,7 @@ metadata:
 spec:
   endpointSelector:
     matchLabels:
-      batch.kubernetes.io/job-name: mariadb-backup
+      app: mariadb-backup
   ingress:
   # No ingress needed - backup job only makes outbound connections
   - {}

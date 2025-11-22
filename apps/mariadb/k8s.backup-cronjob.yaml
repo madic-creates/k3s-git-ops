@@ -52,6 +52,9 @@ spec:
     spec:
       backoffLimit: 0
       template:
+        metadata:
+          labels:
+            app: mariadb-backup
         spec:
           serviceAccountName: mariadb-backup-serviceaccount
           initContainers:
