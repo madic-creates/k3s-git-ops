@@ -9,7 +9,7 @@ helmCharts:
     version: 22.0.0
     releaseName: mariadb
     namespace: databases
-    valuesFile: values.enc.yaml
+    valuesFile: values.yaml
 
 resources:
   - namespace.yaml
