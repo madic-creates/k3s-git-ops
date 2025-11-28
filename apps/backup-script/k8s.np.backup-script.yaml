@@ -31,12 +31,13 @@ spec:
         protocol: UDP
       - port: "53"
         protocol: TCP
-  # Allow access to Prometheus Pushgateway in prometheus namespace
+  # Allow access to Prometheus Pushgateway in monitoring namespace
   # Used to push backup metrics when PUSHGATEWAY_ENABLED=true
   - toEndpoints:
     - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: monitoring
+        k8s:io.kubernetes.pod.namespace: monitoring
         k8s:app.kubernetes.io/name: prometheus-pushgateway
-        k8s:io.kubernetes.pod.namespace: prometheus
     toPorts:
     - ports:
       - port: "9091"
