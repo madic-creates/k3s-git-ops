@@ -86,7 +86,7 @@ data:
       # Manually kill tee process to prevent hanging / zombie processes.
       # Needs to be done here because in some scenarios this script is executed by crond, running as pid 1,
       # which does not kill child processes.
-      pkill -f tee
+      pkill -f tee || true
     }
 
     # Redirect all output to a temporary log file and stdout
