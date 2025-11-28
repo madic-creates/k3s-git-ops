@@ -45,3 +45,32 @@ spec:
     - matchLabels:
         k8s:app.kubernetes.io/name: mariadb
         k8s:io.kubernetes.pod.namespace: databases
+  # Allow access to Prometheus Pushgateway in prometheus namespace
+  # Used to push backup metrics when PUSHGATEWAY_ENABLED=true
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: prometheus-pushgateway
+        k8s:io.kubernetes.pod.namespace: prometheus
+    toPorts:
+    - ports:
+      - port: "9091"
+        protocol: TCP
+  # Allow access to network internal SMTP server for email notifications
+  # Default: 192.168.1.45:25
+  - toCIDR:
+    - 192.168.1.45/32
+    toPorts:
+    - ports:
+      - port: "25"
+        protocol: TCP
+  # Allow external access for:
+  # - S3/Wasabi API (restic backup storage)
+  # - Alpine package repositories (apk add curl)
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+      - port: "80"
+        protocol: TCP
