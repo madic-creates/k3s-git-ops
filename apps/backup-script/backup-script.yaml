@@ -80,13 +80,15 @@ data:
 
     # Show script runtime for stdout and logfile
     script_runtime() {
+      local exit_code="${1}"
       JOB_DURATION=$(( $(date +%s) - JOB_START_TIME ))
       JOB_RUNTIME=$(date -u -d @${JOB_DURATION} +"%T")
-      echo "$(date) Script exited with exit code ${1}. Script runtime: $JOB_RUNTIME"
+      echo "$(date) Script exited with exit code ${exit_code}. Script runtime: $JOB_RUNTIME"
       # Manually kill tee process to prevent hanging / zombie processes.
       # Needs to be done here because in some scenarios this script is executed by crond, running as pid 1,
       # which does not kill child processes.
       pkill -f tee || true
+      exit "${exit_code}"
     }
 
     # Redirect all output to a temporary log file and stdout
