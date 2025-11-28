@@ -58,7 +58,7 @@ resources:
   #- 65-prox01-snmp-exporter.yaml
   #- 65-prox01-sonarr.yaml
   #- 65-prox01-ssl-exporter.yaml
-  #- 65-prox01-tftpd-hpa.yaml
+  - 65-prox01-tftpd-hpa.yaml
   #- 65-prox01-unifi-controller.yaml
   #- 65-prox01-watchtower.yaml
   - 70-descheduler.yaml
