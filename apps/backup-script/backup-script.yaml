@@ -87,11 +87,14 @@ data:
       # Manually kill tee process to prevent hanging / zombie processes.
       # Needs to be done here because in some scenarios this script is executed by crond, running as pid 1,
       # which does not kill child processes.
+      # Note: We must use 'exec' to replace the shell process, otherwise killing tee
+      # causes the process substitution to fail and overwrites our exit code.
       pkill -f tee || true
-      exit "${exit_code}"
+      exec sh -c "exit ${exit_code}"
     }
 
     # Redirect all output to a temporary log file and stdout
+    # Logfile is required for ntfy notification
     exec > >(tee /tmp/backup.log) 2>&1
 
     # Set a trap for ERR to notify of any failures via ntfy
