@@ -38,6 +38,29 @@ resources:
   - 40-paperless-ngx.yaml
   - 60-semaphore.yaml
   - 64-downloader-lidarr.yaml
+  #- 65-prox01-blackbox-exporter.yaml
+  #- 65-prox01-docker-registry.yaml
+  #- 65-prox01-docker-stats-exporter.yaml
+  #- 65-prox01-epicgames-freegames.yaml
+  #- 65-prox01-fritzbox-exporter.yaml
+  #- 65-prox01-gostatic.yaml
+  #- 65-prox01-grafana.yaml
+  #- 65-prox01-headphones.yaml
+  #- 65-prox01-ipmi-exporter.yaml
+  #- 65-prox01-node-exporter.yaml
+  #- 65-prox01-nut-upsd.yaml
+  #- 65-prox01-nzbget.yaml
+  #- 65-prox01-nzbhydra2.yaml
+  #- 65-prox01-postfix.yaml
+  #- 65-prox01-prometheus.yaml
+  #- 65-prox01-radarr.yaml
+  - 65-prox01-samba.yaml
+  #- 65-prox01-snmp-exporter.yaml
+  #- 65-prox01-sonarr.yaml
+  #- 65-prox01-ssl-exporter.yaml
+  #- 65-prox01-tftpd-hpa.yaml
+  #- 65-prox01-unifi-controller.yaml
+  #- 65-prox01-watchtower.yaml
   - 70-descheduler.yaml
   - 80-whoami.yaml
   - 86-kube-doom.yaml
