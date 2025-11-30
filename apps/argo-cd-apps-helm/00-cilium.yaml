@@ -43,7 +43,7 @@ spec:
           enabled: false
         externalIPs:
           enabled: false
-        devices: eno1 vmbr0 bond0
+        devices: eno1 bond0
         # Increase the k8s api client rate limit to avoid being limited due to increased API usage
         k8sClientRateLimit:
           qps: 50
