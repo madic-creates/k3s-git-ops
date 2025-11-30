@@ -24,8 +24,3 @@ helmCharts:
       nodeFeatureRule: false
       nodeSelector:
         intel.feature.node.kubernetes.io/gpu: 'true'
-      tolerations:
-        - key: "dedicated"
-          operator: "Equal"
-          value: "prox01"
-          effect: "NoSchedule"

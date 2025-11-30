@@ -18,12 +18,7 @@ spec:
         app.kubernetes.io/name: tftpd-hpa
     spec:
       nodeSelector:
-        kubernetes.io/hostname: prox01
-      tolerations:
-        - key: "dedicated"
-          operator: "Equal"
-          value: "prox01"
-          effect: "NoSchedule"
+        node-role/workload: zfs
       hostNetwork: true
       containers:
       - name: tftpd-hpa

@@ -14,11 +14,6 @@ spec:
         operator: In
         values:
           - "true"
-  tolerations:
-    - key:    dedicated
-      operator: Equal
-      value:  prox01
-      effect: NoSchedule
   serviceAccountName: system-upgrade
   upgrade:
     image: rancher/k3s-upgrade
@@ -37,11 +32,6 @@ spec:
     matchExpressions:
       - key: node-role.kubernetes.io/master
         operator: DoesNotExist
-  tolerations:
-    - key:    dedicated
-      operator: Equal
-      value:  prox01
-      effect: NoSchedule
   prepare:
     args:
       - prepare

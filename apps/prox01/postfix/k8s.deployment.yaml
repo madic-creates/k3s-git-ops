@@ -19,11 +19,6 @@ spec:
     spec:
       nodeSelector:
         node-role/workload: zfs
-      tolerations:
-        - key: "dedicated"
-          operator: "Equal"
-          value: "prox01"
-          effect: "NoSchedule"
       hostNetwork: true
       containers:
       - name: postfix

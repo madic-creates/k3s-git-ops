@@ -16,11 +16,6 @@ spec:
       labels:
         app.kubernetes.io/name: versitygw
     spec:
-      tolerations:
-        - key: "dedicated"
-          operator: "Equal"
-          value: "prox01"
-          effect: "NoSchedule"
       containers:
         - name: versitygw
           #image: ghcr.io/versity/versitygw:v1.0.18
@@ -118,6 +113,8 @@ spec:
           volumeMounts:
             - mountPath: /data
               name: data
+      nodeSelector:
+        node-role/workload: zfs
       volumes:
         - name: data
           persistentVolumeClaim:

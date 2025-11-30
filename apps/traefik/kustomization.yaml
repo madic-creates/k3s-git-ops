@@ -69,10 +69,6 @@ helmCharts:
       nodeSelector:
         node-role.kubernetes.io/control-plane: "true"
       tolerations:
-        #- key: "dedicated"
-        #  operator: "Equal"
-        #  value: "prox01"
-        #  effect: "NoSchedule"
         - key: "CriticalAddonsOnly"
           operator: "Exists"
         - key: "node-role.kubernetes.io/control-plane"

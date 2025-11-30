@@ -37,11 +37,8 @@ spec:
               mountPath: /config
             - name: music-vol
               mountPath: /vol_raidz1/music
-      tolerations:
-        - key: "dedicated"
-          operator: "Equal"
-          value: "prox01"
-          effect: "NoSchedule"
+      nodeSelector:
+        node-role/workload: zfs
       restartPolicy: Always
       volumes:
         - name: config-vol
