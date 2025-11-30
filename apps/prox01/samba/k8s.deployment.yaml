@@ -9,6 +9,9 @@ metadata:
     app.kubernetes.io/name: samba
 spec:
   replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app.kubernetes.io/name: samba
