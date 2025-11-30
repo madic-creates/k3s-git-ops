@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postfix
+  namespace: media
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+  labels:
+    app.kubernetes.io/name: postfix
+spec:
+  type: ClusterIP
+  ports:
+    - port: 25
+      targetPort: 25
+      protocol: TCP
+      name: smtp
+  selector:
+    app.kubernetes.io/name: postfix
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postfix-external
+  namespace: media
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+  labels:
+    app.kubernetes.io/name: postfix
+spec:
+  type: NodePort
+  externalIPs:
+    - 192.168.1.45
+  externalTrafficPolicy: Local
+  ports:
+    - port: 25
+      targetPort: 25
+      protocol: TCP
+      name: smtp
+      nodePort: 30025
+  selector:
+    app.kubernetes.io/name: postfix
