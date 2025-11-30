@@ -25,7 +25,7 @@ spec:
       hostNetwork: true
       containers:
       - name: samba
-        image: forge.geekbundle.org/madic/docker-samba:latest
+        image: forge.geekbundle.org/madic/docker-samba@sha256:0d0c49c5381c8b1e717e5d72786225307cee29a987173d4c7d80ea0e2f1ecc90
         env:
           - name: UID
             value: "111"
