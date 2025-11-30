@@ -83,6 +83,11 @@ spec:
                 secretKeyRef:
                   name: versitygw-iam-ldap
                   key: VGW_IAM_LDAP_GROUP_ID_ATR
+            - name: VGW_IAM_LDAP_PROJECT_ID_ATR
+              valueFrom:
+                secretKeyRef:
+                  name: versitygw-iam-ldap
+                  key: VGW_IAM_LDAP_PROJECT_ID_ATR
             - name: VGW_HEALTH
               value: /health
             - name: VGW_REGION
