@@ -1,0 +1,44 @@
+---
+# Epic Games Free Games Network Policy
+# Allows the container to check for free games and send notifications
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: epicgames-freegames
+  namespace: media
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: epicgames-freegames
+  ingress:
+  # Allow traffic from Traefik ingress controller
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: traefik
+        k8s:app.kubernetes.io/name: traefik
+    toPorts:
+    - ports:
+      - port: '3000'
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: '53'
+        protocol: UDP
+      - port: '53'
+        protocol: TCP
+  # Allow HTTPS to internet for Epic Games API and notifications
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: '443'
+        protocol: TCP
