@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: epicgames-freegames
+  namespace: media
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+  labels:
+    app.kubernetes.io/name: epicgames-freegames
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: epicgames-freegames
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: epicgames-freegames
+    spec:
+      nodeSelector:
+        node-role/workload: zfs
+      containers:
+      - name: epicgames-freegames
+        image: ghcr.io/claabs/epicgames-freegames-node@sha256:378ac09daf1c03a9395d4e5bfcf1a7c355ce8d6f
+        ports:
+          - containerPort: 3000
+            name: http
+            protocol: TCP
+        volumeMounts:
+          - name: config
+            mountPath: /usr/app/config
+      volumes:
+        - name: config
+          hostPath:
+            path: /vol_raidz1/docker/configs/epic/config
+            type: Directory
