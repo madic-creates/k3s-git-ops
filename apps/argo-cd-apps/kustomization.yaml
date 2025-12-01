@@ -18,6 +18,7 @@ resources:
   - 13-pihole02.yaml
   - 13-node-feature-discovery.yaml
   - 14-external-snapshotter.yaml
+  - 14-volsync.yaml
   - 15-backup-script.yaml
   - 15-longhorn.yaml
   - 16-checkmk-agent.yaml
