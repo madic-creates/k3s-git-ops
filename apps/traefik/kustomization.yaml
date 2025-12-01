@@ -66,8 +66,8 @@ helmCharts:
       image:
         pullPolicy: IfNotPresent
       priorityClassName: "system-cluster-critical"
-      nodeSelector:
-        node-role.kubernetes.io/control-plane: "true"
+      #nodeSelector:
+      #  node-role.kubernetes.io/control-plane: "true"
       tolerations:
         - key: "CriticalAddonsOnly"
           operator: "Exists"
