@@ -8,7 +8,7 @@ metadata:
   labels:
     app.kubernetes.io/name: tftpd-hpa
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   externalIPs:
     - 192.168.1.45
   ports:
@@ -18,3 +18,4 @@ spec:
       name: tftp
   selector:
     app.kubernetes.io/name: tftpd-hpa
+  sessionAffinity: None
