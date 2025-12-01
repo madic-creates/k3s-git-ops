@@ -10,6 +10,8 @@ metadata:
 spec:
   replicas: 1
   revisionHistoryLimit: 3
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app.kubernetes.io/name: epicgames-freegames
@@ -20,8 +22,6 @@ spec:
     spec:
       nodeSelector:
         node-role/workload: zfs
-      strategy:
-        type: Recreate
       containers:
       - name: epicgames-freegames
         image: ghcr.io/claabs/epicgames-freegames-node@sha256:2312373160001b335850dfd69b24970437dcb5695016f65b9a5f04a198e1ab77
