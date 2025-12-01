@@ -51,7 +51,7 @@ resources:
   #- 65-prox01-nut-upsd.yaml
   #- 65-prox01-nzbget.yaml
   #- 65-prox01-nzbhydra2.yaml
-  - 65-prox01-postfix.yaml
+  - 65-postfix.yaml
   #- 65-prox01-prometheus.yaml
   #- 65-prox01-radarr.yaml
   - 65-prox01-samba.yaml

@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postfix
+  namespace: media
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+  labels:
+    app.kubernetes.io/name: postfix
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: postfix
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: postfix
+    spec:
+      nodeSelector:
+        node-role/workload: zfs
+      containers:
+      - name: postfix
+        image: simenduev/postfix-relay:1.4.0
+        env:
+          - name: TZ
+            value: "Europe/Berlin"
+          - name: SMTP_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: postfix-credentials
+                key: smtp-password
+          - name: SMTP_PORT
+            value: "587"
+          - name: SMTP_HOST
+            valueFrom:
+              secretKeyRef:
+                name: postfix-credentials
+                key: smtp-host
+          - name: USE_TLS
+            value: "yes"
+          - name: ACCEPTED_NETWORKS
+            value: "192.168.1.0/24, 10.42.0.0/16"
+          - name: TLS_VERIFY
+            value: "may"
+          - name: SMTP_LOGIN
+            valueFrom:
+              secretKeyRef:
+                name: postfix-credentials
+                key: smtp-login
+        ports:
+          - containerPort: 25
+            protocol: TCP

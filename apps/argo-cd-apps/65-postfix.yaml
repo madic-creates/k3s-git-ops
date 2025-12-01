@@ -12,7 +12,7 @@ spec:
   project: default
   source:
     repoURL: "example.com"
-    path: apps/prox01/postfix
+    path: apps/postfix
     targetRevision: HEAD
   destination:
     server: "https://kubernetes.default.svc"
