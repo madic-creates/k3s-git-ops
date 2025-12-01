@@ -54,7 +54,7 @@ resources:
   - 65-postfix.yaml
   #- 65-prox01-prometheus.yaml
   #- 65-prox01-radarr.yaml
-  - 65-prox01-samba.yaml
+  - 65-samba.yaml
   #- 65-prox01-snmp-exporter.yaml
   #- 65-prox01-sonarr.yaml
   #- 65-prox01-ssl-exporter.yaml

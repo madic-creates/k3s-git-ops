@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: samba
+  namespace: media
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+  labels:
+    app.kubernetes.io/name: samba
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: samba
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: samba
+    spec:
+      nodeSelector:
+        node-role/workload: zfs
+      containers:
+      - name: samba
+        image: forge.geekbundle.org/madic/docker-samba@sha256:0d0c49c5381c8b1e717e5d72786225307cee29a987173d4c7d80ea0e2f1ecc90
+        env:
+          - name: UID
+            value: "111"
+          - name: GID
+            value: "118"
+          - name: GIDLIST
+            value: "1002"
+          - name: TZ
+            value: "Europe/Berlin"
+        ports:
+          - containerPort: 445
+            protocol: TCP
+        volumeMounts:
+          - name: smb-conf
+            mountPath: /etc/samba/smb.conf
+            subPath: smb.conf
+            readOnly: true
+          - name: vol-raidz1
+            mountPath: /vol_raidz1
+          - name: samba-data
+            mountPath: /var/lib/samba
+          - name: group
+            mountPath: /etc/group
+          - name: passwd
+            mountPath: /etc/passwd
+          - name: shadow
+            mountPath: /etc/shadow
+      volumes:
+        - name: smb-conf
+          hostPath:
+            path: /vol_raidz1/docker/configs/samba
+            type: Directory
+        - name: vol-raidz1
+          hostPath:
+            path: /vol_raidz1
+            type: Directory
+        - name: samba-data
+          hostPath:
+            path: /vol_raidz1/docker/configs/samba/data
+            type: Directory
+        - name: group
+          hostPath:
+            path: /vol_raidz1/docker/configs/samba/group
+            type: File
+        - name: passwd
+          hostPath:
+            path: /vol_raidz1/docker/configs/samba/passwd
+            type: File
+        - name: shadow
+          hostPath:
+            path: /vol_raidz1/docker/configs/samba/shadow
+            type: File

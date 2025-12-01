@@ -1,0 +1,38 @@
+---
+# Samba Network Policy
+# Allows SMB clients from local network to access file shares
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: samba
+  namespace: media
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: samba
+  ingress:
+  # Allow SMB clients to connect via external IP (192.168.1.45) and hostPort
+  # Samba serves file shares to local network clients
+  - fromEntities:
+    - world
+    - cluster
+    toPorts:
+    - ports:
+      - port: '445'
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  # Required for hostname resolution in SMB authentication
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: '53'
+        protocol: UDP
+      - port: '53'
+        protocol: TCP
