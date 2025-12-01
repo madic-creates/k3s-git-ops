@@ -67,7 +67,7 @@ spec:
             - name: config-vol
               mountPath: /data
             - name: music-vol
-              mountPath: /vol_raidz1/
+              mountPath: /vol_raidz1/music
       nodeSelector:
         node-role/workload: zfs
       dnsConfig:
