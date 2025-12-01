@@ -92,6 +92,14 @@ spec:
         protocol: TCP
       - port: '80'
         protocol: TCP
+  # Allow Traefik to reach hostNetwork pods on cluster nodes
+  # Required for services like unifi-controller that run with hostNetwork: true
+  - toEntities:
+    - host
+    toPorts:
+    - ports:
+      - port: '8443'
+        protocol: TCP
   # Allow DNS resolution via CoreDNS
   # Required for resolving backend service names
   - toEndpoints:
