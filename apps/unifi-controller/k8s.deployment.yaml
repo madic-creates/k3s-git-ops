@@ -22,7 +22,7 @@ spec:
       hostNetwork: true
       containers:
       - name: unifi-controller
-        image: ghcr.io/linuxserver/unifi-controller:latest
+        image: ghcr.io/linuxserver/unifi-controller:8.0.24
         env:
           - name: PUID
             value: "1000"
