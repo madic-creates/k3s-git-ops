@@ -9,6 +9,7 @@ metadata:
     app.kubernetes.io/name: epicgames-freegames
 spec:
   replicas: 1
+  revisionHistoryLimit: 3
   selector:
     matchLabels:
       app.kubernetes.io/name: epicgames-freegames
@@ -21,7 +22,7 @@ spec:
         node-role/workload: zfs
       containers:
       - name: epicgames-freegames
-        image: ghcr.io/claabs/epicgames-freegames-node@sha256:378ac09daf1c03a9395d4e5bfcf1a7c355ce8d6f
+        image: ghcr.io/claabs/epicgames-freegames-node:latest@sha256:378ac09daf1c03a9395d4e5bfcf1a7c355ce8d6f
         ports:
           - containerPort: 3000
             name: http
