@@ -6,6 +6,7 @@ namespace: media
 resources:
   - k8s.deployment.yaml
   - k8s.service.yaml
+  - k8s.np.unifi-controller.yaml
 
 generators:
   - kustomize-secret-generator.yaml

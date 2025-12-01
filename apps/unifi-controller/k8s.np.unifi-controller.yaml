@@ -1,0 +1,117 @@
+---
+# UniFi Controller Network Policy
+# Controls network access for the UniFi Network Controller
+#
+# NOTE: This pod runs with hostNetwork: true, which means NetworkPolicies
+# do not directly affect it. This policy is provided for:
+# 1. Documentation of expected network requirements
+# 2. Future-proofing if hostNetwork is removed
+# 3. Consistency with other applications in this repository
+#
+# Required network access:
+# - Ingress: Traefik for web UI (port 8443)
+# - Ingress: UniFi devices for adoption/management (ports 8080, 3478/UDP, 10001/UDP)
+# - Egress: UniFi devices on LAN for management
+# - Egress: Internet for firmware updates and cloud features
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: unifi-controller
+  namespace: media
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: unifi-controller
+  ingress:
+  # Allow Traefik to forward requests to UniFi Controller web UI
+  # Port 8443 is the HTTPS management interface
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:app.kubernetes.io/name: traefik
+    toPorts:
+    - ports:
+      - port: "8443"
+        protocol: TCP
+  # Allow UniFi devices from local network to communicate with controller
+  # Port 8080: Device inform/communication
+  # Port 8443: Controller UI/API
+  # Port 8880: HTTP portal redirect
+  # Port 8843: HTTPS portal redirect
+  # Port 6789: Speed test
+  # Port 27117: MongoDB (local only)
+  - fromEntities:
+    - world
+    - cluster
+    toPorts:
+    - ports:
+      - port: "8080"
+        protocol: TCP
+      - port: "8443"
+        protocol: TCP
+      - port: "8880"
+        protocol: TCP
+      - port: "8843"
+        protocol: TCP
+      - port: "6789"
+        protocol: TCP
+  # Allow STUN from UniFi devices
+  # Port 3478: STUN service for NAT traversal
+  - fromEntities:
+    - world
+    - cluster
+    toPorts:
+    - ports:
+      - port: "3478"
+        protocol: UDP
+  # Allow device discovery
+  # Port 10001: AP discovery
+  - fromEntities:
+    - world
+    - cluster
+    toPorts:
+    - ports:
+      - port: "10001"
+        protocol: UDP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow HTTPS for cloud features, firmware updates, and UniFi account services
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+      - port: "80"
+        protocol: TCP
+  # Allow communication with UniFi devices on local network
+  # Port 8080: Device inform
+  # Port 22: SSH to devices for management
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "8080"
+        protocol: TCP
+      - port: "22"
+        protocol: TCP
+  # Allow STUN outbound for NAT traversal
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "3478"
+        protocol: UDP
