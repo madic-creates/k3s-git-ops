@@ -43,7 +43,7 @@ resources:
   #- 65-prox01-docker-stats-exporter.yaml
   #- 65-prox01-epicgames-freegames.yaml
   #- 65-prox01-fritzbox-exporter.yaml
-  #- 65-prox01-gostatic.yaml
+  - 65-gostatic.yaml
   #- 65-prox01-grafana.yaml
   #- 65-prox01-headphones.yaml
   #- 65-prox01-ipmi-exporter.yaml

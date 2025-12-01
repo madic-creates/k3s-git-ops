@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gostatic
+  namespace: media
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+  labels:
+    app.kubernetes.io/name: gostatic
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: gostatic
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: gostatic
+    spec:
+      nodeSelector:
+        node-role/workload: zfs
+      containers:
+      - name: gostatic
+        image: pierrezemb/gostatic:sha256@7e5718f98f2172f7c8dffd152ef0b203873ba889c8d838b2e730484fc71f6acd
+        env:
+          - name: TZ
+            value: "Europe/Berlin"
+        ports:
+          - containerPort: 8043
+            name: http
+            protocol: TCP
+        volumeMounts:
+          - name: images
+            mountPath: /srv/http
+            readOnly: true
+      volumes:
+        - name: images
+          hostPath:
+            path: /vol_raidz1/images
+            type: Directory
