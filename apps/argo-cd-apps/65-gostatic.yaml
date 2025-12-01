@@ -12,11 +12,11 @@ spec:
   project: default
   source:
     repoURL: "example.com"
-    path: apps/prox01/gostatic
+    path: apps/gostatic
     targetRevision: HEAD
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: prox01
+    namespace: media
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
