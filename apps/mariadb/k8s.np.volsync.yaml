@@ -11,8 +11,8 @@ metadata:
 spec:
   endpointSelector:
     matchLabels:
-      # Volsync mover pods are labeled with the ReplicationSource name
-      volsync.backube/owner: mariadb-backup
+      # Volsync mover pods are labeled by job-name
+      batch.kubernetes.io/job-name: volsync-src-mariadb-backup
   ingress:
     # No ingress needed - mover only makes outbound connections
     - {}
