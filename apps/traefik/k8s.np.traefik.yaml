@@ -94,8 +94,10 @@ spec:
         protocol: TCP
   # Allow Traefik to reach hostNetwork pods on cluster nodes
   # Required for services like unifi-controller that run with hostNetwork: true
+  # 'host' = local node, 'remote-node' = other cluster nodes
   - toEntities:
     - host
+    - remote-node
     toPorts:
     - ports:
       - port: '8443'
