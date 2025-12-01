@@ -42,10 +42,12 @@ spec:
     - ports:
       - port: "9091"
         protocol: TCP
-  # Allow access to network internal SMTP server for email notifications
-  # Default: 192.168.1.45:25
-  - toCIDR:
-    - 192.168.1.45/32
+  # Allow access to internal Postfix SMTP relay for email notifications
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: media
+        k8s:io.kubernetes.pod.namespace: media
+        k8s:app.kubernetes.io/name: postfix
     toPorts:
     - ports:
       - port: "25"

@@ -52,7 +52,7 @@ spec:
                     echo "From: \"Restic Forgety\" <no-reply@geekbundle.org>"
                     echo
                     cat $LOG
-                  } | sendmail -S 192.168.1.45:25 webmaster@geekbundle.org
+                  } | sendmail -S postfix.media.svc.cluster.local:25 webmaster@geekbundle.org
                   #while true; do sleep 1000; done
               securityContext:
                 allowPrivilegeEscalation: false
