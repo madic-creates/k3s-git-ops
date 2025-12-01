@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: prox01-tftpd-hpa
+  name: 65-tftpd-hpa
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -16,7 +16,7 @@ spec:
     targetRevision: HEAD
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: prox01
+    namespace: default
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
