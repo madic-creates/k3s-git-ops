@@ -23,6 +23,18 @@ spec:
       - port: '69'
         protocol: UDP
   egress:
+  # Allow TFTP data transfer back to clients
+  # TFTP uses UDP and responds from high ports (4096-32760) back to the client
+  # This is required because TFTP is a stateless protocol where the server
+  # initiates the data transfer from a different port than the request port
+  - toEntities:
+    - world
+    - cluster
+    toPorts:
+    - ports:
+      - port: '0'
+        endPort: 65535
+        protocol: UDP
   # Allow DNS resolution via CoreDNS
   - toEndpoints:
     - matchLabels:
