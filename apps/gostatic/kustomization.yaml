@@ -5,6 +5,7 @@ namespace: media
 
 resources:
   - k8s.deployment.yaml
+  - k8s.networkpolicy.yaml
   - k8s.service.yaml
 
 generators:
