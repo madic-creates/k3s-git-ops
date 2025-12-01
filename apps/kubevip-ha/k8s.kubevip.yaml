@@ -16,16 +16,16 @@ spec:
       labels:
         app.kubernetes.io/name: kube-vip-ds
     spec:
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: node-role.kubernetes.io/master
-                    operator: Exists
-              - matchExpressions:
-                  - key: node-role.kubernetes.io/control-plane
-                    operator: Exists
+      #affinity:
+      #  nodeAffinity:
+      #    requiredDuringSchedulingIgnoredDuringExecution:
+      #      nodeSelectorTerms:
+      #        - matchExpressions:
+      #            - key: node-role.kubernetes.io/master
+      #              operator: Exists
+      #        - matchExpressions:
+      #            - key: node-role.kubernetes.io/control-plane
+      #              operator: Exists
       containers:
         - args:
             - manager
