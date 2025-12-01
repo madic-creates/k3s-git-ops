@@ -4,6 +4,7 @@ resources:
   - namespace.yaml
   #- k8s.gateway.yaml
   - k8s.np.traefik.yaml
+  - k8s.serverstransport.yaml
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "3"
