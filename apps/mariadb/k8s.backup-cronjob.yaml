@@ -13,14 +13,9 @@ metadata:
   namespace: databases
   name: mariadb-backup-role
 rules:
-  # Required for kubectl exec into mariadb pod
   - apiGroups: [""]
     resources: ["pods", "pods/exec"]
     verbs: ["get", "list", "create"]
-  # Required to trigger Volsync ReplicationSource via annotation patch
-  - apiGroups: ["volsync.backube"]
-    resources: ["replicationsources"]
-    verbs: ["get", "patch"]
 ## Bind role and service account
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -37,9 +32,11 @@ roleRef:
   name: mariadb-backup-role
   apiGroup: rbac.authorization.k8s.io
 ## CronJob
-### Backup workflow:
-### 1. initContainer: Run mariadb-backup inside the MariaDB pod (ensures version compatibility)
-### 2. Container: Trigger Volsync ReplicationSource to sync backup to S3
+### Backup is done this way because for best compatibility mariadb-backup must be the same version as the server
+### Alternatively I could use the mariadb container image, but need to remember to update it as well when updating the container
+### This way I always get the correct mariadb-backup version by just using mariadb-backup within the mariadb container
+###
+### The processes need to run sequential and not parallel. Therefor mariadb-backup runs as an initContainer and restic as a normal container
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -50,7 +47,7 @@ spec:
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 1
   concurrencyPolicy: Forbid
-  schedule: "0 2 * * *"
+  schedule: "0 0-1,3-23 * * *"
   jobTemplate:
     spec:
       backoffLimit: 0
@@ -61,63 +58,31 @@ spec:
         spec:
           serviceAccountName: mariadb-backup-serviceaccount
           initContainers:
-            # Step 1: Create MariaDB backup using mariadb-backup tool
-            - name: mariadb-backup
+            - name: kubectl-mariadb-backup
               image: bitnami/kubectl:latest
               command:
                 - /bin/sh
                 - -c
                 - |
-                  set -e
-                  echo "Starting MariaDB backup..."
                   POD_NAME=$(kubectl get pods -n databases -l app.kubernetes.io/name=mariadb -o jsonpath="{.items[0].metadata.name}")
-                  echo "Found MariaDB pod: $POD_NAME"
                   kubectl exec -n databases $POD_NAME -- bash -c "rm -f /backup/mariadb.xb && mariadb-backup --skip-ssl-verify-server-cert --host 127.0.0.1 --user=root --password=\$(cat \$MARIADB_ROOT_PASSWORD_FILE) --backup --target-dir=/backup --stream=xbstream > /backup/mariadb.xb"
-                  echo "MariaDB backup completed successfully"
           containers:
-            # Step 2: Trigger Volsync ReplicationSource
-            - name: volsync-trigger
-              image: bitnami/kubectl:latest
+            - name: restic
+              image: ghcr.io/restic/restic:0.18.1
+              envFrom:
+                - secretRef:
+                    name: backup-env-configuration-mariadb
+              imagePullPolicy: IfNotPresent
               command:
                 - /bin/sh
-                - -c
-                - |
-                  set -e
-                  echo "Triggering Volsync backup..."
-                  # Update the manual trigger annotation with current timestamp
-                  TRIGGER_VALUE="backup-$(date +%Y%m%d-%H%M%S)"
-                  kubectl patch replicationsource mariadb-backup -n databases \
-                    --type merge \
-                    -p "{\"spec\":{\"trigger\":{\"manual\":\"$TRIGGER_VALUE\"}}}"
-                  echo "Volsync ReplicationSource triggered with: $TRIGGER_VALUE"
-
-                  # Wait for sync to start and complete
-                  echo "Waiting for sync to complete..."
-                  sleep 10
-
-                  # Poll for completion (max 30 minutes)
-                  TIMEOUT=1800
-                  INTERVAL=30
-                  ELAPSED=0
-
-                  while [ $ELAPSED -lt $TIMEOUT ]; do
-                    # Check if lastManualSync matches our trigger
-                    LAST_MANUAL=$(kubectl get replicationsource mariadb-backup -n databases -o jsonpath='{.status.lastManualSync}' 2>/dev/null || echo "")
-
-                    if [ "$LAST_MANUAL" = "$TRIGGER_VALUE" ]; then
-                      echo "Volsync backup completed successfully!"
-                      # Show last sync time
-                      kubectl get replicationsource mariadb-backup -n databases -o jsonpath='Last sync: {.status.lastSyncTime}{"\n"}'
-                      exit 0
-                    fi
-
-                    echo "Sync in progress... (${ELAPSED}s elapsed)"
-                    sleep $INTERVAL
-                    ELAPSED=$((ELAPSED + INTERVAL))
-                  done
-
-                  echo "ERROR: Timeout waiting for Volsync sync to complete"
-                  exit 1
+                - /usr/local/bin/backup.sh
+              volumeMounts:
+                - name: backup-script
+                  mountPath: /usr/local/bin/backup.sh
+                  subPath: backup.sh
+                - name: backup
+                  mountPath: /backup
+                  readOnly: true
               securityContext:
                 allowPrivilegeEscalation: false
                 capabilities:
@@ -125,3 +90,10 @@ spec:
                     - ALL
                 privileged: false
           restartPolicy: Never
+          volumes:
+            - name: backup
+              persistentVolumeClaim:
+                claimName: longhorn-pvc-mariadb-backupvolume
+            - name: backup-script
+              configMap:
+                name: crontab-backup-script

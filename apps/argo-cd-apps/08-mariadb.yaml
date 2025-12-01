@@ -24,13 +24,6 @@ spec:
       namespace: databases
       jsonPointers:
         - /spec/replicas
-    # Ignore Volsync manual trigger changes (updated by backup CronJob)
-    - group: volsync.backube
-      kind: ReplicationSource
-      name: mariadb-backup
-      namespace: databases
-      jsonPointers:
-        - /spec/trigger/manual
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
