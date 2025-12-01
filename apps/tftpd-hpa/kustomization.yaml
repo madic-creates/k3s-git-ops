@@ -5,5 +5,3 @@ namespace: media
 
 resources:
   - k8s.deployment.yaml
-  - k8s.service.yaml
-  - k8s.np.tftpd-hpa.yaml
