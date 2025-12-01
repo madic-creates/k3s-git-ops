@@ -21,7 +21,7 @@ spec:
         node-role/workload: zfs
       containers:
       - name: gostatic
-        image: pierrezemb/gostatic:sha256@7e5718f98f2172f7c8dffd152ef0b203873ba889c8d838b2e730484fc71f6acd
+        image: pierrezemb/gostatic@sha256:7e5718f98f2172f7c8dffd152ef0b203873ba889c8d838b2e730484fc71f6acd
         env:
           - name: TZ
             value: "Europe/Berlin"
