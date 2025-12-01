@@ -5,6 +5,8 @@ metadata:
   namespace: media
   annotations:
     argocd.argoproj.io/sync-wave: "30"
+    traefik.ingress.kubernetes.io/service.serversscheme: https
+    traefik.ingress.kubernetes.io/service.serverstransport: kube-system-insecure-skip-verify@kubernetescrd
   labels:
     app.kubernetes.io/name: unifi-controller
 spec:
