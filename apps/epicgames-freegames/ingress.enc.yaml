@@ -10,10 +10,10 @@ spec:
     ingressClassName: traefik
     tls:
         - hosts:
-            - ENC[AES256_GCM,data:wvliVxYdiRmiDDTv/nT284si/qHxUcJulBs=,iv:3L/pSAd73mVSSSwPG/kfqk5Y+7vWdoyqgBuo6P2XEx0=,tag:HTEsXhGDKo6UdcNdTMyLmQ==,type:str]
+            - ENC[AES256_GCM,data:XQak67WwXmNYPnjKmDCncE1fny6F,iv:PNz7e4kJsUqGetdo5p9NiDq4hQ7jQ1vdoqJU9JYsjNo=,tag:nmJbJKRrw5pXxIcW+gu78w==,type:str]
           secretName: wildcard-cloudflare-production-01
     rules:
-        - host: ENC[AES256_GCM,data:QukRrAqZIF+0hphD9xOpqm20BU2ZbbATR9k=,iv:E+E+hADy1NHXY7IU/H75X7CggyTXmJSgtms1Cz1wq98=,tag:uH6B5HUtgxjUffKrESocTA==,type:str]
+        - host: ENC[AES256_GCM,data:aDq2J5n9pMaKKiQKS3dNkbot1BXA,iv:0J4tUaDc1g8LU54dKcPWD1dcay1RmU/kuNTXn0PjyJ8=,tag:ciblQQbCkqK04YnSsvlcXQ==,type:str]
           http:
             paths:
                 - path: /
@@ -28,22 +28,22 @@ sops:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBOWDA1V1dHWTJERTRmblZF
-            MUw1S1RmOGdMTmdWRUZOUDdxY3BuNHQ3ZGlRClgyN1pnbVIwYVZEUXRZOFUra1Jp
-            enp6emhURi80ek5Hc3h0ZUEvcG9JQ2cKLS0tIDVOckg3eVAzMUg3L0pLSnFrdkRk
-            TWIyVzJkNXVIcW5CTUZWU0d0WWxacUkKvPjK+sJQPs/S05+9ev4vkjPUEJw+KxmE
-            XB1GulgYzt83hALwOz9tZ0XcXFAnE3APZ5kxNSU9Tw98JDq8E/3Ibg==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSArTHh1T2JHSlFXNnN1UkFp
+            NFNGRGRZN3g5eXYySEE5Tjh0bGtabkU3OW1RClA5VUtVRGVaU0dBVlZSTWptaVlp
+            dzFueHNZaVRmVEwwMmVDVzdVanFVaTAKLS0tIHY1SnRYek5hNTJrRHBITWFQa2RH
+            R29QcGNsU25vdXI0MXFOSXJGY1ZNazAKZvRjw//IusXEM8OhKM4MZOvX3Yg7Hme7
+            hJbgkrLaFFfVVEZ0SZTkIU82QlOE+V4i3mFAcp803PMoMD0wU5Ew1w==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBVOENrZGwzL0kvaXFvYXFu
-            MGRmSUNrQ2NMaXRzQ20weXFCNDF2TnJvb21zClZTSlFsZ3p1UElJY3dYd0hDY0dR
-            amNnVDBXVTJ4V2pxaDJVb0Fyb3pZUUUKLS0tIE1GRGRGSEl1S3lCc29IckNjYTVF
-            UndJeDQxOUZLcStrcTVnRVBZNURzS1UKI8a4UuyzsfPwI8mG/RjqCUVj/NeHvrm2
-            x2KAc5uZozqy6/RAFOikYjoKHXEY9H3FLtxjZPJSdwPc2uNHlObt2A==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBJVjlCNnU2ems0WStkbXVE
+            M2VMbWdwN0RWcTdUSDBHLzNrUVBJaVZRMHd3CnZyZGxqbE9nN0ZLc3VDZjRIcGdu
+            Q1pSN0gwcWRMSThxS0VnVGlvL3ZQYUUKLS0tIEVweExaakM1Umk1dDl6ZmVMaGx1
+            MFF0eHhxcy9PVVd3MWlGVmVNZEdYVlEK3mmhCUKKnxWyuhgff9aUXrt4Mo0CNK8W
+            z33bxE7R0Ik5AA6H9hFNZ9Cc52fl8q5KUvcWl2dBBLYN2obxblacQA==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-12-01T16:42:43Z"
-    mac: ENC[AES256_GCM,data:AoHa2bWbD6g2m65MtZ696FtgTCqQ1fOYSUwvrU+EhqolqxRiRMR4DaKaSwE7TMhSNxtUGMI3YLQ896c4GPGIdEEJJ5g9McqNnA3VNwqprOXBasKKgof+mHfY3hRiFtY0mT89hfraa+pJf//21dqVQYJOkrMx01aRsYcZ8jF+/QE=,iv:lJfutvnKMfTUrj4nPDCn3Uu4WZ227qU1VdlO4JkKEJM=,tag:UDZYBl6Qb5YK4A/At502BQ==,type:str]
+    lastmodified: "2025-12-01T17:33:17Z"
+    mac: ENC[AES256_GCM,data:jKs2zBS3oivQSZ8hF9hS91mBeNYAbBUl4p5xyX5TIifiqrxqN01r1CCTKpldbSGlM63joeXj8Skk0OxJAmnNyo6enKPpBkAYgBaJoawI1xBG5x0Js4wF8RBno9jYeQMEnQzdpUJuUXL3r1ZDFN8/HDjkABNgEjitcnB6PqcHUuM=,iv:JtkOZPN8/MT5YecDe8h7nW+Qo0+NLaOeGRUR/+cZ94o=,tag:PkvK1HcoQ82PDu0i7cWfxQ==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match)$
     version: 3.11.0
