@@ -1,0 +1,40 @@
+---
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  name: mariadb-backup
+  namespace: databases
+  annotations:
+    argocd.argoproj.io/sync-wave: "10"
+spec:
+  # Source PVC to backup (the MariaDB backup volume with xbstream dumps)
+  sourcePVC: longhorn-pvc-mariadb-backupvolume
+  trigger:
+    # Manual trigger - will be set by the mariadb-backup CronJob
+    # The CronJob patches this value after creating the mariadb backup
+    manual: "initial"
+  restic:
+    # Reference to secret containing S3 credentials and restic password
+    repository: volsync-restic-mariadb
+    # Prune old snapshots every 14 days
+    pruneIntervalDays: 14
+    # Retention policy
+    retain:
+      hourly: 48
+      daily: 7
+      weekly: 4
+      monthly: 0
+    # Use copy method (non-destructive, works with RWX volumes)
+    copyMethod: Direct
+    # Resource limits for the mover pod
+    moverResources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+    # Cache capacity for restic operations
+    cacheCapacity: 1Gi
+    # Storage class for cache PVC
+    cacheStorageClassName: longhorn

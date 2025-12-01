@@ -1,0 +1,38 @@
+---
+# Network Policy for Volsync Restic Mover
+# Allows the Volsync mover pod to access S3 storage for backups
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: volsync-mariadb-backup
+  namespace: databases
+  annotations:
+    argocd.argoproj.io/sync-wave: "08"
+spec:
+  endpointSelector:
+    matchLabels:
+      # Volsync mover pods are labeled with the ReplicationSource name
+      volsync.backube/owner: mariadb-backup
+  ingress:
+    # No ingress needed - mover only makes outbound connections
+    - {}
+  egress:
+    # Allow DNS resolution via CoreDNS for S3 endpoint resolution
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s:k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    # Allow external HTTPS access to S3/Wasabi API endpoints
+    - toEntities:
+        - world
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP

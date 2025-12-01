@@ -17,7 +17,9 @@ resources:
   - k8s.np.mariadb.yaml
   - k8s.np.mariadb-backup.yaml
   - k8s.np.databases-default-deny.yaml
+  - k8s.np.volsync.yaml
   - k8s.backup-cronjob.yaml
+  - k8s.volsync-replicationsource.yaml
 
 generators:
   - kustomize-secret-generator.yaml
