@@ -16,7 +16,7 @@ Show all databases:
 SHOW databases;
 ```
 
-Show permiissions for user:
+Show permissions for user:
 
 ```sql linenums="0"
 SHOW GRANTS FOR 'authelia'@'host';
