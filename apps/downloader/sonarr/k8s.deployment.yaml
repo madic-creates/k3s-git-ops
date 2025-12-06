@@ -22,7 +22,7 @@ spec:
         node-role/workload: zfs
       containers:
       - name: sonarr
-        image: linuxserver/sonarr:latest
+        image: linuxserver/sonarr:4.0.16
         env:
           - name: PUID
             value: "0"
