@@ -129,5 +129,6 @@ For component-specific procedures (such as regenerating KubeVIP manifests), refe
 `hubble observe` provides real-time insight in the network flow and allows filtering by e.g. dropped frames.
 
 ```shell
+cilium hubble port-forward&
 hubble observe --last 20 --namespace kube-system --verdict DROPPED -f
 ```
