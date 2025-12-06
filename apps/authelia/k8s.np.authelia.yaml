@@ -104,9 +104,10 @@ spec:
       - port: '3306'
         protocol: TCP
   # Allow SMTP for password reset emails and notifications
-  # SMTP server at 192.168.1.45:25 (specified in Authelia config)
-  - toEntities:
-    - world
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: postfix
+        k8s:io.kubernetes.pod.namespace: media
     toPorts:
     - ports:
       - port: '25'
