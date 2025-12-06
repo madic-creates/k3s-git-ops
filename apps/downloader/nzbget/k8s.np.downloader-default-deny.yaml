@@ -1,0 +1,14 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: downloader-default-deny
+  namespace: downloader
+  annotations:
+    argocd.argoproj.io/sync-wave: "29"
+spec:
+  endpointSelector: {}
+  ingress:
+    - {}
+  egress:
+    - {}

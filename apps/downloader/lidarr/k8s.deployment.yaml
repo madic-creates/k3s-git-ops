@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: lidarr
-  namespace: media
+  namespace: downloader
   labels:
     app.kubernetes.io/name: lidarr
 spec:

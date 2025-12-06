@@ -12,7 +12,7 @@ spec:
   project: default
   source:
     repoURL: "example.com"
-    path: apps/downloader-lidarr
+    path: apps/downloader/lidarr
     targetRevision: HEAD
   destination:
     server: "https://kubernetes.default.svc"

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nzbget
-  namespace: media
+  namespace: downloader
   annotations:
     argocd.argoproj.io/sync-wave: "30"
   labels:

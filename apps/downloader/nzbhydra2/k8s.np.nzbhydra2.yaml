@@ -1,0 +1,72 @@
+---
+# NZBHydra2 Network Policy
+# Allows NZBHydra2 to search indexers and receive traffic from Traefik/Authelia
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: nzbhydra2
+  namespace: downloader
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: nzbhydra2
+  ingress:
+  # Allow Traefik to reach NZBHydra2 service via Ingress
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/instance: traefik-kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+    toPorts:
+    - ports:
+      - port: "5076"
+        protocol: TCP
+  # Allow Authelia to reach NZBHydra2 for forward auth validation
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: authelia
+        k8s:io.kubernetes.pod.namespace: authelia
+    toPorts:
+    - ports:
+      - port: "5076"
+        protocol: TCP
+  # Allow other downloader apps (Lidarr, etc.) to communicate with NZBHydra2
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: downloader
+    toPorts:
+    - ports:
+      - port: "5076"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow HTTPS connections to NZB indexers and external services
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+      - port: "80"
+        protocol: TCP
+  # Allow communication with NZBGet in same namespace
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: downloader
+        k8s:app.kubernetes.io/name: nzbget
+    toPorts:
+    - ports:
+      - port: "6789"
+        protocol: TCP

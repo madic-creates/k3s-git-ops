@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nzbhydra2
-  namespace: media
+  namespace: downloader
   annotations:
     argocd.argoproj.io/sync-wave: "30"
   labels:

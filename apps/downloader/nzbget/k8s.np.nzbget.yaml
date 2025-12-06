@@ -1,0 +1,70 @@
+---
+# NZBGet Network Policy
+# Allows NZBGet to download from Usenet and receive traffic from Traefik/Authelia
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: nzbget
+  namespace: downloader
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: nzbget
+  ingress:
+  # Allow Traefik to reach NZBGet service via Ingress
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/instance: traefik-kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+    toPorts:
+    - ports:
+      - port: "6789"
+        protocol: TCP
+  # Allow Authelia to reach NZBGet for forward auth validation
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: authelia
+        k8s:io.kubernetes.pod.namespace: authelia
+    toPorts:
+    - ports:
+      - port: "6789"
+        protocol: TCP
+  # Allow other downloader apps (Lidarr, NZBHydra2, etc.) to communicate with NZBGet
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: downloader
+    toPorts:
+    - ports:
+      - port: "6789"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow connections to Usenet servers and external services
+  # - Usenet over SSL (port 563)
+  # - Usenet unencrypted (port 119)
+  # - HTTPS for API calls and updates
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "563"
+        protocol: TCP
+      - port: "119"
+        protocol: TCP
+      - port: "443"
+        protocol: TCP
+      - port: "80"
+        protocol: TCP
