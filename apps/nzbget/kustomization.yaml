@@ -6,7 +6,6 @@ namespace: media
 resources:
   - k8s.deployment.yaml
   - k8s.service.yaml
-  - k8s.ingress.yaml
 
 generators:
   - kustomize-secret-generator.yaml
