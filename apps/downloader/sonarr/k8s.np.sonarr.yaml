@@ -1,0 +1,73 @@
+---
+# Sonarr Network Policy
+# Controls network access for Sonarr TV series management
+# Sonarr needs to communicate with indexers (via NZBHydra2) and download clients (NZBGet)
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: sonarr
+  namespace: downloader
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: sonarr
+  ingress:
+  # Allow Traefik to reach Sonarr service via Ingress
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/instance: traefik-kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+    toPorts:
+    - ports:
+      - port: "8989"
+        protocol: TCP
+  # Allow other downloader apps to communicate with Sonarr API
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: downloader
+    toPorts:
+    - ports:
+      - port: "8989"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow HTTPS connections to external metadata APIs (TVDB, Trakt, etc.)
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+      - port: "80"
+        protocol: TCP
+  # Allow communication with NZBGet in downloader namespace
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: downloader
+        k8s:app.kubernetes.io/name: nzbget
+    toPorts:
+    - ports:
+      - port: "6789"
+        protocol: TCP
+  # Allow communication with NZBHydra2 in downloader namespace
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: downloader
+        k8s:app.kubernetes.io/name: nzbhydra2
+    toPorts:
+    - ports:
+      - port: "5076"
+        protocol: TCP

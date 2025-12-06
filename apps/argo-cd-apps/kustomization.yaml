@@ -45,7 +45,7 @@ resources:
   #- 65-prox01-fritzbox-exporter.yaml
   - 65-gostatic.yaml
   #- 65-prox01-grafana.yaml
-  #- 65-prox01-headphones.yaml
+  #- 65-headphones.yaml
   #- 65-prox01-ipmi-exporter.yaml
   #- 65-prox01-node-exporter.yaml
   #- 65-prox01-nut-upsd.yaml
@@ -53,10 +53,10 @@ resources:
   - 65-nzbhydra2.yaml
   - 65-postfix.yaml
   #- 65-prox01-prometheus.yaml
-  #- 65-prox01-radarr.yaml
+  - 65-radarr.yaml
   - 65-samba.yaml
   #- 65-prox01-snmp-exporter.yaml
-  #- 65-prox01-sonarr.yaml
+  - 65-sonarr.yaml
   #- 65-prox01-ssl-exporter.yaml
   - 65-tftpd-hpa.yaml
   - 65-unifi-controller.yaml
