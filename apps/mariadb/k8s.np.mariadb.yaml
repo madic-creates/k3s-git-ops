@@ -23,6 +23,15 @@ spec:
     - ports:
       - port: "3306"
         protocol: TCP
+  # Allow LLDAP to connect to MariaDB on port 3306 for LDAP user storage
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: lldap
+        k8s:io.kubernetes.pod.namespace: authelia
+    toPorts:
+    - ports:
+      - port: "3306"
+        protocol: TCP
   # Allow Paperless to connect to MariaDB on port 3306 for document management storage
   - fromEndpoints:
     - matchLabels:
