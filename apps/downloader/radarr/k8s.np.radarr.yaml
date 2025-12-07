@@ -71,3 +71,12 @@ spec:
     - ports:
       - port: "5076"
         protocol: TCP
+  # Allow communication with emby in media namespace
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: media
+        k8s:app.kubernetes.io/name: emby
+    toPorts:
+    - ports:
+      - port: "8920"
+        protocol: TCP
