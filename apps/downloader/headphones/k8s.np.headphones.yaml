@@ -1,0 +1,73 @@
+---
+# Headphones Network Policy
+# Controls network access for Headphones music download manager
+# Headphones needs to communicate with indexers (via NZBHydra2) and download clients (NZBGet)
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: headphones
+  namespace: downloader
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: headphones
+  ingress:
+  # Allow Traefik to reach Headphones service via Ingress
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/instance: traefik-kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+    toPorts:
+    - ports:
+      - port: "8181"
+        protocol: TCP
+  # Allow other downloader apps to communicate with Headphones API
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: downloader
+    toPorts:
+    - ports:
+      - port: "8181"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow HTTPS connections to external music metadata APIs (MusicBrainz, etc.)
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+      - port: "80"
+        protocol: TCP
+  # Allow communication with NZBGet in downloader namespace
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: downloader
+        k8s:app.kubernetes.io/name: nzbget
+    toPorts:
+    - ports:
+      - port: "6789"
+        protocol: TCP
+  # Allow communication with NZBHydra2 in downloader namespace
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: downloader
+        k8s:app.kubernetes.io/name: nzbhydra2
+    toPorts:
+    - ports:
+      - port: "5076"
+        protocol: TCP

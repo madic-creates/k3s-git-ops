@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: headphones
+  namespace: downloader
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+  labels:
+    app.kubernetes.io/name: headphones
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: headphones
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: headphones
+    spec:
+      nodeSelector:
+        node-role/workload: zfs
+      containers:
+      - name: headphones
+        image: linuxserver/headphones:latest@sha256:393b0b1abe6fd75cf58178e24638b173eb3404e38fc836aa5730ada32caf95f9
+        env:
+          - name: PUID
+            value: "0"
+          - name: PGID
+            value: "1002"
+          - name: TZ
+            value: "Europe/Berlin"
+        ports:
+          - containerPort: 8181
+            name: http
+            protocol: TCP
+        volumeMounts:
+          - name: config
+            mountPath: /config
+          - name: video
+            mountPath: /vol_raidz1/video
+          - name: music
+            mountPath: /vol_raidz1/music
+          - name: photo
+            mountPath: /vol_raidz1/photo
+          - name: downloads
+            mountPath: /vol_raidz1/downloads
+      volumes:
+        - name: config
+          hostPath:
+            path: /vol_raidz1/docker/configs/downloader/headphones/config
+            type: Directory
+        - name: video
+          hostPath:
+            path: /vol_raidz1/video
+            type: Directory
+        - name: music
+          hostPath:
+            path: /vol_raidz1/music
+            type: Directory
+        - name: photo
+          hostPath:
+            path: /vol_raidz1/photo
+            type: Directory
+        - name: downloads
+          hostPath:
+            path: /vol_raidz1/downloads
+            type: Directory
