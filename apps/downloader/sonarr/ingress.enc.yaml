@@ -7,15 +7,15 @@ metadata:
         argocd.argoproj.io/sync-wave: "30"
         traefik.ingress.kubernetes.io/router.entrypoints: web239,websecure239
         traefik.ingress.kubernetes.io/router.tls: "true"
-        traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect@kubernetescrd
+        traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect@kubernetescrd,authelia-forwardauth-authelia-basic-forward-auth@kubernetescrd
 spec:
     ingressClassName: traefik
     tls:
         - hosts:
-            - ENC[AES256_GCM,data:PrpDksX95757RxvoWBm1eVjbUYE2UtRDsGFMfg==,iv:1iTCv5OBzi0LKtXjYOQLsKteUSky8udDghvlBoK6n1A=,tag:5janTzNEsWBVoJ2gN7RinQ==,type:str]
+            - ENC[AES256_GCM,data:XiVo/aP1VFcZDauG3zEDwnFLU+E5Ka/vdFVF7Q==,iv:NMoIDWQ1sz87dnHgb08hS43m869qCYj9tbnScryCuY4=,tag:GFcQ+iwgj2uNNjGJoyhDhA==,type:str]
           secretName: wildcard-cloudflare-production-02
     rules:
-        - host: ENC[AES256_GCM,data:zi+DcKNP4y0C24I0wpzn2VTcMxhyMxqu9xj6ag==,iv:VWGiUXFZe3iQnTNdGXvr+S+B9FCsL+L85n8cIh/llvk=,tag:ra9cSKtQyYvo2pJJ/tEuGQ==,type:str]
+        - host: ENC[AES256_GCM,data:gWsmulqTHrom7QL6AnRIqOdrx/c9fGJ35biNUw==,iv:1qiNa2FK9pt8EucDo1OsK/H+kvv/r6WG0mTG8PBYbQM=,tag:ZH5WU1Um/A8eY/79hMkTKA==,type:str]
           http:
             paths:
                 - path: /
@@ -30,22 +30,22 @@ sops:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAvSFhrTld3bTZUWW80c05W
-            QzFZekYydnVscUgvM3l2SnBEV0tUWHFjeHk4CnV2aDFVQ042RElBbU85ejQ0QzJq
-            Q3NDczlmMHcvK01DNFVqVG9iZFVvNTgKLS0tIG9jVlduVXMvcGVzK08yWG12TDRQ
-            b0VxOGlMRFIzVkdkaEJWZERibWhFU1kKvK1rc21ET3v5+PZ8PoiLhFhKspjmZWtF
-            zStzOF502zq4du5xDq0Xh782k/KNIDUdOAIdQqTJ9UQkuy2ihFryfw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB3Sy8xQzFzamY3MXVnbXhL
+            ejZGSFZRdDE2WjViUHIzV2pTdTR3RUNzajFjCjQ2eTBDVllEZDh1MjNSUnRRWjAz
+            U0tIN2ZmMmpzRVBma1IxczFGaDVValUKLS0tIDNCek0rZEdRWDZnZm5WWC80OXY5
+            ZHpmem40YVdkVzJ6bUhhWURMeFJrZzQKAfzeoxRUshkBos4k+Y74nktZEuwyHKk+
+            Ji9KqbTxGjEHbfrghFFnM0DY9CHLdg5sf2/Q8zflCVEdKXP9HqACWw==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBhQWNBYU53UlRiZFNhcFNI
-            bnRyMzNWTXhFSFFZTHRVSG50amd1K1pLZkdBCmVxVVdBK2pacStMcEM1OXZmaG4y
-            WVdHLzQrbzhVeFgzT05RQ3Z6RmhKQXcKLS0tIEVjQi9oRi9mbWxtQ3FYU3ZrSmdy
-            SzFEcmNpOGVkZWxTR256SlZYWlNpVzAKFSgl7nl0EloX/MSEwDLhQGNeFgjrC275
-            CAgH5R+5Bv+IGTD46dxE7jpgj29MCTCTduiN2BD1ewoT4OzghT4OSg==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA1ZlZRTlBnRnFLWkF3QnpE
+            SGxkeS9VNGJXTEE2a09mMmV0azBJcFBJVFNZCkk4b0xOU3lUK2tIeG94YWtLam1P
+            MzlQS2w5SlljM3dsNXF6RmVYNXNOcVkKLS0tIHpzOEE5S0hyOVh4R3VlYzQwTElp
+            bmFFUVNaNVZmZ0NLYWx6WTFDSFRoYzgKQHR5hmTQKyYo07/0siGfbbuwp83aH5pG
+            12mfCQM7gIP0TUBsd3UAQee2C1aQK24k8HGDifV1hNnnHS2ER26mmg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-12-06T22:17:23Z"
-    mac: ENC[AES256_GCM,data:LAzi/ye1NaawAdpCF8ZmkZyQsJ4vwmPqSkfb/7TGU1WgmwJ42xO8hTut9cfMDqglS0E8uNNsw15CTwxSykD87Fg7WYGEVgnQ04Z54HbIkh+KCMXdxlcCNc71O1J634WVH6rYde65J6BG7+V/5HHhySnEB5CPMOvvHVVPDPNIQfM=,iv:WoicNjzEvAPRRVSLcPewDGJKwhbrpcQMaA88H1wd6j4=,tag:Ek8lN6dOLPrAjCkhlHz3JA==,type:str]
+    lastmodified: "2025-12-07T08:22:22Z"
+    mac: ENC[AES256_GCM,data:tObrAwJK8Ajtt5wnprsViDj/O9OJOCuplopdL+T3Ny8qpWh0hn8Z/i9PAVIO+PYqdkHeLhs0MR9iPK9pHs14LpZKIPQVfMQ8rGwABL3iRDUBwYkFcrXKQ1lqzsIkxO4VHDEWfvZ0lCBUQmqd6r2u5uHzS8EIOAX5FC9eVHaVeeM=,iv:sG02ZoVxI76Kyrn6o5g60aIDKn+5dbziCt52fVAFAVM=,tag:mEOKE6wYpkBhGUpghl0qIQ==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match)$
     version: 3.11.0
