@@ -2,8 +2,8 @@ global:
     storageClass: longhorn
 architecture: standalone
 auth:
-    rootPassword: ENC[AES256_GCM,data:bMMBdMb7hsMiGfUfwahUMiinV+ZClO0CBwH7O7np/OPLfFcmsiSkYZpr09HUF8ljGLScHgAsAwfL8cq3i+ZTiQ==,iv:LBXUPiA/eSz195Sc8dwNzPU+Z0PL52zX9dqtlZkoqi4=,tag:bBeLTGBDrLd43ISOlY9qFg==,type:str]
-    replicationPassword: ENC[AES256_GCM,data:i6RIWLBNYe1kxYVFmMJ7Yp6Ha2gBBguS98irvdBeVlGMqHrz/+cqCcBXDHQUCzrs4wkZWa5QqmbZYhHNf+quTA==,iv:dJNWJsaVybNlREhYbQYyF8Wc3KjA0PvaI8ezhV3dRmE=,tag:0qsoEz4hjHho8tCLugLWgg==,type:str]
+    rootPassword: ENC[AES256_GCM,data:/tQOz3ncnUBrWcoG2DpiqkYaN1pKafdgTVmAC4GEUc74YwF20LsmnOPwff5nTRKNVNhqMNyZq8YRHlcD5Qc3Xw==,iv:vNvvOx3r0Vf+WNzpsKLlmH7NxkICuEhxBYoSXd5sNTE=,tag:riPogpxxzZc1tbSepmr63A==,type:str]
+    replicationPassword: ENC[AES256_GCM,data:NTUc8Jo6J4nQ1XpYkZ5AKnD1ZaFacxGMSvPCyoOQxVKv1FjV5oKZc2yLrPL9Lee2qkgRe9oojzFt3fzKjvErTw==,iv:73SMuzkRilgDlDQfevvTN7i/TwgGQhbn8hgWVs8Z8EM=,tag:1ezdMymRb5eTM+2PzbkzTQ==,type:str]
 metrics:
     enabled: true
     serviceMonitor:
@@ -18,32 +18,30 @@ primary:
     extraVolumeMounts:
         - name: backup
           mountPath: /backup
+    configuration: |-
+        [mysqld]
+        max_connections=300
 sops:
-    kms: []
-    gcp_kms: []
-    azure_kv: []
-    hc_vault: []
     age:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBNTmVOTCs3YTF0VE4xTFZ6
-            U29COG9jdmEyMW9wbmFjZ1duUnN2dG4yR1QwCmxVUHYyc3FlVkxZRm8yVzd6S2lO
-            YkVHZHA0SjVOTk1aYXU1dWNoUmJ2dVkKLS0tIFlHWmZ2bHFEVVdvbUt1bGpSeFRD
-            ZXdsZmY3WUpkdlZKQUY1WmFTZGR3ME0KicsNUFLthNJpPgbhU1kiSfLnGmHB1Rcs
-            qw4keSQ1hvAX93zlgRrariQXkFvgec3ferift5JrZmQMYpPHfpRsYQ==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBnWjAxd2hRcGx2ajVoakNT
+            R3V1QlJySnVtMWVzVTJ4NTl1ekhnNVFCZFZNCkZxdEZEVGRjekVUU3liTE5rNUJy
+            a1l0RHc3Wm9sQWNiTTF2YmFDbHhMVjAKLS0tIGVTNy8vVUhIQTNjTGp5UXhGSHR4
+            UDRhS2dYanZZOW0rVWpBT1VuVlVneUEK81u4dAntEb6MJkKq2L6cXgXQouDHLLXp
+            F6DFaSE53Oiz108k8hSKaZE/GOl2boR4d4l6TdBqKvyTTZFbwUZ7ww==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBrekQvMUVkTWlIM010c2NS
-            ZnBJZ213SUwrRUdWenZCbG5jblV0eldXbW5BClRmMUV4SWZBdTlEVmdPR2I3SStS
-            aUdDNDNFMXNLWmxyazJyL0JiMmlYdUkKLS0tIGQzTk9XQUlUTzhjWEdpOWFZcUNI
-            eWkvQThOWWRzVDlmQlZzbU5tNkdyVUkK9bIBo70oaJK31myMDcpPdo5tWTN+JLB5
-            2xqj5S1wzAyYII/d7ZfbhlLm9kwpvpnV4Wfl9unkMirspONq2VfdWw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB4SnpRaUc3NW1NOUxYVHI4
+            UlZtdFlJN2czVW5Zb3Vja204ZDFsSmxwTG1vClpFbnFKbW9hTHFsMCtoSlBlWnVo
+            aENFQ1lFSW1UMFNSeENKYkt6MUFEQ2MKLS0tIEpRMTBNTXpRQjZwcWg3MFVmSUpS
+            M3VRWnYranZhMGIvd3J2M1VzNWF0dDQKJSLowR3fjPA91ejsuRLO3ZPsXBjPj5En
+            10BAL8cdae6t9ZVgr2lr4yRTkSH77DD1LD0oXou14/97bIRpdbmbMg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-01-03T19:31:26Z"
-    mac: ENC[AES256_GCM,data:FFycCJbJlSjo6wUOOviCdkqR5dtmNODhJzdW83byH3jVclfej4n5IOq150SMLPftyIaKjDa/LQacoOP/0NAAJls21NFSvK0e6nJiNVGU7i4aD4qCzi05cceIs2HjehmAqUxoOt9QnDiFB+fa3Z35TrNrWHJNgFMfLh3I/nz97NY=,iv:Sz3+KpGOHHvjVXDTsr3MZ/1O0B3uGp15IewTJBYFp4k=,tag:qHvVG8IOrwxSJ2Of486cRQ==,type:str]
-    pgp: []
-    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword)$
-    version: 3.9.1
+    lastmodified: "2025-12-07T20:22:48Z"
+    mac: ENC[AES256_GCM,data:snTROXw5dkwZ/+284b5qVX882N7Gi5mOoqpMX9kjVqr75j2OFKDr8esY30r59v9tmIm8G/cy/poAszU6QDXjmTZ3ywterJceyUKd61c6cgOjqlesrUDqsx4qQP6BUD9TL4BwBFRNFK5dGxUOAuspKD7aeiLYFy+E9Vr3vFyj6DY=,iv:Dd01S+Dg2AihN0/L1ubya3no36ww0cB+U+7x0opCa/0=,tag:b3ywNtyBVrgvnxlIe2xqjA==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match)$
+    version: 3.11.0
