@@ -1,5 +1,5 @@
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
 metadata:
   name: gostatic
   namespace: media
@@ -8,39 +8,45 @@ metadata:
   labels:
     app.kubernetes.io/name: gostatic
 spec:
-  podSelector:
+  endpointSelector:
     matchLabels:
       app.kubernetes.io/name: gostatic
-  policyTypes:
-    - Ingress
-    - Egress
   ingress:
-    # Allow traffic from Traefik ingress controller
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              kubernetes.io/metadata.name: traefik
-          podSelector:
-            matchLabels:
-              app.kubernetes.io/name: traefik
-      ports:
-        - protocol: TCP
-          port: 8043
-    # Allow traffic via external IPs (192.168.1.60, 192.168.1.45)
-    - ports:
-        - protocol: TCP
-          port: 8043
+    # Allow traffic from Cilium Gateway API
+    - fromEntities:
+        - cluster
+      fromEndpoints:
+        - matchLabels:
+            io.cilium.gateway/owning-gateway: cilium-gateway
+      toPorts:
+        - ports:
+            - port: "8043"
+              protocol: TCP
+    # Allow traffic from minecraft
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: minecraft
+            app.kubernetes.io/name: minecraft-crossplay
+      toPorts:
+        - ports:
+            - port: "8043"
+              protocol: TCP
+    # Allow traffic from outside the cluster (external IPs)
+    - fromEntities:
+        - world
+      toPorts:
+        - ports:
+            - port: "8043"
+              protocol: TCP
   egress:
     # DNS resolution
-    - to:
-        - namespaceSelector:
-            matchLabels:
-              kubernetes.io/metadata.name: kube-system
-          podSelector:
-            matchLabels:
-              k8s-app: kube-dns
-      ports:
-        - protocol: UDP
-          port: 53
-        - protocol: TCP
-          port: 53
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
