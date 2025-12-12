@@ -13,11 +13,9 @@ spec:
       app.kubernetes.io/name: gostatic
   ingress:
     # Allow traffic from Cilium Gateway API
-    - fromEntities:
-        - cluster
-      fromEndpoints:
+    - fromEndpoints:
         - matchLabels:
-            io.cilium.gateway/owning-gateway: cilium-gateway
+            k8s:io.cilium.gateway/owning-gateway: cilium-gateway
       toPorts:
         - ports:
             - port: "8043"
