@@ -26,7 +26,7 @@ spec:
     - fromEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: minecraft
-            app.kubernetes.io/name: minecraft-crossplay
+            k8s:app.kubernetes.io/name: minecraft
       toPorts:
         - ports:
             - port: "8043"
