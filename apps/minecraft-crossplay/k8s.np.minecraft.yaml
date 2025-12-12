@@ -61,6 +61,15 @@ spec:
     - ports:
       - port: "7070"
         protocol: TCP
+  # Allow access to gostatic for plugin downloads
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: gostatic
+        k8s:io.kubernetes.pod.namespace: media
+    toPorts:
+    - ports:
+      - port: "8043"
+        protocol: TCP
   # Allow access to http / https
   - toEntities:
     - world

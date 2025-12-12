@@ -72,15 +72,15 @@ helmCharts:
           # Fast Async World Edit - https://ci.athion.net/job/FastAsyncWorldEdit/
           - https://ci.athion.net/job/FastAsyncWorldEdit/1217/artifact/artifacts/FastAsyncWorldEdit-Paper-2.14.1-SNAPSHOT-1217.jar
           # Darker Nights - https://www.spigotmc.org/resources/darkernights.87814/ (Paid)
-          - http://192.168.1.45:8043/DarkerNights-2.7.4.jar
+          - http://gostatic.media.svc.cluster.local:8043/DarkerNights-2.7.4.jar
           # Leveld Mobs - https://www.spigotmc.org/resources/levelledmobs.74304/
           #- https://github.com/ArcanePlugins/LevelledMobs/releases/download/v4.3.2.1/LevelledMobs-4.3.2.1.b125.jar
           - https://github.com/ArcanePlugins/LevelledMobs/releases/download/v4.3.0.1/LevelledMobs-4.3.0.1.b109.jar
           # ProtocolLib - https://www.spigotmc.org/resources/protocollib.1997/ / https://github.com/dmulloy2/ProtocolLib/releases
           - https://github.com/dmulloy2/ProtocolLib/releases/download/5.4.0/ProtocolLib.jar
           # GriefDefender - https://www.spigotmc.org/resources/1-12-2-1-21-9-griefdefender-claim-plugin-grief-prevention-protection.68900/ (Paid)
-          - http://192.168.1.45:8043/griefdefender-bukkit-3.1.2.jar
-          - http://192.168.1.45:8043/gdhooks-bukkit-0.8-DEV39.jar
+          - http://gostatic.media.svc.cluster.local:8043/griefdefender-bukkit-3.1.2.jar
+          - http://gostatic.media.svc.cluster.local:8043/gdhooks-bukkit-0.8-DEV39.jar
           # SquareMap - https://github.com/jpenilla/squaremap
           #- https://github.com/jpenilla/squaremap/releases/download/v1.3.9/squaremap-paper-mc1.21.10-1.3.9.jar
           - https://github.com/jpenilla/squaremap/releases/download/v1.3.4/squaremap-paper-mc1.21.4-1.3.4.jar
