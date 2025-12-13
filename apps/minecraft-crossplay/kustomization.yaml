@@ -24,8 +24,10 @@ helmCharts:
         pullSecret: ""
       resources:
         requests:
-          memory: 1024Mi
+          memory: 2048Mi
           cpu: 1000m
+        limit:
+          memory: 7168Mi
       strategyType: Recreate
       revisionHistoryLimit: 3
       affinity:
