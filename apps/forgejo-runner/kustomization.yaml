@@ -1,0 +1,17 @@
+---
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "65"
+
+helmCharts:
+  - name: forgejo-runner
+    repo: oci://codeberg.org/wrenix/helm-charts
+    version: 0.6.16
+    releaseName: forgejo-runner
+    namespace: forgejo-runner
+    valuesFile: values.yaml
+
+resources:
+  - k8s.namespace.yaml
+
+generators:
+  - kustomize-secret-generator.yaml

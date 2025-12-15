@@ -1,0 +1,56 @@
+replicaCount: 2
+runner:
+    config:
+        instance: ENC[AES256_GCM,data:rgJq6i55YpJrBSPoAgta6K9pHTCzueIPNsshYQ==,iv:HIYtL3txS17q7TVGqlV//TIUl0QzQdW2uUf98hy2HHE=,tag:Yb8qDi5CuHtOtgG80C2FwA==,type:str]
+        existingSecret: forgejo-runner-secret
+        file:
+            log:
+                level: info
+            runner:
+                file: .runner
+                capacity: 2
+                timeout: 3h
+                labels:
+                    - docker:docker://data.forgejo.org/oci/node:20-bullseye
+                    - ubuntu-latest:docker://ghcr.io/catthehacker/ubuntu:act-latest
+            container:
+                network: ""
+                privileged: false
+                options: null
+                valid_volumes: []
+securityContext:
+    privileged: true
+affinity:
+    podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - forgejo-runner
+              topologyKey: kubernetes.io/hostname
+sops:
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBxcDcxVE5mdUVyc2hzSmc5
+            RGNNZlZIUWFCRDhpQkQ0R2VreW9sYzRveFZjCjNrTUMyZjJDaE9rSVhPQTAwSURH
+            N1lMZHhMbUM4aTFoOEZGZkhsZTJsbzAKLS0tIFNmYjJKREZtOGd5Vmd0VStybDI5
+            Qi9ZZmdLakM1eG8xN2RPazRlT1hhZzQK8iFm6tF6KlcV0rBmam+QKXiYY3D6c2Yq
+            rKyJcOoQokeFRjmqkMjSRjH7NY6Wq/E7Xn0NEvugCLxqrGmgZXi2jw==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA3dGpJZ1pTeE9vaVpZempI
+            dzZQN2F1bnk3RjlIb3NOWWVwVnNoNlZsRFQ0CkIzcUhKWDRDUXA2TTFITmNIL2tG
+            RHF5RW1MVndNeVowUk9QcFNJbnNMazAKLS0tIFJPemtwTGxuOSt3Q0ZOTzF4TVBz
+            c2Fib28zeGtNSEZkbGU0cHAvMmpHN2cKnXbrXhO5rJPrYlHdfIo3/myuiXDBLOqY
+            8505cOyUAx3CaIl2h7RMyuL7hIlZTI/6LA8YdZkCYeWjdLF+81kJTg==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-12-15T20:07:14Z"
+    mac: ENC[AES256_GCM,data:oNOkkGojPZaYMNoRVBHpkOBtowBOptO2s1nJPOYqYpvx5EkIG4ynAVwwF5s7F+cH0FY4taHdh3ZKkOTedETEcIXx7s+wkXrQLksr30O1hxRgq6PTsJORkxJyAuWRYD50USjFsKzP+IOXjAhFjx6rI/LLy9qNGts50IxiiZPrPqQ=,iv:+oLNh8A0Rwzgb5CoaB8b8GnlHxmdud9H+WjObu91tv0=,tag:uOT09w2rdgkvmFyf9cIR9w==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance)$
+    version: 3.11.0

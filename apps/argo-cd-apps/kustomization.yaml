@@ -42,6 +42,7 @@ resources:
   #- 65-prox01-docker-registry.yaml
   #- 65-prox01-docker-stats-exporter.yaml
   - 65-epicgames-freegames.yaml
+  - 65-forgejo-runner.yaml
   #- 65-prox01-fritzbox-exporter.yaml
   - 65-gostatic.yaml
   #- 65-prox01-grafana.yaml
