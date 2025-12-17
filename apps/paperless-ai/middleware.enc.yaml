@@ -1,0 +1,35 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+    name: paperless-ai-api-key
+    namespace: paper
+    annotations:
+        argocd.argoproj.io/sync-wave: "40"
+spec:
+    headers:
+        customRequestHeaders:
+            X-API-KEY: ENC[AES256_GCM,data:dsHdTbpBUF7+SU360mjBlhOa2bKBJCTn3mJrvDo2t9AH97DCyglgewZweG1q/iIGZKtV1bsp8vL84xRNJMt+DGwRSvihzUpZZMXGUpUGnJXMAHLP8P/6sReULIb9noT7v/kTl5rSb4m61gvmnX7KZ2T1/iDZClbEizFA8qhkPuY=,iv:FWfrBvHrhyu2RVruo9tey+X84U5tvVkVDqJ4ri2Mnrg=,tag:U3VbrDa4KXsn7Waw9vI+WQ==,type:str]
+sops:
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBONjJKTjl4aG04ZUJlNUJI
+            RGlHTndyUWwwMWg5MVdxRVZKZHRvVE5MNGdjCkdOaWxTVFdnK2oydEdlVFd1ZVlB
+            eUFtNDZ4emNlemRhVjdZb3pyaXpaaG8KLS0tIGprOXZ1VndJQXJzZ055Vkc0cDJS
+            WHR6cnFlTEhQMTNtUlp4WEFrRlcvSzAKimXfmkvVa4OncYTmI2v/rjNYHgBSCIxv
+            74XrdInzkVMUOq19aLIZDru94FZFYTA+wA6um4RisBxQWI1OFJ3yFQ==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB3amU5MTl5amtydWVyWGo5
+            UFdkdjROeVRlQkgwUjRFdFM5RGw1dkorSlE0CkxFU1VvcmhxeG5SY0Uza1NHZnBm
+            RXUxZ0VadjhFUitnY0JrbVNYQWg3emsKLS0tIFVhcWVrY1ZuVTk2ZkZKb2s3M2ZO
+            M0ZqWFdrZFU2RnpGSWdpR3pRNThpblkK3RrDjuHjT4LM4K3ePQJ7l1CBDuA7HQnc
+            eTzF6Zh23IUpWXE+8EkdlvJOhFq43yr4NjgURJoR0dQW/Ee53w98ig==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-12-17T09:40:58Z"
+    mac: ENC[AES256_GCM,data:K7hKMdpMFmuOUYIuYf+InOYG8/MAJ5J/M2JtnMAi6Td4G/ceF7o8xWq7JIYeP67YlqhzB/5CWuuyGt7nYLY71MjrYl+OiZNf6UCbYi3ZIax9+9KqEKO4xs1w5ug5qChEhweewVlfszzE9iyIxwgoG1l+FlyTDSOkhDJfEwPzy6s=,iv:HTJQzCQ4kEBZyf7mIx8OQUHI/DKib0ULS0vv+bUr6aw=,tag:RYoc6H099v2eQJ5NODNMHA==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY)$
+    version: 3.11.0
