@@ -89,7 +89,7 @@ jobs:
           ls $cache_dir
           tar -czvf $cache_archive -C $cache_dir .
       - name: Upload renovate cache
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: github.event.inputs.repoCache != 'disabled'
         with:
           name: ${{ env.cache_key }}
