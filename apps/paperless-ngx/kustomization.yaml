@@ -11,7 +11,7 @@ commonAnnotations:
 helmCharts:
   - name: paperless
     repo: https://charts.pascaliske.dev
-    version: 5.2.0
+    version: 6.0.0
     releaseName: paperless
     namespace: paper
     includeCRDs: true
