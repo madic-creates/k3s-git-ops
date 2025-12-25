@@ -2,8 +2,8 @@ global:
     storageClass: longhorn
 architecture: standalone
 auth:
-    rootPassword: ENC[AES256_GCM,data:UVKGnzyOIS4+BNYtt9xLFq/UWzPdvUHokHbtX9Z7kFe8WDdoaTP9G9xXQyx2Qy/53KI0lRKAzvVCoMksnOEfTA==,iv:EUDE/kiJAnKrO42X6AiNvVh3Nh3rrRZg1C1G1YxngeY=,tag:KgHv9EgNp1mBmwasJLjTqw==,type:str]
-    replicationPassword: ENC[AES256_GCM,data:eo/eb9mvqdpsZRagbhfD4IOsdUbi28pRC1lzj3tp6A2dJJ5ZKus/IcmWS/1VhD220SM+kCKQfLIFkYz0rCIeEA==,iv:4SeipXBK5g5sylc1TzBxyda0rRyaJ8lA0CbFlTaKnDU=,tag:XZiXzYsTvTWUuoxjACAvTQ==,type:str]
+    rootPassword: ENC[AES256_GCM,data:sj/KnLzsG1JDY4cgtfHexGSCVoR1OehxG8LpSOWi/YzMY1leNJHwxXpJNRrAgaeFOyL+oOyoQFWMXx99vrf99Q==,iv:4IK7hMGjtlHcQp+/+nP6TeKNhaMDBYPU8yxGtk++LZs=,tag:1csB0Rmm4NgknBmx0cxMHw==,type:str]
+    replicationPassword: ENC[AES256_GCM,data:vn4VWEhO/JdjApqLCxxKbl947Y1deJ0fXVCTlzWxDC6M9o4UrNMYNJzTasL5G3600vKhakkCBUQJWq27xllX+Q==,iv:zYdPYwDhW9obKVdjpLaogQ1g54+w889KoKQzDyahVJc=,tag:2gIwZLpdE07OYDrPT/W82w==,type:str]
 metrics:
     enabled: true
     serviceMonitor:
@@ -18,57 +18,57 @@ primary:
     extraVolumeMounts:
         - name: backup
           mountPath: /backup
-          configuration: |-
-            [mysqld]
-            skip-name-resolve
-            max_connections=300
-            explicit_defaults_for_timestamp
-            basedir=/opt/bitnami/mariadb
-            datadir=/bitnami/mariadb/data
-            plugin_dir=/opt/bitnami/mariadb/plugin
-            port=3306
-            socket=/opt/bitnami/mariadb/tmp/mysql.sock
-            tmpdir=/opt/bitnami/mariadb/tmp
-            max_allowed_packet=16M
-            bind-address=*
-            pid-file=/opt/bitnami/mariadb/tmp/mysqld.pid
-            log-error=/opt/bitnami/mariadb/logs/mysqld.log
-            character-set-server=UTF8
-            collation-server=utf8_general_ci
-            slow_query_log=0
-            long_query_time=10.0
-            binlog_expire_logs_seconds=2592000
+    configuration: |-
+        [mysqld]
+        skip-name-resolve
+        max_connections=300
+        explicit_defaults_for_timestamp
+        basedir=/opt/bitnami/mariadb
+        datadir=/bitnami/mariadb/data
+        plugin_dir=/opt/bitnami/mariadb/plugin
+        port=3306
+        socket=/opt/bitnami/mariadb/tmp/mysql.sock
+        tmpdir=/opt/bitnami/mariadb/tmp
+        max_allowed_packet=16M
+        bind-address=*
+        pid-file=/opt/bitnami/mariadb/tmp/mysqld.pid
+        log-error=/opt/bitnami/mariadb/logs/mysqld.log
+        character-set-server=UTF8
+        collation-server=utf8_general_ci
+        slow_query_log=0
+        long_query_time=10.0
+        binlog_expire_logs_seconds=2592000
 
-            [client]
-            port=3306
-            socket=/opt/bitnami/mariadb/tmp/mysql.sock
-            default-character-set=UTF8
-            plugin_dir=/opt/bitnami/mariadb/plugin
+        [client]
+        port=3306
+        socket=/opt/bitnami/mariadb/tmp/mysql.sock
+        default-character-set=UTF8
+        plugin_dir=/opt/bitnami/mariadb/plugin
 
-            [manager]
-            port=3306
-            socket=/opt/bitnami/mariadb/tmp/mysql.sock
+        [manager]
+        port=3306
+        socket=/opt/bitnami/mariadb/tmp/mysql.sock
 sops:
     age:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAzamZjS3VidHZPS0l3ZWhq
-            d1NMTzBxMHg2S0NraWNPR0xZRGMxWFBlTTNrCkgwOHppSHdnZHphVlhzVjdxQ004
-            c2RETlBHWWk3TFRYOGZISVFLdmcwam8KLS0tIEl1L3ltRDk5bEFjMkt5UXV4WjZl
-            dW9QblFzdU1Hd21JYTBWeHZLb1BiUVUKh+UJZTdfg2hw5YO6096sq9ISWrn+4DhB
-            /ZHxE3XkGq8pTC6hhiBOKABskKK6n+5O2bLg7fKRsINVBHec0T9vQw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBEbFI5c2dabVBRVlpYamRi
+            dDZscEc3R3ZiTWE1bEhVbndRNEhaOE80VlZBCnAreFBMV0l3TWV3TjQxTzFYR1gv
+            U2IvdXVqSHkrcXlMZzBUYXRnazNWZlUKLS0tIHBjdWlVTmV3QTlDNVBBZ2F5aW9Z
+            Rzg2QjhkWDJVZ1VKVU51MVBiTmJYTk0KIsQN4Aw0MRnYaPlG5LrSk+3mU8Pv/2VL
+            NKbp/5IHMqWYMS346PA0DJwN2pnnQKoNlPm1dC2uAxyHZT5gd+/GdA==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBXRngvT21HbHd3K0R0YW0r
-            U2lQYlIxNkU4ajcyYjE4QUFZVmpKeEcvYkdBClEzUk12QW9COFdLVCtuMFJWSEVM
-            dTBJS21raHQ3UXZ4Z2dTMWtRcnVGMXMKLS0tIFo4eHBtK3ZYSHByUURCQXdBN2Ex
-            eGhvcUdtbDRjZXVsME8zMjEzZ2pnNkEK7VqjE6FVNIxEq6ydCTUVlW+GMBxxbUOB
-            DZ5TWqDUKETNBwiWckIc91qjVatLHRBA+NfWdbIvujoo/9ilu6ifsQ==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBLeCs4OG5YYWtpOHZhbTVl
+            Z21rKzJUU0w4ZllzQVpWQnBwaDMvdmFtTTNJClNVRG9kUEVKbTVtUjQvdzFiRUhj
+            N050VHdyNW15UzU3bitjS2QxL3VGNkkKLS0tIGt3UUg4RlhTNWJWeFZ1MkdMYWhL
+            TDRPQnVSdXRVZXdpVEgvMGtXeVBuVTgKAq1C1Ii3IPZbESiLjv9YC6WxUy5/gF9u
+            unq8frkO/T7iuJEWyAN7s0n0gco4fJFVbuEUAVCKApsrvUxEZjKMhg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-12-25T15:57:42Z"
-    mac: ENC[AES256_GCM,data:mWIAhN7O5K4itYKegAEBTaokgly8MUVB/3vfIo8/mQ0kQ1WLW1ohABc/bxub2G2XxLsJ/f9h4nAOXg0A0wyXHR8y5b/HgO8H6l8vywyFlJaK2EUD0PcbGb+QYjWJE3UQZTeIy3lFfKtgGxUpc14H1w7/XnYOdYooHLILrGzxY+A=,iv:t7KDDcg9LxmrHag/sL1vH3NdRYGS6Ig7XkBCLK1bMoA=,tag:nB8fdYN6/q77nzr90N4Kpw==,type:str]
+    lastmodified: "2025-12-25T16:01:43Z"
+    mac: ENC[AES256_GCM,data:JUSg0l7nTwVVfBp3lYMb5Z/KGmzBIRigfUewMeQGw8D1JwUgCmcBwNy1W4WnOhH97VKKaHsPtIZ6aVYihnryE+8ECtVFYG2nzHOTcH5eRQk8mVQWmotsaHFsWo9Y0Qxcuzc0LRQUfYOL49qEVYzCXJEeH9BLZ02ahY2OtAv03Rk=,iv:K9oS882E+Z0Ur712pDM512JqBVR7AE6uf9vLNaLWHcY=,tag:bmJS66XN+wi8EqX43BxdLQ==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance)$
     version: 3.11.0
