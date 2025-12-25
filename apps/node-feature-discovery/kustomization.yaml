@@ -5,6 +5,7 @@ resources:
   # NFD rules for Intel HW
   - https://github.com/intel/intel-device-plugins-for-kubernetes/deployments/nfd/overlays/node-feature-rules?ref=v0.34.1
   - k8s.np.node-feature-discovery.yaml
+  - namespace.yaml
 
 helmCharts:
   - name: node-feature-discovery
