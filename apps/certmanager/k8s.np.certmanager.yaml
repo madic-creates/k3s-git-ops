@@ -135,11 +135,14 @@ spec:
       app.kubernetes.io/component: webhook
   ingress:
   # Allow Kubernetes API server to call the webhook for validation
+  # Note: In k3s, the kube-apiserver may be identified as 'remote-node' by Cilium
+  # The webhook container uses port 10250 (not 443)
   - fromEntities:
     - kube-apiserver
+    - remote-node
     toPorts:
     - ports:
-      - port: "443"
+      - port: "10250"
         protocol: TCP
       - port: "6080"
         protocol: TCP
