@@ -29,7 +29,7 @@ resources:
   - 17-monitoring-pushgateway.yaml
   - 18-monitoring-checkmk.yaml
   - 20-csi-smb.yaml
-  #- 24-intel-gpu.yaml
+  - 24-intel-gpu.yaml
   - 30-emby.yaml
   - 31-nextpvr.yaml
   - 33-navidrome.yaml
