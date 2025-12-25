@@ -1,0 +1,157 @@
+---
+# NFD Master Network Policy
+# This policy controls network access for the NFD master deployment.
+#
+# The NFD master is the central component that manages node feature labels.
+# It needs to:
+# 1. Communicate with the Kubernetes API server to label nodes
+# 2. Accept health check probes from the kubelet (host) on port 8080
+# 3. Access DNS for name resolution
+# 4. Receive feature data from NFD worker nodes
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: nfd-master
+  namespace: node-feature-discovery
+  annotations:
+    argocd.argoproj.io/sync-wave: "13"
+spec:
+  endpointSelector:
+    matchLabels:
+      app: nfd-master
+  ingress:
+  # Allow health check probes from host (kubelet)
+  # The NFD master exposes port 8080 for liveness and readiness probes
+  - fromEntities:
+    - host
+    toPorts:
+    - ports:
+      - port: "8080"
+        protocol: TCP
+  # Allow communication from NFD workers within the same namespace
+  # Workers report node features to the master
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: node-feature-discovery
+        k8s:app: nfd-worker
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to Kubernetes API server
+  # The master needs to create and update node labels based on discovered features
+  - toEntities:
+    - kube-apiserver
+---
+# NFD Worker Network Policy
+# This policy controls network access for the NFD worker DaemonSet.
+#
+# The NFD worker runs on each node to detect hardware features and capabilities.
+# It needs to:
+# 1. Communicate with the Kubernetes API server for node information
+# 2. Accept health check probes from the kubelet (host) on port 8080
+# 3. Communicate with the NFD master to report features
+# 4. Access DNS for name resolution
+# 5. Access host resources to detect hardware features
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: nfd-worker
+  namespace: node-feature-discovery
+  annotations:
+    argocd.argoproj.io/sync-wave: "13"
+spec:
+  endpointSelector:
+    matchLabels:
+      app: nfd-worker
+  ingress:
+  # Allow health check probes from host (kubelet)
+  # The NFD worker exposes port 8080 for liveness and readiness probes
+  - fromEntities:
+    - host
+    toPorts:
+    - ports:
+      - port: "8080"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to Kubernetes API server
+  # The worker needs to query node information and update feature data
+  - toEntities:
+    - kube-apiserver
+  # Allow communication to NFD master
+  # Workers report detected node features to the master component
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: node-feature-discovery
+        k8s:app: nfd-master
+  # Allow communication to host
+  # Workers need to access host resources for feature detection
+  - toEntities:
+    - host
+---
+# NFD Garbage Collector Network Policy
+# This policy controls network access for the NFD garbage collector deployment.
+#
+# The NFD GC is responsible for cleaning up stale node feature labels.
+# It needs to:
+# 1. Communicate with the Kubernetes API server to manage node labels
+# 2. Accept health check probes from the kubelet (host) on port 8080
+# 3. Access DNS for name resolution
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: nfd-gc
+  namespace: node-feature-discovery
+  annotations:
+    argocd.argoproj.io/sync-wave: "13"
+spec:
+  endpointSelector:
+    matchLabels:
+      app: nfd-gc
+  ingress:
+  # Allow health check probes from host (kubelet)
+  # The NFD GC exposes port 8080 for liveness and readiness probes
+  - fromEntities:
+    - host
+    toPorts:
+    - ports:
+      - port: "8080"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to Kubernetes API server
+  # The GC needs to clean up stale node feature labels
+  - toEntities:
+    - kube-apiserver

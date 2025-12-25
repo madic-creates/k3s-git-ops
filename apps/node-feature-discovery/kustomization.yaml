@@ -1,34 +1,44 @@
 ---
 resources:
   # Node Feature Discovery
-  - https://github.com/kubernetes-sigs/node-feature-discovery/deployment/overlays/default?ref=v0.18.3
+  #- https://github.com/kubernetes-sigs/node-feature-discovery/deployment/overlays/default?ref=v0.18.3
   # NFD rules for Intel HW
   - https://github.com/intel/intel-device-plugins-for-kubernetes/deployments/nfd/overlays/node-feature-rules?ref=v0.34.1
+  - k8s.np.node-feature-discovery.yaml
 
-#helmCharts:
-#  - name: node-feature-discovery
-#    repo: https://kubernetes-sigs.github.io/node-feature-discovery/charts
-#    version: 0.17.2
-#    releaseName: nfd
-#    namespace: node-feature-discovery
+helmCharts:
+  - name: node-feature-discovery
+    repo: https://kubernetes-sigs.github.io/node-feature-discovery/charts
+    version: 0.18.3
+    releaseName: nfd
+    namespace: node-feature-discovery
+    valuesInline:
+      worker:
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            cpu: 5m
+            memory: 64Mi
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "13"
 
-patches:
-  - target:
-      group: apps
-      version: v1
-      kind: DaemonSet
-      name: nfd-worker
-    patch: |-
-      apiVersion: apps/v1
-      kind: DaemonSet
-      metadata:
-        name: nfd-worker
-        namespace: node-feature-discovery
-      spec:
-        template:
-          spec:
-            tolerations:
-              - operator: "Exists"
+#patches:
+#  - target:
+#      group: apps
+#      version: v1
+#      kind: DaemonSet
+#      name: nfd-worker
+#    patch: |-
+#      apiVersion: apps/v1
+#      kind: DaemonSet
+#      metadata:
+#        name: nfd-worker
+#        namespace: node-feature-discovery
+#      spec:
+#        template:
+#          spec:
+#            tolerations:
+#              - operator: "Exists"
