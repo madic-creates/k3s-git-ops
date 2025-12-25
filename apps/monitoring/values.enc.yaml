@@ -10,11 +10,11 @@ alertmanager:
             traefik.ingress.kubernetes.io/router.tls: "true"
             traefik.ingress.kubernetes.io/router.middlewares: authelia-forwardauth-authelia@kubernetescrd
         hosts:
-            - ENC[AES256_GCM,data:4ao1yOEx3+TBI1QfR3RgAWDyr6e0P8iKf+DSE4xtKm78ug==,iv:1l1vnAguVHAfjiS1ftK4lUXhiJiIciR28DGU61ZGGxY=,tag:sc2S1QdgtlUFSmvsssipdA==,type:str]
+            - ENC[AES256_GCM,data:85ENUDJ3auVZHh2WbdLbH/Xw0yg3LO+kNvH1pUK+GR7+WA==,iv:KLtbIQ+9M0ZWFQahemWf+ZkzXUHiaoypvXvea1X1tN0=,tag:1XknMSpQrBdtAJUSnW384w==,type:str]
         tls:
             - secretName: wildcard-cloudflare-production-02
               hosts:
-                - ENC[AES256_GCM,data:rMMDm3Hat/IfVClw+w6+3mlD0GKhx1A2sjcssGBjVh5kOQ==,iv:ctzWXqz3AgeW36h8cJLrkeK4CsNJi7NPBqHW+wl3tjc=,tag:kO2mza2/K+JYGLrzM7qPUQ==,type:str]
+                - ENC[AES256_GCM,data:Sr3f0rs9E+TVbj1KjF7jP5OfoXZTKrXQKsiVhmSVpl8AqA==,iv:9VptvIBOwlDQSql9mNNM5Gf5ygrv+Mh/Pl412VlX27w=,tag:omwZuzTSvbVHg6K7iIiKQA==,type:str]
     alertmanagerSpec:
         # PVC configuration
         storage:
@@ -67,11 +67,11 @@ alertmanager:
         receivers:
             - name: ntfy
               webhook_configs:
-                - url: ENC[AES256_GCM,data:wcEa9MPl5/o2ln4tn/oB+6IJUADkd1JbKNdr/x1vUMExzzNSHVZK5aLk5eyFPSPK61pa7Id2z69Jfg==,iv:Ww4ll3OWtFglDnHCf8eEJUV0qvHok2onlJacRR7BGgk=,tag:HZV7Px24NgkbnxWkL0Z9og==,type:str]
+                - url: ENC[AES256_GCM,data:tcCNvo5b74nPSuxQBxZVVoN7+Zg7ToMV3Pi+EmfAPW3m9biPHEgVgaLMbz98vByTQtetZxiFJ1yXEQ==,iv:QGYrbZ+RxC3X4Tyqn6PbE5lBWO77MX7t/iBcQnEC0Xg=,tag:4IIOtkoh1U9kZLMnI5zhsw==,type:str]
                   http_config:
                     basic_auth:
-                        username: ENC[AES256_GCM,data:ckV0JR8tEkrkreg6qHd6psxClKGl3V3K,iv:LMUnciskqA8xiMHFnYbGL4RdCxXnE40Q/714w2EfIHE=,tag:YqO5+olgFsTOOdzMiTSSdw==,type:str]
-                        password: ENC[AES256_GCM,data:ecXcSCQnu/p0rXegiMcGMx1MoQw7fjEL,iv:eG7sjiQaWRD0RMfjFUOsZIKV+aT1lp/rFDdEylAoIJs=,tag:WPvgojs3nAvjREeNN1oH7Q==,type:str]
+                        username: ENC[AES256_GCM,data:aZumRsGKauuLDJOl/l4vZrBruQ63nrNU,iv:1DXV2H3MW7UBm7eJzwSoe+OVuTjNDAjN8k+59xtPWXU=,tag:OxkzrMqRhCON2Ou8KX9dvQ==,type:str]
+                        password: ENC[AES256_GCM,data:YrZf9LYFCaman3nY/y5xlPPnLTN7+vdC,iv:V8l5BUesVh944q1sqK0ERo0hsHQaJu6prrOg4JoNR0c=,tag:IPuYyXmbAScGF+6GBPA5Nw==,type:str]
         templates:
             - /etc/alertmanager/config/*.tmpl
 prometheus:
@@ -156,7 +156,7 @@ grafana:
     deploymentStrategy:
         type: Recreate
     # Admin user password
-    adminPassword: ENC[AES256_GCM,data:yOcXIhRhuiEQMI5mq3DG9ksOUNslTUU8FipahsvG3WY=,iv:XpmgGBqL3zG1w/Y/19nicGhP1PGn0GLR+gAB15WxnUg=,tag:ZT9jZ0bM+ELV/Rk2VQ/8/g==,type:str]
+    adminPassword: ENC[AES256_GCM,data:9jVPuAaMG3hOWQHem6lzUkNqh9xq8EQtq3T40g1yR5k=,iv:9WxnNmIW69O4PDDdOHaA+iHVue3io5IMbkH8vPsq7SA=,tag:KeT3mvUP5Gbmh+l0B6Zhww==,type:str]
     sidecar:
         dashboards:
             provider:
@@ -164,7 +164,7 @@ grafana:
         resources:
             limits:
                 cpu: 100m
-                memory: 100Mi
+                memory: 1000Mi
             requests:
                 cpu: 50m
                 memory: 50Mi
@@ -172,7 +172,7 @@ grafana:
         resources:
             limits:
                 cpu: 100m
-                memory: 100Mi
+                memory: 1000Mi
             requests:
                 cpu: 50m
                 memory: 50Mi
@@ -180,7 +180,7 @@ grafana:
         resources:
             limits:
                 cpu: 100m
-                memory: 100Mi
+                memory: 1000Mi
             requests:
                 cpu: 50m
                 memory: 50Mi
@@ -213,7 +213,7 @@ grafana:
                   type: loki
                   access: proxy
                   basicAuth: false
-                  url: ENC[AES256_GCM,data:7TvkvuRMpcejhlE2OIRrHo1VVT5Eo4GtcAoyIbS0UelvOQ==,iv:9cK0vBIo52KE5YpYbWtArfEfQCuXxdgQ72m1TmwMCoQ=,tag:jJ5hrZrYqNN4Qjt698GQow==,type:str]
+                  url: ENC[AES256_GCM,data:7uOKp1qKx3UlalfF1BMwyGG9vG7TwywJq2npclYnw35BZg==,iv:aCOv86VEx8Kaz/90V15WkndDX9c9GyqMvUOMAdyQKnc=,tag:qt2wZbo29O7nE/CqBbyzMA==,type:str]
                   jsonData:
                     maxLines: 1000
     # Required for the dashboards configuration
@@ -286,18 +286,18 @@ grafana:
             oauth_allow_insecure_email_lookup: true
             disable_login_form: true
         server:
-            root_url: ENC[AES256_GCM,data:5HcC2nXsdKrUDSZwY4b9CxoyzjQBv2TfRRcW8tunDvXMB/DRbg==,iv:NKACgh/jH92mQ/IbTCl3mEUGK7izGwsyX3I58QYnvT8=,tag:kpVBlPWut6V8fjUhKOnHRA==,type:str]
+            root_url: ENC[AES256_GCM,data:ZtIjYzvd8Nvffs3Nhr3BvrC5o3+9YJ9UWsQNA1g/lRdTy6TSuw==,iv:Nu+8dkA0/HPAR7dTix4erV+NpHc3qu3atVbjQq7O2Zc=,tag:oSyNn+id+cwyZ92y4PZLYQ==,type:str]
         auth.generic_oauth:
             enabled: true
             name: Authelia
             icon: signin
             client_id: grafana
-            client_secret: ENC[AES256_GCM,data:fKZ0HLsT8EXRJk/DCyoPRuTNk2ZM2fGsktYV6Rf2An0=,iv:lY85CCezVjQrIlZ406bvWbIWKwM0LuAouGdKm29uMrk=,tag:A5OZb1jd1UGU3S0+zDQwfw==,type:str]
+            client_secret: ENC[AES256_GCM,data:YOVd0klQ4m4DvfiaSfR5kKKn2tisGums9rq9xEbKZME=,iv:n3xcu0EMkFhk5qrQApuhGaIWqdIYyJ9rLphzJUcS7Go=,tag:TNzKon1y4OEpsvSSMEr3OA==,type:str]
             scopes: openid profile email groups
             empty_scopes: false
-            auth_url: ENC[AES256_GCM,data:4xowhx+YMvyMVWO/s5rfTLw8x+ZgwMZdoqwNGJcsd/LqhJdl6gXmWK0qLIGWS5xiZD9Krw==,iv:48myg7eNY4UU4zKKyJ9M9KtWQu3UO4vsD4tnRbm73Wk=,tag:OYY/ziBz9PoxP1M3Ppc05A==,type:str]
+            auth_url: ENC[AES256_GCM,data:Fs7shIkJ2aR/4ZhNYhvRgo/yrMwLbNwwdaGSTxo4ZedhBUgvNluL6428N6ScvV0OYGo7wg==,iv:l8Yi+j+AOUZU+rjIb6WVzFGPL5P9JhNY7ol752NbDIE=,tag:s407H8BOvLWz7/YnV4SZ/Q==,type:str]
             token_url: http://authelia.authelia.svc.cluster.local/api/oidc/token
-            api_url: ENC[AES256_GCM,data:32fewK9I+/82pRCt53KcMshC28vFNSzh48q/jxJdK/ijuEc87NT8gWZoiKFHm0U=,iv:+40CcVBne9ckrCzPM3E8k1rQdjFDo6O3i3cIB1Ag7K0=,tag:XGRA7fOxanVxeITokPEGIg==,type:str]
+            api_url: ENC[AES256_GCM,data:7OJ3rKU1NYSIsCmTkzWdzu7bjtVT2T2AgcVjmy7wA2dQl4rLsZqggSK+pvFykxA=,iv:xJfe1DBRkUFpd1QuWYiHPoQht0KBREeGkt+5e8EF1hc=,tag:uWQ1eSJ44nOoI9jB1Asr1w==,type:str]
             login_attribute_path: preferred_username
             groups_attribute_path: groups
             role_attribute_path: contains(groups[*], 'GrafanaAdmin') && 'GrafanaAdmin' || contains(groups[*], 'admin') && 'Admin' || contains(groups[*], 'editor') && 'Editor' || contains(groups[*], 'viewer') && 'Viewer'
@@ -326,22 +326,22 @@ sops:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBzVE51ZGpQWisvZHBsbTVh
-            QnYybzhkTE1xamJZUEJ4bEgvd2xoMXRSQlJJCjIwd1BJM0lvWFlmcGJzeGUwbFRl
-            d1JJMHlhUDRQZ2tSL1VxdDFld2g0SlEKLS0tIEthTTY3TkgyeWppUGV1NUJlTW9p
-            QlVwMVdnTHZRd2pKTG9WZWk5UUlWRGMKm9n76/160tCREjWbGejQT631YMmwFW56
-            eyewUykiD6MJruiQdN3TIU5DJbXqyreiokLln+mJIkE5Qc27+l6i2Q==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB5TG5YZEN6azIrUWMvZXNm
+            bGVxVm9WeERJZ0ZrVDJnbHZOc2pvM0hBSGtZCndqQkRMZDlPR0dEaGZrN05wdFNY
+            LzdTbC85T2x6Q3Fqc0MwS0dPdVBSZncKLS0tIFY3bUdTZUFZV214QUY0WE4zUEt1
+            NXpQSExRZ3dtNTU1NjZjakM3SmVaTHMKcHzvCylx7uXRTP4OCI2Jn+x3bgn6nlHY
+            WntRjiRszHIRFI5xeGHZD9NdIKq2TxuClPjYfS6u4zaebVgBcF57Gw==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBFN0dMNW9wUG5QUHY2MzYv
-            RjQ4bGdiMU45WVBZRXd1bUMzdytpMEJvNWdJClUxNnZnMzZPOGpDdFBEZ0JrUVJ6
-            ZUFOY2RORXVlbGxuZ1BkaDFkRWQ0bDQKLS0tIHBhZGdtWlVZOXkva3doRzQyM3lQ
-            MmlIS0pIYW0vT3RCTEl3KzAvdENJOFUKlm4hyi+s/iUyVQU+Qwtd38DQpuQzhwfY
-            490KqZYeL4Okt+hJNOU2CchqFDBCmRgJ83Q30S2Ied2Oh+kaXLYdcw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA0OVpydGc5TnZ0cDhQUHIx
+            QWh6T2tXVTlqeUc5elhjemtucnhibHlMelZnCkM5TEZueThSRG5VTFVGSkU5YUt5
+            cUEwZkF6VkZrSnpKRkNTYmMydVFjcWMKLS0tIC9mWm1nbWNvNStjYmR3K2ZQK0RB
+            QS9ZUDZmOXc1bURhZFVPeUwyZnNkb0UKToHYKeyoUqYzd86WjORGFiBZQR4v5ajs
+            qFEUr6KmZhORMlD2T+DHAgu2RLJa74LAnnpV5kL9eO1n+DS4eLQKHg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-12-04T07:02:38Z"
-    mac: ENC[AES256_GCM,data:QzdpsUlim13w0V2s7hQm1oas+eSun18IQX6c1HgddB+8pamrV26KDulkj0VKSZpYJMnvkE/eYk6PLFntGHRkQbQ8pDMBKyVJ4ECD01AVYEaWUZE6qh7eq/OXGcM+SJxKF9fxNCVkeLQCi+kh1pZzlZWXi14ekmsKXLEdAu1OUfg=,iv:vZ4Rm0WhZbyvsG0rqILPkIW7f2obxT3LOzgwOQUb9bg=,tag:CHomXpWHwob9PAEQ/iclGQ==,type:str]
-    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match)$
+    lastmodified: "2025-12-25T11:09:40Z"
+    mac: ENC[AES256_GCM,data:nKYi+gk19perBDA/ak0unBe5t07J7xjLDbM+dGtXXFAooxBxsxDCF8vEPGblTuuA04hPh0eWJNSELy3jn+jxx/nMiEM+lGyTEonP3TDVSpQOqTGTOLiDwPru931Skyh17+RtPbmhA8Sg3N6sPcVU8wa8V21oN4DUOyG2R8ShpuI=,iv:e6jC/PfV0MQouBKzf1CimaFdDbJ0JqpMqzQbL5G4LWk=,tag:+6gbKnQINF9mdw4CykjUNg==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance)$
     version: 3.11.0
