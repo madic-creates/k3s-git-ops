@@ -175,3 +175,35 @@ spec:
   # Allow communication with Kubernetes API server
   - toEntities:
     - kube-apiserver
+---
+# Cert-Manager Startup API Check Network Policy
+# Controls network access for the cert-manager startupapicheck job
+# This job runs as a PostSync hook to verify the cert-manager API is ready
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: cert-manager-startupapicheck
+  namespace: certmanager
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: startupapicheck
+      app.kubernetes.io/component: startupapicheck
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow communication with Kubernetes API server
+  - toEntities:
+    - kube-apiserver
