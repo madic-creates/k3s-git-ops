@@ -24,8 +24,8 @@ helmCharts:
         pullSecret: ""
       resources:
         requests:
-          memory: 2048Mi
-          cpu: 1000m
+          memory: 2Gi
+          cpu: 1
         limit:
           memory: 7168Mi
       strategyType: Recreate
