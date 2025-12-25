@@ -27,7 +27,7 @@ helmCharts:
           memory: 2Gi
           cpu: '1'
         limit:
-          memory: 7168Mi
+          memory: 7Gi
       strategyType: Recreate
       revisionHistoryLimit: 3
       affinity:
