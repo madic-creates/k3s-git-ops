@@ -26,7 +26,7 @@ helmCharts:
         requests:
           memory: 2Gi
           cpu: '1'
-        limit:
+        limits:
           memory: 7Gi
       strategyType: Recreate
       revisionHistoryLimit: 3
