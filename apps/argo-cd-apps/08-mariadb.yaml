@@ -24,6 +24,7 @@ spec:
       namespace: databases
       jsonPointers:
         - /spec/replicas
+        - /spec/template/metadata/annotations/kubectl.kubernetes.io~1restartedAt
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
