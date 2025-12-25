@@ -58,8 +58,10 @@ spec:
       - port: '80'
         protocol: TCP
   # Allow SSH access to managed hosts for Ansible playbook execution
+  # 'host' is needed for cluster nodes which Cilium recognizes as cluster entities
   - toEntities:
     - world
+    - host
     toPorts:
     - ports:
       - port: '22'
