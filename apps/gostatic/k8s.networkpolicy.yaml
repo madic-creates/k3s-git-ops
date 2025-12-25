@@ -29,6 +29,15 @@ spec:
         - ports:
             - port: "8043"
               protocol: TCP
+    # Allow traffic from pihole
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: dns
+            k8s:app.kubernetes.io/name: pihole
+      toPorts:
+        - ports:
+            - port: "8043"
+              protocol: TCP
     # Allow traffic from outside the cluster (external IPs)
     - fromEntities:
         - world
