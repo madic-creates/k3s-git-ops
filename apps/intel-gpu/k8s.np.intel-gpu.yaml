@@ -31,8 +31,11 @@ spec:
         protocol: TCP
   # Allow webhook requests from Kubernetes API server
   # The operator implements validating and mutating webhooks for device plugin resources
+  # Note: In k3s, the kube-apiserver communicates through the pod network and may be
+  # identified as 'remote-node' rather than 'kube-apiserver' by Cilium
   - fromEntities:
     - kube-apiserver
+    - remote-node
     toPorts:
     - ports:
       - port: "9443"
