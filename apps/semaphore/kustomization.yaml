@@ -13,7 +13,7 @@ commonAnnotations:
 helmCharts:
   - name: semaphore
     repo: oci://ghcr.io/semaphoreui/charts/
-    version: 16.0.10
+    version: 16.0.11
     releaseName: ansible-semaphore
     namespace: ansible
     valuesFile: values.yaml
@@ -39,6 +39,7 @@ patches:
         name: ansible-semaphore
         namespace: ansible
       spec:
+        revisionHistoryLimit: 3
         template:
           spec:
             containers:
