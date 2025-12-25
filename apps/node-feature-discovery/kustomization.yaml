@@ -14,7 +14,10 @@ helmCharts:
     releaseName: nfd
     namespace: node-feature-discovery
     valuesInline:
+      master:
+        revisionHistoryLimit: 3
       worker:
+        revisionHistoryLimit: 3
         resources:
           limits:
             cpu: 500m
@@ -22,6 +25,10 @@ helmCharts:
           requests:
             cpu: 5m
             memory: 64Mi
+      topologyUpdater:
+        revisionHistoryLimit: 3
+      gc:
+        revisionHistoryLimit: 3
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "13"
