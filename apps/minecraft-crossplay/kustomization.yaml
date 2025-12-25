@@ -25,7 +25,7 @@ helmCharts:
       resources:
         requests:
           memory: 2Gi
-          cpu: 1
+          cpu: '1'
         limit:
           memory: 7168Mi
       strategyType: Recreate
