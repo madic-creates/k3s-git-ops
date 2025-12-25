@@ -29,7 +29,7 @@ resources:
   - 17-monitoring-pushgateway.yaml
   - 18-monitoring-checkmk.yaml
   - 20-csi-smb.yaml
-  - 24-intel-gpu.yaml
+  #- 24-intel-gpu.yaml
   - 30-emby.yaml
   - 31-nextpvr.yaml
   - 33-navidrome.yaml
@@ -55,6 +55,7 @@ resources:
   - 65-postfix.yaml
   #- 65-prox01-prometheus.yaml
   - 65-radarr.yaml
+  #- 65-restic-backup-operator.yaml
   - 65-samba.yaml
   #- 65-prox01-snmp-exporter.yaml
   - 65-sonarr.yaml
