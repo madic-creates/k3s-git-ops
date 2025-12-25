@@ -64,8 +64,11 @@ spec:
         protocol: TCP
   # Allow access to Kubernetes API server
   # The controller manager needs to manage custom resources and reconcile device plugin state
+  # Note: In k3s, the kube-apiserver may be identified as 'host' depending on the node
+  # where the pod runs, so we allow both entities
   - toEntities:
     - kube-apiserver
+    - host
 ---
 # Intel GPU Plugin Network Policy
 # This policy controls network access for the Intel GPU device plugin DaemonSet.
