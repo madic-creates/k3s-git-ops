@@ -70,6 +70,8 @@ spec:
         # More efficient than tunnel mode - no Geneve encapsulation overhead
         routingMode: native
         autoDirectNodeRoutes: true
+        # Required for native routing with masquerading - defines which CIDRs are routed natively
+        ipv4NativeRoutingCIDR: 10.42.0.0/16
         # Configure MTU for WireGuard only (1500 - 60 bytes WireGuard overhead)
         MTU: 1440
         # WireGuard encryption for pod-to-pod traffic between nodes
