@@ -52,7 +52,7 @@ Excerpt of features this cluster provides:
 | Authentication | Authelia, LLDAP | Single Sign-On, LDAP directory, forward authentication |
 | Storage | Longhorn | Distributed block storage |
 | Monitoring | kube-prometheus-stack, Loki, CheckMK | Metrics collection, log aggregation, alerting |
-| Backup | Velero, Restic | Cluster backups, application data protection |
+| Backup | Restic | Cluster backups, application data protection |
 | Media Services | Emby, NextPVR | Media streaming, TV recording, transcoding |
 | Automation | RenovateBot, Semaphore | Dependency updates, playbook execution |
 | Security | SOPS, cert-manager | Secret encryption, TLS certificate management |
