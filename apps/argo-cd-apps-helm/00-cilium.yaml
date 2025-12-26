@@ -66,15 +66,18 @@ spec:
           # Prevents "queue is full; dropping messages" on loaded clusters
           # If not set, uses default monitor queue size
           eventQueueSize: 10000
-        # Configure MTU for WireGuard compatibility (1500 - 80 bytes WireGuard overhead)
-        MTU: 1420
-        tunnelProtocol: geneve
+        # Native routing mode for L2-adjacent nodes (same subnet)
+        # More efficient than tunnel mode - no Geneve encapsulation overhead
+        routingMode: native
+        autoDirectNodeRoutes: true
+        # Configure MTU for WireGuard only (1500 - 60 bytes WireGuard overhead)
+        MTU: 1440
+        # WireGuard encryption for pod-to-pod traffic between nodes
         encryption:
           enabled: true
           type: wireguard
         loadBalancer:
           mode: hybrid
-          dsrDispatch: geneve
   destination:
     server: "https://kubernetes.default.svc"
     namespace: kube-system
