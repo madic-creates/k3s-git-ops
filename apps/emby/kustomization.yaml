@@ -7,6 +7,9 @@ resources:
   - autorestart.yaml
   - k8s.np.emby.yaml
   - k8s.np.restart-deployment.yaml
+  - k8s.cronjob-ldap-cert-update.yaml
+  - k8s.rbac-ldap-cert-update.yaml
+  - k8s.np.ldap-cert-update.yaml
 
 namespace: media
 

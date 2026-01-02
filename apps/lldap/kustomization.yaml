@@ -11,6 +11,7 @@ resources:
   - k8s.lldap-deployment.yaml
   - k8s.lldap-service.yaml
   - k8s.np.lldap.yaml
+  - k8s.rbac-emby-ldap-cert-access.yaml
 
 generators:
   - kustomize-secret-generator.yaml

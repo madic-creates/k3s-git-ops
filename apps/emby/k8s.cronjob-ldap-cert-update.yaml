@@ -1,0 +1,74 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: emby-ldap-cert-update
+  namespace: media
+spec:
+  schedule: "0 4 * * *"  # Daily at 4 AM
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 86400
+      template:
+        metadata:
+          labels:
+            app: emby-ldap-cert-update
+        spec:
+          serviceAccountName: emby-ldap-cert-updater
+          restartPolicy: OnFailure
+          containers:
+            - name: cert-updater
+              image: bitnami/kubectl
+              command:
+                - /bin/bash
+                - -c
+                - |
+                  set -e
+
+                  LDAP_XML_PATH="/config/plugins/configurations/LDAP.xml"
+                  EMBY_POD=$(kubectl get pod -n media -l app.kubernetes.io/name=emby -o jsonpath='{.items[0].metadata.name}')
+
+                  if [ -z "$EMBY_POD" ]; then
+                    echo "ERROR: Emby pod not found"
+                    exit 1
+                  fi
+
+                  echo "Found Emby pod: $EMBY_POD"
+
+                  # Get certificate from secret and calculate SHA1
+                  CERT_PEM=$(kubectl get secret lldap-tls -n authelia -o jsonpath='{.data.tls\.crt}' | base64 -d)
+                  NEW_SHA1=$(echo "$CERT_PEM" | openssl x509 -fingerprint -sha1 -noout | sed 's/.*=//' | tr -d ':')
+
+                  echo "New certificate SHA1: $NEW_SHA1"
+
+                  # Get current SHA1 from LDAP.xml
+                  CURRENT_SHA1=$(kubectl exec -n media "$EMBY_POD" -c emby -- cat "$LDAP_XML_PATH" 2>/dev/null | grep -oP '(?<=<CertHash>)[^<]+' || echo "")
+
+                  echo "Current SHA1 in config: $CURRENT_SHA1"
+
+                  if [ "$NEW_SHA1" = "$CURRENT_SHA1" ]; then
+                    echo "SHA1 unchanged, no update needed"
+                    exit 0
+                  fi
+
+                  echo "SHA1 changed, updating LDAP.xml..."
+
+                  # Update the CertHash in LDAP.xml using sed
+                  kubectl exec -n media "$EMBY_POD" -c emby -- sed -i "s|<CertHash>[^<]*</CertHash>|<CertHash>$NEW_SHA1</CertHash>|" "$LDAP_XML_PATH"
+
+                  # Verify the update
+                  UPDATED_SHA1=$(kubectl exec -n media "$EMBY_POD" -c emby -- cat "$LDAP_XML_PATH" | grep -oP '(?<=<CertHash>)[^<]+')
+                  echo "Updated SHA1: $UPDATED_SHA1"
+
+                  if [ "$NEW_SHA1" != "$UPDATED_SHA1" ]; then
+                    echo "ERROR: Update verification failed"
+                    exit 1
+                  fi
+
+                  echo "Restarting Emby deployment..."
+                  kubectl rollout restart deployment/emby -n media
+
+                  echo "Done! Emby will restart with new certificate SHA1."

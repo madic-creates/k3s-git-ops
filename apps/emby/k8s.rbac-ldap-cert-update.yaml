@@ -1,0 +1,39 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: emby-ldap-cert-updater
+  namespace: media
+---
+# Role for pod exec and deployment restart in media namespace
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: emby-pod-manager
+  namespace: media
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["create"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    resourceNames: ["emby"]
+    verbs: ["get", "patch"]
+---
+# RoleBinding for pod management in media namespace
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: emby-ldap-cert-updater-pod-manager
+  namespace: media
+subjects:
+  - kind: ServiceAccount
+    name: emby-ldap-cert-updater
+    namespace: media
+roleRef:
+  kind: Role
+  name: emby-pod-manager
+  apiGroup: rbac.authorization.k8s.io

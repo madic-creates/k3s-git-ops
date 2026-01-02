@@ -1,0 +1,30 @@
+---
+# Role to allow emby-ldap-cert-updater to read lldap-tls secret
+# This is deployed in authelia namespace because the secret resides here
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: lldap-tls-secret-reader
+  namespace: authelia
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["lldap-tls"]
+    verbs: ["get"]
+---
+# RoleBinding for secret access in authelia namespace
+# Grants the emby-ldap-cert-updater ServiceAccount (from media namespace)
+# permission to read the lldap-tls secret
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: emby-ldap-cert-updater-secret-reader
+  namespace: authelia
+subjects:
+  - kind: ServiceAccount
+    name: emby-ldap-cert-updater
+    namespace: media
+roleRef:
+  kind: Role
+  name: lldap-tls-secret-reader
+  apiGroup: rbac.authorization.k8s.io
