@@ -1,0 +1,101 @@
+---
+# Paperless-AI Network Policy
+# This policy controls network access for the paperless-ai deployment.
+#
+# Paperless-AI provides AI-powered document analysis capabilities for Paperless-NGX.
+# It needs to:
+# 1. Accept HTTP traffic from Traefik ingress controller (port 3000)
+# 2. Access DNS for name resolution
+# 3. Communicate with MariaDB for database operations (port 3306)
+# 4. Communicate with Redis for caching and job queuing (port 6379)
+# 5. Allow internal localhost communication for RAG service (port 8000)
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: paperless-ai
+  namespace: paper
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+spec:
+  endpointSelector:
+    matchLabels:
+      app: paperless-ai
+  ingress:
+  # Allow Traefik ingress controller to access Paperless-AI web interface
+  # Users access Paperless-AI through Traefik on port 3000
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: traefik
+        k8s:io.kubernetes.pod.namespace: traefik
+        k8s:app.kubernetes.io/name: traefik
+    toPorts:
+    - ports:
+      - port: "3000"
+        protocol: TCP
+  # Allow health check probes from host/kubelet
+  # Kubernetes uses these for readiness and liveness probes
+  - fromEntities:
+    - host
+    toPorts:
+    - ports:
+      - port: "3000"
+        protocol: TCP
+  # Allow localhost communication within the same pod
+  # RAG service runs on port 8000 and is accessed by the main container
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app: paperless-ai
+        k8s:io.kubernetes.pod.namespace: paper
+    toPorts:
+    - ports:
+      - port: "8000"
+        protocol: TCP
+      - port: "3000"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to MariaDB in databases namespace
+  # Paperless-AI stores its data in MariaDB
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: databases
+        k8s:io.kubernetes.pod.namespace: databases
+        k8s:app.kubernetes.io/name: mariadb
+    toPorts:
+    - ports:
+      - port: "3306"
+        protocol: TCP
+  # Allow access to Redis in databases namespace
+  # Paperless-AI uses Redis for caching and background job queuing
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: databases
+        k8s:io.kubernetes.pod.namespace: databases
+        k8s:app.kubernetes.io/name: redis
+    toPorts:
+    - ports:
+      - port: "6379"
+        protocol: TCP
+  # Allow localhost egress for internal container communication
+  # RAG service communication within the same pod
+  - toEndpoints:
+    - matchLabels:
+        k8s:app: paperless-ai
+        k8s:io.kubernetes.pod.namespace: paper
+    toPorts:
+    - ports:
+      - port: "8000"
+        protocol: TCP
+      - port: "3000"
+        protocol: TCP

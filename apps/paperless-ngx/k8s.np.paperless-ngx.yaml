@@ -1,0 +1,131 @@
+---
+# Paperless-NGX Network Policy
+# Controls network access for Paperless document management system
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: paperless
+  namespace: paper
+  annotations:
+    argocd.argoproj.io/sync-wave: "40"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: paperless
+  ingress:
+  # Allow ingress from Traefik for web UI access
+  # Paperless exposes web interface on port 8000
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: traefik
+        k8s:io.kubernetes.pod.namespace: kube-system
+    toPorts:
+    - ports:
+      - port: '8000'
+        protocol: TCP
+  # Allow health checks and probes from within the namespace
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: paper
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: '53'
+        protocol: UDP
+      - port: '53'
+        protocol: TCP
+  # Allow access to MariaDB for Paperless database storage
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: mariadb
+        k8s:io.kubernetes.pod.namespace: databases
+    toPorts:
+    - ports:
+      - port: '3306'
+        protocol: TCP
+  # Allow access to Redis for caching and task queue
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: redis
+        k8s:io.kubernetes.pod.namespace: databases
+    toPorts:
+    - ports:
+      - port: '6379'
+        protocol: TCP
+  # Allow access to SMB shares for document storage
+  # Paperless mounts SMB volumes via CSI driver for document storage
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: '445'
+        protocol: TCP
+      - port: '139'
+        protocol: TCP
+---
+# Paperless-AI Network Policy
+# Controls network access for Paperless AI assistant service
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: paperless-ai
+  namespace: paper
+  annotations:
+    argocd.argoproj.io/sync-wave: "40"
+spec:
+  endpointSelector:
+    matchLabels:
+      app: paperless-ai
+  ingress:
+  # Allow ingress from Traefik for AI service access
+  # Paperless-AI exposes service on port 3000
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: traefik
+        k8s:io.kubernetes.pod.namespace: kube-system
+    toPorts:
+    - ports:
+      - port: '3000'
+        protocol: TCP
+  # Allow access from Paperless main application
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: paperless
+        k8s:io.kubernetes.pod.namespace: paper
+    toPorts:
+    - ports:
+      - port: '3000'
+        protocol: TCP
+  # Allow health checks and probes from within the namespace
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: paper
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: '53'
+        protocol: UDP
+      - port: '53'
+        protocol: TCP
+  # Allow outbound HTTPS for AI model downloads and API access
+  # Paperless-AI may need to download models or access external AI services
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: '443'
+        protocol: TCP
+      - port: '80'
+        protocol: TCP

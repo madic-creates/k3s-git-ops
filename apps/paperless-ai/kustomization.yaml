@@ -3,6 +3,7 @@ resources:
   - k8s.deployment.yaml
   - k8s.service.yaml
   - k8s.storage.yaml
+  - k8s.np.paperless-ai.yaml
 
 generators:
   - kustomize-secret-generator.yaml

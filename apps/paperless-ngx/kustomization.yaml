@@ -2,6 +2,7 @@
 resources:
   - namespace.yaml
   - k8s.smb.yaml
+  - k8s.np.paperless-ngx.yaml
 
 namespace: paper
 
