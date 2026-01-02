@@ -49,6 +49,15 @@ spec:
     - ports:
       - port: '6360'
         protocol: TCP
+  # Allow debug-container (netshoot) to connect to LDAPS (port 6360)
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: netshoot
+        k8s:io.kubernetes.pod.namespace: kube-system
+    toPorts:
+    - ports:
+      - port: '6360'
+        protocol: TCP
   # Allow internal health checks within namespace
   - fromEndpoints:
     - matchLabels:
