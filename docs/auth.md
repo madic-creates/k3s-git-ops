@@ -425,18 +425,47 @@ Rotating the session encryption key will log out all users.
 
 ## Troubleshooting
 
-### emby ldaps connection
+### Emby LDAPS Connection
 
-Emby requires the sha1 fingerprint from the certificate.
-After a renewal, the sha1 fingerprint changes and emby needs the new one.
-To get the fingerprint use the following command in a pod within the cluster (e.g. netshoot):
+Emby requires the SHA1 fingerprint of the LLDAP TLS certificate for secure LDAP authentication. The fingerprint is stored in `/config/plugins/configurations/LDAP.xml` within the `<CertHash>` element.
+
+#### Automatic Certificate Update
+
+A CronJob (`emby-ldap-cert-update`) runs daily at 4:00 o'clock to automatically update the SHA1 fingerprint when the certificate is renewed:
+
+1. Reads the current certificate from the `lldap-tls` secret in the `authelia` namespace
+2. Calculates the SHA1 fingerprint
+3. Compares with the current value in Emby's `LDAP.xml`
+4. If changed: Updates the config and restarts Emby
+5. If unchanged: No action taken
+
+**Manual trigger:**
+```bash
+kubectl create job --from=cronjob/emby-ldap-cert-update manual-cert-update -n media
+kubectl logs -f job/manual-cert-update -n media
+```
+
+**Check job history:**
+```bash
+kubectl get jobs -n media -l app=emby-ldap-cert-update
+```
+
+#### Manual Fingerprint Retrieval
+
+If manual intervention is needed, retrieve the fingerprint from within the cluster (e.g., netshoot pod):
 
 ```bash
 openssl s_client -showcerts -connect lldap.authelia.svc.cluster.local:6360 </dev/null 2>/dev/null \
   | openssl x509 -noout -fingerprint -sha1 \
   | sed 's/://g' | sed 's/SHA1 Fingerprint=//'
-sha1 Fingerprint=77FE790909B81EDDDB8523DCD4206D7BA0B503B8
 ```
+
+/// note | RBAC Configuration
+The CronJob requires cross-namespace access. RBAC resources are split between:
+
+- `apps/emby/`: ServiceAccount, Role, and RoleBinding for media namespace operations
+- `apps/lldap/`: Role and RoleBinding to read the `lldap-tls` secret in authelia namespace
+///
 
 ### Login Failures
 
