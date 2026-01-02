@@ -39,6 +39,15 @@ spec:
   # Netshoot is a debugging tool that needs to test connectivity to all services
   - toEndpoints:
     - {}
+  # Allow egress to lldap in authelia namespace for LDAPS debugging
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: lldap
+        k8s:io.kubernetes.pod.namespace: authelia
+    toPorts:
+    - ports:
+      - port: "6360"
+        protocol: TCP
   # Allow egress to external networks for debugging external connectivity
   # This is required for tools like curl, ping, traceroute, etc.
   - toEntities:
