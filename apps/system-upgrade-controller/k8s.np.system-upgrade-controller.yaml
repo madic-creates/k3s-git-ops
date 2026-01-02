@@ -1,0 +1,135 @@
+---
+# System Upgrade Controller Network Policy
+# This policy controls network access for the system-upgrade-controller deployment.
+#
+# The system-upgrade-controller is a Kubernetes operator from Rancher that manages
+# automated cluster upgrades via Plan CRDs. It needs to:
+# 1. Communicate with the Kubernetes API server to watch Plans and manage upgrade jobs
+# 2. Accept health check probes from the kubelet (host)
+# 3. Access DNS for name resolution
+# 4. Create and monitor upgrade jobs that run on cluster nodes
+# 5. Access external container registries to pull upgrade images
+#
+# The controller spawns upgrade pods that need to communicate with the k3s API
+# and download new k3s versions from external sources (update.k3s.io, GitHub releases).
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: system-upgrade-controller
+  namespace: system-upgrade
+  annotations:
+    argocd.argoproj.io/sync-wave: "96"
+spec:
+  endpointSelector:
+    matchLabels:
+      upgrade.cattle.io/controller: system-upgrade-controller
+  ingress:
+  # Allow kubelet health check probes from host
+  # The controller exposes metrics and health endpoints
+  - fromEntities:
+    - host
+    toPorts:
+    - ports:
+      - port: "8080"
+        protocol: TCP
+  # Allow communication from other pods in the system-upgrade namespace
+  # This includes upgrade job pods that may need to communicate with the controller
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: system-upgrade
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to Kubernetes API server
+  # Required for:
+  # - Watching Plan CRDs
+  # - Creating and monitoring upgrade jobs
+  # - Managing node cordons and drains
+  # - Updating Plan status
+  - toEntities:
+    - kube-apiserver
+  # Allow communication with other pods in the system-upgrade namespace
+  # The controller needs to communicate with upgrade job pods
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: system-upgrade
+  # Allow external access for:
+  # - Downloading k3s upgrade images from container registries
+  # - Accessing update.k3s.io for channel information
+  # - Downloading k3s binaries and components
+  # - GitHub releases (rancher/k3s-upgrade image)
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+      - port: "80"
+        protocol: TCP
+---
+# Network Policy for System Upgrade Jobs
+# These are the ephemeral jobs created by the system-upgrade-controller
+# to perform actual node upgrades.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: system-upgrade-jobs
+  namespace: system-upgrade
+  annotations:
+    argocd.argoproj.io/sync-wave: "96"
+spec:
+  endpointSelector:
+    matchLabels:
+      upgrade.cattle.io/component: job
+  ingress:
+  # Allow communication from host (for job execution and monitoring)
+  - fromEntities:
+    - host
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to Kubernetes API server
+  # Upgrade jobs need to interact with the k3s API during the upgrade process
+  - toEntities:
+    - kube-apiserver
+  # Allow communication with the system-upgrade-controller
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: system-upgrade
+        k8s:upgrade.cattle.io/controller: system-upgrade-controller
+  # Allow communication with host for node-level operations
+  # Upgrade jobs need to access the host to upgrade k3s components
+  - toEntities:
+    - host
+  # Allow external access for:
+  # - Downloading k3s binaries from update.k3s.io and GitHub
+  # - Pulling container images
+  # - Downloading upgrade scripts and components
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+      - port: "80"
+        protocol: TCP
