@@ -1,0 +1,134 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: samba-config
+  namespace: media
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+data:
+  smb.conf: |
+    [global]
+    workgroup = network
+    server string = %h server (Samba, Alpine)
+    security = user
+    #vfs objects = shadow_copy2 acl_xattr
+    map acl inherit = yes
+    store dos attributes = yes
+    shadow: snapdir = .zfs/snapshot
+    shadow: sort = desc
+    shadow: format = zfs-auto-snap_%Y-%m-%d-%H%M
+    map to guest = Bad User
+    guest account = nobody
+    #encrypt passwords = yes
+    load printers = no
+    printing = bsd
+    printcap name = /dev/null
+    disable spoolss = yes
+    disable netbios = yes
+    server role = standalone
+    server services = -dns, -nbt
+    smb ports = 445
+    ;name resolve order = hosts
+    ;log level = 3
+    create mask = 0664
+    directory mask = 0775
+    veto files = /.DS_Store/
+    ea support = yes
+    inherit owner = windows and unix
+    strict allocate = yes
+
+    # LDAP Configuration (maybe for the future)
+    #passdb backend = ldapsam:ldaps://lldap.authelia.svc.cluster.local:6360
+    #ldap suffix = dc=example,dc=com
+    #ldap user suffix = ou=people
+    #ldap group suffix = ou=groups
+    #ldap admin dn = uid=admin,ou=people,dc=example,dc=com
+    #ldap ssl = off
+    #ldap passwd sync = yes
+
+    [Backup]
+    vfs objects = shadow_copy2 acl_xattr
+    path = /vol_raidz1/backups/
+    public = yes
+    writable = yes
+    create mask = 0660
+    directory mask = 0770
+    valid users = @private-backup
+    #admin users = mne-adm
+    inherit permissions = yes
+    inherit acls = yes
+    hide unreadable = yes
+
+    [Video]
+    vfs objects = shadow_copy2 acl_xattr
+    path = /vol_raidz1/video/
+    public = yes
+    writable = yes
+    valid users = @media
+    admin users = mne-adm
+    inherit permissions = yes
+    inherit acls = yes
+    force group = media
+
+    [Video_guest]
+    vfs objects = shadow_copy2
+    path = /vol_raidz1/video/
+    guest ok = yes
+    browsable = no
+    read only = yes
+    #hosts allow = 192.168.1.126
+
+    [Downloads]
+    vfs objects = shadow_copy2 acl_xattr
+    path = /vol_raidz1/downloads/
+    public = yes
+    writable = yes
+    valid users = @media
+    admin users = mne-adm
+    inherit permissions = yes
+    inherit acls = yes
+    force group = media
+
+    [Music]
+    vfs objects = shadow_copy2 acl_xattr
+    path = /vol_raidz1/music/
+    public = yes
+    writable = yes
+    valid users = @media
+    admin users = mne-adm
+    inherit permissions = yes
+    inherit acls = yes
+    force group = media
+
+    [Photo]
+    vfs objects = shadow_copy2 acl_xattr
+    path = /vol_raidz1/photo/
+    public = yes
+    writable = yes
+    valid users = @media
+    admin users = mne-adm
+    inherit permissions = yes
+    inherit acls = yes
+    force group = media
+
+    [Documents]
+    vfs objects = shadow_copy2 acl_xattr
+    path = /vol_raidz1/documents/
+    public = yes
+    writable = yes
+    valid users = @media
+    admin users = mne-adm
+    inherit permissions = yes
+    inherit acls = yes
+    force group = media
+
+    [Container]
+    vfs objects = shadow_copy2 acl_xattr
+    path = /vol_raidz1/container-scheduler/
+    public = yes
+    writable = yes
+    valid users = @media
+    admin users = mne-adm
+    inherit permissions = yes
+    inherit acls = yes
+    force group = media

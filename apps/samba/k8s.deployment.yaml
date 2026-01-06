@@ -54,9 +54,8 @@ spec:
             mountPath: /etc/shadow
       volumes:
         - name: smb-conf
-          hostPath:
-            path: /vol_raidz1/docker/configs/samba
-            type: Directory
+          configMap:
+            name: samba-config
         - name: vol-raidz1
           hostPath:
             path: /vol_raidz1

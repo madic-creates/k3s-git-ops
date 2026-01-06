@@ -36,3 +36,13 @@ spec:
         protocol: UDP
       - port: '53'
         protocol: TCP
+  # Allow LDAPS connection to LLDAP for user authentication
+  #- toEndpoints:
+  #  - matchLabels:
+  #      k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: authelia
+  #      k8s:io.kubernetes.pod.namespace: authelia
+  #      k8s:app.kubernetes.io/name: lldap
+  #  toPorts:
+  #  - ports:
+  #    - port: '6360'
+  #      protocol: TCP

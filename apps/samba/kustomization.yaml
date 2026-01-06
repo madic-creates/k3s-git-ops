@@ -4,6 +4,7 @@ kind: Kustomization
 namespace: media
 
 resources:
+  - k8s.configmap.yaml
   - k8s.deployment.yaml
   - k8s.service.yaml
   - k8s.np.samba.yaml
