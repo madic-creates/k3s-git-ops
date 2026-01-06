@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: samba-config
+    namespace: media
+    annotations:
+        argocd.argoproj.io/sync-wave: "30"
+        kustomize.config.k8s.io/needs-hash: "true"
+data:
+    smb.conf: ENC[AES256_GCM,data:rv45TLza+qsn5Pl1VDaRa5bnHv3yab/qaX4/hiLQFzOc9xh+oTEh6qujMLuHFfo2lybGSnbh5GZeScJIIOq582wL3BHTErqi234AAqfTZCk/jgulIzfYtn2RUXfB+1Y5vwzycddeRqM9MGQVFY0BvFIK6LvPe19oG43ctFCSSqNtyQH/FdgWb2EnCflrU1raQOV2tvJ63RvBwpQyjGbBWauRbjacgU44KRuoHvpwvWVXn1IMcfvvJWrESeeR/peUotK/v/EwR7GyJ3aIl1C8oNqmCTjULYo28FKyS8hmEQMs/4sAeiXpk2AaIG9M7ZlDg5NiUKt+CYKo/hdI5FBnv2zuU02xPoD9EXXahsJs5Ekd0lcDV1PB+Ef1v1dFTI7wNcqtq+myF0y6NX7QslGzVGtVLqUDmLqLUBUU1eWJWlzh7DqYcVXioKxIvXSNOxN+mK5jh0+cSWaLqCUSxl0f07A//3Pm/OJW0Wu804gjUeca1mcr1OXbm7ArFj9QkMQFiV1bqsstULoa0lXW6Qo4G9W5Iypy07RUJq3ZIVi2FT2QfwPuck9Dc5uFTOhWF6Qrl/rEIFdMSnDLict+Vjr06HWI/eRRaXrX9OzK7HSixM23+CrtkD7cNXhFDOPv++jlMOfOK6MVqE37BTAZ71iYDd1RD6jxgLYDGPT+EIO1RpD7IIHK/8Hw4uBaRpWMWZeDZIrLCAHxSHHxpjBT3Qpwq1Xb2+PDwxA9WYvsPg/yiXt+obK51qnaTD0LOmFcQRRGrZO6N6kDr9U5iqXFjo33CUye5LSwnM58kVxC/02A1XXRq+g5zRs8R+KyzrBwCGTau4pVACfWAVArALNER8jb0pXEdP16wBETk+Y0EWd4vTv7IhvyP2jVaYI4CkJjAkNiVIrN+///UP7eODXw16G56f4GXLYFfbaL9zemJJoiDCYFM8SgVVtTnLzDwfAjppb4I0CdPXxG1398SogV5rcfxMSHcYD4OgDAvYBQfOr5PkyjIl9A2wQpd9OZYx/vH/Nw8f6DSHxOIQyGR7LSy7XOC4IEv7h6XjVAp/pO0Pw1GPHOzyfeQmVWe+PYdatvMmnNgnHbKyM4qVdNMS4qm2cQl4+rAQN2NsTMcURjB81cyiJT/Ff9dpwS7ChKYYw/k1ejFn0GkIjrDNIeZx2OnFx1/+nw9J83xvJH8kKkG2jVG61yIQpvZGeQxle/t7vo/IMPG+YRhDg14fm2bYxlGhfDyAbuYtfcZaT39f9CjBgxU7p7xuCADr561sNNQSXOldFCZ1deE9mLDaQTBk0zbPusseEu4lzuPbJeV8EP/6mNh0WFKlH+BWqSljAZqHYvpqAg+M4yxjtsWmIxPjTZrcDKVd+AiXzNtZW/okxUCneNQxQdvtVak7NcXS4xGm85IBTRjDPyBpmZ3oyNFBOrqK6MuFNrQ/4Y+1h/La9y/S5rtUJcfaPGJ781Nnjvmhf9VhBiaSHDxAgzBNN6g51CgP5dskf1Bo6tZVOlh9W6dMuQ7YNZEuURy72cBpnO7pLipl57t2kKt9w9T5receKyXlS7VMPSqaKGndM8ybwWkN2k7ekZ4w220LLoQhZYsg/DNhoctV8kClntLI0fCVR9RA4BP9GCtlLBNw3KgOTvj3KOnXT/YI+gaHF4rs7I1TQXpwbm+hItb9v/yEeOMXPMJoWEwP3nbllGMCtWIQzE7HFrtrRefWarqtVjbnMoDWqx14g9fYV89Ot/8bT1LCKN9JNVzYDg+Wmhby6DlWUcap6zBo4+e7eCEIwBN66pxsdPWjEAAuOwtA81JeyPYLfnGojmKNJ2iVPtbbX4cQ/hX5naqC6lJHH4epo+A3rnGnWYvulQjY8pkbClDW8EJ1SYM+flIHxxcj7mW9ldTmRXyt4a3OBOCGGpvlqmz1XrJ39wKFa28cu8JLdv3m2q60hJFSCi66DhdlI1V3yucsxEx6cJPjprPYbkVtWv0NgWb6WYs/qh6MmcMO1mbMQycp7mz5s1U9FSXgXTGDLpapMduTE95Bea8IyCB+5uyzPCC5PWvPkZdWYL+wsDxPGOkJ+UofPpbvFPG5UnKxp3X9DX+dXx20JBVN7yaGPD4Pg8EGecja5JQJT+op51lWnqeP0wttQ6speLkggp4ZGdvyYA0h0EElslLIsxeZqiC5Na3BU1G+tI5aZfNR8g0BNJDl61wTpQ/sYP8k+su6HNvFIEBRYDMdr2C/lI/N7o7i/NsbCIUUetYplb+pOjPw7kJ9TncFEhGBUhFc4N5moNce6DeKFnrLQi6lkS8TXwsBHkYBXr9s+xzb9lpDiTU2EuQPvvAVzDdv8ZYJb3jBqOpKkFWW0stXyvfial4YkHHDnAjBh5Ej4cI/LyXOlOyrErxWxISPCM0J3PNLs3JHd6Xw/JkPer7q9kb9Nvsn16BaARp3wH9Q66pHaFVtgSh6EkGYY8R9UwklDN7N3ZwfhatH/rlUuPyemwKXs2C8za+C1yi04A3mJAHBa+X2yhKYHISOKV4Xx/ihV9EwDxGTptd9t3Nxl7/NfcFBjoWjBGHBhWBHzI1jq2WvPJc4OZITMv8RXS38ZFXHupNMc10Vu4ZnBoOFaR030uj3kjlHfz4OAeaMhHxqDT3t02nzahhO27dX0pJbtCBIDVLfpDFvZ/giIo9uSiMAdwuA08oKXFrnPhEET+VbEfRcz/UUokCKmLk/NzH+iLw8SdBqot3Yqgg4SS/Kv2YWCGhkp8mHfgHEnxHS3tIwcAux01z+52xRy74hBbzNeqCv20K6Zejr6Hp8eCjBojl1Mx1T7aQabtE/eJJSh6HgzRIoshCRP+VCcLs3j5qbqzQIQCPaoaQZ5C3XUtYsnZZRT0wSkBNaPIMzj+Z7moOZ810MDanEEl/JgmQvyEHaLs9DtB5nbLhzlanXu8/BZdjhFZWRZypc7GoZnXfK20LWnZsl57XG/wB9V+UNXqz1fKfyELBbGfI8u93V0Qb2Rv75qPzdhWWFvoZG0ls8tdoyju5XsWXv+DplNlmenFzCr/4kr59rAjPFJ1aPc5B3K++GW+fTfhnYFJilNPf6hkvdRz03pmQmHt0Z0HAI/VbFyqFZ+H7bh09eREdkzSZ3e2YL3s7Luif9U6QdM22CIYEFVqBVINY/DlJtuP+dd6Aj1lXC6f7jZlddQdHgWKQG9Umb79bRZ16XzSNhQeZRPgsrOaadx9ERzQBmTnbDpa6dj7+IJzYngvYFOw7TYDC4j6qo6NSKU9Em8TR4yMrkIeTJdP9+6+KXQmDJaMWVJIwd9Dm/3KMx3ZIhpZp+8N4BPg7jxrHWyrHFk1/fdaY8/7fcg+ChwGD7da6UuFHc7+BeMhwEPuWetri1YDp+OXP77RGBfzp4oua6Nvbwzmd1Jr5hhq2+I23i5oVZs36+1xRs99pTj4YMOG4huO+Hyi43Fk/lfcnKscrrMG9MuoO4Zb1BDfXfIuVHsWJFXiIBUrE/OdAJCiXPLAoiayW+I5rfAP/ww6Q9QkB8ExNVEXziJ2SvrhJQ//18YV4K3S8JJE4RG/33mzS19jrEBC3Bx/f9fAZen8BXpbiZX5pVT7V+h/35wfW76CkHQ=,iv:CTAJ1aKtqfdUxe4W7bPsZuoFhkhDkn3Z94qb+PZdN/Q=,tag:+Y/Zn969eqPcHihbbRajdA==,type:str]
+sops:
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAwVkI5aFF3RzFsUlFYZG00
+            Mkt0Y3JNbVAyRVU4K3VhY05MWGxXd3BOT1RrCk5aOS9YU0F6ZjRCM3Z0RUlIZmJW
+            Mzk4K3dhc0R4ejQwbm9EcFRsMnZzK2sKLS0tIEJOMi9MdzB0ZEhhQ3E1cUkzU283
+            M1hHOG1tazJZcFlmTFBscmdiS0FRTkEKlgv1Imxu5OGzuZhZ8Lp0GEbjNVO/jMrW
+            e0KGzoTT8qtCQBNW4R8pIg9AJ0Di74P/mNOOh2geIUTB+Ig0gR9QUA==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBzeERXWlhQR21vMVEwbkFi
+            SlBXV2E2cFdsb0NOalVvZy9WeTJzT0xwQVRBClRjU3hWYlF4OUdRNWU5ZnRvQmN2
+            cmljVW1GZ1Y5NXg1aU94WVNyd1o5bTQKLS0tIHFZVy9iTW5RMC94WWlsQ2VwWHJi
+            ZzZDQlptSnZORktNRjM4ZE95V3hLaUkKtwbnebxRqXcm8m8u6vj3uub1I3UypygZ
+            bhvw47m42rMTEk8cJnRWzz2nKiAwiEKIOw5dGPQ4gg7y/I0iLxHEkA==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2026-01-06T09:46:32Z"
+    mac: ENC[AES256_GCM,data:NdtCdo73mfL19wzwfB4Ix2Tu2Sunjfacmo7b54RLFBbSiNfPEjXj3vjyhY686/ohTUGoRbjlEuzyC0/McmxI1ZZ7+P2W63kLtdaHiPmvXEL64LNLebe/YvIe9MVFRuJQutoMmdZ84XreRMjFAUh4fq4I1ZOs5cCUDrT4WtVr8ns=,iv:FiyjtTSwjQm/ez+vo1WaA4xDcXVM2KMkIE2XJtXmpxA=,tag:+I0YpZam6e6XHe2I6ntKkw==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance)$
+    version: 3.11.0
