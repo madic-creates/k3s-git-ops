@@ -43,11 +43,13 @@ helmCharts:
           expose:
             default: true
           exposedPort: 80
+          nodePort: 30080
         websecure:
           port: 8443
           expose:
             default: true
           exposedPort: 443
+          nodePort: 30443
           tls:
             enabled: true
         web239:
