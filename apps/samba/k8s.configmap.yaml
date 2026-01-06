@@ -5,6 +5,7 @@ metadata:
   namespace: media
   annotations:
     argocd.argoproj.io/sync-wave: "30"
+    kustomize.config.k8s.io/needs-hash: "true"
 data:
   smb.conf: |
     [global]
