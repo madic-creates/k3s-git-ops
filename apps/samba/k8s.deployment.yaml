@@ -20,6 +20,7 @@ spec:
       labels:
         app.kubernetes.io/name: samba
     spec:
+      serviceAccountName: samba
       nodeSelector:
         node-role/workload: zfs
       containers:
