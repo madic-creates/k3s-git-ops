@@ -51,15 +51,18 @@ apache2ctl start &
 echo "Configuring ssh for user cmk"
 [ -d "/opt/omd/sites/cmk/.ssh" ] || mkdir -p /opt/omd/sites/cmk/.ssh && chown 1000:1000 /opt/omd/sites/cmk/.ssh && chmod 0700 /opt/omd/sites/cmk/.ssh
 [ -d "/opt/omd/sites/cmk/.ssh/sockets" ] || mkdir -p /opt/omd/sites/cmk/.ssh/sockets && chown 1000:1000 /opt/omd/sites/cmk/.ssh/sockets
-if [ ! -f "/opt/omd/sites/cmk/.ssh/config" ]; then
-  echo "Host *
+# Always update SSH config to ensure latest settings are applied
+echo "Host *
+    AddressFamily inet
     ControlMaster auto
     ControlPath  ~/.ssh/sockets/%r@%h-%p
     ControlPersist 600
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
     User nagios
     ForwardAgent yes" > /opt/omd/sites/cmk/.ssh/config
-  chown 1000:1000 /opt/omd/sites/cmk/.ssh/config
-fi
+chown 1000:1000 /opt/omd/sites/cmk/.ssh/config
+chmod 0600 /opt/omd/sites/cmk/.ssh/config
 
 # SSH Private Key from environment variable
 if [ -n "${SSH_PRIVATE_KEY:-}" ]; then
