@@ -152,7 +152,7 @@ patches:
             protocol: TCP
             targetPort: https
             nodePort: 31961
-  # Disable service account token mount
+  # Add volumes to Deployment and disable service account token mount
   - target:
       group: apps
       version: v1
@@ -168,6 +168,13 @@ patches:
         template:
           spec:
             automountServiceAccountToken: false
+            volumes:
+              - name: crontab-config
+                configMap:
+                  name: crontab-emby
+              - name: backup-script
+                configMap:
+                  name: crontab-backup-script
 
 generators:
   - kustomize-secret-generator.yaml
