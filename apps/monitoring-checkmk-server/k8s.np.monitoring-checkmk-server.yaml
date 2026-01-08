@@ -42,11 +42,12 @@ spec:
         protocol: TCP
   # Allow SSH to monitored hosts (port 22)
   # CheckMK uses SSH to monitor remote Linux/Unix systems
-  # Includes world, host, and kube-apiserver entities for cluster nodes
+  # Includes all node entity types for cluster monitoring
   - toEntities:
     - world
     - host
     - kube-apiserver
+    - remote-node
     toPorts:
     - ports:
       - port: '22'
@@ -63,11 +64,12 @@ spec:
         protocol: TCP
   # Allow ICMP echo requests for ping checks
   # CheckMK uses ping to monitor host availability
-  # Includes world, host, and kube-apiserver entities for cluster nodes
+  # Includes all node entity types for cluster monitoring
   - toEntities:
     - world
     - host
     - kube-apiserver
+    - remote-node
     icmps:
     - fields:
       - type: 8
@@ -77,6 +79,7 @@ spec:
     - world
     - host
     - kube-apiserver
+    - remote-node
     icmps:
     - fields:
       - type: 0
@@ -87,6 +90,7 @@ spec:
     - world
     - host
     - kube-apiserver
+    - remote-node
     toPorts:
     - ports:
       - port: '161'
@@ -98,4 +102,12 @@ spec:
       - port: '6379'
         protocol: TCP
       - port: '49000'
+        protocol: TCP
+  # Allow access to Kubernetes API for cluster monitoring
+  # CheckMK queries K8s API (192.168.1.230:6443) for metrics
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: '6443'
         protocol: TCP
