@@ -26,6 +26,9 @@ helmCharts:
     valuesInline:
       controller:
         replicas: 1
+      serviceAccount:
+        create: true
+        automountServiceAccountToken: false
       env:
         TZ: Europe/Berlin
         UID: "0"
@@ -52,11 +55,11 @@ helmCharts:
           annotations:
             lbipam.cilium.io/ips: 192.168.1.233
           #externalTrafficPolicy: Local
-          ports:
-            http:
-              nodePort: 8096
-            https:
-              nodePort: 8920
+          #ports:
+          #  http:
+          #    nodePort: 8096
+          #  https:
+          #    nodePort: 8920
       persistence:
         config:
           enabled: true
