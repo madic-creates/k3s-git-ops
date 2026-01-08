@@ -1,0 +1,13 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: omnitools-default-deny
+  namespace: omnitools
+spec:
+  endpointSelector: {}  # Empty selector = matches ALL pods in this namespace
+  # Default deny
+  ingress:
+    - {}
+  egress:
+    - {}

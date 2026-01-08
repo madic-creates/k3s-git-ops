@@ -36,6 +36,8 @@ resources:
   - 35-minecraft.yaml
   - 40-paperless-ai.yaml
   - 40-paperless-ngx.yaml
+  #- 50-code-server.yaml
+  - 50-omnitools.yaml
   - 60-semaphore.yaml
   - 64-downloader-lidarr.yaml
   #- 65-prox01-blackbox-exporter.yaml
