@@ -70,9 +70,9 @@ spec:
               value: :2112
             - name: svc_election
               value: "true"
-          # Bug in service election in 0.8.0. VIPs are on every node
           # https://github.com/kube-vip/kube-vip/releases
-          image: ghcr.io/kube-vip/kube-vip:v0.9.2
+          #image: ghcr.io/kube-vip/kube-vip:v0.9.2
+          image: ghcr.io/kube-vip/kube-vip:v1.0.3
           imagePullPolicy: IfNotPresent
           name: kube-vip
           resources: {}
