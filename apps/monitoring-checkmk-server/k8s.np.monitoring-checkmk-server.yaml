@@ -1,0 +1,86 @@
+---
+# CheckMK Monitoring Server Network Policy
+# Allows CheckMK to monitor infrastructure, access external resources, and serve web UI
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: checkmk
+  namespace: monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "18"
+spec:
+  endpointSelector:
+    matchLabels:
+      app: checkmk
+  ingress:
+  # Allow Traefik ingress controller to access CheckMK web interface
+  # CheckMK exposes ports 5000 (web), 8000 (agent), and 80 (http/thruk)
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: traefik
+        k8s:io.kubernetes.pod.namespace: traefik
+        k8s:app.kubernetes.io/name: traefik
+    toPorts:
+    - ports:
+      - port: '5000'
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: '53'
+        protocol: UDP
+      - port: '53'
+        protocol: TCP
+  # Allow SSH to monitored hosts (port 22)
+  # CheckMK uses SSH to monitor remote Linux/Unix systems
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: '22'
+        protocol: TCP
+  # Allow HTTPS and HTTP for downloading plugins and updates
+  # CheckMK downloads check plugins from GitHub and other sources
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: '443'
+        protocol: TCP
+      - port: '80'
+        protocol: TCP
+  # Allow ICMP echo requests for ping checks
+  # CheckMK uses ping to monitor host availability
+  - toEntities:
+    - world
+    icmps:
+    - fields:
+      - type: 8
+        family: IPv4
+  # Allow ICMP echo replies (responses to pings)
+  - toEntities:
+    - world
+    icmps:
+    - fields:
+      - type: 0
+        family: IPv4
+  # Allow access to monitored hosts on common service ports
+  # CheckMK monitors various services (SNMP, HTTP, databases, etc.)
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: '161'
+        protocol: UDP
+      - port: '3306'
+        protocol: TCP
+      - port: '5432'
+        protocol: TCP
+      - port: '6379'
+        protocol: TCP

@@ -4,6 +4,7 @@ resources:
   - k8s.longhorn-monitoring.yaml
   - ks8.grafana-dashboards.kubernetes-event-exporter.yaml
   - ks8.grafana-dashboards.pi-hole-exporter.yaml
+  - k8s.np.monitoring.yaml
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "16"
