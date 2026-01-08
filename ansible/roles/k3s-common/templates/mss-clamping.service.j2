@@ -1,0 +1,17 @@
+[Unit]
+Description=TCP MSS Clamping for PMTU issues
+Documentation=https://wiki.archlinux.org/title/Iptables
+After=network-online.target
+Wants=network-online.target
+# Only start if k3s is installed on this node
+ConditionFileIsExecutable=/usr/local/bin/k3s
+
+[Service]
+Type=oneshot
+# Wait for k3s and Cilium to initialize their iptables rules
+ExecStartPre=/bin/sleep 30
+ExecStart=/usr/local/bin/mss-clamp.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

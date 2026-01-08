@@ -29,3 +29,32 @@
     backrefs: true
     state: present
   notify: "Restart systemd-resolved"
+
+# MSS Clamping configuration
+# Required to prevent SSH connection timeouts when using Cilium with
+# WireGuard encryption and Geneve tunnels. The effective Path MTU to some
+# external hosts may be lower than the configured Cilium MTU, causing
+# large TCP packets to be silently dropped.
+- name: "Archlinux | Deploy MSS clamping script"
+  ansible.builtin.copy:
+    src: mss-clamp.sh
+    dest: /usr/local/bin/mss-clamp.sh
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: "Archlinux | Deploy MSS clamping systemd service"
+  ansible.builtin.template:
+    src: mss-clamping.service.j2
+    dest: /etc/systemd/system/mss-clamping.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify: "Reload systemd daemon"
+
+- name: "Archlinux | Enable and start MSS clamping service"
+  ansible.builtin.systemd:
+    name: mss-clamping
+    enabled: true
+    state: started
+    daemon_reload: true

@@ -5,3 +5,7 @@
   ansible.builtin.service:
     name: systemd-resolved
     state: restarted
+
+- name: "Reload systemd daemon"
+  ansible.builtin.systemd:
+    daemon_reload: true
