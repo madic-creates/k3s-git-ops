@@ -28,7 +28,6 @@ helmCharts:
         replicas: 1
       serviceAccount:
         create: true
-        automountServiceAccountToken: false
       env:
         TZ: Europe/Berlin
         UID: "0"
@@ -120,6 +119,39 @@ helmCharts:
               #readOnly: true
 
 patches:
+  # Disable auto-mount of service account token
+  - target:
+      version: v1
+      kind: ServiceAccount
+      name: emby
+    patch: |-
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: emby
+      automountServiceAccountToken: false
+  # Set NodePorts for Service
+  - target:
+      version: v1
+      kind: Service
+      name: emby
+    patch: |-
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: emby
+      spec:
+        ports:
+          - name: http
+            port: 8096
+            protocol: TCP
+            targetPort: http
+            nodePort: 32606
+          - name: https
+            port: 8920
+            protocol: TCP
+            targetPort: https
+            nodePort: 31961
   # Add volumes to Deployment
   - target:
       group: apps
