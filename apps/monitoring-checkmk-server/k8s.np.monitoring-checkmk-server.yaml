@@ -40,6 +40,19 @@ spec:
         protocol: UDP
       - port: '53'
         protocol: TCP
+  # Allow access to Traefik ingress for internal services (cluster-collector)
+  # CheckMK connects to checkmk-cluster-collector
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:app.kubernetes.io/name: traefik
+    toPorts:
+    - ports:
+      - port: '8443'
+        protocol: TCP
+      - port: '8444'
+        protocol: TCP
   # Allow SSH to monitored hosts (port 22)
   # CheckMK uses SSH to monitor remote Linux/Unix systems
   # Includes all node entity types for cluster monitoring
