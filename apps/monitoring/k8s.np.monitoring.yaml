@@ -107,6 +107,15 @@ spec:
         protocol: TCP
       - port: "80"
         protocol: TCP
+  # Allow Prometheus to scrape Grafana metrics
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: monitoring
+        k8s:app.kubernetes.io/name: prometheus
+    toPorts:
+    - ports:
+      - port: "3000"
+        protocol: TCP
   egress:
   # Allow DNS resolution
   - toEndpoints:
@@ -203,6 +212,15 @@ spec:
       - port: "53"
         protocol: UDP
       - port: "53"
+        protocol: TCP
+  # Allow Prometheus to scrape CoreDNS metrics
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "9153"
         protocol: TCP
   # Allow Prometheus to access Kubernetes API for service discovery
   - toEntities:
