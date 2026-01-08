@@ -82,7 +82,6 @@ spec:
         protocol: TCP
       - port: "9094"
         protocol: UDP
-
 ---
 # Grafana Network Policy
 apiVersion: cilium.io/v2
@@ -151,7 +150,6 @@ spec:
         protocol: TCP
       - port: "80"
         protocol: TCP
-
 ---
 # Prometheus Network Policy
 apiVersion: cilium.io/v2
@@ -261,7 +259,6 @@ spec:
     - ports:
       - port: "9093"
         protocol: TCP
-
 ---
 # Prometheus Operator Network Policy
 apiVersion: cilium.io/v2
@@ -305,7 +302,6 @@ spec:
   - toEndpoints:
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: monitoring
-
 ---
 # Kube State Metrics Network Policy
 apiVersion: cilium.io/v2
@@ -347,7 +343,6 @@ spec:
   # Allow kube-state-metrics to access Kubernetes API
   - toEntities:
     - kube-apiserver
-
 ---
 # Node Exporter Network Policy
 apiVersion: cilium.io/v2
@@ -383,103 +378,4 @@ spec:
       - port: "53"
         protocol: UDP
       - port: "53"
-        protocol: TCP
-
----
-# Prometheus Pushgateway Network Policy
-apiVersion: cilium.io/v2
-kind: CiliumNetworkPolicy
-metadata:
-  name: prometheus-pushgateway
-  namespace: monitoring
-  annotations:
-    argocd.argoproj.io/sync-wave: "16"
-spec:
-  endpointSelector:
-    matchLabels:
-      app.kubernetes.io/name: prometheus-pushgateway
-  ingress:
-  # Allow Prometheus to scrape metrics
-  - fromEndpoints:
-    - matchLabels:
-        k8s:io.kubernetes.pod.namespace: monitoring
-        k8s:app.kubernetes.io/name: prometheus
-    toPorts:
-    - ports:
-      - port: "9091"
-        protocol: TCP
-  # Allow any pod to push metrics to pushgateway
-  - fromEndpoints:
-    - {}
-    toPorts:
-    - ports:
-      - port: "9091"
-        protocol: TCP
-  egress:
-  # Allow DNS resolution
-  - toEndpoints:
-    - matchLabels:
-        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
-        k8s:io.kubernetes.pod.namespace: kube-system
-        k8s:k8s-app: kube-dns
-    toPorts:
-    - ports:
-      - port: "53"
-        protocol: UDP
-      - port: "53"
-        protocol: TCP
-
----
-# ntfy-alertmanager Network Policy
-apiVersion: cilium.io/v2
-kind: CiliumNetworkPolicy
-metadata:
-  name: ntfy-alertmanager
-  namespace: monitoring
-  annotations:
-    argocd.argoproj.io/sync-wave: "16"
-spec:
-  endpointSelector:
-    matchLabels:
-      app: ntfy-alertmanager
-  ingress:
-  # Allow Traefik to reach ntfy-alertmanager web UI
-  - fromEndpoints:
-    - matchLabels:
-        k8s:app.kubernetes.io/name: traefik
-        k8s:io.kubernetes.pod.namespace: kube-system
-    toPorts:
-    - ports:
-      - port: "8080"
-        protocol: TCP
-  # Allow Alertmanager to send notifications
-  - fromEndpoints:
-    - matchLabels:
-        k8s:io.kubernetes.pod.namespace: monitoring
-        k8s:app.kubernetes.io/name: alertmanager
-    toPorts:
-    - ports:
-      - port: "8080"
-        protocol: TCP
-  egress:
-  # Allow DNS resolution
-  - toEndpoints:
-    - matchLabels:
-        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
-        k8s:io.kubernetes.pod.namespace: kube-system
-        k8s:k8s-app: kube-dns
-    toPorts:
-    - ports:
-      - port: "53"
-        protocol: UDP
-      - port: "53"
-        protocol: TCP
-  # Allow ntfy-alertmanager to send notifications to external ntfy server
-  - toEntities:
-    - world
-    toPorts:
-    - ports:
-      - port: "443"
-        protocol: TCP
-      - port: "80"
         protocol: TCP
