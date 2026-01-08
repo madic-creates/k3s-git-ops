@@ -10,3 +10,6 @@ helmCharts:
     namespace: goldilocks
     includeCRDs: true
     #valuesInline:
+
+resources:
+  - k8s.np.vertical-pod-autoscaler.yaml

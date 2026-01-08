@@ -1,0 +1,157 @@
+---
+# VPA Recommender Network Policy
+# Controls network access for the VPA recommender component
+# The recommender monitors resource usage and provides recommendations
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: vpa-recommender
+  namespace: goldilocks
+  annotations:
+    argocd.argoproj.io/sync-wave: "91"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: vpa
+      app.kubernetes.io/component: recommender
+  ingress:
+  # Allow internal health checks within goldilocks namespace
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: goldilocks
+  # Allow Prometheus to scrape metrics from recommender
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: prometheus
+        k8s:io.kubernetes.pod.namespace: monitoring
+    toPorts:
+    - ports:
+      - port: "8942"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to Kubernetes API server for reading pod metrics and VPA resources
+  - toEntities:
+    - kube-apiserver
+  # Allow access to metrics-server for resource metrics
+  - toEndpoints:
+    - matchLabels:
+        k8s:k8s-app: metrics-server
+        k8s:io.kubernetes.pod.namespace: kube-system
+    toPorts:
+    - ports:
+      - port: "10250"
+        protocol: TCP
+      - port: "4443"
+        protocol: TCP
+---
+# VPA Updater Network Policy
+# Controls network access for the VPA updater component
+# The updater evicts pods that need resource updates
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: vpa-updater
+  namespace: goldilocks
+  annotations:
+    argocd.argoproj.io/sync-wave: "91"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: vpa
+      app.kubernetes.io/component: updater
+  ingress:
+  # Allow internal health checks within goldilocks namespace
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: goldilocks
+  # Allow Prometheus to scrape metrics from updater
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: prometheus
+        k8s:io.kubernetes.pod.namespace: monitoring
+    toPorts:
+    - ports:
+      - port: "8943"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to Kubernetes API server for reading VPA resources and evicting pods
+  - toEntities:
+    - kube-apiserver
+---
+# VPA Admission Controller Network Policy
+# Controls network access for the VPA admission controller component
+# The admission controller intercepts pod creation and applies VPA recommendations
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: vpa-admission-controller
+  namespace: goldilocks
+  annotations:
+    argocd.argoproj.io/sync-wave: "91"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: vpa
+      app.kubernetes.io/component: admission-controller
+  ingress:
+  # Allow Kubernetes API server to call the admission webhook
+  # This is critical for VPA to work - API server calls webhook on pod creation
+  - fromEntities:
+    - kube-apiserver
+    toPorts:
+    - ports:
+      - port: "8000"
+        protocol: TCP
+  # Allow internal health checks within goldilocks namespace
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: goldilocks
+  # Allow Prometheus to scrape metrics from admission controller
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: prometheus
+        k8s:io.kubernetes.pod.namespace: monitoring
+    toPorts:
+    - ports:
+      - port: "8944"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to Kubernetes API server for reading VPA resources
+  - toEntities:
+    - kube-apiserver
