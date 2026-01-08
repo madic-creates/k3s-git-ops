@@ -15,10 +15,11 @@ spec:
   ingress:
   # Allow Traefik ingress controller to access CheckMK web interface
   # CheckMK exposes ports 5000 (web), 8000 (agent), and 80 (http/thruk)
+  # Traefik runs in kube-system namespace (k3s default)
   - fromEndpoints:
     - matchLabels:
-        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: traefik
-        k8s:io.kubernetes.pod.namespace: traefik
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
         k8s:app.kubernetes.io/name: traefik
     toPorts:
     - ports:
@@ -41,8 +42,11 @@ spec:
         protocol: TCP
   # Allow SSH to monitored hosts (port 22)
   # CheckMK uses SSH to monitor remote Linux/Unix systems
+  # Includes world, host, and kube-apiserver entities for cluster nodes
   - toEntities:
     - world
+    - host
+    - kube-apiserver
     toPorts:
     - ports:
       - port: '22'
@@ -59,8 +63,11 @@ spec:
         protocol: TCP
   # Allow ICMP echo requests for ping checks
   # CheckMK uses ping to monitor host availability
+  # Includes world, host, and kube-apiserver entities for cluster nodes
   - toEntities:
     - world
+    - host
+    - kube-apiserver
     icmps:
     - fields:
       - type: 8
@@ -68,6 +75,8 @@ spec:
   # Allow ICMP echo replies (responses to pings)
   - toEntities:
     - world
+    - host
+    - kube-apiserver
     icmps:
     - fields:
       - type: 0
@@ -76,6 +85,8 @@ spec:
   # CheckMK monitors various services (SNMP, HTTP, databases, etc.)
   - toEntities:
     - world
+    - host
+    - kube-apiserver
     toPorts:
     - ports:
       - port: '161'
@@ -85,4 +96,6 @@ spec:
       - port: '5432'
         protocol: TCP
       - port: '6379'
+        protocol: TCP
+      - port: '49000'
         protocol: TCP
