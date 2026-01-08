@@ -1,0 +1,57 @@
+---
+# Kube-VIP Network Policy
+# Controls network access for kube-vip pods that manage LoadBalancer VIPs and control plane HA
+# Kube-vip runs with hostNetwork: true and requires minimal network restrictions
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: kube-vip
+  namespace: kube-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: kube-vip-ds
+  ingress:
+  # Allow Prometheus to scrape kube-vip metrics on port 2112
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: monitoring
+        k8s:app.kubernetes.io/name: prometheus
+    toPorts:
+    - ports:
+      - port: "2112"
+        protocol: TCP
+  # Allow kubelet health checks from host network
+  - fromEntities:
+    - host
+  # Allow communication within kube-system namespace for coordination
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: kube-system
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow communication with Kubernetes API server
+  # Required for watching Services, Endpoints, Nodes, and managing Leases
+  - toEntities:
+    - kube-apiserver
+  # Allow ARP/Layer 2 communication for VIP management
+  # Kube-vip uses hostNetwork and requires access to the local network for ARP announcements
+  - toEntities:
+    - host
+  # Allow communication with all cluster endpoints for LoadBalancer health checks
+  # Kube-vip may need to reach backend pods for LoadBalancer services
+  - toEndpoints:
+    - {}

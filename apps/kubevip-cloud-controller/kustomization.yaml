@@ -2,6 +2,7 @@
 resources:
   #- https://raw.githubusercontent.com/kube-vip/kube-vip-cloud-provider/main/manifest/kube-vip-cloud-controller.yaml
   - k8s.kube-vip-cloud-controller.yaml
+  - k8s.np.kubevip-cloud-controller.yaml
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "0"

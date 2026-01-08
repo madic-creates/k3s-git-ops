@@ -1,0 +1,51 @@
+---
+# KubeVIP Cloud Controller Network Policy
+# Controls network access for the kube-vip-cloud-provider deployment
+#
+# The kube-vip cloud controller is responsible for managing LoadBalancer service types
+# and assigning IP addresses from the configured CIDR pool. It needs to:
+# 1. Communicate with the Kubernetes API server to watch Services and assign LoadBalancer IPs
+# 2. Access ConfigMaps in kube-system for IP pool configuration
+# 3. Access DNS for name resolution
+# 4. Accept health checks from kubelet (host)
+#
+# This controller does not have any ingress from Traefik or other services,
+# as it is an internal cluster management component.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: kube-vip-cloud-provider
+  namespace: kube-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  endpointSelector:
+    matchLabels:
+      app: kube-vip
+      component: kube-vip-cloud-provider
+  ingress:
+  # Allow kubelet health check probes from host
+  # The cloud provider may expose health check endpoints
+  - fromEntities:
+    - host
+  # Allow pods within kube-system namespace to communicate with the cloud controller
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: kube-system
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to Kubernetes API server (required for LoadBalancer IP management)
+  # The cloud controller needs to list, watch, and update Services and ConfigMaps
+  - toEntities:
+    - kube-apiserver
