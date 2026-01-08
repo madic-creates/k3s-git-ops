@@ -21,13 +21,15 @@ spec:
     - ports:
       - port: "9093"
         protocol: TCP
-  # Allow Prometheus to send alerts to Alertmanager
+  # Allow Prometheus to send alerts and scrape metrics from Alertmanager
   - fromEndpoints:
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: monitoring
         k8s:app.kubernetes.io/name: prometheus
     toPorts:
     - ports:
+      - port: "8080"
+        protocol: TCP
       - port: "9093"
         protocol: TCP
       - port: "9094"
@@ -276,6 +278,15 @@ spec:
     toPorts:
     - ports:
       - port: "9093"
+        protocol: TCP
+  # Allow Prometheus to scrape MariaDB mysqld-exporter metrics
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: databases
+        k8s:app.kubernetes.io/name: mariadb
+    toPorts:
+    - ports:
+      - port: "9104"
         protocol: TCP
 ---
 # Prometheus Operator Network Policy
