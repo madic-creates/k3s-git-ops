@@ -2,6 +2,7 @@
 # Kube-VIP Network Policy
 # Controls network access for kube-vip pods that manage LoadBalancer VIPs and control plane HA
 # Kube-vip runs with hostNetwork: true and requires minimal network restrictions
+# ==> CiliumNetworkPolicies do not apply to pods running with hostNetwork: true, such as kube-vip!
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:

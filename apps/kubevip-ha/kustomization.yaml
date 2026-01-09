@@ -3,7 +3,7 @@ resources:
   #- https://kube-vip.io/manifests/rbac.yaml
   - k8s.rbac.yaml
   - k8s.kubevip.yaml
-  - k8s.np.kubevip-ha.yaml
+  #- k8s.np.kubevip-ha.yaml
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "0"
