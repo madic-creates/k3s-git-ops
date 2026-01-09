@@ -24,7 +24,7 @@ spec:
         node-role/workload: zfs
       containers:
       - name: epicgames-freegames
-        image: ghcr.io/claabs/epicgames-freegames-node@sha256:47e298bafc8719607174a4039acb14a58ec354217d02441f3a63087d852928d7
+        image: ghcr.io/claabs/epicgames-freegames-node@sha256:51ca4de773ed84fcf36c14445825439af2bbbf11cb36356b58885b80c14e2f5d
         ports:
           - containerPort: 3000
             name: http
