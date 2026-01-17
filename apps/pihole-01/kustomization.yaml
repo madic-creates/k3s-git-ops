@@ -13,7 +13,7 @@ helmCharts:
 
 resources:
   - namespace.yaml
-  - k8s.dhcprelay.yaml
+  #- k8s.dhcprelay.yaml
   - k8s.pihole-exporter.yaml
   - ks8.doh-service.yaml
   - k8s.nebula-sync.yaml
