@@ -2,7 +2,8 @@
 resources:
   #- https://kube-vip.io/manifests/rbac.yaml
   - k8s.rbac.yaml
-  - k8s.kubevip.yaml
+  - k8s.kubevip-cp.yaml
+  - k8s.kubevip-svc.yaml
   #- k8s.np.kubevip-ha.yaml
 
 commonAnnotations:
