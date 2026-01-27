@@ -10,7 +10,7 @@ repos:
       # Replaces or checks mixed line ending.
       - id: mixed-line-ending
   - repo: https://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.5.5
+    rev: v1.5.6
     hooks:
       # Replace CRLF end-lines by LF ones before committing
       - id: remove-crlf
