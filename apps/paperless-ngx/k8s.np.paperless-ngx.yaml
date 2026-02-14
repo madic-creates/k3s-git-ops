@@ -66,3 +66,10 @@ spec:
         protocol: TCP
       - port: '139'
         protocol: TCP
+  # Allow IMAP access for email document import
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: '993'
+        protocol: TCP
