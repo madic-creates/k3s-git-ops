@@ -99,3 +99,12 @@ spec:
         protocol: TCP
       - port: "3000"
         protocol: TCP
+  # Allow access to Paperless-NGX API for document processing
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: paperless
+        k8s:io.kubernetes.pod.namespace: paper
+    toPorts:
+    - ports:
+      - port: "8000"
+        protocol: TCP
