@@ -30,6 +30,15 @@ spec:
     - ports:
       - port: "3000"
         protocol: TCP
+  # Allow Paperless-NGX to access Paperless-AI API
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: paperless
+        k8s:io.kubernetes.pod.namespace: paper
+    toPorts:
+    - ports:
+      - port: "3000"
+        protocol: TCP
   # Allow health check probes from host/kubelet
   # Kubernetes uses these for readiness and liveness probes
   - fromEntities:
