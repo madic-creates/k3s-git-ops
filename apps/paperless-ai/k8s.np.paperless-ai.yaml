@@ -14,8 +14,6 @@ kind: CiliumNetworkPolicy
 metadata:
   name: paperless-ai
   namespace: paper
-  annotations:
-    argocd.argoproj.io/sync-wave: "30"
 spec:
   endpointSelector:
     matchLabels:
@@ -107,4 +105,13 @@ spec:
     toPorts:
     - ports:
       - port: "8000"
+        protocol: TCP
+  # Allow outbound HTTPS for AI model downloads and API access
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+      - port: "80"
         protocol: TCP
