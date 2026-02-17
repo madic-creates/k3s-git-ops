@@ -22,7 +22,7 @@ spec:
         node-role/workload: zfs
       containers:
       - name: nzbhydra2
-        image: linuxserver/nzbhydra2:8.4.1
+        image: linuxserver/nzbhydra2:8.5.0
         env:
           - name: PUID
             value: "0"
