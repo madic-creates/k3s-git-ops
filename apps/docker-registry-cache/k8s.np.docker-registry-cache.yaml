@@ -1,0 +1,42 @@
+---
+# Docker Registry Cache Network Policy
+# Allows Traefik ingress and upstream registry access for pull-through caching
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: docker-registry-cache
+  namespace: docker-registry-cache
+spec:
+  endpointSelector:
+    matchLabels:
+      app: docker-registry-cache
+  ingress:
+  # Allow Traefik to reach the registry service via Ingress
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/instance: traefik-kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+    toPorts:
+    - ports:
+      - port: "5000"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow HTTPS to Docker Hub (registry-1.docker.io) for pull-through caching
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP

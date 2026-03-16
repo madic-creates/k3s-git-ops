@@ -1,0 +1,13 @@
+---
+# Default Deny Network Policy for docker-registry-cache namespace
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: docker-registry-cache-default-deny
+  namespace: docker-registry-cache
+spec:
+  endpointSelector: {}
+  ingress:
+    - {}
+  egress:
+    - {}
