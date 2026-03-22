@@ -1,0 +1,65 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trailarr
+  namespace: downloader
+  labels:
+    app.kubernetes.io/name: trailarr
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: trailarr
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: trailarr
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1002
+        fsGroup: 1002
+        fsGroupChangePolicy: OnRootMismatch
+      nodeSelector:
+        node-role/workload: zfs
+      containers:
+        - name: trailarr
+          image: nandyalu/trailarr:v0.7.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 7889
+              protocol: TCP
+          env:
+            - name: TZ
+              value: Europe/Berlin
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1002"
+          volumeMounts:
+            - name: config-vol
+              mountPath: /config
+            - name: video-vol
+              mountPath: /vol_raidz1/video
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "1Gi"
+              cpu: "2000m"
+      restartPolicy: Always
+      volumes:
+        - name: config-vol
+          hostPath:
+            path: /vol_raidz1/docker/configs/downloader/trailarr/config
+            type: DirectoryOrCreate
+        - name: video-vol
+          hostPath:
+            path: /vol_raidz1/video
+            type: Directory

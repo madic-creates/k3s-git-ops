@@ -1,0 +1,60 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: trailarr
+  namespace: downloader
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: trailarr
+  ingress:
+    # Allow traffic from Traefik ingress controller
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: traefik
+            k8s:app.kubernetes.io/name: traefik
+      toPorts:
+        - ports:
+            - port: "7889"
+              protocol: TCP
+  egress:
+    # Allow DNS resolution via CoreDNS
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s:k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    # Allow communication with Sonarr API
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: downloader
+            k8s:app.kubernetes.io/name: sonarr
+      toPorts:
+        - ports:
+            - port: "8989"
+              protocol: TCP
+    # Allow communication with Radarr API
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: downloader
+            k8s:app.kubernetes.io/name: radarr
+      toPorts:
+        - ports:
+            - port: "7878"
+              protocol: TCP
+    # Allow HTTPS/HTTP to external services (TMDB, YouTube)
+    - toEntities:
+        - world
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+            - port: "80"
+              protocol: TCP
