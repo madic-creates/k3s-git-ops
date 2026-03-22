@@ -1,0 +1,12 @@
+---
+skip_list:
+  # Role names use hyphens (k3s-server, k3s-agent, k3s-common) - renaming would break existing playbooks
+  - role-name
+  # Variables use uppercase (K3S_SERVER_CONFIG etc.) to match k3s configuration convention
+  - var-naming[pattern]
+  # Tasks use "when: changed" pattern intentionally for simple post-change actions
+  - no-handler
+  # Commands that always run (CA trust updates) are idempotent by nature
+  - no-changed-when
+  # ignore_errors used intentionally for cleanup tasks that may fail on fresh installs
+  - ignore-errors

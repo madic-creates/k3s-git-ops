@@ -27,7 +27,11 @@ jobs:
           python-version: 3.x
 
       - name: Install dependencies
-        run: pip install ansible-lint
+        run: pip install ansible-lint ansible
+
+      - name: Install Ansible collections
+        working-directory: ansible
+        run: ansible-galaxy collection install -r requirements.yaml
 
       - name: Run Ansible Lint
         working-directory: ansible
