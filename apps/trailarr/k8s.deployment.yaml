@@ -19,11 +19,6 @@ spec:
       labels:
         app.kubernetes.io/name: trailarr
     spec:
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 1002
-        fsGroup: 1002
-        fsGroupChangePolicy: OnRootMismatch
       nodeSelector:
         node-role/workload: zfs
       containers:
