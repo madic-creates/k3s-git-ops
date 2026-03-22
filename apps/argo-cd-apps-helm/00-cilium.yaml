@@ -78,6 +78,16 @@ spec:
         encryption:
           enabled: true
           type: wireguard
+        # BPF host routing bypasses iptables for pod traffic - lower latency
+        bpf:
+          hostLegacyRouting: false
+        # Socket-level LB intercepts at syscall level, bypassing network stack
+        socketLB:
+          enabled: true
+        # BandwidthManager with BBR for EDT-based traffic scheduling (requires kernel >= 5.18)
+        bandwidthManager:
+          enabled: true
+          bbr: true
         loadBalancer:
           mode: hybrid
   destination:
