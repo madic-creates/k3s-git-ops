@@ -37,7 +37,7 @@ spec:
             - name: PGID
               value: "1002"
             - name: WEBUI_DISABLE_AUTH
-              value: true
+              value: "true"
           volumeMounts:
             - name: config-vol
               mountPath: /config
