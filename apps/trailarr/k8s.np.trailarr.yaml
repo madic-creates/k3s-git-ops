@@ -18,6 +18,18 @@ spec:
         - ports:
             - port: "7889"
               protocol: TCP
+    # Allow Sonarr and Radarr to reach Trailarr API
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: downloader
+            k8s:app.kubernetes.io/name: sonarr
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: downloader
+            k8s:app.kubernetes.io/name: radarr
+      toPorts:
+        - ports:
+            - port: "7889"
+              protocol: TCP
   egress:
     # Allow DNS resolution via CoreDNS
     - toEndpoints:

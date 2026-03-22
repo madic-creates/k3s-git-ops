@@ -71,6 +71,15 @@ spec:
     - ports:
       - port: "5076"
         protocol: TCP
+  # Allow communication with Trailarr in downloader namespace
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: downloader
+        k8s:app.kubernetes.io/name: trailarr
+    toPorts:
+    - ports:
+      - port: "7889"
+        protocol: TCP
   # Allow communication with emby in media namespace
   - toEndpoints:
     - matchLabels:
