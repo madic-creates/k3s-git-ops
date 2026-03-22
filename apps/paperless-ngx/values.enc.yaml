@@ -42,6 +42,10 @@ env:
       value: true
     - name: PAPERLESS_OCR_DESKEW
       value: true
+resources:
+    requests:
+        cpu: 100m
+        memory: 1792Mi
 persistentVolumeClaim:
     create: false
     storageClassName: longhorn
@@ -69,22 +73,22 @@ sops:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA4Mko2YnE4MHE0ZkJQaUEx
-            Y2RDOFQwNFJoSG0wMm50U1o4dWYvRXNMYVJZCkRGbzFscjhRdlZicE83dlFRWnl3
-            Ync3eWFUSVUzVzZwaXdwVDdCMTR0SkUKLS0tIFVCNk5LeVJmR1R2ZEZuOEo4Nkdo
-            Y3JGa3lrdjlSa2VEWEkweHlqQ0Q3elkKFiMmo8yyZzCleIBfMSOrMFXZtpf7ewro
-            jar3RwSRXjOc493Hl+H1xrYM63djnwY7YSJJ68oCSDUtT3vt+GHW+Q==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSArelVXRC9SSDJMUVBoYWFP
+            ZzFqb1dydUhKTkFoak95T0pVdHdsbm5ZblJnCjk4QWRWN3JsKzNBbTdVWjJqcDNp
+            NHk2QUt4MlBjSktvdVN3VU9TbERGUlUKLS0tIExYdW9XbGJZZ3p6ZEg4WHptdVVO
+            RmJ1S3YvbFNDQWRjQnljVkJpL1BZZlUKV7+o29iBCChy2syIIOPsJSDkh/Ahqux8
+            qomPALaEeuPrriyhlLN5h/rlengzmqWSg41hHUky2dl4+z6mLjYMBA==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBoSGlGTmxpSWRWR0U3a0tp
-            VWd4RGY2U0lYRWR4MVNNbXpFc0dyTHgvT3dzCmE0MlYyejZxdzd0d2dmTDZjaFdS
-            UThhdndURlBLYXZ4cW5NWVZUSGc5WHcKLS0tIEttQkpVY0RWV1g5RW5xYlNvVlFw
-            UndGQ0N6NkRCMWgxaU5CRnh2M0srcDQKvf1DQxvYSWPWdHILCjm3c4c5Tj9K6cPK
-            6C7UWx1leP8XFZ5oWk7EkP5JvDK2oOgBG5mq9BoMxAYAzm5ucPdqng==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBRMURzTHIvWXNOSUhzUE00
+            QWdhVHVwU2Q3QzhLRHlYRUFkMFMwRjJEWVdJCklCVFZIR0l1b2owVGZrOW5BRS9l
+            WTNqK21Ia04wVDB1UmxiYWF4dUR0UnMKLS0tIGxsVFRHaE91YjRSYmVZYTZ6WUsx
+            VlRSSWVjWERjZERDeGRQY2hiRmdXWmsK81us0K0fUVXgFyWQ+g5o7SB0s0OelGd1
+            m7RZic1TX1d7S+uoE+tu5d8U2/ONsnWh+aD9eMN7r6c9yTCXs0dVIA==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-12-16T19:49:07Z"
-    mac: ENC[AES256_GCM,data:QyUmDa7bT4M5xp9SHq/E85JVfFZbtzk76WErn0dk0BoZA3zY3r5VHXwrb8Z7Moi64kqJ8o++ogewMUoS3BbR2Gh2kdDowP2XjQNjpKO1rbEYOb7o2l8Z1C16VLThV1xqv84VPwqPTaweiWCpS1dSCxFCegCG2ILCAyMnw5vXBAo=,iv:Fa7J6zMZ4rxqNQ8+8Gn8bIfrWGXCaRX70ImGjJBw8wM=,tag:SOub+PpofM43iWbufZHBxQ==,type:str]
-    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance)$
-    version: 3.11.0
+    lastmodified: "2026-03-22T16:30:02Z"
+    mac: ENC[AES256_GCM,data:8K/1x3D8/xyh9CIPP4u5egsYnfsTX5xeA385mvsJJCDQakIwZqqbQvnsWmKjBv6cpB/WlZV2glgHSo/MwcP61Ru4re/FVF+obDs5nRHb8MZN9hu7MUlk9dl7+qQKErj320NxbpOjVedJKFBmffDOp1+QJ/mnOb4+qKzgFQ2m4Zc=,iv:HDEpDJu/Nb4d2rPpML3KGm8D+j5cFJmiNOjF/4T3ga0=,tag:uh96TaI3YKKp9CluOcALQQ==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY)$
+    version: 3.12.2

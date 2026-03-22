@@ -70,6 +70,10 @@ helmCharts:
               enabled: true
       image:
         pullPolicy: IfNotPresent
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
       priorityClassName: "system-cluster-critical"
       #nodeSelector:
       #  node-role.kubernetes.io/control-plane: "true"

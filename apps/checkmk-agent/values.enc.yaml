@@ -9,36 +9,51 @@ clusterCollector:
             kustomize.config.k8s.io/behavior: merge
             kustomize.config.k8s.io/needs-hash: "false"
         hosts:
-            - host: ENC[AES256_GCM,data:7E98LZwNR1b6HlrDBdI5evcs1ldmja2RZaY83JYqv7AMdIaFwDtKri5OeEbhgh0=,iv:9uoeWFrpt/fvDlLKaJCuGQ2o97GfFYDyDnDHHYKEolU=,tag:3ODaGeu3uBmDs/8+oKZxSw==,type:str]
+            - host: ENC[AES256_GCM,data:LW8KqgSlwEqr6y8Ad2qxyTuXIzmOIOi6b8GCL3OSzly0rvvFfe4sUOdjT/5/rF4=,iv:G3pFGZif1VbfC0AOuy6tp2R5Z+ndzgwjr1EAnEzB7Cc=,tag:KD7NRtPYlJzxPtEnldrJtg==,type:str]
               paths:
-                - path: ENC[AES256_GCM,data:Uw==,iv:4XJ+PEmikGY9wE51A4jewCcaHqzkHATRZOY/fUzW2Lc=,tag:AMfLW0g+EsDaLgLVkpSXBQ==,type:str]
-                  pathType: ENC[AES256_GCM,data:zIH8RXi+,iv:oQoHZf9hH7lHhRB1eJRM5dgP97NO3iImKWaoQjWZJB0=,tag:udAi7RvuoDBOT54kQbcxyA==,type:str]
+                - path: ENC[AES256_GCM,data:lA==,iv:kJjPIpOBhzEPyvPf2MKUuvfcOgCTjliXFe8J1xjV16E=,tag:b12vemAFwIe5HsfdSJAdGw==,type:str]
+                  pathType: ENC[AES256_GCM,data:1C9S/bZE,iv:2VO+m+wpMQURh/EfZqU80d37bXwfaPGvG1hOfIIrTdA=,tag:nFu5osnTeI+ehBFhu1xyoQ==,type:str]
         tls:
             - secretName: wildcard-cloudflare-production-02
               hosts:
-                - ENC[AES256_GCM,data:EsAz9DOIDD6zkYqoov5l1/ixELCd3xgoZugJ372x6zh1dHGFHapdbKrXvMF/fmM=,iv:fjKPHzVZRwWo6rrbQtDLULJMuvGPtlulTd6EYrerWtU=,tag:DhhOhQh9bbIpyttwQDcZhA==,type:str]
+                - ENC[AES256_GCM,data:3rND2qtQEDj0r3YTmn/m+QX5ns9GL/YnkxdRedP/flTl42qHY1CjbYoJe4dpb4Y=,iv:9IwHI/ZMhjPQLYzJ94xjimWN+5WNt4Wd/tLyDrBa1w4=,tag:EZ5R/sVhOhKWBhoZxftVUg==,type:str]
+    resources:
+        requests:
+            cpu: 50m
+            memory: 128Mi
+nodeCollector:
+    containerMetricsCollector:
+        resources:
+            requests:
+                cpu: 50m
+                memory: 128Mi
+    machineSectionsCollector:
+        resources:
+            requests:
+                cpu: 50m
+                memory: 256Mi
 containerdOverride: /run/k3s/containerd/containerd.sock
 sops:
     age:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBWUTZYRGJXdk9sWCt5WkFr
-            ZnNpOGQrVmFrVlNjNkJNZyszVGhEdXFLeGd3CnhRUGdOUnRRT0h2TE1UOGh2S2ZR
-            bjd0T3p5QTJQcmwvYWdsbHQ2TFQ5ZW8KLS0tIEZwcGtZL2VHNG9JeCtJQjNYNnBV
-            ZTMycEpNRFBSN1NaRkFrOUtwYUlob0EKJxZ3bZq8cNmvHzq3y7ZnAOqQBdH1WYxB
-            x7BTHZwPcwDzpHLEIlcITrEkfsUxWGLUGsg/0bWCmbF9GsHtGDCrKQ==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA4K296ZzVVNlU5NEZwTlpv
+            S05jNnU2TkJNVlVJWEdFMGh2eHBqQmwzWFVBCi9VTWY4ZzRndmQ1VzZ0bUhwa1Na
+            UU5kU05QSzFqaUE5d0NRZlBybHptVmMKLS0tIFIwUm9maSsvc2NNc0FrZlBUQWVi
+            MmRWYWwzcG5yUExjSUp6eDhRNFhHMjQKpmi9HR96b9OHKMmUaCSGnP+bscaW6BiV
+            361jmyTfNznvDXYgFspW0Ig47KLr9I2+HkibsSmQGDoOW1j7wzUmkw==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBlUGVNT0pDdUVZTkVGeTFR
-            ZVkyNDJPREJNSnhUbHh6bEJUZ05La3ZwYzNNCm02YkgrQm96ZFN6cWdOQW9LR25q
-            U3I0RUt5WDRiU0ViK2RrSDNxZUVyQlEKLS0tIHlSS20zeHFDWDYyRm1ZZEpkZFY5
-            WnlPMzRHRnRFZzRYZmE4ZjNBWmRzR0EKdkqo3hEBg4ajgjCZPJNOSooZLLeuisiu
-            i2s3aQttFI0Nr7qughxKfUvWj3Q7Fb/ZGpQPU0VBwcCvI4ASoX+jbg==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA4T3BZU3lHOHk4c2tkVlZq
+            Q2dhbGhRTkdKeXB6L3VMNlh6K1Eyc0hDdWh3CndQblU3S2R3SlZwallhTE5YekNP
+            T3dIcWpkemlGY28yZXA2SXpGTE5mOTQKLS0tIGljSnJUQ1RJLzg0YzkrdXJ5UWdu
+            RjRXWUpCdkJOZmd5R0RDT2I4UjV2Z1EKCraBK6KvfIyArcck+1mCsCFqzGN04byv
+            7grPXY6/ZH+Ker5teGi52bymu+hvw+7cHBXO4oPW+2jjC6o1y4hFLw==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-11-21T21:08:16Z"
-    mac: ENC[AES256_GCM,data:wkZJPBXg9Y2PHSMGjk3fpm72FGdzwXlZdzAw1SoSenzuGIMxjmsCE6ZXgKxJUdkurLUOH9+okWJbruCUT/R72/L3OUZR6CC9TRCHyCeTgDdqe47ZvltC5dW+eu802oifyXlgaQSotELlNXS/EqZMOMELq3RoxETn3UcOL4uWxGs=,iv:+/KKLIQVXHuVMRekU2ep08LlkVqbX6W0DN1xAVTYwck=,tag:k11Ak1za7qWcawjPCJVagA==,type:str]
-    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match)$
-    version: 3.11.0
+    lastmodified: "2026-03-22T16:30:03Z"
+    mac: ENC[AES256_GCM,data:qquAdvWSLlG1dWbUR88p6tflbDCto1VXtegW4msz2GPOSJffY2PqFC5gfhft899NBS2wzWv2eSaWduZzz1UNqwSrCf8AUwciRKlair+hv2mzzgWkS/WwJ9wmBfmE43sVDNAAJszk5IhOX5WdX70q2kgFFfDXgrXIYTxWGHvLGWo=,iv:iCQMCxYyomXCK02K6W/Opc6rQT+g4wPJ9KGir82iGUw=,tag:Pj9nQ9BZXCbsAqfoxtNvFQ==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY)$
+    version: 3.12.2
