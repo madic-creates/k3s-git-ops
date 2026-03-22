@@ -12,8 +12,8 @@ spec:
     # Allow traffic from Traefik ingress controller
     - fromEndpoints:
         - matchLabels:
-            k8s:io.kubernetes.pod.namespace: traefik
-            k8s:app.kubernetes.io/name: traefik
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s:app.kubernetes.io/instance: traefik-kube-system
       toPorts:
         - ports:
             - port: "7889"
