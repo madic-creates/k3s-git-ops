@@ -14,8 +14,6 @@ kind: CiliumNetworkPolicy
 metadata:
   name: paperless-ai
   namespace: paper
-  annotations:
-    argocd.argoproj.io/sync-wave: "30"
 spec:
   endpointSelector:
     matchLabels:
@@ -25,9 +23,18 @@ spec:
   # Users access Paperless-AI through Traefik on port 3000
   - fromEndpoints:
     - matchLabels:
-        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: traefik
-        k8s:io.kubernetes.pod.namespace: traefik
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
         k8s:app.kubernetes.io/name: traefik
+    toPorts:
+    - ports:
+      - port: "3000"
+        protocol: TCP
+  # Allow Paperless-NGX to access Paperless-AI API
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: paperless
+        k8s:io.kubernetes.pod.namespace: paper
     toPorts:
     - ports:
       - port: "3000"
@@ -98,4 +105,22 @@ spec:
       - port: "8000"
         protocol: TCP
       - port: "3000"
+        protocol: TCP
+  # Allow access to Paperless-NGX API for document processing
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: paperless
+        k8s:io.kubernetes.pod.namespace: paper
+    toPorts:
+    - ports:
+      - port: "8000"
+        protocol: TCP
+  # Allow outbound HTTPS for AI model downloads and API access
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+      - port: "80"
         protocol: TCP

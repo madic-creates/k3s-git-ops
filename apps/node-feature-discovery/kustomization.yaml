@@ -3,7 +3,7 @@ resources:
   # Node Feature Discovery
   #- https://github.com/kubernetes-sigs/node-feature-discovery/deployment/overlays/default?ref=v0.18.3
   # NFD rules for Intel HW
-  - https://github.com/intel/intel-device-plugins-for-kubernetes/deployments/nfd/overlays/node-feature-rules?ref=v0.34.1
+  - https://github.com/intel/intel-device-plugins-for-kubernetes/deployments/nfd/overlays/node-feature-rules?ref=v0.35.0
   - k8s.np.node-feature-discovery.yaml
   - namespace.yaml
 

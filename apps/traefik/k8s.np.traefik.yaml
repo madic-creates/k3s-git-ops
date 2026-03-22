@@ -178,6 +178,10 @@ spec:
     - matchLabels:
         k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: codeserver
         k8s:io.kubernetes.pod.namespace: codeserver
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: docker-registry-cache
+        k8s:io.kubernetes.pod.namespace: docker-registry-cache
   # Allow Traefik to communicate with services in kube-system namespace
   # This includes the Traefik dashboard service and other system services
   - toEndpoints:

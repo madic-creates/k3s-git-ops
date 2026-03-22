@@ -1,0 +1,11 @@
+---
+resources:
+  - k8s.docker-registry-cache.yaml
+  - k8s.np.docker-registry-cache-default-deny.yaml
+  - k8s.np.docker-registry-cache.yaml
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "20"
+
+generators:
+  - kustomize-secret-generator.yaml

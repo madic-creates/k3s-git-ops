@@ -50,8 +50,9 @@ helmCharts:
             default: true
           exposedPort: 443
           nodePort: 30443
-          tls:
-            enabled: true
+          http:
+            tls:
+              enabled: true
         web239:
           port: 8010
           expose:
@@ -64,8 +65,9 @@ helmCharts:
             default: false
             vip239: true
           exposedPort: 443
-          tls:
-            enabled: true
+          http:
+            tls:
+              enabled: true
       image:
         pullPolicy: IfNotPresent
       priorityClassName: "system-cluster-critical"
