@@ -25,6 +25,10 @@ spec:
       containers:
       - name: epicgames-freegames
         image: ghcr.io/claabs/epicgames-freegames-node@sha256:df0a73aa0ffcb43e90b29406501e5e375ddc377ebbdb479aae9bce29878d0e13
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
         ports:
           - containerPort: 3000
             name: http

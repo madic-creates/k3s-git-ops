@@ -49,6 +49,10 @@ spec:
               secretKeyRef:
                 name: postfix-credentials
                 key: smtp-login
+        resources:
+          requests:
+            cpu: 10m
+            memory: 32Mi
         ports:
           - containerPort: 25
             protocol: TCP

@@ -59,6 +59,10 @@ spec:
             configMapKeyRef:
               name: checkmk-nagios-plugins
               key: check_matrix_version.sh
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1792Mi
         ports:
         - containerPort: 5000
           name: web

@@ -24,6 +24,10 @@ patches:
           spec:
             containers:
               - name: kubedoom
+                resources:
+                  requests:
+                    cpu: 50m
+                    memory: 64Mi
                 env:
                   - name: NAMESPACE
                     value: whoami

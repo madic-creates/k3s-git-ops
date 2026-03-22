@@ -26,6 +26,10 @@ spec:
         env:
           - name: TZ
             value: "Europe/Berlin"
+        resources:
+          requests:
+            cpu: 10m
+            memory: 32Mi
         ports:
           - containerPort: 8043
             name: http

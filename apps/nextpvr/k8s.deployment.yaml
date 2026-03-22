@@ -39,9 +39,15 @@ spec:
             limits:
               gpu.intel.com/i915: "1"
             requests:
+              cpu: 50m
+              memory: 384Mi
               gpu.intel.com/i915: "1"
         - name: backup-sidecar
           image: ghcr.io/restic/restic:0.18.1
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
           envFrom:
             - secretRef:
                 name: backup-env-configuration-nextpvr

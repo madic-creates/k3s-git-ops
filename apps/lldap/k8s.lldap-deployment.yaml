@@ -71,6 +71,10 @@ spec:
           # https://github.com/lldap/lldap/pkgs/container/lldap
           image: ghcr.io/lldap/lldap:latest-alpine@sha256:af6daf88e67b2c6885d2426f711cb241751b515cc36a995d36ba77f2ffd199fb
           name: lldap
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
           ports:
             # LDAP
             - containerPort: 3890

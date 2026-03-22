@@ -31,6 +31,10 @@ spec:
             value: "Europe/Berlin"
           - name: CREATE
             value: "1"
+        resources:
+          requests:
+            cpu: 10m
+            memory: 32Mi
         volumeMounts:
           - name: tftpboot
             mountPath: /tftpboot

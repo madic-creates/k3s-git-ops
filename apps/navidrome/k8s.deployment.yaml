@@ -60,6 +60,10 @@ spec:
                 secretKeyRef:
                   name: navidrome-secrets
                   key: ND_PASSWORDENCRYPTIONKEY
+          resources:
+            requests:
+              cpu: 50m
+              memory: 192Mi
           ports:
             - containerPort: 4533
               name: http

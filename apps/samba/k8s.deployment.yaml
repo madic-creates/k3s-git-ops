@@ -35,6 +35,10 @@ spec:
             value: "1002"
           - name: TZ
             value: "Europe/Berlin"
+        resources:
+          requests:
+            cpu: 50m
+            memory: 96Mi
         ports:
           - containerPort: 445
             protocol: TCP
