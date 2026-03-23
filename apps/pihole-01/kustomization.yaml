@@ -9,7 +9,9 @@ helmCharts:
     version: 2.35.0
     releaseName: pihole
     namespace: dns
-    valuesFile: values.yaml
+    valuesFile: values.public.yaml
+    additionalValuesFiles:
+      - values.secrets.yaml
 
 resources:
   - namespace.yaml
