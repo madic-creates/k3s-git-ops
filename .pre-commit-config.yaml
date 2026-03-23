@@ -27,3 +27,11 @@ repos:
     hooks:
       # Check for unencrypted Kubernetes secrets in manifest files
       - id: forbid-secrets
+  - repo: local
+    hooks:
+      - id: kubeconform
+        name: Validate K8s manifests with kubeconform
+        entry: scripts/kubeconform-validate.sh
+        language: script
+        files: ^apps/
+        pass_filenames: false

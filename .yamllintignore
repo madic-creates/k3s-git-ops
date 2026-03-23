@@ -1,0 +1,2 @@
+## SOPS-encrypted files have machine-generated long lines
+*.enc.yaml

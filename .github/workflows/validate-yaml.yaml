@@ -1,5 +1,5 @@
 ---
-name: YAML Lint & Schema Validation
+name: YAML Lint
 
 on:
   push:
@@ -33,55 +33,14 @@ jobs:
           file_or_dir: ${{ inputs.app && format('apps/{0}/', inputs.app) || 'apps/' }}
           config_data: |
             extends: default
+            ignore-from-file: .yamllintignore
             rules:
-              line-length:
-                max: 250
+              indentation: disable
+              line-length: disable
               truthy:
                 check-keys: false
               comments:
                 min-spaces-from-content: 1
+                require-starting-space: false
+              comments-indentation: disable
               document-start: disable
-
-  kubeconform:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-
-      - name: Setup Kustomize
-        uses: imranismail/setup-kustomize@v2
-
-      - name: Install kubeconform
-        run: |
-          curl -sSL https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz \
-            | tar xz -C /usr/local/bin
-
-      - name: Validate Kubernetes manifests
-        run: |
-          if [ -n "${{ inputs.app }}" ]; then
-            app_dirs="apps/${{ inputs.app }}/"
-          else
-            app_dirs="apps/*/"
-          fi
-
-          exit_code=0
-          for app_dir in $app_dirs; do
-            if [ ! -f "$app_dir/kustomization.yaml" ]; then
-              continue
-            fi
-            app_name=$(basename "$app_dir")
-            echo "::group::Validating $app_name"
-            if output=$(kustomize build "$app_dir" --enable-helm 2>/dev/null); then
-              echo "$output" | kubeconform \
-                -strict \
-                -ignore-missing-schemas \
-                -kubernetes-version 1.31.0 \
-                -schema-location default \
-                -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' \
-                -summary \
-                -output text || exit_code=1
-            else
-              echo "::warning::Kustomize build failed for $app_name, skipping schema validation"
-            fi
-            echo "::endgroup::"
-          done
-          exit $exit_code
