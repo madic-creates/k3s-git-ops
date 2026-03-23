@@ -40,6 +40,18 @@ tag: 4.9.0.30
 
 `Repository` is required for renovate to know, in which repository to search for new versions to update the tag.
 
+**Image Tags in Helm Values (values.public.yaml)**
+
+Renovate cannot read SOPS-encrypted files (`values.enc.yaml`). To allow Renovate to update image tags in Helm values, non-sensitive values are extracted into a plaintext `values.public.yaml` file. See [Secret Management - Pattern 2](secretmanagement.md#pattern-2-split-values-valuespublicyaml-valuesencyaml) for details on the split pattern.
+
+A custom manager in `renovate.json5` scans `values.public.yaml` files for the same `repository` + `tag` structure:
+
+```yaml title="values.public.yaml"
+image:
+    repository: ghcr.io/pi-hole/pihole
+    tag: 2025.11.0
+```
+
 **pre-commit hooks**
 
 Renovate is able to update [pre-commit](pre-commit-hooks.md) hooks. [But it's still in beta and can lead to problems](https://docs.renovatebot.com/modules/manager/pre-commit/#additional-information){target=_blank}. Because of this automerge for pre-commit is disabled and every update requires approval through a pull request.
