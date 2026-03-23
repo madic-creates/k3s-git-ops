@@ -1,4 +1,28 @@
 serviceMonitor:
-  enabled: true
-  interval: 60s
-  scrapeTimeout: 5s
+    enabled: true
+    interval: 60s
+    scrapeTimeout: 5s
+sops:
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBYWUU5MWV1Y1poZUdTLzZU
+            OUVIaXBBTU40dzNKeTY3NlNoVzEvT256cGpvCjVtVE5TZXR0WE51RW43dWVBeXZZ
+            NWhwY3RQQnRQUGxzekNKWUM4ekhCK2MKLS0tIGFSRkMyVUE5Zk01ZTlXNEY2WDFP
+            YUF1Z3l1azRmMDhqMlp2N21ZY1pqelUK1YaSF0b2RtMDs6gIGkL2B+LtW+J2OSVM
+            DIw1SReDy9XjbwVnC39MO7SgbgZ2rm5dzLHGllby642ykg+OYHV7tQ==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBFK0RaUnJ0c0pSRUUzeTBH
+            cXFpeGVSazRYM0Qwd0dpN1BKRkV4Smw2V1drCmxkendDQitkYWJqUUtGSFpMVVdO
+            NVc0OEdnNk1sSnhSaUJMazJlQmJMUlkKLS0tIEtXbWtROXVtV3dSNTg3UTFyQkxw
+            ZCtBTm8yckJBWUN4NXFjTmdxZG5Kc0UKywdppHjtdhtRc47Ctqy+PODLcXzWiOUb
+            7RaVIlhYuPoNcWVJCqHc/J5i5vvj/HPBZgNlRqegbLCiglTmsVg9nw==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2026-03-23T07:02:44Z"
+    mac: ENC[AES256_GCM,data:SBSA2DZoXsZsogM0smIBiCBj6iAQLF7U+G4KHjo9wXgpN4qr5SG3iOwxJQoXw007Eg1eu06HWu78J1Sr/fKmOakQrtv6JuhWSd3ZRfBhdAB06htDazqsTkbCi4HZn7z7DYDMU9RsA5e2wyfZ0S5RvVmUPTLTgxxWHf7KPoPDnBc=,iv:V8uTXRa2cG3qNHHfTMlQN45hL0nXtwb2XGXmLh3wPAk=,tag:hQJRAnucC3Kgy2DqwnVV5g==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY)$
+    version: 3.12.2
