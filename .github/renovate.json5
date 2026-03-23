@@ -83,6 +83,16 @@
       ],
       datasourceTemplate: 'docker',
     },
+    {
+      customType: 'regex',
+      managerFilePatterns: [
+        '/apps/.+/values\\.public\\.yaml$/',
+      ],
+      matchStrings: [
+        'repository: (?<depName>.*)\\s.*tag: (?<currentValue>.*)',
+      ],
+      datasourceTemplate: 'docker',
+    },
   ],
   'pre-commit': {
     enabled: true,

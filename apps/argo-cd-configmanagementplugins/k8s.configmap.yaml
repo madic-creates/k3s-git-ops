@@ -12,11 +12,18 @@ data:
     metadata:
       name: cmp-sops-decrypt
     spec:
-      version: v1.0
+      version: v1.1
       generate:
         command: [sh, -c]
         args:
-          - sops --decrypt --input-type yaml --output-type yaml values.enc.yaml > values.yaml;
+          - |
+            if [ -f values.enc.yaml ]; then
+              if [ -f values.public.yaml ]; then
+                sops --decrypt --input-type yaml --output-type yaml values.enc.yaml > values.secrets.yaml;
+              else
+                sops --decrypt --input-type yaml --output-type yaml values.enc.yaml > values.yaml;
+              fi;
+            fi;
             kustomize build --enable-helm --enable-alpha-plugins --enable-exec .
       discover:
         fileName: "values.enc.yaml"

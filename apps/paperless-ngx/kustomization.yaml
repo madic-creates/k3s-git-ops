@@ -16,7 +16,7 @@ helmCharts:
     releaseName: paperless
     namespace: paper
     includeCRDs: true
-    valuesFile: values.yaml
+    valuesFile: values.public.yaml
 
 patches:
   - target:
@@ -41,6 +41,3 @@ patches:
                 envFrom:
                   - secretRef:
                       name: paperless-env-secrets
-
-generators:
-  - kustomize-secret-generator.yaml
