@@ -1,7 +1,7 @@
 replicaCount: 2
 runner:
     config:
-        instance: ENC[AES256_GCM,data:rgJq6i55YpJrBSPoAgta6K9pHTCzueIPNsshYQ==,iv:HIYtL3txS17q7TVGqlV//TIUl0QzQdW2uUf98hy2HHE=,tag:Yb8qDi5CuHtOtgG80C2FwA==,type:str]
+        instance: ENC[AES256_GCM,data:Ertl12wV9DDM4kP9eTCzNu/UX9vsoJ3TmbMZAQ==,iv:3A+grKHvMyN1gEMGvVO+ZkWayAClIpkHt1vJUxrQ6t4=,tag:AKj7zxrxiB8gCAHCSU9yaQ==,type:str]
         existingSecret: forgejo-runner-secret
         file:
             log:
@@ -10,6 +10,7 @@ runner:
                 file: .runner
                 capacity: 2
                 timeout: 3h
+                ens: []
                 labels:
                     - docker:docker://data.forgejo.org/oci/node:20-bullseye
                     - ubuntu-latest:docker://ghcr.io/catthehacker/ubuntu:act-latest
@@ -35,22 +36,22 @@ sops:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBxcDcxVE5mdUVyc2hzSmc5
-            RGNNZlZIUWFCRDhpQkQ0R2VreW9sYzRveFZjCjNrTUMyZjJDaE9rSVhPQTAwSURH
-            N1lMZHhMbUM4aTFoOEZGZkhsZTJsbzAKLS0tIFNmYjJKREZtOGd5Vmd0VStybDI5
-            Qi9ZZmdLakM1eG8xN2RPazRlT1hhZzQK8iFm6tF6KlcV0rBmam+QKXiYY3D6c2Yq
-            rKyJcOoQokeFRjmqkMjSRjH7NY6Wq/E7Xn0NEvugCLxqrGmgZXi2jw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA0SW1USnJsa2EvdUZoeE4v
+            SVh6S3R6dXVnbHllMFFsWFBvdWsxUlJZZVc4ClBjYmdxVXQrUFJaWXdtbUhQODJK
+            M1J5T2IxZU1Lam04R0pZZTlZZDFHemMKLS0tIHF4NG50cVR5VWlYaVV4RnRHWmI0
+            ejhINDJyM3hQT1p1QU94NTRYZHRxZW8KUq6rh+pora3TXYvBPUUZPCj9KCOtfEhy
+            f+756z3thwcQ2sdKISoKpDm/1uP883WgD7u2fZwsVf7P+JQvDWgMqw==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA3dGpJZ1pTeE9vaVpZempI
-            dzZQN2F1bnk3RjlIb3NOWWVwVnNoNlZsRFQ0CkIzcUhKWDRDUXA2TTFITmNIL2tG
-            RHF5RW1MVndNeVowUk9QcFNJbnNMazAKLS0tIFJPemtwTGxuOSt3Q0ZOTzF4TVBz
-            c2Fib28zeGtNSEZkbGU0cHAvMmpHN2cKnXbrXhO5rJPrYlHdfIo3/myuiXDBLOqY
-            8505cOyUAx3CaIl2h7RMyuL7hIlZTI/6LA8YdZkCYeWjdLF+81kJTg==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBGOXNRaVgvRGRvcVpXYTdH
+            bmNQdERwVC9GYVFRU2h4UzZLb042VkZrYVU0CkNtYnFYS21CMGlDWGt2WXNMTGVJ
+            b3JTNUs1ZHVEWmZzZUxpTHcxUE9BYWsKLS0tIHJuU3dLaUVkNkFIWjdPSFZvaFgr
+            dk8yd2NzdVlnVXpTSHd6cHJUNmxqMTQKHi42m+/MazFaigpXm9u3KXm6TjETNsyi
+            G02Jqw+VM+/R2IACN2VfuZ2dEm47DXqeXeoWW3htaUJ/nOvvzE2Gvg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-12-15T20:07:14Z"
-    mac: ENC[AES256_GCM,data:oNOkkGojPZaYMNoRVBHpkOBtowBOptO2s1nJPOYqYpvx5EkIG4ynAVwwF5s7F+cH0FY4taHdh3ZKkOTedETEcIXx7s+wkXrQLksr30O1hxRgq6PTsJORkxJyAuWRYD50USjFsKzP+IOXjAhFjx6rI/LLy9qNGts50IxiiZPrPqQ=,iv:+oLNh8A0Rwzgb5CoaB8b8GnlHxmdud9H+WjObu91tv0=,tag:uOT09w2rdgkvmFyf9cIR9w==,type:str]
+    lastmodified: "2025-12-15T20:16:09Z"
+    mac: ENC[AES256_GCM,data:D743yV/f5nUqq7xiLP3u0IVkvDY/GTaAEQv5JEjm4a7oUn9bfmCdJ6RSgEC8x9YwCEaanN+WiVcDsRbrlCYz3LqrBoNfYMUVjhjVT9sQ0yws65l5JglY6E58PPVT/KZkzhwQ34BfoklOc3EeStyH2dhRSBJ0NPrSEiSdTqJTdNg=,iv:wWD97oooIkaS979PfloG8+KoPL2KXyE6BVpB8FFdq34=,tag:YgJdvxFQjMhW3WSulOa7nw==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance)$
     version: 3.11.0
