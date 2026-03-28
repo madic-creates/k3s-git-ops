@@ -86,7 +86,7 @@ spec:
 
         # Token-sync sidecar: patches refreshed token from /tmp back to K8s Secret
         - name: token-sync
-          image: bitnami/kubectl:1.31
+          image: bitnami/kubectl:latest
           command:
             - /bin/sh
             - -c
