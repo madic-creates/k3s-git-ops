@@ -1,0 +1,61 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: claude-alert-analyzer
+  namespace: monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: claude-alert-analyzer
+  ingress:
+    # Alertmanager webhook
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: monitoring
+            k8s:app.kubernetes.io/name: alertmanager
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+  egress:
+    # DNS
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s:k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    # Prometheus API
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: monitoring
+            k8s:app.kubernetes.io/name: prometheus
+      toPorts:
+        - ports:
+            - port: "9090"
+              protocol: TCP
+    # Kubernetes API
+    - toEntities:
+        - kube-apiserver
+    # Claude API + OAuth refresh
+    - toFQDNs:
+        - matchName: api.anthropic.com
+        - matchName: platform.claude.com
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+    # ntfy
+    - toFQDNs:
+        - matchName: ntfy.geekbundle.org
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
