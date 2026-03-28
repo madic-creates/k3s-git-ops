@@ -42,7 +42,7 @@ func analyzeWithClaude(ctx context.Context, tm *TokenManager, systemPrompt, user
     return "", fmt.Errorf("create request: %w", err)
   }
   req.Header.Set("Content-Type", "application/json")
-  req.Header.Set("x-api-key", token)
+  req.Header.Set("Authorization", "Bearer "+token)
   req.Header.Set("anthropic-version", anthropicVersion)
 
   resp, err := claudeHTTPClient.Do(req)
