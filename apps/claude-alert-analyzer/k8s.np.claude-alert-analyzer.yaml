@@ -44,17 +44,9 @@ spec:
     # Kubernetes API
     - toEntities:
         - kube-apiserver
-    # Claude API + OAuth refresh
-    - toFQDNs:
-        - matchName: api.anthropic.com
-        - matchName: platform.claude.com
-      toPorts:
-        - ports:
-            - port: "443"
-              protocol: TCP
-    # ntfy
-    - toFQDNs:
-        - matchName: ntfy.geekbundle.org
+    # Claude API, OAuth refresh, ntfy (HTTPS)
+    - toEntities:
+        - world
       toPorts:
         - ports:
             - port: "443"
