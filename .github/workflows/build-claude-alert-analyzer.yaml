@@ -15,8 +15,8 @@ permissions:
   packages: write
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
 
 env:
   IMAGE: ghcr.io/${{ github.repository_owner }}/claude-alert-analyzer
@@ -24,6 +24,8 @@ env:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    # Skip runs triggered by the bot's own image-tag commit
+    if: github.actor != 'github-actions[bot]'
     steps:
       - uses: actions/checkout@v4
 
