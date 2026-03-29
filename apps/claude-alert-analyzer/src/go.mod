@@ -3,7 +3,7 @@ module github.com/madic-creates/claude-alert-analyzer
 go 1.26.1
 
 require (
-	golang.org/x/sync v0.18.0
+	golang.org/x/sync v0.20.0
 	k8s.io/api v0.35.3
 	k8s.io/apimachinery v0.35.3
 	k8s.io/client-go v0.35.3
