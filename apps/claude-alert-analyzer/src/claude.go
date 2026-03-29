@@ -13,7 +13,7 @@ import (
 )
 
 const (
-  claudeAPIURL     = "https://api.anthropic.com/v1/messages"
+  claudeAPIURL     = "https://api.claude.ai/v1/messages"
   anthropicVersion = "2023-06-01"
 )
 
