@@ -32,7 +32,7 @@ spec:
       containers:
         # Main analyzer
         - name: analyzer
-          image: ghcr.io/madic-creates/claude-alert-analyzer:52355e0
+          image: ghcr.io/madic-creates/claude-alert-analyzer:354ac6f
           ports:
             - containerPort: 8080
               name: http
