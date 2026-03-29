@@ -50,8 +50,6 @@ spec:
               value: "monitoring,databases,media,kube-system"
             - name: MAX_LOG_BYTES
               value: "2048"
-            - name: API_BASE_URL
-              value: "https://api.anthropic.com/v1/messages"
             - name: API_KEY
               valueFrom:
                 secretKeyRef:
