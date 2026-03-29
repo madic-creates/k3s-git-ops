@@ -57,6 +57,11 @@ spec:
                 secretKeyRef:
                   name: claude-alert-analyzer-env
                   key: API_KEY
+            - name: API_BASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: claude-alert-analyzer-env
+                  key: API_BASE_URL
             - name: WEBHOOK_SECRET
               valueFrom:
                 secretKeyRef:
