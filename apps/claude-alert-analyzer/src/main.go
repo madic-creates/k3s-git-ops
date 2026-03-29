@@ -107,8 +107,7 @@ func loadConfig() Config {
     NtfyPublishTopic:    envOrDefault("NTFY_PUBLISH_TOPIC", "kubernetes-analysis"),
     NtfyPublishToken:    os.Getenv("NTFY_PUBLISH_TOKEN"),
     PrometheusURL:       envOrDefault("PROMETHEUS_URL", "http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090"),
-    ClaudeModel:         envOrDefault("CLAUDE_MODEL", "claude-sonnet-4-6"),
-    ClaudeModelCritical: envOrDefault("CLAUDE_MODEL_CRITICAL", "claude-opus-4-6"),
+    ClaudeModel: envOrDefault("CLAUDE_MODEL", "claude-sonnet-4-6"),
     CooldownSeconds:     cooldown,
     SkipResolved:        envOrDefault("SKIP_RESOLVED", "true") != "false",
     Port:                envOrDefault("PORT", "8080"),
@@ -155,12 +154,7 @@ func processAlert(ctx context.Context, cfg Config, clientset kubernetes.Interfac
     alert.Labels, alert.Annotations,
     actx.PrometheusMetrics, actx.KubeEvents, actx.PodStatus, actx.PodLogs)
 
-  model := cfg.ClaudeModel
-  if severity == "critical" {
-    model = cfg.ClaudeModelCritical
-  }
-
-  analysis, err := analyzeWithClaude(ctx, cfg, systemPrompt, userPrompt, model)
+  analysis, err := analyzeWithClaude(ctx, cfg, systemPrompt, userPrompt, cfg.ClaudeModel)
   if err != nil {
     slog.Error("analysis failed", "alertname", alertname, "error", err)
     _ = publishAnalysis(ctx, cfg, alert,
@@ -175,7 +169,7 @@ func processAlert(ctx context.Context, cfg Config, clientset kubernetes.Interfac
     return
   }
 
-  slog.Info("analysis complete", "alertname", alertname, "model", model)
+  slog.Info("analysis complete", "alertname", alertname, "model", cfg.ClaudeModel)
 }
 
 func main() {

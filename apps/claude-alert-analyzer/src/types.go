@@ -86,8 +86,7 @@ type Config struct {
   NtfyPublishTopic    string
   NtfyPublishToken    string
   PrometheusURL       string
-  ClaudeModel         string
-  ClaudeModelCritical string
+  ClaudeModel string
   CooldownSeconds     int
   SkipResolved        bool
   Port                string
