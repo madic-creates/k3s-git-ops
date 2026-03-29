@@ -27,7 +27,7 @@ Analyze the provided alert with its cluster context and produce a concise root-c
 3. Suggest concrete remediation steps (kubectl commands, config changes)
 4. Note correlations with other active alerts
 
-Keep response under 500 words. Use markdown. Reference actual metric values and pod names.`
+Keep response under 500 words. Use plain text only — no markdown tables, no markdown headers, no bold/italic syntax. Use simple bullet points (- or *) and blank lines for structure. Reference actual metric values and pod names.`
 
 // Cooldown with TTL eviction
 type cooldownEntry struct {
