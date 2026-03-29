@@ -9,6 +9,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "10"
 spec:
   replicas: 1
+  revisionHistoryLimit: 3
   strategy:
     type: Recreate  # Prevent overlapping pods fighting over token rotation
   selector:
