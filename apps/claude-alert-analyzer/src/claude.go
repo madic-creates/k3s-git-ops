@@ -12,19 +12,11 @@ import (
   "time"
 )
 
-const (
-  claudeAPIURL     = "https://api.anthropic.com/v1/messages"
-  anthropicVersion = "2023-06-01"
-)
+const anthropicVersion = "2023-06-01"
 
 var claudeHTTPClient = &http.Client{Timeout: 120 * time.Second}
 
-func analyzeWithClaude(ctx context.Context, tm *TokenManager, systemPrompt, userPrompt, model string) (string, error) {
-  token, err := tm.GetAccessToken()
-  if err != nil {
-    return "", fmt.Errorf("get token: %w", err)
-  }
-
+func analyzeWithClaude(ctx context.Context, cfg Config, systemPrompt, userPrompt, model string) (string, error) {
   reqBody := ClaudeRequest{
     Model:     model,
     MaxTokens: 2048,
@@ -37,13 +29,20 @@ func analyzeWithClaude(ctx context.Context, tm *TokenManager, systemPrompt, user
     return "", fmt.Errorf("marshal request: %w", err)
   }
 
-  req, err := http.NewRequestWithContext(ctx, "POST", claudeAPIURL, bytes.NewReader(bodyBytes))
+  req, err := http.NewRequestWithContext(ctx, "POST", cfg.APIBaseURL, bytes.NewReader(bodyBytes))
   if err != nil {
     return "", fmt.Errorf("create request: %w", err)
   }
   req.Header.Set("Content-Type", "application/json")
-  req.Header.Set("Authorization", "Bearer "+token)
-  req.Header.Set("anthropic-version", anthropicVersion)
+
+  // Anthropic direct: use x-api-key header and anthropic-version
+  // Other providers (OpenRouter etc.): use Authorization Bearer
+  if strings.Contains(cfg.APIBaseURL, "anthropic.com") {
+    req.Header.Set("x-api-key", cfg.APIKey)
+    req.Header.Set("anthropic-version", anthropicVersion)
+  } else {
+    req.Header.Set("Authorization", "Bearer "+cfg.APIKey)
+  }
 
   resp, err := claudeHTTPClient.Do(req)
   if err != nil {

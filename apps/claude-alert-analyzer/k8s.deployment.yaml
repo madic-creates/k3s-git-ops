@@ -11,7 +11,7 @@ spec:
   replicas: 1
   revisionHistoryLimit: 3
   strategy:
-    type: Recreate  # Prevent overlapping pods fighting over token rotation
+    type: Recreate
   selector:
     matchLabels:
       app.kubernetes.io/name: claude-alert-analyzer
@@ -30,15 +30,11 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       containers:
-        # Main analyzer
         - name: analyzer
           image: ghcr.io/madic-creates/claude-alert-analyzer:354ac6f
           ports:
             - containerPort: 8080
               name: http
-          envFrom:
-            - secretRef:
-                name: claude-alert-analyzer-env
           env:
             - name: PORT
               value: "8080"
@@ -54,10 +50,24 @@ spec:
               value: "monitoring,databases,media,kube-system"
             - name: MAX_LOG_BYTES
               value: "2048"
+            - name: API_BASE_URL
+              value: "https://api.anthropic.com/v1/messages"
+            - name: API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: claude-alert-analyzer-env
+                  key: API_KEY
+            - name: WEBHOOK_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: claude-alert-analyzer-env
+                  key: WEBHOOK_SECRET
+            - name: NTFY_PUBLISH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: claude-alert-analyzer-env
+                  key: NTFY_PUBLISH_TOKEN
           volumeMounts:
-            - name: claude-credentials
-              mountPath: /etc/claude-credentials
-              readOnly: true
             - name: tmp
               mountPath: /tmp
           resources:
@@ -84,51 +94,7 @@ spec:
               port: http
             initialDelaySeconds: 2
             periodSeconds: 10
-
-        # Token-sync sidecar: patches refreshed token from /tmp back to K8s Secret
-        - name: token-sync
-          image: bitnami/kubectl:latest
-          command:
-            - /bin/sh
-            - -c
-            - |
-              echo "token-sync sidecar starting (interval: 60s)"
-              while true; do
-                sleep 60
-                if [ -f /tmp/claude-credentials.json ]; then
-                  LIVE_TOKEN=$(cat /tmp/claude-credentials.json | base64 -w0)
-                  CURRENT=$(kubectl get secret claude-alert-analyzer-credentials \
-                    -n monitoring -o jsonpath='{.data.credentials\.json}' 2>/dev/null)
-                  if [ "$LIVE_TOKEN" != "$CURRENT" ] && [ -n "$LIVE_TOKEN" ]; then
-                    kubectl patch secret claude-alert-analyzer-credentials \
-                      -n monitoring --type=merge \
-                      -p "{\"data\":{\"credentials.json\":\"${LIVE_TOKEN}\"}}" \
-                      && echo "[$(date -Iseconds)] token synced to Secret" \
-                      || echo "[$(date -Iseconds)] token sync failed"
-                  fi
-                fi
-              done
-          volumeMounts:
-            - name: tmp
-              mountPath: /tmp
-              readOnly: true
-          resources:
-            requests:
-              cpu: 5m
-              memory: 16Mi
-            limits:
-              cpu: 50m
-              memory: 32Mi
-          securityContext:
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
-            capabilities:
-              drop: ["ALL"]
-
       volumes:
-        - name: claude-credentials
-          secret:
-            secretName: claude-alert-analyzer-credentials
         - name: tmp
           emptyDir:
             medium: Memory

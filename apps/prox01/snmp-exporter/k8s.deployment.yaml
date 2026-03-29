@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: snmp-exporter
+  namespace: monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+  labels:
+    app.kubernetes.io/name: snmp-exporter
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: snmp-exporter
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: snmp-exporter
+    spec:
+      nodeSelector:
+        node-role/workload: zfs
+      containers:
+      - name: snmp-exporter
+        image: prom/snmp-exporter:latest
+        args:
+          - "--config.file=/etc/snmp_exporter/snmp.yml"
+        env:
+          - name: TZ
+            value: "Europe/Berlin"
+        ports:
+          - containerPort: 9116
+            name: metrics
+            protocol: TCP

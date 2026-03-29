@@ -96,6 +96,12 @@ func loadConfig() Config {
     os.Exit(1)
   }
 
+  apiKey := os.Getenv("API_KEY")
+  if apiKey == "" {
+    slog.Error("API_KEY is required (fail-closed)")
+    os.Exit(1)
+  }
+
   return Config{
     NtfyPublishURL:      envOrDefault("NTFY_PUBLISH_URL", "https://ntfy.geekbundle.org"),
     NtfyPublishTopic:    envOrDefault("NTFY_PUBLISH_TOPIC", "kubernetes-analysis"),
@@ -109,10 +115,12 @@ func loadConfig() Config {
     WebhookSecret:       webhookSecret,
     AllowedNamespaces:   nsList,
     MaxLogBytes:         maxLogBytes,
+    APIBaseURL:          envOrDefault("API_BASE_URL", "https://api.anthropic.com/v1/messages"),
+    APIKey:              apiKey,
   }
 }
 
-func processAlert(ctx context.Context, cfg Config, tm *TokenManager, clientset kubernetes.Interface, alert Alert) {
+func processAlert(ctx context.Context, cfg Config, clientset kubernetes.Interface, alert Alert) {
   alertname := alert.Labels["alertname"]
   severity := alert.Labels["severity"]
   namespace := alert.Labels["namespace"]
@@ -152,7 +160,7 @@ func processAlert(ctx context.Context, cfg Config, tm *TokenManager, clientset k
     model = cfg.ClaudeModelCritical
   }
 
-  analysis, err := analyzeWithClaude(ctx, tm, systemPrompt, userPrompt, model)
+  analysis, err := analyzeWithClaude(ctx, cfg, systemPrompt, userPrompt, model)
   if err != nil {
     slog.Error("analysis failed", "alertname", alertname, "error", err)
     _ = publishAnalysis(ctx, cfg, alert,
@@ -173,7 +181,7 @@ func processAlert(ctx context.Context, cfg Config, tm *TokenManager, clientset k
 func main() {
   cfg := loadConfig()
 
-  // K8s client — singleton
+  // K8s client -- singleton
   k8sConfig, err := rest.InClusterConfig()
   if err != nil {
     slog.Error("k8s config failed", "error", err)
@@ -185,15 +193,7 @@ func main() {
     os.Exit(1)
   }
 
-  // OAuth token manager
-  tm, err := NewTokenManager()
-  if err != nil {
-    slog.Error("token manager init failed", "error", err)
-    os.Exit(1)
-  }
-  tm.StartRefreshLoop()
-
-  // Cancellable context for workers — cancelled on SIGTERM
+  // Cancellable context for workers -- cancelled on SIGTERM
   workerCtx, workerCancel := context.WithCancel(context.Background())
 
   // Bounded work queue (max 5 concurrent analyses)
@@ -207,7 +207,7 @@ func main() {
     go func() {
       defer wg.Done()
       for item := range workQueue {
-        processAlert(workerCtx, cfg, tm, clientset, item.alert)
+        processAlert(workerCtx, cfg, clientset, item.alert)
       }
     }()
   }
@@ -292,6 +292,7 @@ func main() {
     slog.Info("Claude Alert Analyzer started",
       "port", cfg.Port,
       "model", cfg.ClaudeModel,
+      "apiBaseURL", cfg.APIBaseURL,
       "allowedNamespaces", cfg.AllowedNamespaces)
     if err := server.ListenAndServe(); err != http.ErrServerClosed {
       slog.Error("server failed", "error", err)
@@ -307,7 +308,7 @@ func main() {
   defer cancel()
   server.Shutdown(shutdownCtx)
 
-  // 2. Drain work queue — let already-accepted alerts finish
+  // 2. Drain work queue -- let already-accepted alerts finish
   close(workQueue)
 
   // 3. Wait for workers with timeout, then force-cancel

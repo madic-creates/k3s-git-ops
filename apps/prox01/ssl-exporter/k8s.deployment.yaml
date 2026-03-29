@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ssl-exporter
+  namespace: monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+  labels:
+    app.kubernetes.io/name: ssl-exporter
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ssl-exporter
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: ssl-exporter
+    spec:
+      nodeSelector:
+        node-role/workload: zfs
+      containers:
+      - name: ssl-exporter
+        image: ribbybibby/ssl-exporter:latest
+        ports:
+          - containerPort: 9219
+            name: metrics
+            protocol: TCP

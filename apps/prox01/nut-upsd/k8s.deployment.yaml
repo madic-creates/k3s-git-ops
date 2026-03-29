@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nut-upsd
+  namespace: monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+  labels:
+    app.kubernetes.io/name: nut-upsd
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: nut-upsd
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: nut-upsd
+    spec:
+      nodeSelector:
+        node-role/workload: zfs
+      containers:
+      - name: nut-upsd
+        image: upshift/nut-upsd
+        env:
+          - name: SHUTDOWN_CMD
+            value: "echo 'Home has no current. Proceeding to shut down...'"
+          - name: ADMIN_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: nut-upsd-credentials
+                key: admin-password
+          - name: UPS_NAME
+            value: "EATON"
+          - name: API_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: nut-upsd-credentials
+                key: api-password
+          - name: UPS_DESC
+            value: "Ellipse PRO 1200"
+          - name: API_USER
+            valueFrom:
+              secretKeyRef:
+                name: nut-upsd-credentials
+                key: api-user
+          - name: UPS_DRIVER
+            value: "usbhid-ups"
+          - name: UPS_PORT
+            value: "auto"
+        ports:
+          - containerPort: 3493
+            name: nut
+            protocol: TCP
+        securityContext:
+          privileged: true
+        volumeMounts:
+          - name: usb
+            mountPath: /dev/bus/usb
+      volumes:
+        - name: usb
+          hostPath:
+            path: /dev/bus/usb
+            type: Directory

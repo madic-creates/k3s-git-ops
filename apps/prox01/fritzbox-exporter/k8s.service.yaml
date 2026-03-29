@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fritzbox-exporter
+  namespace: monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+  labels:
+    app.kubernetes.io/name: fritzbox-exporter
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9133
+      targetPort: 9133
+      protocol: TCP
+      name: metrics
+  selector:
+    app.kubernetes.io/name: fritzbox-exporter

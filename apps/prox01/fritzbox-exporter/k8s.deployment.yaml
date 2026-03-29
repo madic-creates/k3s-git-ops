@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fritzbox-exporter
+  namespace: monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+  labels:
+    app.kubernetes.io/name: fritzbox-exporter
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: fritzbox-exporter
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: fritzbox-exporter
+    spec:
+      nodeSelector:
+        node-role/workload: zfs
+      containers:
+      - name: fritzbox-exporter
+        image: madic/fritzbox_exporter:v1
+        command:
+          - /exporter
+        args:
+          - -username
+          - $(FRITZBOX_USERNAME)
+          - -password
+          - $(FRITZBOX_PASSWORD)
+          - -gateway-address
+          - "192.168.1.1"
+        env:
+          - name: FRITZBOX_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: fritzbox-exporter-credentials
+                key: username
+          - name: FRITZBOX_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: fritzbox-exporter-credentials
+                key: password
+        ports:
+          - containerPort: 9133
+            name: metrics
+            protocol: TCP

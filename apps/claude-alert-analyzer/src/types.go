@@ -26,19 +26,6 @@ type Alert struct {
   Fingerprint  string            `json:"fingerprint"`
 }
 
-// --- OAuth credentials ---
-
-type ClaudeCredentials struct {
-  ClaudeAiOauth *OAuthData `json:"claudeAiOauth,omitempty"`
-}
-
-type OAuthData struct {
-  AccessToken  string   `json:"accessToken,omitempty"`
-  RefreshToken string   `json:"refreshToken,omitempty"`
-  ExpiresAt    int64    `json:"expiresAt,omitempty"`
-  Scopes       []string `json:"scopes,omitempty"`
-}
-
 // --- Claude Messages API ---
 
 type ClaudeRequest struct {
@@ -107,4 +94,6 @@ type Config struct {
   WebhookSecret       string
   AllowedNamespaces   []string // Namespace allowlist for log collection
   MaxLogBytes         int      // Per-pod log truncation limit
+  APIBaseURL          string   // Claude API endpoint (supports Anthropic and OpenRouter)
+  APIKey              string   // API key for authentication
 }

@@ -1,24 +1,26 @@
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: claude-alert-analyzer
+  name: prox01-nut-upsd
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "55"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "65"
 spec:
   project: default
   source:
     repoURL: "example.com"
-    targetRevision: main
-    path: apps/claude-alert-analyzer
+    path: apps/prox01/nut-upsd
+    targetRevision: HEAD
   destination:
-    server: https://kubernetes.default.svc
-    namespace: monitoring
+    server: "https://kubernetes.default.svc"
+    namespace: prox01
   syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+      - CreateNamespace=true
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-      - CreateNamespace=false
