@@ -8,3 +8,5 @@ resources:
   - k8s.np.claude-alert-analyzer.yaml
 generators:
   - kustomize-secret-generator.yaml
+generatorOptions:
+  disableNameSuffixHash: true
