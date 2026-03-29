@@ -16,11 +16,6 @@ rules:
   - apiGroups: [""]
     resources: ["pods", "pods/log", "events", "namespaces"]
     verbs: ["get", "list"]
-  # Token-sync sidecar needs to update secrets
-  - apiGroups: [""]
-    resources: ["secrets"]
-    verbs: ["get", "patch"]
-    resourceNames: ["claude-alert-analyzer-credentials"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -32,6 +27,36 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: claude-alert-analyzer
+subjects:
+  - kind: ServiceAccount
+    name: claude-alert-analyzer
+    namespace: monitoring
+---
+# Namespace-scoped role for token-sync sidecar to patch secrets
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: claude-alert-analyzer-secret-sync
+  namespace: monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "patch"]
+    resourceNames: ["claude-alert-analyzer-credentials"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: claude-alert-analyzer-secret-sync
+  namespace: monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: claude-alert-analyzer-secret-sync
 subjects:
   - kind: ServiceAccount
     name: claude-alert-analyzer
