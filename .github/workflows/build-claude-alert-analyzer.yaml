@@ -27,7 +27,7 @@ jobs:
     # Skip runs triggered by the bot's own image-tag commit
     if: github.actor != 'github-actions[bot]'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set image tag from short SHA
         id: tag
