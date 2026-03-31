@@ -109,6 +109,7 @@ nav:
       - Authentication: auth.md
       - Backup: backup.md
       - Cert-Manager: certmanager.md
+      - Claude Alert Analyzer: claude-alert-analyzer.md
       - Databases: databases.md
       - Kube DOOM: kubedoom.md
       - Network: network.md
