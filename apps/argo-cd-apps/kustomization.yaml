@@ -40,7 +40,7 @@ resources:
   - 40-paperless-ngx.yaml
   #- 50-code-server.yaml
   - 50-omnitools.yaml
-  - 55-claude-alert-analyzer.yaml
+  - 55-claude-alert-kubernetes-analyzer.yaml
   - 60-semaphore.yaml
   - 64-downloader-lidarr.yaml
   #- 65-prox01-blackbox-exporter.yaml
