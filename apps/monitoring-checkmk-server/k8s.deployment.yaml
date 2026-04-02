@@ -94,6 +94,9 @@ spec:
         - name: checkmk-pre-start-hook
           mountPath: /docker-entrypoint.d/pre-start/prepare.sh
           subPath: prepare.sh
+        - name: checkmk-claude-notify
+          mountPath: /omd/sites/cmk/local/share/check_mk/notifications/claude-analyzer-notify.sh
+          subPath: claude-analyzer-notify.sh
         #- name: tmpfs-volume
         #  mountPath: /opt/omd/sites/cmk/tmp
       volumes:
@@ -111,6 +114,10 @@ spec:
       - name: checkmk-pre-start-hook
         configMap:
           name: checkmk-pre-start-hook
+          defaultMode: 0755
+      - name: checkmk-claude-notify
+        configMap:
+          name: checkmk-claude-notify
           defaultMode: 0755
       securityContext:
         fsGroup: 1000

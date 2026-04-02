@@ -17,3 +17,6 @@ configMapGenerator:
   - name: checkmk-pre-start-hook
     files:
       - prepare.sh
+  - name: checkmk-claude-notify
+    files:
+      - claude-analyzer-notify.sh
