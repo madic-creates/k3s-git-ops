@@ -1,14 +1,14 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: claude-alert-analyzer
+  name: claude-alert-kubernetes-analyzer
   namespace: monitoring
   annotations:
     argocd.argoproj.io/sync-wave: "5"
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: claude-alert-analyzer
+      app.kubernetes.io/name: claude-alert-kubernetes-analyzer
   ingress:
     # Alertmanager webhook
     - fromEndpoints:

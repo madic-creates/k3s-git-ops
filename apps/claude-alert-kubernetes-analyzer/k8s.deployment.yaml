@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: claude-alert-analyzer
+  name: claude-alert-kubernetes-analyzer
   namespace: monitoring
   labels:
-    app.kubernetes.io/name: claude-alert-analyzer
+    app.kubernetes.io/name: claude-alert-kubernetes-analyzer
   annotations:
     argocd.argoproj.io/sync-wave: "10"
 spec:
@@ -14,13 +14,13 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      app.kubernetes.io/name: claude-alert-analyzer
+      app.kubernetes.io/name: claude-alert-kubernetes-analyzer
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: claude-alert-analyzer
+        app.kubernetes.io/name: claude-alert-kubernetes-analyzer
     spec:
-      serviceAccountName: claude-alert-analyzer
+      serviceAccountName: claude-alert-kubernetes-analyzer
       automountServiceAccountToken: true
       securityContext:
         runAsNonRoot: true
@@ -31,7 +31,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: analyzer
-          image: ghcr.io/madic-creates/claude-alert-analyzer:31f8bfb
+          image: ghcr.io/madic-creates/claude-alert-kubernetes-analyzer:8be6898
           ports:
             - containerPort: 8080
               name: http
@@ -43,7 +43,7 @@ spec:
             - name: CLAUDE_MODEL
               valueFrom:
                 secretKeyRef:
-                  name: claude-alert-analyzer-env
+                  name: claude-alert-kubernetes-analyzer-env
                   key: CLAUDE_MODEL
             - name: COOLDOWN_SECONDS
               value: "300"
@@ -54,22 +54,22 @@ spec:
             - name: API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: claude-alert-analyzer-env
+                  name: claude-alert-kubernetes-analyzer-env
                   key: API_KEY
             - name: API_BASE_URL
               valueFrom:
                 secretKeyRef:
-                  name: claude-alert-analyzer-env
+                  name: claude-alert-kubernetes-analyzer-env
                   key: API_BASE_URL
             - name: WEBHOOK_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: claude-alert-analyzer-env
+                  name: claude-alert-kubernetes-analyzer-env
                   key: WEBHOOK_SECRET
             - name: NTFY_PUBLISH_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: claude-alert-analyzer-env
+                  name: claude-alert-kubernetes-analyzer-env
                   key: NTFY_PUBLISH_TOKEN
           volumeMounts:
             - name: tmp

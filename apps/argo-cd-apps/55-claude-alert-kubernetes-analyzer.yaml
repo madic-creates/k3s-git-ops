@@ -12,7 +12,7 @@ spec:
   source:
     repoURL: "example.com"
     targetRevision: main
-    path: apps/claude-alert-analyzer
+    path: apps/claude-alert-kubernetes-analyzer
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring

@@ -1,16 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: claude-alert-analyzer
+  name: claude-alert-kubernetes-analyzer
   namespace: monitoring
   labels:
-    app.kubernetes.io/name: claude-alert-analyzer
+    app.kubernetes.io/name: claude-alert-kubernetes-analyzer
   annotations:
     argocd.argoproj.io/sync-wave: "10"
 spec:
   type: ClusterIP
   selector:
-    app.kubernetes.io/name: claude-alert-analyzer
+    app.kubernetes.io/name: claude-alert-kubernetes-analyzer
   ports:
     - port: 8080
       targetPort: http
