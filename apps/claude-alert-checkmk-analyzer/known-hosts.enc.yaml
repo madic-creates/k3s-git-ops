@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: claude-alert-checkmk-analyzer-known-hosts
+    namespace: monitoring
+type: Opaque
+stringData:
+    known_hosts: ENC[AES256_GCM,data:S4Wm1WGbQ8tr3yqPgE0o7bKAbYh9+7wmnhNpNqXidnsWf4Z1mSjC9blBwDKfS2y+nIWQQHAnuIDLpY+ha50rdxEmWBs7R4BOfaeER8iLEd1p8pgNocHVP4PlU3CFet8wIDomnEhXbMufrYaXXBfPtUvGYIIGWVjtNscXGrbUr0L0uOx/nteJIqJpHjorwsW5R2uXj4rJUMJgAhqasIfpaSsX4EfsrnqtGCc9h5t5Tpg1/bdhyk2z/HMRVzFS7gGOt8e5BhSLjm9sHXb2ft8yBp1mhU+lqJvaya/QL71A7IKIyfFkOd7EMkgvgTfBpiAhUk8Df00JzPW6b0pwmV10U4IlVHAJ84tGHH0AH3mjmf2OVdqm5UUottuIz9gRzaTBLdRKMZZ1lbwtndYHE2l/8p7ebUCrTZpjrYBPrNz4Do/j0RuGclapZo5XppHF4lAabq7KugwdPLsqZXNOkenRXrfof8lrFzjGfwxj8U9QyFwOXmAovApF4iCvnNu+5RwmhrU3nbm3PwgkMcpoy2+uXGnUHV0zYincL+UO8Ioc90rns95PevaXZotx7br2/d4QHdpO4HlIEEFumbzGbIuzf+w7EJbDR0mjq9awjHH5+MpAIx5dopBaqr9Sx2gRHjXudeOcf5CQXcHvvEiVOBs6NYN+rafn99UcIqVGsggVt2vHRmEBlEi6NZYL3BWzcmV3wKVXAenW0I9CKwC2jx5z2CMjcwhlSsV7g4CAioFhmdZ33bNJMG1QcMsWcStpyX0juizfh6jKCFPUEwA1M7LcwrG30uk15gFVxiqB2jSyFbb+Tx6CaJd96hAlf/9VMwl8RBeS5/jYzNGhA5SLUm74EgsSYsvVwBW6GJtcBuQrp7v/hbvIeOOxQqgCGLwTTh+R9ed07jOvo67Qe4/wqVIZkeRQ2KdiHdcX2Jdqr+aoG4GkTmxr/0EyVrFYCGok29OXGZGytiVmw8z7FIJwugn3sKkPekZn2K/fBlgivLu4Q+1dQW4F1dm7FFf7f1Yf9KwPY0pPZSzEMBYO1LKLMYZkvqTfE/gdiSj8APTtLaTn1tAx1binS+spo/zosXEMghrfQRP2JtZ7o4pfNwif/WhYQa7WHBKd2HJ+iHSk9iQISXvKqAJ1Qbpc3uuMXqu1fADWocZyF3ywvoOKifQ/Dbd26WtS,iv:xpKB2NZ7419/J22oo7Vn2fyRwRPMTIvmdNSK497q+HQ=,tag:l58OBm9zGvrNHtMNyE8wJg==,type:str]
+sops:
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBnaG1YVFg2RTM4Q3UrYTdP
+            NHVjSjV4eGNkVEp0UmN1T1A1czdGSDZkM1VRClBGNzRlUkR5bjNSR29DSWczS0R1
+            azdSdlhUdjg4blEranZuLzN2OGFqNHcKLS0tIE15RktBc0s2SkJtZE95dDl6NjAw
+            R1VzWXN5OUpzcFZFSGF4S1JWTEYzUTAKW0h9heV2qVubSs8dLvqV96U7deGmLOyp
+            aeZMNXKiSDmD6EFOBmf4/8Qz5YftYoH4jr7c2mg4bpE+nlkjFZlMkw==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBjRUZnNmVsbGswM3d5T2xG
+            MEJwZGVKNnNPZ3F2THBCNjJKbWNFSS9FUndNCjVhRjlmdHhqWVBxRkJhV0N1cEdP
+            a2NwMW5zYzBwbWhoN2N1dXFKL3hGMjgKLS0tICtXdmkwdFk5UFkwMnZQSWFaR3du
+            QmgzWWZxQkZGcldqSkhLUDlTMXNqUm8KmRCWRKOnAHEHATMVfFGRai+CGe+qel1p
+            byL2vC3zQkZ+b6n32ioKaj0H1FbsBeVyD50aqnJKDTxeptW0lF6DrQ==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2026-04-02T19:16:11Z"
+    mac: ENC[AES256_GCM,data:wkNxjiTQGAH/MxafOFNJ3C+zn84iJEW/Q3B/J68FhVHD3JjmNfxnruxCx++Y/AMu6SDhVTZaQoMEB0GCYUs2lzVRnZVJP1w155kJxRosd0PlbUxVDNVhNQdKPaKHiF3gbF0/4p1aDnrApFoXqjn7niG7OAE4kKBdjmTBO8BNBww=,iv:YC3OeCTDWysdcW442ueMRuTf37E39kE4hbah3mlF1YA=,tag:UZ4G0vE5FpGMnB/HNYkfzA==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
+    version: 3.12.2

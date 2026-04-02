@@ -1,0 +1,54 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: claude-alert-checkmk-analyzer
+  namespace: monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: claude-alert-checkmk-analyzer
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: monitoring
+            k8s:app: checkmk
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s:k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: monitoring
+            k8s:app: checkmk
+      toPorts:
+        - ports:
+            - port: "5000"
+              protocol: TCP
+    - toEntities:
+        - world
+        - host
+        - remote-node
+      toPorts:
+        - ports:
+            - port: "22"
+              protocol: TCP
+    - toEntities:
+        - world
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
