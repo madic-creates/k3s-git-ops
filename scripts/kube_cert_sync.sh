@@ -26,5 +26,5 @@ kubectl get secret "${CERT}" -n certmanager -o jsonpath="{.data.tls\.crt}" | bas
 kubectl get secret "${CERT}" -n certmanager -o jsonpath="{.data.tls\.key}" | base64 -d > "${CERT}".key
 
 scp -p "${CERT}".* "${DEST_SERVER}":
-ssh -t "${DEST_SERVER}" "sudo cp ${CERT}.* /etc/nginx/ && sudo systemctl reload nginx"
+ssh -t "${DEST_SERVER}" "sudo cp ${CERT}.* /etc/nginx/ && sudo docker exec nginx nginx -s reload"
 rm -f "${CERT}".*
