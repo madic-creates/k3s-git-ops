@@ -92,7 +92,26 @@ sops --config .sops.yaml -e -i apps/myapp/secrets.enc.yaml
 
 ## Common Commands
 
-The Kubeconfig for the production cluster is below shared/node01.neese-web.de/k3s.yaml and can be used for read-only kubectl commands to get more information from the cluster.
+### Testing Changes Locally
+
+```bash
+# Build and preview kustomization (requires ksops and sops configured)
+kustomize build apps/myapp --enable-helm --enable-alpha-plugins --enable-exec
+
+# Validate a specific app with kubeconform
+scripts/kubeconform-validate.sh apps/myapp
+
+# Validate YAML syntax
+kubectl apply --dry-run=client -f apps/myapp/manifest.yaml
+
+# Check ArgoCD sync diff
+argocd app diff myapp
+
+# Run all pre-commit hooks
+pre-commit run --all-files
+```
+
+Pre-commit hooks enforce: trailing whitespace, line endings, tab→space (2 spaces), smartquote fixes, unencrypted secret detection, and **kubeconform schema validation** against k8s 1.31.0 for changed apps.
 
 ### Cluster Installation
 
@@ -103,111 +122,59 @@ ansible-galaxy collection install -r requirements.yaml
 # Deploy cluster (from ansible directory)
 cd ansible
 ansible-playbook playbooks/install.yaml -i inventory/production/hosts --diff
-
-# Kubeconfig is saved to: shared/${HOSTNAME}/k3s.yaml
 ```
 
 ### ArgoCD Bootstrap
 
 ```bash
 # Deploy ArgoCD
-kustomize apps/argo-cd --enable-helm --enable-alpha-plugins --enable-exec | kubectl apply -f -
+kustomize build apps/argo-cd --enable-helm --enable-alpha-plugins --enable-exec | kubectl apply -f -
 
 # Deploy all applications
-kustomize apps/argo-cd-apps | kubectl apply -f -
+kustomize build apps/argo-cd-apps | kubectl apply -f -
 
 # Get ArgoCD admin password
 kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
 ```
 
-### Testing Changes Locally
+### Vagrant Test Environment
 
 ```bash
-# Build and preview kustomization (requires ksops and sops configured)
-kustomize apps/myapp --enable-helm --enable-alpha-plugins --enable-exec
-
-# Validate YAML syntax
-kubectl apply --dry-run=client -f apps/myapp/manifest.yaml
-
-# Check ArgoCD sync diff
-argocd app diff myapp
+vagrant up                                          # Full test environment (3 VMs)
+vagrant up k3svm1                                   # Server node only
+export KUBECONFIG="$PWD/shared/k3svm1/k3s.yaml"    # Use vagrant kubeconfig
+vagrant ssh k3svm1                                  # SSH into VM
+vagrant destroy -f                                  # Destroy test environment
 ```
 
-### Working with Vagrant Test Environment
+### Cilium / Network Policy Development
 
 ```bash
-# Start full test environment (3 VMs: 1 server, 2 workers)
-vagrant up
-
-# Start only server node
-vagrant up k3svm1
-
-# Kubeconfig location for vagrant
-export KUBECONFIG="$PWD/shared/k3svm1/k3s.yaml"
-
-# SSH into VM
-vagrant ssh k3svm1
-
-# Destroy test environment
-vagrant destroy -f
-```
-
-### Cilium
-
-```bash
-# Create hubble portforward
 cilium hubble port-forward
-
-# Get last X connections from namespace
 hubble observe --namespace media --last 20
 ```
 
-Both commands can be used during for example the creation of network policies to know, which connections were made.
-
-### Pre-commit Hooks
-
-```bash
-# Install pre-commit hooks (recommended for all contributors)
-pre-commit install
-
-# Run manually
-pre-commit run --all-files
-```
-
-Hooks enforce: trailing whitespace removal, line ending normalization, CRLF→LF conversion, tab→space conversion, smartquote fixes, and unencrypted secret detection.
-
-## Key Technologies
-
-- **k3s** - Lightweight Kubernetes distribution
-- **ArgoCD** - GitOps continuous delivery
-- **Kustomize** - Kubernetes configuration management
-- **Helm** - Package manager (deployed via Kustomize helmCharts)
-- **SOPS + age** - Secret encryption
-- **ksops** - Kustomize plugin for SOPS integration
-- **Ansible** - Cluster provisioning and node management
-- **Traefik** - Ingress controller
-- **Authelia** - SSO/authentication (all exposed services use SSO)
-- **Longhorn** - Distributed block storage
-- **cert-manager** - TLS certificate management
-- **Prometheus + Grafana** - Monitoring (kube-prometheus-stack)
-- **Loki** - Log aggregation
-- **Velero** - Backup and disaster recovery
-- **KubeVIP** - HA control plane and load balancing
-- **Cilium** - CNI with network policies
+Use these when creating network policies to observe actual connections.
 
 ## Important Conventions
 
 ### Sync Wave Annotations
 
-All resources use ArgoCD sync waves for ordered deployment:
+All resources use ArgoCD sync waves via `commonAnnotations` in the app's `kustomization.yaml`:
 ```yaml
-annotations:
-  argocd.argoproj.io/sync-wave: "10"
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "30"
 ```
 
 ### Namespace Management
 
-Most apps include a `k8s.namespace.yaml` with the namespace definition in their kustomization resources.
+Most apps include a `namespace.yaml` or `k8s.namespace.yaml` in their kustomization resources.
+
+### Network Policies
+
+Apps use Cilium network policies with a default-deny pattern:
+- `k8s.np.*-default-deny.yaml` - Default deny all ingress/egress
+- `k8s.np.<appname>.yaml` - Allow specific traffic for the app
 
 ### Kustomize Secret Hashing
 
@@ -219,35 +186,34 @@ annotations:
 
 ### Repository URL Replacement
 
-ArgoCD Application manifests use a placeholder `repoURL: "example.com"` which is replaced via Kustomize replacements reading from the encrypted secret `argocd-repo-url-public` in the `apps/argo-cd-apps/kustomization.yaml`.
+ArgoCD Application manifests use a placeholder `repoURL: "example.com"` which is replaced via Kustomize replacements reading from the encrypted secret `argocd-repo-url-public` in `apps/argo-cd-apps/kustomization.yaml`.
 
-### LoadBalancer
+### LoadBalancer / Ingress Rules
 
-When an ingress has internal.neese-web.de as host use router.entrypoints: web239,websecure239 and as certificate wildcard-cloudflare-production-02.
-When an ingress has k8s.neese-web.de as host use router.entrypoints: web,websecure and as certificate wildcard-cloudflare-production-01.
+| Host domain | Traefik entrypoints | Certificate |
+|---|---|---|
+| `internal.neese-web.de` | `web239,websecure239` | `wildcard-cloudflare-production-02` |
+| `k8s.neese-web.de` | `web,websecure` | `wildcard-cloudflare-production-01` |
+
+### Dependency Updates
+
+Renovate Bot auto-merges minor/patch updates (with 5-day minimum release age). Major updates and critical apps (mariadb, traefik, kubevip-ha, longhorn) require manual review. Longhorn has a 14-day minimum release age.
+
+## Adding a New Application
+
+1. Create `apps/<appname>/` with a `kustomization.yaml`
+2. If using Helm, define `helmCharts` in the kustomization with `valuesInline` or a separate `values.yaml`
+3. Add encrypted secrets as `*.enc.yaml` with a `kustomize-secret-generator.yaml` using ksops
+4. Add network policies: default-deny + app-specific allow rules
+5. Create `apps/argo-cd-apps/<NN>-<appname>.yaml` with the appropriate sync wave number
+6. Add the new manifest to `apps/argo-cd-apps/kustomization.yaml` resources list
 
 ## Documentation
 
-Full documentation is available at: https://madic-creates.github.io/k3s-git-ops/
+Full docs: https://madic-creates.github.io/k3s-git-ops/
 
-The documentation covers:
-- Installation procedures
-- Secret management workflows
-- Monitoring setup
-- Network configuration
-- Update procedures
-- Test environment setup
-
-Build docs locally:
 ```bash
-# Install dependencies
-pip install -r requirements.txt
-
-# Serve docs locally
-mkdocs serve
-
-# Build static site
-mkdocs build
+pip install -r requirements.txt && mkdocs serve   # Serve docs locally
 ```
 
 Code comments and documentation must always be in english.
