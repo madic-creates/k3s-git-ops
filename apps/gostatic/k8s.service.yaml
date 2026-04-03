@@ -17,5 +17,9 @@ spec:
       targetPort: 8043
       protocol: TCP
       name: http
+    - port: 80
+      targetPort: 8043
+      protocol: TCP
+      name: http-alt
   selector:
     app.kubernetes.io/name: gostatic

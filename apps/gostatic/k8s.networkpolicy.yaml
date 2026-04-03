@@ -45,6 +45,8 @@ spec:
         - ports:
             - port: "8043"
               protocol: TCP
+            - port: "80"
+              protocol: TCP
   egress:
     # DNS resolution
     - toEndpoints:
