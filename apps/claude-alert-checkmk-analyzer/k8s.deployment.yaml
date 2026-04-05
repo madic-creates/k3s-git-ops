@@ -34,56 +34,9 @@ spec:
           ports:
             - containerPort: 8080
               name: http
-          env:
-            - name: PORT
-              value: "8080"
-            - name: CLAUDE_MODEL
-              valueFrom:
-                secretKeyRef:
-                  name: claude-alert-checkmk-analyzer-env
-                  key: CLAUDE_MODEL
-            - name: API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: claude-alert-checkmk-analyzer-env
-                  key: API_KEY
-            - name: API_BASE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: claude-alert-checkmk-analyzer-env
-                  key: API_BASE_URL
-            - name: WEBHOOK_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: claude-alert-checkmk-analyzer-env
-                  key: WEBHOOK_SECRET
-            - name: NTFY_PUBLISH_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: claude-alert-checkmk-analyzer-env
-                  key: NTFY_PUBLISH_TOKEN
-            - name: NTFY_PUBLISH_TOPIC
-              value: "checkmk-analysis"
-            - name: CHECKMK_API_URL
-              value: "http://checkmk-service.monitoring:5000/cmk/check_mk/api/1.0/"
-            - name: CHECKMK_API_USER
-              valueFrom:
-                secretKeyRef:
-                  name: claude-alert-checkmk-analyzer-env
-                  key: CHECKMK_API_USER
-            - name: CHECKMK_API_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: claude-alert-checkmk-analyzer-env
-                  key: CHECKMK_API_SECRET
-            - name: SSH_USER
-              value: "nagios"
-            - name: SSH_KEY_PATH
-              value: "/ssh/id_ed25519"
-            - name: SSH_KNOWN_HOSTS_PATH
-              value: "/ssh/known_hosts"
-            - name: COOLDOWN_SECONDS
-              value: "300"
+          envFrom:
+            - secretRef:
+                name: claude-alert-checkmk-analyzer-env
           volumeMounts:
             - name: tmp
               mountPath: /tmp
