@@ -1,0 +1,57 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: paperless-gpt
+  namespace: paper
+spec:
+  endpointSelector:
+    matchLabels:
+      app: paperless-gpt
+  ingress:
+  # Allow Traefik ingress controller to access paperless-gpt web interface
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:app.kubernetes.io/name: traefik
+    toPorts:
+    - ports:
+      - port: "8080"
+        protocol: TCP
+  # Allow health check probes from host/kubelet
+  - fromEntities:
+    - host
+    toPorts:
+    - ports:
+      - port: "8080"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to Paperless-NGX API
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: paperless
+        k8s:io.kubernetes.pod.namespace: paper
+    toPorts:
+    - ports:
+      - port: "8000"
+        protocol: TCP
+  # Allow outbound HTTPS for LLM API access (OpenAI, Anthropic, etc.)
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP

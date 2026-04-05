@@ -36,7 +36,7 @@ resources:
   - 33-navidrome.yaml
   - 34-trailarr.yaml
   #- 35-minecraft.yaml
-  - 40-paperless-ai.yaml
+  - 40-paperless-gpt.yaml
   - 40-paperless-ngx.yaml
   #- 50-code-server.yaml
   - 50-omnitools.yaml

@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: 40-paperless-ai
+  name: 40-paperless-gpt
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -12,18 +12,11 @@ spec:
   project: default
   source:
     repoURL: "example.com"
-    path: apps/paperless-ai
+    path: apps/paperless-gpt
     targetRevision: HEAD
   destination:
     server: "https://kubernetes.default.svc"
     namespace: default
-  ignoreDifferences:
-    - group: apps
-      kind: Deployment
-      name: paperless-ai
-      namespace: paper
-      jsonPointers:
-        - /spec/replicas
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true

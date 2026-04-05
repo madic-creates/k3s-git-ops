@@ -1,9 +1,10 @@
 ---
 resources:
   - k8s.deployment.yaml
-  - k8s.service.yaml
-  - k8s.storage.yaml
-  - k8s.np.paperless-ai.yaml
+  - k8s.np.paperless-gpt.yaml
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "40"
 
 generators:
   - kustomize-secret-generator.yaml
