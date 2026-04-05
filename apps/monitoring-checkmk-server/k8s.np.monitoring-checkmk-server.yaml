@@ -27,6 +27,15 @@ spec:
         protocol: TCP
       - port: '5000'
         protocol: TCP
+  # Allow claude-alert-checkmk-analyzer to access CheckMK API (port 5000)
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: monitoring
+        k8s:app.kubernetes.io/name: claude-alert-checkmk-analyzer
+    toPorts:
+    - ports:
+      - port: '5000'
+        protocol: TCP
   egress:
   # Allow DNS resolution via CoreDNS
   - toEndpoints:
