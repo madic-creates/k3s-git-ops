@@ -15,6 +15,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Run Claude via OpenRouter
         uses: anthropics/claude-code-action@beta
@@ -23,14 +25,23 @@ jobs:
           CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS: 1
         with:
           anthropic_api_key: ${{ secrets.OPENROUTER_API_KEY }}
-          mode: agent
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           prompt: |
-            Analyze this codebase and immediately add ONE small, useful feature or bugfix.
-            Do not ask questions. Do not wait for input.
-            
-            Steps to execute now:
-            1. Pick a file or argocd app to improve
-            2. Add one small, useful feature to it
-            3. Create a new branch: feature/auto-$(date +%s)
-            4. Commit the change
-            5. Open a pull request with title and description of what was added and why
+            REPO: ${{ github.repository }}
+
+            Add ONE small, useful feature to this codebase.
+
+            Steps:
+            1. Analyze the codebase to find a good place for a small improvement
+            2. Create a new branch: feature/auto-$(date +%s)
+            3. Implement the feature
+            4. Commit the change with a descriptive message
+            5. Push the branch
+            6. Open a pull request with title and description of what was added and why
+
+            Rules:
+            - Do not ask questions, execute immediately
+            - Make only one focused change
+            - Do not break existing functionality
+
+          claude_args: '--allowed-tools "Bash(gh pr:*),Bash(git status:*),Bash(git log:*),Bash(git checkout:*),Bash(git add:*),Bash(git commit:*),Bash(git push:*),Bash(git branch:*),Bash(date:*),Read,Edit,Glob,Grep"'
