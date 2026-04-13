@@ -1,0 +1,29 @@
+name: Auto Feature Bot
+
+on:
+  schedule:
+    - cron: '0 */3 * * *'
+  workflow_dispatch:
+
+jobs:
+  auto-improve:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Claude via OpenRouter
+        uses: anthropics/claude-code-action@beta
+        env:
+          ANTHROPIC_BASE_URL: https://openrouter.ai/api
+          CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS: 1
+        with:
+          anthropic_api_key: ${{ secrets.OPENROUTER_API_KEY }}
+          prompt: |
+            Analyze this codebase and add ONE small, useful feature.
+            Create a new branch named feature/auto-{timestamp},
+            commit your change, and open a pull request with a clear
+            title and description of what you added and why.
