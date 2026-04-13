@@ -25,7 +25,12 @@ jobs:
           anthropic_api_key: ${{ secrets.OPENROUTER_API_KEY }}
           mode: agent
           prompt: |
-            Analyze this codebase and add ONE small, useful feature.
-            Create a new branch named feature/auto-{timestamp},
-            commit your change, and open a pull request with a clear
-            title and description of what you added and why.
+            Analyze this codebase and immediately add ONE small, useful feature or bugfix.
+            Do not ask questions. Do not wait for input.
+            
+            Steps to execute now:
+            1. Pick a file or argocd app to improve
+            2. Add one small, useful feature to it
+            3. Create a new branch: feature/auto-$(date +%s)
+            4. Commit the change
+            5. Open a pull request with title and description of what was added and why
