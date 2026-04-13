@@ -1,8 +1,8 @@
 name: Auto Feature Bot
 
 on:
-  schedule:
-    - cron: '0 */3 * * *'
+  #schedule:
+  #  - cron: '0 */3 * * *'
   workflow_dispatch:
 
 jobs:
@@ -19,7 +19,7 @@ jobs:
           fetch-depth: 0
 
       - name: Run Claude via OpenRouter
-        uses: anthropics/claude-code-action@beta
+        uses: anthropics/claude-code-action@v1
         env:
           ANTHROPIC_BASE_URL: https://openrouter.ai/api
           CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS: 1
