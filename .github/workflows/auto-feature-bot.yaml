@@ -29,17 +29,68 @@ jobs:
           prompt: |
             REPO: ${{ github.repository }}
 
-            Add ONE small, useful feature to this codebase.
+            Add ONE small, useful feature or improvement to this codebase.
 
-            Steps:
-            1. Analyze the codebase to find a good place for a small improvement
+            ## Codebase Context
+
+            This is a GitOps k3s cluster repo. Apps live in `apps/<name>/` with Kustomize+Helm.
+            ArgoCD Application manifests are in `apps/argo-cd-apps/` (numbered by deploy order: 00-99).
+            Docs use MkDocs in `docs/`. Ansible provisioning in `ansible/`. Scripts in `scripts/`.
+
+            Key patterns per app directory:
+            - `kustomization.yaml` — Helm chart definition + resources
+            - `values.yaml` or `valuesInline` — Helm values
+            - `namespace.yaml` — Namespace resource
+            - `k8s.np.<app>-default-deny.yaml` — Cilium default-deny network policy
+            - `k8s.np.<app>.yaml` — App-specific Cilium network policy
+            - `*.enc.yaml` — SOPS-encrypted secrets (DO NOT create or modify)
+            - `kustomize-secret-generator.yaml` — ksops generator config
+            - Sync waves via `commonAnnotations: argocd.argoproj.io/sync-wave: "<N>"`
+
+            Existing apps (65+): argo-cd, authelia, backup-script, certmanager, cilium-config,
+            coredns, csi-smb, descheduler, docker-registry-cache, emby, epicgames-freegames,
+            goldilocks, intel-gpu, kube-doom, kubevip-ha, lldap, longhorn, mariadb,
+            minecraft-crossplay, monitoring, monitoring-loki, monitoring-pushgateway,
+            navidrome, nextpvr, ntfy-alertmanager, omnitools, paperless-ngx, paperless-gpt,
+            pihole-01, pihole-02, postfix, redis, reflector, samba, semaphore,
+            system-upgrade-controller, traefik, trailarr, unifi-controller, versitygw,
+            vertical-pod-autoscaler, whoami, and more.
+
+            ## Improvement Ideas (pick one, or come up with your own)
+
+            Existing pattern gaps:
+            - Many apps lack a default-deny CiliumNetworkPolicy (e.g. longhorn, pihole-01, pihole-02, forgejo-runner, checkmk-agent)
+            - Some apps missing `namespace.yaml`
+
+            New improvements (be creative):
+            - Useful scripts in `scripts/` (cluster health checks, backup verification, etc.)
+            - GitHub Actions workflows (linting, validation, notifications)
+            - MkDocs documentation improvements in `docs/`
+            - Pre-commit hook enhancements
+            - Kubernetes best practices (PodDisruptionBudgets, resource quotas, probes)
+            - Monitoring improvements (new PrometheusRules, alerting rules)
+            - Anything else that adds genuine value — surprise me
+
+            ## Constraints
+
+            - DO NOT modify or create `*.enc.yaml` files (SOPS-encrypted, you have no keys)
+            - DO NOT modify core infrastructure: argo-cd, kubevip-ha, certmanager, coredns, traefik, longhorn
+            - DO NOT touch the `ansible/` directory
+            - Pre-commit hooks will run: trailing whitespace, tab→2spaces, smartquote fix, unencrypted secret detection, kubeconform (k8s 1.31.0)
+            - Use `apps/whoami/` as a reference for simple app structure
+            - English only for code, comments, and documentation
+
+            ## Steps
+
+            1. Pick ONE improvement (existing gap or something new)
             2. Create a new branch: feature/auto-$(date +%s)
-            3. Implement the feature
-            4. Commit the change with a descriptive message
+            3. Implement the change
+            4. Commit with a descriptive message
             5. Push the branch
-            6. Open a pull request with title and description of what was added and why
+            6. Open a pull request explaining what was added and why
 
-            Rules:
+            ## Rules
+
             - Do not ask questions, execute immediately
             - Make only one focused change
             - Do not break existing functionality
