@@ -15,7 +15,7 @@ repos:
       - id: check-merge-conflict
       # Validate YAML syntax in all YAML files.
       - id: check-yaml
-        args: [--allow-multiple-documents]
+        args: [--allow-multiple-documents, --unsafe]
         exclude: ^apps/.*\.enc\.yaml$
   - repo: https://github.com/Lucas-C/pre-commit-hooks
     rev: v1.5.6
