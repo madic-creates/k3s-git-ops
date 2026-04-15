@@ -95,4 +95,4 @@ jobs:
             - Make only one focused change
             - Do not break existing functionality
 
-          claude_args: '--allowed-tools "Bash(gh pr:*),Bash(gh pr create:*),Bash(gh pr list:*),Bash(gh pr view:*),Bash(git status:*),Bash(git log:*),Bash(git checkout:*),Bash(git add:*),Bash(git commit:*),Bash(git push:*),Bash(git branch:*),Bash(date:*),Read,Edit,Glob,Grep"'
+          claude_args: '--allowed-tools "Bash(gh pr:*),Bash(gh pr create:*),Bash(gh pr list:*),Bash(gh pr view:*),Bash(git status:*),Bash(git log:*),Bash(git checkout:*),Bash(git add:*),Bash(git commit:*),Bash(git push:*),Bash(git branch:*),Bash(date:*),Read,Write,Edit,Glob,Grep"'
