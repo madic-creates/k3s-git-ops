@@ -13,6 +13,10 @@ repos:
       - id: detect-private-key
       # Check for files that contain merge conflict strings.
       - id: check-merge-conflict
+      # Validate YAML syntax in all YAML files.
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+        exclude: ^apps/.*\.enc\.yaml$
   - repo: https://github.com/Lucas-C/pre-commit-hooks
     rev: v1.5.6
     hooks:
