@@ -167,6 +167,15 @@ spec:
     - ports:
       - port: "9091"
         protocol: TCP
+  # Allow Grafana to reach Authelia via Traefik ingress (OIDC token exchange over HTTPS)
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: traefik
+        k8s:io.kubernetes.pod.namespace: kube-system
+    toPorts:
+    - ports:
+      - port: "8443"
+        protocol: TCP
   # Allow Grafana to access Kubernetes API for plugin updates and datasource discovery
   - toEntities:
     - kube-apiserver
