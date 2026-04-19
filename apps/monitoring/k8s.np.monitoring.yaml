@@ -158,6 +158,15 @@ spec:
     - ports:
       - port: "3100"
         protocol: TCP
+  # Allow Grafana to access authelia
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: authelia
+        k8s:app.kubernetes.io/name: authelia
+    toPorts:
+    - ports:
+      - port: "9091"
+        protocol: TCP
   # Allow Grafana to access Kubernetes API for plugin updates and datasource discovery
   - toEntities:
     - kube-apiserver
