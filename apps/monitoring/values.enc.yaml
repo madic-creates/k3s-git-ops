@@ -10,11 +10,11 @@ alertmanager:
             traefik.ingress.kubernetes.io/router.tls: "true"
             traefik.ingress.kubernetes.io/router.middlewares: authelia-forwardauth-authelia@kubernetescrd
         hosts:
-            - ENC[AES256_GCM,data:eWMfON5NXBqemGIy+DnOFyAMnVLjCfxGRDZ3vie+w+O+fw==,iv:FZ0yIqLLq7C/onQV56aVJBM4jkFRMlJtdgXxGjlrDrU=,tag:hLec0ynwJamoDfW3k74IMw==,type:str]
+            - ENC[AES256_GCM,data:nmUKTqEzT/3lH8wvhaubQ0RYXzPbppBuTKC4ENwvtWXbOQ==,iv:73Sdd+gAcpT9GcueXQTnjt+093iMBaRG0349hNjMxac=,tag:6LpSW5ufbi+dGdK1S199QQ==,type:str]
         tls:
             - secretName: wildcard-cloudflare-production-02
               hosts:
-                - ENC[AES256_GCM,data:SZekDUC4+1Sm5mnEx7ojYAfRePqTVROZQCTQCdZIBJpp+g==,iv:KiVkOFD4Dk4U4TAqPtYs4liiEitE4EG1niLqhBXet0k=,tag:c13W2/lc3NdovjXKXVoClw==,type:str]
+                - ENC[AES256_GCM,data:faMANfoelVsBE+V2ec6LL8bc4HDqpiGo2feY6oPgxxL7YQ==,iv:93/hZbTDJro3AgsNMGm6sEjC8EujAHTaKQ9XJFUGdAk=,tag:Y2NF16nbi/4PTMh3HvA+Ag==,type:str]
     alertmanagerSpec:
         # PVC configuration
         storage:
@@ -67,6 +67,10 @@ alertmanager:
                   matchers:
                     - severity =~ "warning|critical"
                   continue: true
+                - receiver: claude-analyzer
+                  matchers:
+                    - alertname = "CPUThrottlingHigh"
+                  continue: true
                 - receiver: ntfy
                   repeat_interval: 6h
                   matchers:
@@ -75,19 +79,19 @@ alertmanager:
             - name: "null"
             - name: claude-analyzer
               webhook_configs:
-                - url: ENC[AES256_GCM,data:d8GeJyPcYcaAxNvAaxw7els9CMADDFQUYIpn+u2z6CKf050uxBn/Nuw5rY37cELsKzg8wc+JZbXCfijEftPJASLjIip7rA==,iv:lYOoCLv60ACtDOwneZ7d1C9UrToATEjHEqO+HLFiSd0=,tag:SrBJ4xiGtGlhrX9Lv/Bn5Q==,type:str]
+                - url: ENC[AES256_GCM,data:q4HlZNPHBZ6rzVbdN5iYRMU9LoA+hg9b7pzJjbK3Tubahr+lWJbuIRCs4lq6nXy8CUHS6vfRTiOLWvO3l3K0jotlIPCFRQ==,iv:4cW/9dga177dYhk2BpWXzyTr74Trw8Ks0K2JMvW2Ees=,tag:WQ7RtWtcqepkNHOmy++xhQ==,type:str]
                   send_resolved: false
                   http_config:
                     authorization:
                         type: Bearers
-                        credentials: ENC[AES256_GCM,data:HKq1pK6ZSCVlKViapzKi4us8w92EEg2ROkYVvwnYRfN1jbhk/2FaAfLkg4IPbMomMv4MyMFXuUUthdkmpPvfDw==,iv:e5jTU/BF3z/XWBevdx6KrbMi4tseyWYAE2MDQnNVWuY=,tag:TV4AErGulpTrfMpUcVasVA==,type:str]
+                        credentials: ENC[AES256_GCM,data:DydvHPIEakwuJBfuKo0YiJJI5+WQlf/0KN6Ads0I5FOalIBGjJvg3jrQ8/mOGVOKVeLK+bxvEMyE3j1++NFouw==,iv:EogGAtoyRp4H2w8v1WIR3/J9Lpdvqj17CvHWOJlwLqQ=,tag:9XecSrubB7ywrkZ02noLeA==,type:str]
             - name: ntfy
               webhook_configs:
-                - url: ENC[AES256_GCM,data:Vf+Uja/5x4NJd3NZ+M+h5exbqrXg2N4uPbYdb9JQJCAVgbQM26WPAuNJLtsU5CD8XU3+D4wlIaBD2Q==,iv:ECsSN3UwLtgtTkrPYIbORrU3MLnkj4a/V/bTPZmV1X4=,tag:9qEaw56ZUA3CbCaCyRU5cA==,type:str]
+                - url: ENC[AES256_GCM,data:Yx2GQaeNqqFtF3SCTxRhNBntka3MbmXPxK/2ZQx61T7ySbN2DD81CWXTvZR93alNa4WRMHZcjG7KDA==,iv:tYPT/l6p+EtxSYz9SK90fhJaJ3+OXOvG943FB8WDwx8=,tag:Va3HYtXMpAn8kifhz7/RPQ==,type:str]
                   http_config:
                     basic_auth:
-                        username: ENC[AES256_GCM,data:6rGqVCHAme3BO50ToqEH3GXmLKmwoYQO,iv:gfQySuIDF9o94QzwDJSHgJKG79G99MK7nZiDrhm1wzA=,tag:XAx9UJuCRbfL2NHCOdYFkg==,type:str]
-                        password: ENC[AES256_GCM,data:JwKi+WiVCUweLdEUBWXKfqw8WgNZ7/PR,iv:2z5lyp+XDRbHmDg+MRzOHsY3djcv2/5DcJuE/KrlOA4=,tag:hRJCNns7Xk5v2kJLV1oEUA==,type:str]
+                        username: ENC[AES256_GCM,data:XxO81OJ3ydOEdU6aF/xAE+vQoWaOXyTn,iv:r3Ni5EzD+uQbTMG105+a8YEggzJjEldYqpwW9eEMVi8=,tag:/xVou7+n6lUA7QUA80o8lw==,type:str]
+                        password: ENC[AES256_GCM,data:nvlLwoJh6jPbLhj48jl7w4iWGnpIvnGa,iv:25HmtwI8oJe0rJDRADcQTqc2+NexNUN2U15Awac/xEM=,tag:s6asH6IzCd9cpo1XaBhWSg==,type:str]
         templates:
             - /etc/alertmanager/config/*.tmpl
 prometheus:
@@ -172,7 +176,7 @@ grafana:
     deploymentStrategy:
         type: Recreate
     # Admin user password
-    adminPassword: ENC[AES256_GCM,data:1uNgICGk87uk9jcWZwhpGY5WD6UHr292F+MsQsoe3CU=,iv:QqHv/4wBSmPZd79YrP/xVcbCSmoc0UHcCb5RAnV4knE=,tag:qhwqoCvYVqFcrjpOikEboA==,type:str]
+    adminPassword: ENC[AES256_GCM,data:S7Cf1U/hXx55c/jyOOR4yN6f6IAKqvyF0q6p4QALqLw=,iv:JTfoT3L2vBoEL7GeTIA7JeKE2AYUO5l6A6emvhKeNG8=,tag:0b+izyEzl2BbUKKbnkb69A==,type:str]
     sidecar:
         dashboards:
             provider:
@@ -229,7 +233,7 @@ grafana:
                   type: loki
                   access: proxy
                   basicAuth: false
-                  url: ENC[AES256_GCM,data:kp04pamvW+yGsIcnMxeKNVbQo86ELQx8trG3QcqjIAFuWg==,iv:g6fJHukfF64HQ+B4grK8zS9Sbm4ozQ5fEBgOyUzoVlU=,tag:lgKl4B5+WHCH4xs5IbQ3Uw==,type:str]
+                  url: ENC[AES256_GCM,data:MEV3OmaRcK+UAAMBQGCilLAvo3AiUev8fgKf6Zshd8dsVg==,iv:fDPIIN9Cs78Fla2kuOOQLMkzTlV0dE66J2MckB/z5yM=,tag:r7Ofh6K3el39d26c0sbsYw==,type:str]
                   jsonData:
                     maxLines: 1000
     # Required for the dashboards configuration
@@ -302,18 +306,18 @@ grafana:
             oauth_allow_insecure_email_lookup: true
             disable_login_form: true
         server:
-            root_url: ENC[AES256_GCM,data:X8vA7Qm1CwNHkealUZzC/wRKV0J1hv3ZmzUGS+kUVUbCXdh6YQ==,iv:bQZzICnt8Rld00GzHVjyNGzaQHuRzo3LrHI9ed8Z5gU=,tag:nzzbin7R5j7wlF68ME+7rg==,type:str]
+            root_url: ENC[AES256_GCM,data:vA1Ij64CEjTIk7Ay6r0Bu21/JAcbW/g/s6Vx3qFuzdd6H+0xtg==,iv:fjKzx5zT2upUtDcPL81BRHEvfEuE17gKAWWZP6Y4w0c=,tag:DA9bXUVgDedGAFjJ8eKk3Q==,type:str]
         auth.generic_oauth:
             enabled: true
             name: Authelia
             icon: signin
             client_id: grafana
-            client_secret: ENC[AES256_GCM,data:S8PrWseJcqEHMUEESTty4vtqg56suhDeBfjlti5SMt0=,iv:9YuLHgRIvI9KOzJZlym9skBOhNgEQn0sIHoLl4xFHHA=,tag:sFU+4Vw6M+WrLI5xzBIS0Q==,type:str]
+            client_secret: ENC[AES256_GCM,data:sIooYJfp5ZijMbhcSxa82StLdY+l+h5J2yg1CgDW4hs=,iv:0Euy8Sfp4WPVW+i+g+zBFlKrbHLHeCWpgvyOJR/D6xA=,tag:effSNgnNMQp/QRuted8RzQ==,type:str]
             scopes: openid profile email groups
             empty_scopes: false
-            auth_url: ENC[AES256_GCM,data:7sALioNpPNzKwy8Mq58feVvBHeDXw/zp50Af+9HjMi7hfuOlRI5stiY1kIc3R/vEV23jSA==,iv:QHwuzqKeCNyCyaD5VxGL96M+DydyULrZy+npuN+6FDQ=,tag:Z2yRa20UfyFibjEX1RjLTQ==,type:str]
+            auth_url: ENC[AES256_GCM,data:Ja58cRuumRPhhcqZT9g3R6CUWyhalJeIY1/5gpkOElDNYWqL+N8QxZKuhTPBJFO+MYQ6IQ==,iv:qj/mIohcmnHcaG9/SLLORwc6ka4jn3B01iTeghfLngY=,tag:Q9VyREjj/DBktcp35I0pAA==,type:str]
             token_url: https://auth.k8s.neese-web.de/api/oidc/token
-            api_url: ENC[AES256_GCM,data:nBANyoM/r4USZTav7SP0PIf66X3ZrdwDgmtxTAH1zkAtIJELSR8KQ4t/zW/APF8=,iv:wpzKi0XNO98NxpAGJqSgRygcHHV6ewMlOmHMSDSzIsk=,tag:hRhQICRIzsF71Z+j0+l1QA==,type:str]
+            api_url: ENC[AES256_GCM,data:q8miHqBhy+2VD8wPEsU3p0InoQSC+HR/97HZFSHmfzszNajsXeBHBIc8W2333SA=,iv:sGZyebCssvGuAITpgTIHUtwYNnmE7lvt6Vvgw/mecYA=,tag:F5PgIYkFpPK0K+FHFi8uNg==,type:str]
             login_attribute_path: preferred_username
             groups_attribute_path: groups
             role_attribute_path: contains(groups[*], 'GrafanaAdmin') && 'GrafanaAdmin' || contains(groups[*], 'admin') && 'Admin' || contains(groups[*], 'editor') && 'Editor' || contains(groups[*], 'viewer') && 'Viewer'
@@ -342,22 +346,22 @@ sops:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBoSUlOdjU1cTlRZnhDM1Jn
-            dHlpTFNCdEFGRERoKy9HRVJBdit3NEZmRkQ0ClZBV01xU1hmbmlUUU9rbTdTaVY0
-            cEZRYktLYTh5ejlac2FtS3lqTHp5UUkKLS0tIGt2WWZsbnIyTnB2M2lCSXd4akpY
-            VUpBdTIxVVpUZmxNajFYRmdlcUhvWWMKK+rJkvML/aG9aXWtPI56AWgEAeXrq/wC
-            MLBKm/ZHdB1vQD0o+NEe0bXL8q3JaU5EDgXIWcC5VwiYaG1D1VoVyQ==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBSU0VWZFNoRlV2ZExqOXFq
+            QjQydkpOOHFpbjY2VXZpdWtGRHUyL0drTDI4CmU0Wm5JOThDUk1PZlNnejRZeEgx
+            ZEN3MnhyRjd1NmdGcnNTWFJYd0l3dW8KLS0tIEQ1S2VmVDl5Zkx1S0Fqc2RmS3Nl
+            TWJ0Vllzam5BUUFuSEx0dzhvZkJRT3cKzrlCncC4PXZUW5urH1xsrZsE6deMtzE6
+            ww7qsDComEBvhn/h7+1ucK4K0+WNcCkUytf8NWZMtLpcRTeiL9P+/Q==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBwbXpMZGlHaHhlakVXTUtS
-            cUtqQythQjdHMngrQmVnNzFtalBrNUlZVzI4CmM4akNlcEQ2bi9laTNhMFBEYldm
-            NWcyZVZ6d3phRjFxc1YvOHdJOVY0ajAKLS0tIDhaanlsaDMwTHB5UFJLdHM0QmpF
-            ODJ0b2xDNnUyQktUdmlpcXJYNEwzWEUKmQ8eznGPOFHleW5tF+f4laSDfTcOif1p
-            uVTZzfmeT3dPL1GKAOQupKe7OgSRmK3dwpxYwXgpxoscv5Md2M5BWQ==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSByaGIzZ3ZSZ3p6UExDSHlO
+            VGV3UlVyeGw4QVgrRmp4Q1pwQ1VVdWtrSVZVCnlReG52NURTdndnK0M0WFRzaVg3
+            UG9ncXpHNExqNXpDTXdWdjdJM1BkdGsKLS0tIE9sME9EYTZDZ2R1cDlRRThxMDdS
+            TFBsR0xGakYrWFkreklhTEpXempwVE0KTLR+E61eMNJ6slximHjDi4SDl24EhFir
+            lkhoXoMBjkRzYQWgXMP9d7LsHE5eEgtNHUvR6xG2LoxgGNVlWXpF8w==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2026-04-19T15:59:50Z"
-    mac: ENC[AES256_GCM,data:sBAh9CnojrHgUAQJ4KrkOVKUxun5jFrDCejQ+apke73WW74iBRsOF52tTk+sgjwfQskrdF2vw8k118eoPj/BoIZOIkuBX8bhV6ChkJ339LKBc/n1LBdj0sKiz6ImNP3FwdXetU1XzST4VVICcE4NhcVWV4KmH2UgzUgzjsO8Nss=,iv:rYCjpgiATYGrg7CPF3/deAYTHytDCl29SZEdEpe4ECA=,tag:exXEdcZliU55ZKHEnGf0wQ==,type:str]
+    lastmodified: "2026-04-20T21:22:43Z"
+    mac: ENC[AES256_GCM,data:xBoLS9IVFyFuu3I1xGMDMNtG/bdWSFx2VQo+KbGh/VDXzdsQv9KJqzcUs784MbyaYFqGE8OA35f375D2jje0IK3sZSxM5X3ryN3ympZQd1oZMJFGN/xWSpe9FFYYSA0/yeiIahNu262AzURZp5AJQpXSnJporTHHWaHWwtvkGkQ=,iv:8J4/fTPIPa934HawiD24vI7ZeLA+28r/L9OngiMDHPE=,tag:lCc9DyCr6axneyrZjdWbAw==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
     version: 3.12.2
