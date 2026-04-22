@@ -61,6 +61,13 @@
       ],
       automerge: false,
     },
+    {
+      // Docker Hub tag listing returns 401; image is not tracked by Renovate.
+      matchPackageNames: [
+        'madic/fritzbox_exporter',
+      ],
+      enabled: false,
+    },
   ],
   customManagers: [
     {
@@ -98,5 +105,10 @@
     enabled: true,
   },
   minimumReleaseAge: '5 days',
+  // Apply the age check only when the datasource provides a release timestamp.
+  // Without this, Docker images that don't expose per-tag timestamps (e.g. many
+  // GHCR-hosted images) get stuck with pendingChecks=true and are filtered out
+  // by internalChecksFilter: 'strict', so no update PR is ever opened.
+  minimumReleaseAgeBehaviour: 'timestamp-optional',
   internalChecksFilter: 'strict',
 }
