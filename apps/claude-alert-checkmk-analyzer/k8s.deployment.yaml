@@ -30,7 +30,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: analyzer
-          image: ghcr.io/madic-creates/claude-alert-checkmk-analyzer:latest@sha256:1e5e8f17ded80ee2a396c63b4128935d7a4f9b6328ef76c56aa975b29e4575c4
+          image: ghcr.io/madic-creates/claude-alert-checkmk-analyzer:latest@sha256:f6c9a6793b00fb85fb5848497961e24888ddb1fe3dd9373ed11c9a0674123de3
           ports:
             - containerPort: 8080
               name: http
