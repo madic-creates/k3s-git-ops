@@ -98,15 +98,15 @@ replacements:
       - select:
           kind: Application
         reject:
-          - name: 50-codeserver
+          - name: 51-codeserver
         fieldPaths:
           - spec.source.repoURL
-      # 50-codeserver is a multi-source Application; only the $values source
+      # 51-codeserver is a multi-source Application; only the $values source
       # (index 1) points at this repo. The chart source (index 0) stays on the
       # upstream github.com/coder/code-server URL.
       - select:
           kind: Application
-          name: 50-codeserver
+          name: 51-codeserver
         fieldPaths:
           - spec.sources.1.repoURL
 
