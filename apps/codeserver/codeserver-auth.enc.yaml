@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: codeserver-auth
+    namespace: codeserver
+type: Opaque
+stringData:
+    password: ENC[AES256_GCM,data:QiiGgTdPuuLaQ0JXd/eS2n9iNziwbDXourKVNAGG2L0=,iv:hx1Nd4B2RlWtv5XGTvMasxS1ZB9aLr5aFaHbh2/CWqA=,tag:hIjdUY56Iq/vrWGNOJxdqw==,type:str]
+sops:
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBaUVIyMWxOdWdDaWNYZlo1
+            WUJ0bGtSRzBBRU5jRXlXUDBsRVZrZWR0c1FZCkRRQXJxNDRIUEpHZjhUalFVMzVr
+            WHFwZytZZit2ZjBiZzVmdUVrUWh2eDAKLS0tIEJoRHZQTUNQQVpkMkhJeWJ3WXdm
+            aERDWk9NOERONUZtc0dweXBwSEd2V1kKk9VPsXq0ITLndkWfpEtQZkaZRS/uN1em
+            yIm2Yl/ZwpBRvBTBHGGaTUHFgS0qoy5db9Df1Ra0Qn5R91etvwuIOA==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBsY0FUWlBUZkRqYjF2Ymtq
+            TUlJa0xjR05kVXpTZytjTmJUUktVUU1KU1FJClhsSnk1aGJzaHNpYTQ2d1BMUzg1
+            VDRZeVFrak0ybm1VQTZvNm1oKzhVcWMKLS0tIFpWOHgyVUNmdFU2VjFYZEVIcHBQ
+            QzFXMURickZZakE4aURYbTV3by9PNDQK/bIwOo17wSWZ0/xiPhpYbgf3eFsLRglY
+            dEDr4ODD+AhoEvOSrj1BEqBKROjtmvyZrIGy+K/h3CGJMIxy+9l78g==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2026-04-24T13:11:39Z"
+    mac: ENC[AES256_GCM,data:JvQkFs9ROY70rqRfzE1gl/qNzGtulA4jdx2PCrPSAUCYBfqCus4ODAYGqBbM8VidfHhS+dKfDtAzQX5GJOIr5g7eohY7WIxayaaM0pfEAZgliJAQTTX1AGLRszXHuieR7Z/k3PNr/YAzOFWIPHBIy32UJl1570uoyLG1fOVBFx4=,iv:bJMZ3jwXYuhsaGAFRw3atJtwfCSE+IRaScOeymO2Udc=,tag:1vD7GgPJirX0/FLBaerNaQ==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
+    version: 3.12.2

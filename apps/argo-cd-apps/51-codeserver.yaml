@@ -1,0 +1,37 @@
+---
+# code-server Helm chart, pulled directly from the upstream git repo.
+# Chart version is tied to the coder/code-server release tag via targetRevision.
+# Values come from this repo via the `$values` multi-source reference.
+# Namespace, network policies, auth Secret and Ingress are deployed by
+# the sibling Application `50-codeserver-resources`.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: 50-codeserver
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "51"
+spec:
+  project: default
+  sources:
+    - repoURL: https://github.com/coder/code-server.git
+      targetRevision: v4.117.0
+      path: ci/helm-chart
+      helm:
+        releaseName: codeserver
+        valueFiles:
+          - $values/apps/codeserver/helm-values.yaml
+    - repoURL: "example.com"
+      targetRevision: HEAD
+      ref: values
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: codeserver
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      prune: true
+      selfHeal: true

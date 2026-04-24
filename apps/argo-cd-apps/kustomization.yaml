@@ -38,8 +38,9 @@ resources:
   #- 35-minecraft.yaml
   - 40-paperless-gpt.yaml
   - 40-paperless-ngx.yaml
-  #- 50-code-server.yaml
+  - 50-codeserver-resources.yaml
   - 50-omnitools.yaml
+  - 51-codeserver.yaml
   - 55-claude-alert-checkmk-analyzer.yaml
   - 55-claude-alert-kubernetes-analyzer.yaml
   - 60-semaphore.yaml
@@ -96,8 +97,18 @@ replacements:
     targets:
       - select:
           kind: Application
+        reject:
+          - name: 50-codeserver
         fieldPaths:
           - spec.source.repoURL
+      # 50-codeserver is a multi-source Application; only the $values source
+      # (index 1) points at this repo. The chart source (index 0) stays on the
+      # upstream github.com/coder/code-server URL.
+      - select:
+          kind: Application
+          name: 50-codeserver
+        fieldPaths:
+          - spec.sources.1.repoURL
 
 generators:
   - kustomize-secret-generator.yaml

@@ -1,0 +1,18 @@
+---
+# Resources for code-server.
+# The Helm chart itself is deployed by the separate ArgoCD Application
+# `50-codeserver` (multi-source, pulled from github.com/coder/code-server).
+# This kustomization provides the namespace, network policies, auth secret
+# and ingress that live alongside the chart.
+namespace: codeserver
+
+resources:
+  - namespace.yaml
+  - k8s.np.codeserver-default-deny.yaml
+  - k8s.np.codeserver.yaml
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "50"
+
+generators:
+  - kustomize-secret-generator.yaml

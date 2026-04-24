@@ -1,0 +1,28 @@
+---
+# Kubernetes resources that live next to the upstream code-server Helm chart:
+# namespace, default-deny + allow network policies, encrypted auth secret,
+# encrypted ingress. The chart itself is deployed by `50-codeserver`.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: 50-codeserver-resources
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "50"
+spec:
+  project: default
+  source:
+    repoURL: "example.com"
+    path: apps/codeserver
+    targetRevision: HEAD
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: codeserver
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      prune: true
+      selfHeal: true

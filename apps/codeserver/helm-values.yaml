@@ -1,0 +1,40 @@
+---
+# code-server Helm chart values
+# Upstream chart: https://github.com/coder/code-server/tree/main/ci/helm-chart
+# Docs: https://coder.com/docs/code-server/helm
+
+# Password is sourced from an external secret (see codeserver-secrets.enc.yaml)
+# Secret must contain key `password`
+existingSecret: codeserver-auth
+
+fullnameOverride: codeserver
+
+serviceAccount:
+  create: true
+  name: codeserver
+
+podSecurityContext:
+  fsGroup: 1000
+
+extraArgs:
+  - --disable-telemetry
+  - --disable-update-check
+
+extraVars:
+  - name: TZ
+    value: Europe/Berlin
+  - name: DOCKER_USER
+    value: coder
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 512Mi
+  limits:
+    memory: 2Gi
+
+persistence:
+  enabled: true
+  storageClass: longhorn
+  accessMode: ReadWriteOnce
+  size: 10Gi
