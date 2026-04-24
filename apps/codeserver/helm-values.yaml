@@ -81,8 +81,8 @@ extraInitContainers: |
       - -c
       - |
         set -eu
-        install -m 0600 /mnt/ssh-secret/id_ed25519 /mnt/ssh-ready/id_ed25519
-        install -m 0644 /mnt/ssh-secret/known_hosts /mnt/ssh-ready/known_hosts
+        install -m 0600 /mnt/ssh-secret/id_ed25519 /opt/codeserver-ssh/id_ed25519
+        install -m 0644 /mnt/ssh-secret/known_hosts /opt/codeserver-ssh/known_hosts
     securityContext:
       runAsUser: 1000
       runAsGroup: 1000
@@ -91,4 +91,4 @@ extraInitContainers: |
         mountPath: /mnt/ssh-secret
         readOnly: true
       - name: ssh-ready
-        mountPath: /mnt/ssh-ready
+        mountPath: /opt/codeserver-ssh
