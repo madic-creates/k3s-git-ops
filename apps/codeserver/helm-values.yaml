@@ -3,10 +3,9 @@
 # Upstream chart: https://github.com/coder/code-server/tree/main/ci/helm-chart
 # Docs: https://coder.com/docs/code-server/helm
 
-# Password is sourced from an external secret (see codeserver-secrets.enc.yaml)
-# Secret must contain key `password`
-existingSecret: codeserver-auth
-
+# Auth disabled — code-server is fronted by Authelia via the Ingress.
+# The chart still generates a random PASSWORD secret, but `--auth none`
+# makes code-server ignore it.
 fullnameOverride: codeserver
 
 serviceAccount:
@@ -17,6 +16,8 @@ podSecurityContext:
   fsGroup: 1000
 
 extraArgs:
+  - --auth
+  - none
   - --disable-telemetry
   - --disable-update-check
 
