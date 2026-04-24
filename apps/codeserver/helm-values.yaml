@@ -3,6 +3,11 @@
 # Upstream chart: https://github.com/coder/code-server/tree/main/ci/helm-chart
 # Docs: https://coder.com/docs/code-server/helm
 
+image:
+  repository: ghcr.io/madic-creates/code-server-toolbox
+  tag: 'latest@sha256:f65facb867925a32ce8a5146df1ab14ef07bf4f6e9514177e7646dbd37fff6a7'
+  pullPolicy: IfNotPresent
+
 # Auth disabled — code-server is fronted by Authelia via the Ingress.
 # The chart still generates a random PASSWORD secret, but `--auth none`
 # makes code-server ignore it.

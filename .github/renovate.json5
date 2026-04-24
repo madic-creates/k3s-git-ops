@@ -100,6 +100,19 @@
       ],
       datasourceTemplate: 'docker',
     },
+    // Helm values files that pin a floating tag (e.g. `latest`) to a digest.
+    // Example match: `tag: 'latest@sha256:abc...'` in apps/*/helm-values.yaml.
+    // `currentValue` stays at `latest`, Renovate updates `currentDigest`.
+    {
+      customType: 'regex',
+      managerFilePatterns: [
+        '/apps/.+/helm-values\\.yaml$/',
+      ],
+      matchStrings: [
+        'repository:\\s*(?<depName>\\S+)\\s+(?:#[^\\n]*\\s+)?tag:\\s*[\'"]?(?<currentValue>[^@\'"\\s]+)(?:@(?<currentDigest>sha256:[a-f0-9]+))?[\'"]?',
+      ],
+      datasourceTemplate: 'docker',
+    },
   ],
   'pre-commit': {
     enabled: true,
