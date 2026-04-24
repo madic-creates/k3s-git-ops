@@ -7,7 +7,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: 50-codeserver
+  name: 51-codeserver
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
