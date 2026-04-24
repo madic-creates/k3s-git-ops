@@ -14,7 +14,11 @@ image:
 fullnameOverride: codeserver
 
 serviceAccount:
-  create: true
+  # The ServiceAccount is provisioned by the resources Application
+  # (apps/codeserver/k8s.serviceaccount.yaml) with
+  # automountServiceAccountToken: false — code-server doesn't talk to the k8s
+  # API, so the default token is pure attack surface.
+  create: false
   name: codeserver
 
 podSecurityContext:

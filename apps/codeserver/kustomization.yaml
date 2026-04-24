@@ -8,6 +8,7 @@ namespace: codeserver
 
 resources:
   - namespace.yaml
+  - k8s.serviceaccount.yaml
   - k8s.np.codeserver-default-deny.yaml
   - k8s.np.codeserver.yaml
 
