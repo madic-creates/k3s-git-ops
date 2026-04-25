@@ -1,0 +1,150 @@
+---
+# Pihole DNS server: allow DNS queries from all cluster pods and web UI from Traefik.
+# This policy also covers pihole-02 pods since they share the dns namespace.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: pihole
+  namespace: dns
+spec:
+  endpointSelector:
+    matchLabels:
+      app: pihole
+  ingress:
+  # Allow DNS queries (UDP/TCP port 53) from any pod in the cluster
+  - fromEndpoints:
+    - matchLabels: {}
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow Traefik to reach the pihole web UI
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: traefik
+        k8s:io.kubernetes.pod.namespace: kube-system
+    toPorts:
+    - ports:
+      - port: "80"
+        protocol: TCP
+  # Allow cert-manager to reach cloudflared DoH (dns01 recursive nameserver)
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: cert-manager
+    toPorts:
+    - ports:
+      - port: "5053"
+        protocol: UDP
+  # Allow pihole-exporter to scrape the pihole API
+  - fromEndpoints:
+    - matchLabels:
+        app: pihole-exporter
+        k8s:io.kubernetes.pod.namespace: dns
+    toPorts:
+    - ports:
+      - port: "80"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow cloudflared (sidecar) to reach Cloudflare DoH resolvers
+  - toEntities:
+    - "world"
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+  # Allow pihole instances to sync with each other (nebula-sync HTTP API)
+  - toEndpoints:
+    - matchLabels:
+        app: pihole
+    toPorts:
+    - ports:
+      - port: "80"
+        protocol: TCP
+---
+# Pihole-exporter: scrapes pihole metrics and exposes them to Prometheus
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: pihole-exporter
+  namespace: dns
+spec:
+  endpointSelector:
+    matchLabels:
+      app: pihole-exporter
+  ingress:
+  # Allow Prometheus to scrape metrics
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: monitoring
+        k8s:app.kubernetes.io/name: prometheus
+    toPorts:
+    - ports:
+      - port: "9617"
+        protocol: TCP
+  egress:
+  # Allow pihole-exporter to reach the pihole web API
+  - toEndpoints:
+    - matchLabels:
+        app: pihole
+    toPorts:
+    - ports:
+      - port: "80"
+        protocol: TCP
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+---
+# Nebula-sync: syncs pihole configuration between pihole instances
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: nebula-sync
+  namespace: dns
+spec:
+  endpointSelector:
+    matchLabels:
+      app: nebula-sync
+  egress:
+  # Allow nebula-sync to reach both pihole instances via HTTP API
+  - toEndpoints:
+    - matchLabels:
+        app: pihole
+    toPorts:
+    - ports:
+      - port: "80"
+        protocol: TCP
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP

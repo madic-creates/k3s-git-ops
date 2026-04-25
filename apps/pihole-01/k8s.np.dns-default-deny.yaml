@@ -1,0 +1,13 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: dns-default-deny
+  namespace: dns
+spec:
+  endpointSelector: {}
+  # Default deny all ingress and egress for every pod in the dns namespace
+  ingress:
+    - {}
+  egress:
+    - {}
