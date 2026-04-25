@@ -101,6 +101,7 @@ replacements:
           kind: Application
         reject:
           - name: 51-codeserver
+          - name: 13-pihole03
         fieldPaths:
           - spec.source.repoURL
       # 51-codeserver is a multi-source Application; only the $values source
@@ -109,6 +110,14 @@ replacements:
       - select:
           kind: Application
           name: 51-codeserver
+        fieldPaths:
+          - spec.sources.1.repoURL
+      # 13-pihole03 is a multi-source Application; only the $values source
+      # (index 1) points at this repo. The chart source (index 0) stays on the
+      # upstream github.com/madic-creates/pihole-kubernetes Git fork.
+      - select:
+          kind: Application
+          name: 13-pihole03
         fieldPaths:
           - spec.sources.1.repoURL
 
