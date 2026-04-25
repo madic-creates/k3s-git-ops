@@ -1,0 +1,32 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: 13-pihole03
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "51"
+spec:
+  project: default
+  sources:
+    - repoURL: https://github.com/madic-creates/pihole-kubernetes.git
+      targetRevision: HEAD
+      path: charts/pihole
+      helm:
+        releaseName: pihole-03
+        valueFiles:
+          - $values/apps/pihole-03/helm-values.enc.yaml
+    - repoURL: "example.com"
+      targetRevision: HEAD
+      ref: values
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: dns
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      prune: true
+      selfHeal: true

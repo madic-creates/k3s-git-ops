@@ -1,0 +1,185 @@
+image:
+    repository: ghcr.io/pi-hole/pihole
+    #tag: 2025.11.0
+    pullPolicy: IfNotPresent
+revisionHistoryLimit: 2
+serviceDns:
+    mixedService: true
+    annotations:
+        lbipam.cilium.io/ips: 192.168.1.238
+    # type LoadBalancer with externalTrafficPolicy Local
+    # requires 192.168.1.232 on the same node as the pod
+    type: LoadBalancer
+    #externalTrafficPolicy: Cluster
+    #type: ClusterIP
+serviceDhcp:
+    enabled: false
+virtualHost: ENC[AES256_GCM,data:1IW2GXwusGUAGfYpyC77a0/Yn/3AKscKB67s9ETd,iv:FHRkNLEEPaV/AEZdPK3URrcVdXGir+1gR5PVxZrHFPg=,tag:JkL5rM7QrUAELdBQ8jPboQ==,type:str]
+ingress:
+    enabled: true
+    ingressClassName: traefik
+    hosts:
+        - ENC[AES256_GCM,data:QBes7PYlbeQUYuIorJsqjqq+Z0Mauhybm5jsTu5g,iv:uVEadZMPIuBQUB2GWBtuguiZFdKWtQxvGNAbIMxss5g=,tag:8UfbfB70ckqlvraqkpyscw==,type:str]
+    tls:
+        - secretName: wildcard-cloudflare-production-02
+          hosts:
+            - ENC[AES256_GCM,data:hJCMP99BjfESiM3b5AlI1c/LvhyqEJOcFbBftdGN,iv:Pfoj9s3YxOu2i+xhL2ZsuXXtni4/dlsLq7Bn2unOEeA=,tag:lUOdz/lrNSXT1psY1B16xw==,type:str]
+    annotations:
+        traefik.ingress.kubernetes.io/router.entrypoints: web239, websecure239
+        traefik.ingress.kubernetes.io/router.tls: "true"
+        traefik.ingress.kubernetes.io/router.middlewares: authelia-forwardauth-authelia@kubernetescrd, traefik-root-to-admin@kubernetescrd
+resources:
+    limits:
+        cpu: "1"
+        memory: 768Mi
+    requests:
+        cpu: 100m
+        memory: 128Mi
+extraEnvVars:
+    TZ: Europe/Berlin
+    FTLCONF_dns_bogusPriv: true
+    FTLCONF_dns_domainNeeded: true
+    FTLCONF_dns_domain_name: neese-web.de
+    FTLCONF_webserver_interface_boxed: false
+DNS1: 127.0.0.1:5053
+DNS2: ""
+# Not required because secured via authelia oidc
+admin:
+    enabled: false
+doh:
+    enabled: true
+    config: |
+        listen_addresses = ['0.0.0.0:5053']
+        server_names = ['nextdns-735278']
+        require_dnssec = false
+        require_nolog = true
+        require_nofilter = true
+        dnscrypt_servers = true
+        doh_servers = true
+        odoh_servers = false
+        ipv6_servers = false
+        bootstrap_resolvers = ['9.9.9.9:53', '1.1.1.1:53']
+        timeout = 5000
+        keepalive = 30
+        log_level = 2
+        use_syslog = false
+        cache = true
+        cache_size = 4096
+        cache_min_ttl = 2400
+        cache_max_ttl = 86400
+        cache_neg_min_ttl = 60
+        cache_neg_max_ttl = 600
+
+        [sources]
+
+        [static]
+          [static.'nextdns-735278']
+            # https://dns.nextdns.io/735278/pihole03
+            # https://dnscrypt.info/stamps/
+            stamp = 'sdns://AgcAAAAAAAAAAAAOZG5zLm5leHRkbnMuaW8QLzczNTI3OC9waWhvbGUwMw'
+#podDnsConfig:
+#    enabled: true
+#    policy: None
+#    nameservers:
+#        - 1.1.1.1
+#        - 127.0.0.1
+capabilities:
+    add:
+        - NET_ADMIN
+        - CAP_SYS_NICE
+persistentVolumeClaim:
+    enabled: true
+    size: 1Gi
+    #existingClaim: pihole-02
+dnsmasq:
+    customDnsEntries:
+        - ENC[AES256_GCM,data:SwOwodYfUhmtv4LzuZXS4Rf5dLt2D6S4N46/SBJZsCKN4PY=,iv:6le/A/WLjzREBd91P3wJZ4pP4NGC41KC7XeMgi/SE20=,tag:nzDlBEbS7slPZLTGH9d2ew==,type:str]
+        - ENC[AES256_GCM,data:YJAz6yG+8fjGWTlIJu+6BRUL+IGZ2u+BbGV2FV8=,iv:vSTiqd/CWq/DmitOF2QyEP9Z6ZnbO/uHpMNSoL1Os8I=,tag:vKv4Sfotsi24JW9NP2Yb9Q==,type:comment]
+        - ENC[AES256_GCM,data:MfJsTV/ZZzOueS/5s/gLaB7FrWsQQ5WnByT8SvHytFcO6VCk2CfQTQ==,iv:nSJHaJG5A4bwIz0W+rogS5ase1U4jkZ0py1QIgh1W/s=,tag:rRCwRyFY2GsErnLHU2IMQA==,type:str]
+        - ENC[AES256_GCM,data:92c9Vzs4WJMxavz7mEhmdo1etSQMuwi9y3k6w5CreAYK,iv:3cGd5zqZiO/DuI664IauC+2H889eq4+H0+/PbspNUGU=,tag:9kc0tZ9TFh4DpWwyz/ugTQ==,type:comment]
+        - ENC[AES256_GCM,data:8SlXROfGfAblT9XGRc34zwDXV0LiInrFHAs+XzePp5GaFnkOuQ3wiBHHPxbv,iv:Mh618H+kcVAI4uOerK1zFpHxw20SK0eWx+lbJp7iXb0=,tag:yGa4ZimflrcMOJqJfINqfA==,type:str]
+        - ENC[AES256_GCM,data:9xaYZNGGSOCkezvh9DcdITRpoxdFYIKXHIF3moNEtxaJ3yvPJ3A=,iv:xpJJ9T3tCCjftCyQYfrGQnaAgV6S7hjN/kIfrtGnJVk=,tag:p0nDIqpWTYNa6kLfLrJX/Q==,type:comment]
+        - ENC[AES256_GCM,data:ND45KFgW4NZlPA/Jmmi1G9yFY28R7YA9gyFFPa/DO+EJaiNACOmvLNXmuD+OvHmDAA==,iv:t5m9mzybfoe0MpXGkUPS4f5qGaGEKyuiWwTJZnkwHmo=,tag:VXkcb/TpSA+c0xVkQm1Ywg==,type:comment]
+        - ENC[AES256_GCM,data:m//B5+UtUm1dAk9U/ZctWYJsUxmLByEcutd7j/VgJ2isziDe3llOSGfI+z7jk5U2uS7tN9bQSB8=,iv:1QKC7Ygw5TMNbM7Jk7fxmmXIDdaFJK+2suvBgpnwmQ4=,tag:K+92nXLDQwlsBMVKWv99eg==,type:comment]
+        - ENC[AES256_GCM,data:1yO1hNUIrNzQ4u8WwfT6MODHLBE7uxsm44V3tMZ7rbN3DxXiK/fVWrk=,iv:qvgoY2Jz1k7oDsZNH5cVEVJtduTliylzEfqZdr44iSY=,tag:fG9iO6IGfFghIFfrmS00UQ==,type:comment]
+        - ENC[AES256_GCM,data:vROHZB+zkoW101TwAuwTodHj17wlWLnXHqI0pTq9Jz+gWBiZ0qXzgt8iGop7tf3j,iv:UkO4lhCaqyKuLhPjQDOOhMO4cUig+Epu9Bxi8IQThsA=,tag:uI5XmmI5rrrQWBXU5VyUkg==,type:comment]
+        - ENC[AES256_GCM,data:BDuqFFihrBqS9EMMAByv6n7g0DvEewlqur8+gWFAQQUJkqqmz+BJ,iv:6svtJskdE9xGvtXxAbuXhAA75zrkMvwaZuPIolo2xLU=,tag:VVQtVUxxoWILSUyZwHtPkg==,type:comment]
+        - ENC[AES256_GCM,data:dOwYfqP+fQttN/ebqS57EiIwMuhf5z7/HGJo2XzS77N+Doh6NT6mSlp+YdMjcA==,iv:aAB6VBfHryhCyKlsPe9pHht0oZddnn9jAX4N8qWDce4=,tag:xKUd5Yi+OzomsRVl/ul89g==,type:comment]
+        - ENC[AES256_GCM,data:bfGCq2zqOWWkPnNHwt5BSJK52nRHg3rXesvBJmwYRuQSwSRQcQYapKc6vj9+XErg,iv:znzZwrd1fSU4m+0mNfrkusvgKpZvxWVzzwxxZkxCO84=,tag:a4TsPFYyz84ADmtRlzrW4w==,type:comment]
+        - ENC[AES256_GCM,data:uqjlib/qZTgj+Qhh+5uwHJSVf1c6bzQhvj660qPxPqsymlu/N13zWNOEVW+V2ytQlR6nXn5RzQ==,iv:uWGvDeQNzy1WOzwxpdbK38sO77A2RksjjdrSb6mQtGk=,tag:Cx7pkXD8HlafAI6VYe+K8Q==,type:comment]
+        - ENC[AES256_GCM,data:aFkciewFDkvBpxy8Y6ststOu0pCsq6J4rrBk6bP3nIo411H9w4+RW6p9BpAMlkCKhxk=,iv:xTC7YYpXnFEUOEBh9RhsngRJ5YsMfoDeLdkkdUzMCUM=,tag:xUlBdL/l9u4Gjii1G+5CAw==,type:comment]
+        - ENC[AES256_GCM,data:/0uw8M4Zgg8LjI5Za/7BhQkOZ87blskJGrH/Pd1tKnhM1sOoRYgS/l4+iQX8RQuadO0cMllYeyvL,iv:Jr3fe9DJ923pFIRQay7yyeuCHE132HKnP5nJgO4LUA4=,tag:OvtNsoIxik5dMXjEz3I47Q==,type:comment]
+    customSettings:
+        - dhcp-option=252,"\n"
+        - dhcp-option=vendor:MSFT,2,1i
+        # DNS
+        #- dhcp-option=6,192.168.1.232,192.168.1.1
+        - dhcp-option=6,192.168.1.232
+        # NTP
+        - dhcp-option=42,192.168.1.1
+        - dhcp-range=::,ra-names
+        - server=/geekbundle.org/192.168.1.1
+        - ptr-record=1.1.168.192.in-addr.arpa.,"despair"
+        # TFTP Boot
+        - dhcp-match=set:ipxe,175
+        - dhcp-boot=tag:!ipxe,ipxe.pxe,dns01,192.168.1.45
+        - dhcp-match=set:efi-x86_64,option:client-arch,7
+        - dhcp-boot=tag:efi-x86_64,ipxe.efi,dns01,192.168.1.45
+        - dhcp-boot=http://192.168.1.45:8043/boot.ipxe
+        # DHCP Reservation with different dns server
+        - dhcp-option=net:customdns,6,9.9.9.9,1.1.1.1
+        - dhcp-host=net:customdns,EC:79:49:51:64:16,192.168.1.187,ipl06002-lan
+        - dhcp-host=net:customdns,F4:4E:E3:2C:C2:B6,192.168.1.56,ipl06002-wlan
+        # DHCP Reservation with unrestricted youtube dns server
+        - dhcp-option=net:youtubedns,6,192.168.1.234
+        - dhcp-host=net:youtubedns,AC:3E:B1:A6:AF:D6,Pixel-7-Pro
+        - dhcp-host=net:youtubedns,E0:80:6B:37:56:83,Redmi-Note-11
+        - dhcp-host=net:youtubedns,74:58:F3:E7:3A:04,Fire-Cube-lan
+        - dhcp-host=net:youtubedns,48:43:DD:6E:CC:2D,Fire-Cube-wlan
+        - dhcp-host=net:youtubedns,F0:27:2D:D7:41:97,Fire-Guest
+        - dhcp-host=net:youtubedns,00:e0:4c:7b:c2:98,Sanctuary
+        - dhcp-host=net:youtubedns,8c:8c:aa:32:ce:7a,IONB000201752-LAN
+        - dhcp-host=net:youtubedns,4e:80:5d:ae:a9:dd,IONB000201752-WLAN
+#affinity:
+#    podAntiAffinity:
+#        requiredDuringSchedulingIgnoredDuringExecution:
+#            - labelSelector:
+#                matchExpressions:
+#                    - key: app.kubernetes.io/name
+#                      operator: In
+#                      values:
+#                        - pihole
+#              topologyKey: kubernetes.io/hostname
+podSecurityContext:
+    seccompProfile:
+        type: RuntimeDefault
+containerSecurityContext:
+    privileged: false
+    capabilities:
+        add:
+            - NET_ADMIN
+            - SYS_NICE
+sops:
+    age:
+        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBKSUgrKzM4bHNWVWU4TUs1
+            L0Y4SXRuYXZGM2FpdVhzK3Jvd3Y2SnFMMlRZCitLWFdueFIzZTJSSTV1ejBHaERM
+            ay85OUdxNCt0azluamwwdXVxdjNFK00KLS0tIHhDaVFOK3dsU1pJaWpMaC94eUkz
+            RlMyZDhIQ0w4QnE2WUxNa0o3dmJSZVkK2ZP+feCfPONny7x/d2aFaGbv2T7uZjTJ
+            XbysfMMtuG5ZTUaS+DhUCuya6vTaQOanC01ex7rW42/Xpk9t49oUpw==
+            -----END AGE ENCRYPTED FILE-----
+        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBzL1pRbFUzMmRhOVlaZlgz
+            Qld5NUpNWEtsMUZBMXFNKzNNNjdmTy9HWlN3ClpFT3RaSytrWVltS2ZWTGh2clc5
+            b1RvMnphWmhZeVI0SWZYVTNMQkZtSTQKLS0tIENqaXhOeERrN1dwSTVRZDdpMGFE
+            clBmVEI3RUMyY0tDVXFwSEVBcEtxWTQKni8IA5W3uF1JPVNfKi9Q/Zhxy9XKbEik
+            umrZm2gITdPV6DzRfm09Lf3zAiRUEWNzpzX9XoJ3pQuptvMI16Di9A==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2026-04-25T22:17:05Z"
+    mac: ENC[AES256_GCM,data:STaL8hR37fNnI6OCMOQnRf8IvZBdUoAJjZot5T4J1HFDWhID7U5sXht5MQ2qEFYk4V8ejwF8HiPsOjuU8XsFgvodXBXgfpN+u2904o6s0n1CEkGylFx3JUym8B+6pW9D5+AjseS5O5uNM5aWon84fdeabNI6r+MQoV9pyWo+dcM=,iv:Qlccf4HNo6WctfWAUrJ7FHYcW91Ig90QfS3rLq8KmNQ=,tag:Fggv6qHWl5/7RMVLZCLN+g==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
+    version: 3.12.2
