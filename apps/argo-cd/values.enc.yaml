@@ -12,7 +12,7 @@ configs:
         argo-cd:
             type: helm
             name: argo-cd
-            url: ENC[AES256_GCM,data:Spbd74RSQRKAdK8B/dAqUzCJqXdKhmH2V6hTq+S8pz7Iqa6r,iv:4CKYDUXiBo5pn8PqGxatXViC0CD5Iii3OfF/7SYQWzQ=,tag:OtlgqBLqS/imMbWLg7FQag==,type:str]
+            url: ENC[AES256_GCM,data:c2nGvtAzj3qmGJkaipsDQIAZtxfHA6nV4lG1aMvqtKCUNjK/,iv:BbR85NiMxBcGpf27SaobU5eOFo1CZnUDNay40DkEUdc=,tag:DoknFv9PO0qyHaLkpCy1fw==,type:str]
     credentialTemplates:
         # Git credentials
         #git-ops-dev:
@@ -20,13 +20,13 @@ configs:
         #  username: git@example.com
         #  password: OnlySecureWithExclamationMark!
         k3s-git-ops:
-            url: ENC[AES256_GCM,data:VrNe+X5es+6UVyuXBZ1d0a7IuTzz93FM7KnMTTUX9P9/v0nUWg==,iv:zvilFJ/j+Z0XH6Ke1ZokApwoK26rTZA2gNWOP8faD3I=,tag:NaQdD8KtBzDvR46umtBklA==,type:str]
-            username: ENC[AES256_GCM,data:LzQzqXKr,iv:MoT6kNbZpdWgFkSQWU0O4TmSpX5OlCLqJHs481Pyd1k=,tag:kUl82U5Rfdc7J6ecSBNrZw==,type:str]
-            password: ENC[AES256_GCM,data:gGjAzLiVM7XZM/+BUZChMoYORzCh8kl6QaPGCIeyYQUPvSCLzIyR7O/pgfw3jRi1Eu+5jaIp48fkHOHWyHNGPXhA/hY0aZGmvn59s4Lr4E5NhuWRxn2hngDiha26,iv:pWdAA5sA8SDQZ/M4iNfxQ/idPFa9Pfld0LnwsYLI4K4=,tag:lROKF1K2fuXKjUxOCZnDCA==,type:str]
+            url: ENC[AES256_GCM,data:WN2gBLxsKiw/gEXe4Z+6+XV27eKDVMlRWkoG2XpS4wPVs0nCtA==,iv:upCAl+mq+2bbz0okvEUVN5A739Gaox8r0O5OJw+yTLE=,tag:rzpepHAbqKRqidTiAtmt6A==,type:str]
+            username: ENC[AES256_GCM,data:1B2X6vcU,iv:YXMSmExSAT+8V8CBoz2iL8OA01oSBF6ytPzsMjlL7fM=,tag:MpaRC1U0tSfqIN/pvGDUpQ==,type:str]
+            password: ENC[AES256_GCM,data:iHIy6GES2PhT9bfLmSnRqdhBATY3dnWSepjnpvCdBUuFFjmshJw4rSvpAkyMlUuM26PceW/bzRir0yLjkf7YYSsHAaCZN+0AhIu9wcrH/nqpbkzzOQtGncUbUHZ7,iv:SG2oNEtPb2BlfOtYyBy8cvdg8lVa7FZOwmrlU1uKrnw=,tag:0pmTo7x6SoUJOueSi/4z+w==,type:str]
     cm:
         admin.enabled: true
         kustomize.buildOptions: --enable-helm --enable-alpha-plugins --enable-exec
-        url: ENC[AES256_GCM,data:xSsU59N2dvIW32vuF/WJxmdAkp36MhYLzRPddyXbGZJ9iThO,iv:kcMeseQmRcbvpZDK3tAVonuQwfukrZy1G1DEFFX1qHg=,tag:t/G+AAArzZgv8k9/1vJhCQ==,type:str]
+        url: ENC[AES256_GCM,data:fvxax+ZeRHQXussr89b6x5qs2U4C7rUTsGIjZnGPCi+uXxwA,iv:1FWpGYVULiI1I9tBaibWYieALDteJhCU7UTGMp3rBU4=,tag:V15mlxsQ9g+exusWVDEU2g==,type:str]
         # Enable ArgoCD sync waves between apps in Kubernetes
         # https://argo-cd.readthedocs.io/en/stable/operator-manual/health/#argocd-app
         resource.customizations.health.argoproj.io_Application: |
@@ -63,7 +63,7 @@ configs:
         #    - profile
         #    - groups
         #    - email
-        oidc.config: ENC[AES256_GCM,data:FnbkyEnxb4cGvul9XfCA96Tft1GETTOE7EeJpLQMYj2/RmB74BCV5IEgu0iY1Eq7g16TOaQIpoed4HeqzcIFOiRT12xzkrxzerM8qhIfmrr/lm0v23577mD326AmgMh2r0jnbPpOatPYdU2NxQSrjXYk8zqHw2rraz38rwATuCQwtyk/VaJoB4Bx1eovv0gCe6J/g88c00rBBVEvCeKd/rmYbv2VrDNKb0ps3Od4v/M1FzrXe4yJ7QVCrJkG7kjtNTnuClQCl/5h1nz2tVHdUETT+BI8FKvAKP2u0d4RJqaRCTFKv+pAKAZP,iv:iNX0FF8XAwGUTuROGe9pNW2tP/sI03CYfk5GmvrOu4Y=,tag:AhzRDjj1DqfOH/VIHSC4+Q==,type:str]
+        oidc.config: ENC[AES256_GCM,data:mcgGmsg+p00GHNm1Q/4COpx9emSA5goTyEaw971eX3GhVQ1dnDoN+VmHgIBkGudVDMaMqnyQwv7tH9/7GLr/ioxwGg7SnRSVPrJXrHLexEaIBeb36Z3qCKtpEauhtTlPUHn+3TksIIOc9s/sRU24mhtQ5hBfe1zT7QdpnZCNE0QD5s9MI1gPfpp9KGjR76gfatdhf+sXaHdzeObEr/pxTxDKgzJuygi+vhARNQNmEJEQS8Uu+/hs9aDB6zQd2Y4KszMGCCZ4z9cZg1Mxy/JUzmIWPaJkO3R6m0XPBlZFbtU8sGQ3vVTl7du2,iv:8R7N8nJ5xwK84jZvZExQ/rPSXgG8afS3dqBEYn7Zids=,tag:mhrUxaTPQzdZGQPo1GUxAQ==,type:str]
     rbac:
         policy.csv: |
             p, role:org-admin, applications, *, */*, allow
@@ -74,7 +74,7 @@ configs:
             g, argocd-org-admin, role:org-admin
     secret:
         # htpasswd -nbBC 10 "" $ARGO_PWD | tr -d ':\n' | sed 's/$2y/$2a/'
-        argocdServerAdminPassword: ENC[AES256_GCM,data:BjgUlVsynFibxjFHK0g3YbR2C9WQnXVLzKzH6ufIh53RYc8nvHbjPBjtxG+nYMk7YCPtKhYgj8WOoR6N,iv:AeqjcFF6cZYh3JfJs+0DUC2uNesqHCipx36S9DehYOk=,tag:UYGtM1/8zbTrySHbpeOPsA==,type:str]
+        argocdServerAdminPassword: ENC[AES256_GCM,data:EBepmkJ1+Oe/wsMulz0s1irXQWz/6iV7dInaIgt02jEPmuXy7niAEKP0EiIiaaS+fdAI5XZjReubFjfY,iv:g2FU8yyJQEYtdsJv47dDSc8E45y1giS9Ck213AIVD/8=,tag:TXhToh8kK2tT10Ja0vo2TQ==,type:str]
         argocdServerAdminPasswordMtime: "2024-05-13T08:32:44Z"
 server:
     ingress:
@@ -84,10 +84,10 @@ server:
             #cert-manager.io/cluster-issuer: netcup-issuer-staging
             #cert-manager.io/cluster-issuer: ca-issuer
             traefik.ingress.kubernetes.io/router.entrypoints: web239,websecure239
-        hostname: ENC[AES256_GCM,data:JkQfXl8R8sZl25yraaLomZqKUZQQ2XngIOmLMg==,iv:5nZk1pBIVpd9inPN+lZrRlaKZb+J/cwb4GeCweBVDL4=,tag:elKuuEiYp831B4yxw6ehMw==,type:str]
+        hostname: ENC[AES256_GCM,data:iYtU8qdhUd+X9l2S++1XbelNAwZVxH8T0s0Upg==,iv:4XPh/Q8NU1JBpM9qs1Qaa3HI8IMEOKO2mmnlYTmsA3Q=,tag:mTsdpuSsqzB29FyjXiAHqQ==,type:str]
         extraTls:
             - hosts:
-                - ENC[AES256_GCM,data:CkCzvheNaTgZjocbLsvaDIg8qhy7oupa+J9HZQ==,iv:j1+Ni607BSV5JtPI6Qksc2ZtOQeKhYN4bfeyoVSu1Mw=,tag:CXfMikDiX34/5U+2wv7CNg==,type:str]
+                - ENC[AES256_GCM,data:oKAnQSeD6XNctA/0W1lQr2bvpdgaXo2uKsJJww==,iv:l88XKX7iodrf2cBFReIn76dqIGyu91DXGse+O0+TzIU=,tag:Fd6NmxGR4PCZwk1+pXMUmA==,type:str]
               secretName: wildcard-cloudflare-production-02
 repoServer:
     # Use init containers to configure custom tooling
@@ -154,7 +154,10 @@ repoServer:
             - /bin/sh
             - -c
           args:
-            - mkdir -p /custom-tools/helm-plugins && wget -qO- https://github.com/jkroepke/helm-secrets/releases/download/v4.7.6/helm-secrets.tar.gz | tar -C /custom-tools/helm-plugins -xzf-
+            # The wrapper is copied as a standalone `helm-wrapper` file so it can
+            # be mounted on /usr/local/sbin/helm (which precedes /usr/local/bin
+            # in PATH). Without this, HELM_SECRETS_WRAPPER_ENABLED has no effect.
+            - mkdir -p /custom-tools/helm-plugins && wget -qO- https://github.com/jkroepke/helm-secrets/releases/download/v4.7.6/helm-secrets.tar.gz | tar -C /custom-tools/helm-plugins -xzf- && cp /custom-tools/helm-plugins/helm-secrets/scripts/wrapper/helm.sh /custom-tools/helm-wrapper && chmod +x /custom-tools/helm-wrapper
           volumeMounts:
             - mountPath: /custom-tools
               name: custom-tools
@@ -208,6 +211,11 @@ repoServer:
         - mountPath: /helm-plugins
           name: custom-tools
           subPath: helm-plugins
+        # The wrapper is mounted in /usr/local/sbin so it precedes the real helm
+        # binary at /usr/local/bin/helm in PATH.
+        - mountPath: /usr/local/sbin/helm
+          name: custom-tools
+          subPath: helm-wrapper
         - mountPath: /.config/sops/age
           name: sops-age
           readOnly: true
@@ -222,6 +230,9 @@ repoServer:
           value: "true"
         - name: HELM_SECRETS_WRAPPER_ENABLED
           value: "true"
+        # The wrapper invokes the real helm via $HELM_BIN to avoid recursion.
+        - name: HELM_BIN
+          value: /usr/local/bin/helm
 # The application controller needs limits because it quickly gets out of control when checking the configured resources.
 controller:
     resources:
@@ -246,22 +257,22 @@ sops:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBSUWRYQW9UdDQySXhHcEg4
-            SElObDI3RmY4SWJSWlpZRWIwVWlNdXBNM3k4CktLUVpVeDVDQTNwMWV2TFFMZ3RZ
-            a1VhcTArekNqRlM0bEVJc2tidGI0NjgKLS0tIGlMSXBXZEFHc0JWWFp6RU1nTGJs
-            dXNjVUl1TW1qUzF1L0ErWFpvdm8rS1UKWoHcMaTu+i4gKo+CP3KxfcbEqef+0Wew
-            Z1bzOVY0NKZiQLHxi5BH8LDbGDweFZw3MZQnri8smLwJkwPboXM7tw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBZVFlUNUxiNGlBNUdmV3pV
+            OVRJQlRzTEo3ZUlmWnJqWGtRZ0NNSnFXbEhJCmwvcUxRaG15cTlEbWgwcU1qMDZQ
+            UGJqMTZZUEE4U0RISy9Ta3E2WU9YQ1kKLS0tIDhlSzVSNFNPcWUycHhMT1dpVzBE
+            RnRmZHFKRDVLclhEVVlFMGc4a2k2Q2cKtlmZPMZThgec1E0ji0qfGK0CPNxJeojT
+            QBsmD2iLaFRSvDr4BKFTP0ynhH3z1+7C9wmYfmv0VmpiEl78tVYysA==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBJZ0NTamYrNDNmZFdZdWlk
-            dlFnblY5K3Zmckl0R1ZjekN0cWJoTjNRMEVrCi9uQ3dHZTh2aVhPak1SdEk2cGMw
-            dWNPaGVpUGJoQ2E4bDd1aUR4YVFZQUkKLS0tIFpvSVpPQVJ4d3k1dUNDOW9XdTZE
-            MElZU2tJb2xDeDF5VStRd2JVS1lXWWsKqiGCho5shdlQTMawuhvasIMM1lyJyQHq
-            PynLUArguoVBrkBhfnNz9H6LZrdVyfiCgEMUqDi1zEN3oYi1UHY0NA==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBuaWZpeDBMa3lvT3NJdk1a
+            STlUZ2xPWG1NV0t6VlJobzlCK0pDUW9KQVJNCk0vbW1FWGVUZ3NJQzNkNkN1Qko0
+            OUc4aGRlTEFKVnRTK09peXlPbW1xREUKLS0tIGp0OU9lWkZJUTB2N0E2K3hXcjI3
+            bStVNEY3bS9xTVFBWHVTV1J2MVR4MGsKj2le2WGFazfaxLGzHhPMfdTT/3d/eKZQ
+            +qFAYG/SKzGLf0Oib9XazTXlKYiHjWauIcnLfit48BBYcCl7KgqhWQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2026-04-25T19:10:32Z"
-    mac: ENC[AES256_GCM,data:OAJFNj137AekB+Kwy5eK73QXcV26TLdyjSVpp8PdGXQzJ2W+yqtWOILEdqlHDJqXLFHTT/c0izJoxOab1cCmX7Tc5H/RNGTg60HjHtHuKTnCpe/qNra09iLpxnrUfckFUFNilDeL0Y4aAs3dQExnAA9YGvU3t3sXQ7yZXgDrgwg=,iv:3YiN8ftPLHugCgOwJOQdNQRiCsfXahh8z8/RNIfOcqc=,tag:9oGh7BgorZsArV2wAIYT/w==,type:str]
+    lastmodified: "2026-04-25T22:44:06Z"
+    mac: ENC[AES256_GCM,data:RW60jG/+LMi/JeFS9Eu21HJ5x5V2wQrHoT7S0T8bBo5yD5TDIHchbEZetTPGZoCWd+h8IZ/ssq6J2uAEfSMUBQaLlnnYQJBu0QX/e19Fm14tNo/prHUxKCyXTJNLSXSmW06JSXFGJSJYtwbk8jF8v5PCpFMCtJIsU8HDBAm9ryE=,iv:tyhDn4TZe1Aj6pZxv/vCxJBSqiXgYz6wXwU7fzBbABg=,tag:6W9Y6CbcJbDI/BDAqJcvZg==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
     version: 3.12.2
