@@ -1,6 +1,6 @@
 # Secret Management
 
-In this repository I use two ways to encrypt secrets, both utilizing sops and age.
+In this repository I use multiple ways to encrypt secrets, utilizing sops and age.
 
 - [Kubernetes Secrets / Manifests are encrypted](#kubernetes-secrets-manifests-via-ksops) via [KSOPS](https://github.com/viaduct-ai/kustomize-sops){target=_blank} (described in this document)
 - [Kustomize managed Helm values](#kustomize-managed-helm-values) are encrypted via sops and decrypted by an ArgoCD ConfigManagementPlugin
@@ -12,10 +12,11 @@ age is the recommended encryption tool for sops as it is more secure and easier 
 
 - [ksops](https://github.com/viaduct-ai/kustomize-sops){target=_blank}
 - [age](https://github.com/FiloSottile/age){target=_blank}
+- [helm-secrets](https://github.com/jkroepke/helm-secrets){target=_blank}
 
 ## Preparation
 
-For both variants we need two age keypairs. One for local use and one for ArgoCD.
+For all variants we need two age keypairs. One for local use and one for ArgoCD.
 
 ```shell
 # the folder for the age keypairs, consumed by sops
@@ -411,10 +412,6 @@ spec:
 ```
 
 No `secrets://` URL prefix is used. With `HELM_SECRETS_WRAPPER_ENABLED=true` the wrapper detects the SOPS-encrypted file from its content and decrypts it on the fly. The prefix-style references documented by helm-secrets do not work with multi-source apps because ArgoCD requires the `$values/` source reference to be at the start of the path string.
-
-### Repo-URL replacement for multi-source apps
-
-The repo-URL replacement logic in `apps/argo-cd-apps/kustomization.yaml` defaults to writing `spec.source.repoURL` (singular). Multi-source applications use `spec.sources` (plural) and must be excluded from the default rule and given an explicit replacement targeting the correct index — see how `51-codeserver` and `13-pihole03` are wired up.
 
 ## En- and decrypting helm values and manifests
 
