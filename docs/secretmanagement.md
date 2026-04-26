@@ -4,6 +4,7 @@ In this repository I use two ways to encrypt secrets, both utilizing sops and ag
 
 - [Kubernetes Secrets / Manifests are encrypted](#kubernetes-secrets-manifests-via-ksops) via [KSOPS](https://github.com/viaduct-ai/kustomize-sops){target=_blank} (described in this document)
 - [Kustomize managed Helm values](#kustomize-managed-helm-values) are encrypted via sops and decrypted by an ArgoCD ConfigManagementPlugin
+- [Multi-source ArgoCD Helm values](#multi-source-helm-values-with-helm-secrets) are encrypted via sops and decrypted at render time by [helm-secrets](https://github.com/jkroepke/helm-secrets){target=_blank}
 
 age is the recommended encryption tool for sops as it is more secure and easier to use than gpg.
 
@@ -323,6 +324,97 @@ Of course, the configuration could be way shorter if a container, that already i
 - helm
 
 More information about my journey to en- and decrypt values.yaml can be found in the following ksops issue on github: [Support kustomize helmCharts valuesFile](https://github.com/viaduct-ai/kustomize-sops/issues/242){target=_blank}.
+
+## Multi-source Helm values with helm-secrets
+
+The CMP-based pattern only works for single-source ArgoCD Applications where ArgoCD invokes Kustomize on a directory inside this repository. ArgoCD also supports [multi-source Applications](https://argo-cd.readthedocs.io/en/stable/user-guide/multiple_sources/){target=_blank} where one source is an external Helm chart repository (or a Git repository containing the chart) and a second source is this repository providing values via a `$values` reference. In that flow ArgoCD calls `helm template` directly — no Kustomize, no CMP — so `values.enc.yaml` would be passed to Helm without decryption.
+
+For this case the [helm-secrets](https://github.com/jkroepke/helm-secrets){target=_blank} Helm plugin is integrated into the argocd-repo-server. It is wrapped around the `helm` binary so any `helm install`, `helm upgrade`, `helm template`, `helm lint` or `helm diff` invocation is intercepted and routed through `helm secrets`, which transparently decrypts SOPS-encrypted value files before passing them to Helm.
+
+### Why a wrapper is needed
+
+`HELM_SECRETS_WRAPPER_ENABLED=true` alone is not enough. The wrapper is a small shell script (`scripts/wrapper/helm.sh`) that ships with helm-secrets and rewrites Helm subcommands. It must be placed in `PATH` **before** the real Helm binary so it is the first match for `helm`. The wrapper itself then calls the real Helm via `$HELM_BIN` to avoid recursion.
+
+The argocd-repo-server has the standard PATH:
+
+```
+/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+```
+
+The real Helm binary lives at `/usr/local/bin/helm`. Mounting the wrapper as `/usr/local/sbin/helm` lets it shadow the real binary without touching the original.
+
+### Repo-server configuration
+
+In addition to the existing custom-tools volume and SOPS / age setup, add an init container that downloads helm-secrets and stages the wrapper as a standalone file. Then mount the plugin directory (so `helm plugin list` resolves `secrets`) and the wrapper file:
+
+```yaml title="values.yaml"
+repoServer:
+  initContainers:
+    - name: install-helm-secrets
+      # https://github.com/jkroepke/helm-secrets/releases
+      image: alpine:3.21
+      command:
+        - /bin/sh
+        - -c
+      args:
+        - mkdir -p /custom-tools/helm-plugins && wget -qO- https://github.com/jkroepke/helm-secrets/releases/download/v4.7.6/helm-secrets.tar.gz | tar -C /custom-tools/helm-plugins -xzf- && cp /custom-tools/helm-plugins/helm-secrets/scripts/wrapper/helm.sh /custom-tools/helm-wrapper && chmod +x /custom-tools/helm-wrapper
+      volumeMounts:
+        - mountPath: /custom-tools
+          name: custom-tools
+  volumeMounts:
+    - mountPath: /helm-plugins
+      name: custom-tools
+      subPath: helm-plugins
+    # The wrapper is mounted in /usr/local/sbin so it precedes /usr/local/bin
+    # in PATH and is found first when something invokes `helm`.
+    - mountPath: /usr/local/sbin/helm
+      name: custom-tools
+      subPath: helm-wrapper
+  env:
+    - name: HELM_PLUGINS
+      value: /helm-plugins/
+    - name: HELM_SECRETS_BACKEND
+      value: sops
+    - name: HELM_SECRETS_VALUES_ALLOW_ABSOLUTE_PATH
+      value: "true"
+    - name: HELM_SECRETS_WRAPPER_ENABLED
+      value: "true"
+    # The wrapper invokes the real helm via $HELM_BIN to avoid recursion.
+    - name: HELM_BIN
+      value: /usr/local/bin/helm
+```
+
+`HELM_SECRETS_VALUES_ALLOW_ABSOLUTE_PATH=true` is required so helm-secrets accepts the absolute paths that ArgoCD generates when it materializes `$values/...` references into the repo-server filesystem.
+
+### Application manifest pattern
+
+A multi-source Application points the chart source at the upstream Helm/Git repo and references the encrypted values file via `$values`:
+
+```yaml title="apps/argo-cd-apps/13-pihole03.yaml"
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: 13-pihole03
+  namespace: argocd
+spec:
+  sources:
+    - repoURL: https://github.com/madic-creates/pihole-kubernetes.git
+      targetRevision: HEAD
+      path: charts/pihole
+      helm:
+        releaseName: pihole-03
+        valueFiles:
+          - $values/apps/pihole-03/helm-values.enc.yaml
+    - repoURL: "example.com"  # replaced via kustomize from a sealed secret
+      targetRevision: HEAD
+      ref: values
+```
+
+No `secrets://` URL prefix is used. With `HELM_SECRETS_WRAPPER_ENABLED=true` the wrapper detects the SOPS-encrypted file from its content and decrypts it on the fly. The prefix-style references documented by helm-secrets do not work with multi-source apps because ArgoCD requires the `$values/` source reference to be at the start of the path string.
+
+### Repo-URL replacement for multi-source apps
+
+The repo-URL replacement logic in `apps/argo-cd-apps/kustomization.yaml` defaults to writing `spec.source.repoURL` (singular). Multi-source applications use `spec.sources` (plural) and must be excluded from the default rule and given an explicit replacement targeting the correct index — see how `51-codeserver` and `13-pihole03` are wired up.
 
 ## En- and decrypting helm values and manifests
 
