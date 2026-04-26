@@ -16,7 +16,7 @@ resources:
   - 11-lldap.yaml
   - 12-pihole.yaml
   - 13-pihole02.yaml
-  #- 13-pihole03.yaml
+  - 13-pihole03.yaml
   - 13-node-feature-discovery.yaml
   - 14-external-snapshotter.yaml
   - 15-backup-script.yaml
