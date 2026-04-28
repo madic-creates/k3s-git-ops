@@ -41,7 +41,7 @@ spec:
             - name: PROMETHEUS_URL
               value: "http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090"
             - name: ARGOCD_URL
-              value: "https://argocd-server.argocd.svc.cluster.local"
+              value: "http://argocd-server.argocd.svc.cluster.local"
             - name: ARGOCD_TOKEN
               valueFrom:
                 secretKeyRef:
