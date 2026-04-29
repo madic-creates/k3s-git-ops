@@ -73,14 +73,15 @@ spec:
     - ports:
       - port: "8080"
         protocol: TCP
-  # Allow access to Traefik dashboard from within kube-system and cluster
-  # The dashboard service (port 9000) is accessed internally by Traefik itself
-  # and potentially from other monitoring/management tools
+  # Allow access to Traefik dashboard/API from within the cluster.
+  # The Service traefik-dashboard maps 9000 -> targetPort "traefik" (pod port 8080).
+  # Cilium evaluates ingress policies against the post-DNAT destination port,
+  # so the cluster-entity allow must match port 8080, not 9000.
   - fromEntities:
     - cluster
     toPorts:
     - ports:
-      - port: "9000"
+      - port: "8080"
         protocol: TCP
   egress:
   # Allow HTTP(S) for plugin downloads
