@@ -29,6 +29,15 @@ spec:
     - ports:
       - port: '8080'
         protocol: TCP
+  # Allow tamagotchi to query ArgoCD Application API
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: tamagotchi
+        k8s:io.kubernetes.pod.namespace: monitoring
+    toPorts:
+    - ports:
+      - port: '8080'
+        protocol: TCP
   # Allow internal health checks
   - fromEndpoints:
     - matchLabels:

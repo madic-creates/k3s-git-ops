@@ -238,6 +238,15 @@ spec:
     - ports:
       - port: "9090"
         protocol: TCP
+  # Allow tamagotchi to run PromQL queries (Longhorn volume state, pod restart deltas)
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: monitoring
+        k8s:app.kubernetes.io/name: tamagotchi
+    toPorts:
+    - ports:
+      - port: "9090"
+        protocol: TCP
   egress:
   # Allow DNS resolution
   - toEndpoints:
