@@ -31,7 +31,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: tamagotchi
-          image: ghcr.io/madic-creates/tamagotchi:latest@sha256:d1d80dbacccbffe70d47f2797367359f06214dd4af1761a9e15d69788ba02bce
+          image: ghcr.io/madic-creates/tamagotchi:latest@sha256:3b595db01474f3c0e471dbf31ceadffd8c65d5d43ee65b633bb5a3ebfb564e1f
           ports:
             - containerPort: 8080
               name: http
