@@ -78,6 +78,7 @@ resources:
   - 90-cluster-tv.yaml
   #- 90-gethomepage.yaml
   #- 90-goldilocks.yaml
+  - 91-tamagotchi.yaml
   #- 91-vpa.yaml
   - 96-system-upgrade-controller-plans.yaml
   - 96-system-upgrade-controller.yaml

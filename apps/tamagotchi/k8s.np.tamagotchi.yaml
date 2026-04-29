@@ -1,0 +1,59 @@
+---
+# Tamagotchi application-specific network policy.
+# Selecting the pod via endpointSelector implicitly puts it under default-deny;
+# only explicitly allowed traffic passes.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: tamagotchi
+  namespace: monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: tamagotchi
+  ingress:
+    # Traefik forwards browser traffic via Authelia
+    - fromEndpoints:
+        - matchLabels:
+            k8s:app.kubernetes.io/instance: traefik-kube-system
+            k8s:io.kubernetes.pod.namespace: kube-system
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+  egress:
+    # DNS
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s:k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    # Prometheus API (Longhorn + pod-restart Prometheus queries)
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: monitoring
+            k8s:app.kubernetes.io/name: prometheus
+      toPorts:
+        - ports:
+            - port: "9090"
+              protocol: TCP
+    # ArgoCD API (argocd-server listens on a single pod port 8080 with HTTP/TLS auto-detection)
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: argocd
+            k8s:app.kubernetes.io/name: argocd-server
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+    # Kubernetes API (cert-manager Certificate listing, Node listing, self-pod GET at startup)
+    - toEntities:
+        - kube-apiserver
