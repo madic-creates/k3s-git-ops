@@ -1,4 +1,4 @@
-## Mis
+## Misc
 charts/
 .vagrant/
 .envrc
@@ -8,6 +8,7 @@ site/
 .cache/
 values.yaml
 .vscode/*
+CLAUDE.local.md
 
 ## Ansible
 .ansible/*
