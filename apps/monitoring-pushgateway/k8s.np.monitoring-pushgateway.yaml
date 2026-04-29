@@ -28,12 +28,16 @@ spec:
     - ports:
       - port: "9091"
         protocol: TCP
-  # Allow backup scripts and other applications to push metrics to pushgateway
-  # Backup scripts run in the longhorn namespace and push metrics via HTTP POST to port 9091
+  # Allow backup scripts and other applications to push metrics to pushgateway.
+  # Backup CronJobs live in several namespaces with inconsistent pod labels
+  # (app vs app.kubernetes.io/name), so we match by namespace instead of label.
   - fromEndpoints:
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: longhorn
-        k8s:app: restic-retentionpolicies
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: databases
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: media
     toPorts:
     - ports:
       - port: "9091"
