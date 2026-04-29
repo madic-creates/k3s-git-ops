@@ -1,0 +1,321 @@
+# Grafana dashboard for backups pushed via prometheus-pushgateway by apps/backup-script.
+# Discovered automatically by the Grafana sidecar via the grafana_dashboard label.
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-backup-script
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  backup-script.json: |-
+    {
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": {"type": "datasource", "uid": "grafana"},
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+          }
+        ]
+      },
+      "description": "Restic backups pushed via prometheus-pushgateway by apps/backup-script",
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 0,
+      "id": null,
+      "liveNow": false,
+      "panels": [
+        {
+          "type": "stat",
+          "title": "Hosts reporting",
+          "id": 1,
+          "gridPos": {"h": 4, "w": 6, "x": 0, "y": 0},
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "targets": [
+            {"expr": "count(backup_status{job=\"backup\"})", "refId": "A", "legendFormat": "hosts"}
+          ],
+          "options": {
+            "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "center",
+            "textMode": "auto",
+            "orientation": "auto"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {"color": "blue", "value": null}
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          }
+        },
+        {
+          "type": "stat",
+          "title": "Healthy",
+          "id": 2,
+          "gridPos": {"h": 4, "w": 6, "x": 6, "y": 0},
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "targets": [
+            {"expr": "count(backup_status{job=\"backup\",status=\"success\"} == 0) or vector(0)", "refId": "A", "legendFormat": "healthy"}
+          ],
+          "options": {
+            "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "center",
+            "textMode": "auto"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {"color": "red", "value": null},
+                  {"color": "green", "value": 1}
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          }
+        },
+        {
+          "type": "stat",
+          "title": "Failed",
+          "id": 3,
+          "gridPos": {"h": 4, "w": 6, "x": 12, "y": 0},
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "targets": [
+            {"expr": "count(backup_status{job=\"backup\",status=\"failure\"} != 0) or vector(0)", "refId": "A", "legendFormat": "failed"}
+          ],
+          "options": {
+            "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "center",
+            "textMode": "auto"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {"color": "green", "value": null},
+                  {"color": "red", "value": 1}
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          }
+        },
+        {
+          "type": "stat",
+          "title": "Stale (>26h)",
+          "id": 4,
+          "gridPos": {"h": 4, "w": 6, "x": 18, "y": 0},
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "targets": [
+            {"expr": "count((time() - backup_start_timestamp{job=\"backup\"}) > 26*3600) or vector(0)", "refId": "A", "legendFormat": "stale"}
+          ],
+          "options": {
+            "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "center",
+            "textMode": "auto"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {"color": "green", "value": null},
+                  {"color": "red", "value": 1}
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          }
+        },
+        {
+          "type": "table",
+          "title": "Backups per host",
+          "id": 5,
+          "gridPos": {"h": 10, "w": 24, "x": 0, "y": 4},
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "targets": [
+            {"expr": "backup_status{job=\"backup\"}", "format": "table", "instant": true, "refId": "A"},
+            {"expr": "backup_duration_seconds{job=\"backup\"}", "format": "table", "instant": true, "refId": "B"},
+            {"expr": "time() - backup_start_timestamp{job=\"backup\"}", "format": "table", "instant": true, "refId": "C"}
+          ],
+          "transformations": [
+            {
+              "id": "joinByField",
+              "options": {"byField": "instance", "mode": "outer"}
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time 1": true, "Time 2": true, "Time 3": true,
+                  "__name__ 1": true, "__name__ 2": true, "__name__ 3": true,
+                  "job 1": true, "job 2": true, "job 3": true,
+                  "exported_instance 1": true, "exported_instance 2": true, "exported_instance 3": true,
+                  "exported_job 1": true, "exported_job 2": true, "exported_job 3": true
+                },
+                "indexByName": {},
+                "renameByName": {
+                  "instance": "Host",
+                  "status": "Status",
+                  "Value #A": "Exit code",
+                  "Value #B": "Duration",
+                  "Value #C": "Last run age"
+                }
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "custom": {"align": "auto", "displayMode": "auto"}
+            },
+            "overrides": [
+              {
+                "matcher": {"id": "byName", "options": "Status"},
+                "properties": [
+                  {"id": "custom.displayMode", "value": "color-background"},
+                  {"id": "mappings", "value": [
+                    {"type": "value", "options": {"success": {"color": "green", "text": "OK"}}},
+                    {"type": "value", "options": {"failure": {"color": "red", "text": "FAILED"}}}
+                  ]}
+                ]
+              },
+              {
+                "matcher": {"id": "byName", "options": "Duration"},
+                "properties": [
+                  {"id": "unit", "value": "s"}
+                ]
+              },
+              {
+                "matcher": {"id": "byName", "options": "Last run age"},
+                "properties": [
+                  {"id": "unit", "value": "s"},
+                  {"id": "custom.displayMode", "value": "color-background"},
+                  {"id": "thresholds", "value": {
+                    "mode": "absolute",
+                    "steps": [
+                      {"color": "green", "value": null},
+                      {"color": "yellow", "value": 86400},
+                      {"color": "red", "value": 93600}
+                    ]
+                  }}
+                ]
+              }
+            ]
+          },
+          "options": {"showHeader": true}
+        },
+        {
+          "type": "timeseries",
+          "title": "Backup duration",
+          "id": 6,
+          "gridPos": {"h": 9, "w": 24, "x": 0, "y": 14},
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "targets": [
+            {"expr": "backup_duration_seconds{job=\"backup\"}", "refId": "A", "legendFormat": "{{instance}}"}
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s",
+              "custom": {
+                "drawStyle": "line",
+                "lineWidth": 1,
+                "fillOpacity": 10,
+                "showPoints": "auto"
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {"displayMode": "table", "placement": "right", "showLegend": true, "calcs": ["lastNotNull", "max", "mean"]},
+            "tooltip": {"mode": "multi", "sort": "desc"}
+          }
+        },
+        {
+          "type": "timeseries",
+          "title": "Time since last backup",
+          "id": 7,
+          "gridPos": {"h": 9, "w": 24, "x": 0, "y": 23},
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "targets": [
+            {"expr": "time() - backup_start_timestamp{job=\"backup\"}", "refId": "A", "legendFormat": "{{instance}}"}
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s",
+              "custom": {
+                "drawStyle": "line",
+                "lineWidth": 1,
+                "fillOpacity": 5,
+                "showPoints": "auto",
+                "thresholdsStyle": {"mode": "line"}
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {"color": "green", "value": null},
+                  {"color": "red", "value": 93600}
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {"displayMode": "table", "placement": "right", "showLegend": true, "calcs": ["lastNotNull", "max"]},
+            "tooltip": {"mode": "multi", "sort": "desc"}
+          }
+        }
+      ],
+      "refresh": "1m",
+      "schemaVersion": 39,
+      "tags": ["backup", "restic", "pushgateway"],
+      "templating": {
+        "list": [
+          {
+            "current": {"selected": false, "text": "Prometheus", "value": "Prometheus"},
+            "hide": 0,
+            "includeAll": false,
+            "label": "Datasource",
+            "multi": false,
+            "name": "DS_PROMETHEUS",
+            "options": [],
+            "query": "prometheus",
+            "queryValue": "",
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "type": "datasource"
+          }
+        ]
+      },
+      "time": {"from": "now-7d", "to": "now"},
+      "timepicker": {},
+      "timezone": "",
+      "title": "Backups (Restic)",
+      "uid": "backup-script",
+      "version": 1,
+      "weekStart": ""
+    }

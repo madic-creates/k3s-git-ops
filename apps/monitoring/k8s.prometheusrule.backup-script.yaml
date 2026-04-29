@@ -1,0 +1,36 @@
+# Alerts for backups pushed via prometheus-pushgateway by apps/backup-script
+# Metrics shape pushed by backup.sh:
+#   backup_status{status="success|failure"}   value 0 on success, exit-code on failure
+#   backup_duration_seconds                   last run duration in seconds
+#   backup_start_timestamp                    unix timestamp of last run start
+# Labels job="backup" and instance="<RESTIC_HOSTNAME>" come from the pushgateway URL
+# (pushgateway ServiceMonitor uses honorLabels=true).
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: backup-script
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: backup-script.rules
+      rules:
+        - alert: BackupFailed
+          expr: backup_status{job="backup",status="failure"} != 0
+          for: 0m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Backup failed on {{ $labels.instance }}"
+            description: "Restic backup on host {{ $labels.instance }} failed with exit code {{ $value }}. Check pod logs in the namespace where the backup CronJob runs."
+
+        - alert: BackupStale
+          expr: time() - backup_start_timestamp{job="backup"} > 26 * 3600
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "No recent backup on {{ $labels.instance }}"
+            description: "Host {{ $labels.instance }} has not pushed a backup metric in over 26 hours (last run: {{ $value | humanizeDuration }} ago). Backup CronJob may be failing to start or the job is hanging."

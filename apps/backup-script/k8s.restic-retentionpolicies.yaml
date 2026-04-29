@@ -28,33 +28,43 @@ spec:
                 - sh
                 - -c
                 - |
+                  set -o pipefail
+                  EXIT_CODE=0
                   JOB_START_TIME=$(date +%s)
                   LOG=$(mktemp)
                   mkdir -p "$RESTIC_CACHE_DIR" | tee -a $LOG
-                  apk add --no-cache rclone | tee -a $LOG
+                  apk add --no-cache rclone curl | tee -a $LOG
                   echo| tee -a $LOG
                   rclone size wasabi:k3s-at-home-01 | tee -a $LOG
                   echo -e "\nRestic locks information" | tee -a $LOG
                   for id in $(restic list locks); do echo "=== $id ==="; restic cat lock $id; done
                   echo -e "\nRetention policies for emby" | tee -a $LOG
-                  restic forget --retry-lock 10m --tag emby --group-by "host,tags" --keep-hourly 48 --keep-daily 7 --keep-weekly 2 --keep-monthly 0 --keep-yearly 0 --keep-last 4 | tee -a $LOG
+                  restic forget --retry-lock 10m --tag emby --group-by "host,tags" --keep-hourly 48 --keep-daily 7 --keep-weekly 2 --keep-monthly 0 --keep-yearly 0 --keep-last 4 2>&1 | tee -a $LOG || EXIT_CODE=$?
                   echo -e "\nRetention policies for MariaDB" | tee -a $LOG
-                  restic forget --retry-lock 10m --tag MariaDB --group-by "host,tags" --keep-hourly 48 --keep-daily 7 --keep-weekly 2 --keep-monthly 0 --keep-yearly 0 --keep-last 4 | tee -a $LOG
+                  restic forget --retry-lock 10m --tag MariaDB --group-by "host,tags" --keep-hourly 48 --keep-daily 7 --keep-weekly 2 --keep-monthly 0 --keep-yearly 0 --keep-last 4 2>&1 | tee -a $LOG || EXIT_CODE=$?
                   echo -e "\nRetention policies for NextPVR" | tee -a $LOG
-                  restic forget --retry-lock 10m --tag NextPVR --group-by "host,tags" --keep-hourly 48 --keep-daily 7 --keep-weekly 2 --keep-monthly 0 --keep-yearly 0 --keep-last 4 | tee -a $LOG
+                  restic forget --retry-lock 10m --tag NextPVR --group-by "host,tags" --keep-hourly 48 --keep-daily 7 --keep-weekly 2 --keep-monthly 0 --keep-yearly 0 --keep-last 4 2>&1 | tee -a $LOG || EXIT_CODE=$?
                   echo -e "\nPruning repository" | tee -a $LOG
-                  restic prune --retry-lock 10m | tee -a $LOG
+                  restic prune --retry-lock 10m 2>&1 | tee -a $LOG || EXIT_CODE=$?
                   echo | tee -a $LOG
                   rclone size wasabi:k3s-at-home-01 | tee -a $LOG
                   JOB_DURATION=$(( $(date +%s) - JOB_START_TIME ))
                   JOB_RUNTIME=$(date -u -d @${JOB_DURATION} +"%T")
                   echo "Script runtime: $JOB_RUNTIME" | tee -a $LOG
+                  echo "Final exit code: $EXIT_CODE" | tee -a $LOG
+                  if [ "$EXIT_CODE" = "0" ]; then JOB_STATUS="success"; else JOB_STATUS="failure"; fi
+                  {
+                    echo "backup_duration_seconds ${JOB_DURATION}"
+                    echo "backup_start_timestamp ${JOB_START_TIME}"
+                    echo "backup_status{status=\"${JOB_STATUS}\"} ${EXIT_CODE}"
+                  } | curl -s --data-binary @- "http://prometheus-pushgateway.monitoring.svc.cluster.local:9091/metrics/job/backup/instance/restic-retentionpolicies" | tee -a $LOG
                   {
                     echo "Subject: Restic Retention Policy Report"
                     echo "From: \"Restic Forgety\" <no-reply@geekbundle.org>"
                     echo
                     cat $LOG
                   } | sendmail -S postfix.media.svc.cluster.local:25 webmaster@geekbundle.org
+                  exit $EXIT_CODE
                   #while true; do sleep 1000; done
               securityContext:
                 allowPrivilegeEscalation: false

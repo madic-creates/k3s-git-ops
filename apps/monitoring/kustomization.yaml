@@ -4,6 +4,8 @@ resources:
   - k8s.longhorn-monitoring.yaml
   - ks8.grafana-dashboards.kubernetes-event-exporter.yaml
   - ks8.grafana-dashboards.pi-hole-exporter.yaml
+  - ks8.grafana-dashboards.backup-script.yaml
+  - k8s.prometheusrule.backup-script.yaml
   - k8s.np.monitoring.yaml
 
 commonAnnotations:
