@@ -71,11 +71,11 @@ spec:
     - ports:
       - port: "8080"
         protocol: TCP
-  # Allow Alertmanager to send webhooks to claude-alert-analyzer
+  # Allow Alertmanager to send webhooks to claude-alert-kubernetes-analyzer
   - toEndpoints:
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: monitoring
-        k8s:app.kubernetes.io/name: claude-alert-analyzer
+        k8s:app.kubernetes.io/name: claude-alert-kubernetes-analyzer
     toPorts:
     - ports:
       - port: "8080"
