@@ -81,9 +81,19 @@ data:
     # Show script runtime for stdout and logfile
     script_runtime() {
       local exit_code="${1}"
+      # Disable traps so re-entry is impossible if a notification command itself fails.
+      trap - ERR EXIT
       JOB_DURATION=$(( $(date +%s) - JOB_START_TIME ))
       JOB_RUNTIME=$(date -u -d @${JOB_DURATION} +"%T")
       echo "$(date) Script exited with exit code ${exit_code}. Script runtime: $JOB_RUNTIME"
+      # Run notifications BEFORE the exec replace below — exec wipes traps and ends the
+      # shell, so anything not invoked here would be lost.
+      if [ "${PUSHGATEWAY_ENABLED}" = "true" ]; then
+        send_metrics_prometheus "${exit_code}"
+      fi
+      if [ "${NTFY_ENABLED}" = "true" ] && [ "${exit_code}" != "0" ]; then
+        notify_failure_ntfy
+      fi
       # Manually kill tee process to prevent hanging / zombie processes.
       # Needs to be done here because in some scenarios this script is executed by crond, running as pid 1,
       # which does not kill child processes.
@@ -97,15 +107,10 @@ data:
     # Logfile is required for ntfy notification
     exec > >(tee /tmp/backup.log) 2>&1
 
-    # Set a trap for ERR to notify of any failures via ntfy
-    if [ "${NTFY_ENABLED}" = "true" ]; then
-      trap 'script_runtime "$?"; notify_failure_ntfy' ERR
-    fi
-
-    # Set a trap to notify of any job status via prometheus pushgateway
-    if [ "${PUSHGATEWAY_ENABLED}" = "true" ]; then
-      trap 'send_metrics_prometheus "$?"' EXIT
-    fi
+    # Single trap for failure paths. Notifications and metric push happen inside
+    # script_runtime — using EXIT here would not work because script_runtime
+    # ends the shell via 'exec' (EXIT traps do not fire on exec replace).
+    trap 'script_runtime "$?"' ERR
 
     # Execute PRE_HOOK. Advanced usage!
     if [ -n "${PRE_HOOK}" ]; then
