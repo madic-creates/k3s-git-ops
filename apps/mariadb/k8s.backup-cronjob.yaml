@@ -54,7 +54,7 @@ spec:
       template:
         metadata:
           labels:
-            app: mariadb-backup
+            app.kubernetes.io/name: mariadb-backup
         spec:
           serviceAccountName: mariadb-backup-serviceaccount
           initContainers:

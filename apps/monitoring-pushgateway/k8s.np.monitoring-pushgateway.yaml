@@ -28,16 +28,25 @@ spec:
     - ports:
       - port: "9091"
         protocol: TCP
-  # Allow backup scripts and other applications to push metrics to pushgateway.
-  # Backup CronJobs live in several namespaces with inconsistent pod labels
-  # (app vs app.kubernetes.io/name), so we match by namespace instead of label.
+  # Allow backup workloads to push metrics to pushgateway.
+  # All sources are matched by app.kubernetes.io/name (the canonical pod label).
+  # restic-retentionpolicies (longhorn) is the cluster-wide retention CronJob.
+  # mariadb-backup (databases) is the database backup CronJob.
+  # emby and nextpvr (media) run the backup as a sidecar inside the app pod,
+  # so the source label matches the application's own pod label.
   - fromEndpoints:
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: longhorn
+        k8s:app.kubernetes.io/name: restic-retentionpolicies
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: databases
+        k8s:app.kubernetes.io/name: mariadb-backup
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: media
+        k8s:app.kubernetes.io/name: emby
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: media
+        k8s:app.kubernetes.io/name: nextpvr
     toPorts:
     - ports:
       - port: "9091"
