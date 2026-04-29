@@ -5,7 +5,7 @@ commonAnnotations:
 helmCharts:
   - name: forgejo-runner
     repo: oci://codeberg.org/wrenix/helm-charts
-    version: 0.6.16
+    version: 0.7.6
     releaseName: forgejo-runner
     namespace: forgejo-runner
     valuesFile: values.yaml
