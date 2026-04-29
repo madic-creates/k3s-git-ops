@@ -25,6 +25,15 @@ spec:
   - fromEndpoints:
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: paper
+  # Allow Homepage dashboard to query Paperless-NGX API for widget data
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: media
+        k8s:app.kubernetes.io/name: homepage
+    toPorts:
+    - ports:
+      - port: '8000'
+        protocol: TCP
   egress:
   # Allow DNS resolution via CoreDNS
   - toEndpoints:

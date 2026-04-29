@@ -39,6 +39,15 @@ spec:
     - ports:
       - port: "6789"
         protocol: TCP
+  # Allow Homepage dashboard to query NZBGet API for widget data
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: media
+        k8s:app.kubernetes.io/name: homepage
+    toPorts:
+    - ports:
+      - port: "6789"
+        protocol: TCP
   egress:
   # Allow DNS resolution via CoreDNS
   - toEndpoints:

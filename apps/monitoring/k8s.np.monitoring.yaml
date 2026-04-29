@@ -127,6 +127,15 @@ spec:
     - ports:
       - port: "3000"
         protocol: TCP
+  # Allow Homepage dashboard to query Grafana API for widget data
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: media
+        k8s:app.kubernetes.io/name: homepage
+    toPorts:
+    - ports:
+      - port: "3000"
+        protocol: TCP
   egress:
   # Allow DNS resolution
   - toEndpoints:
@@ -243,6 +252,15 @@ spec:
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: monitoring
         k8s:app.kubernetes.io/name: tamagotchi
+    toPorts:
+    - ports:
+      - port: "9090"
+        protocol: TCP
+  # Allow Homepage dashboard to query Prometheus API for widget data
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: media
+        k8s:app.kubernetes.io/name: homepage
     toPorts:
     - ports:
       - port: "9090"
