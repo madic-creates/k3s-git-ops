@@ -1,0 +1,20 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: monitoring
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "16"
+
+resources:
+  - k8s.deployment.yaml
+  - k8s.service.yaml
+  - k8s.np.karma.yaml
+
+generators:
+  - kustomize-secret-generator.yaml
+
+configMapGenerator:
+  - name: karma-config
+    files:
+      - karma.yaml

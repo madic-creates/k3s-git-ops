@@ -1,0 +1,47 @@
+---
+# Karma application-specific network policy.
+# Selecting the pod via endpointSelector implicitly puts it under default-deny;
+# only explicitly allowed traffic passes.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: karma
+  namespace: monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "16"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: karma
+  ingress:
+    # Traefik forwards browser traffic via Authelia
+    - fromEndpoints:
+        - matchLabels:
+            k8s:app.kubernetes.io/instance: traefik-kube-system
+            k8s:io.kubernetes.pod.namespace: kube-system
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+  egress:
+    # DNS
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s:k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    # Alertmanager API (read alerts, create silences)
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: monitoring
+            k8s:app.kubernetes.io/name: alertmanager
+      toPorts:
+        - ports:
+            - port: "9093"
+              protocol: TCP

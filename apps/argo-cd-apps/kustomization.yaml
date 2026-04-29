@@ -22,6 +22,7 @@ resources:
   - 15-backup-script.yaml
   - 15-longhorn.yaml
   - 16-checkmk-agent.yaml
+  - 16-karma.yaml
   - 16-monitoring.yaml
   - 16-ntfy-alertmanager.yaml
   - 16-versitygw.yaml

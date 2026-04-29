@@ -1,0 +1,19 @@
+alertmanager:
+  interval: 30s
+  servers:
+    - name: kube-prometheus-stack
+      uri: http://kube-prometheus-stack-alertmanager.monitoring.svc.cluster.local:9093
+      external_uri: https://alertmanager.internal.neese-web.de
+      timeout: 20s
+      proxy: false
+# Authentication is enforced by Authelia ForwardAuth on Traefik.
+# Karma trusts the Remote-User header it sets so silences are attributed.
+authentication:
+  header:
+    name: Remote-User
+    value_re: ^(.+)$
+listen:
+  address: 0.0.0.0
+  port: 8080
+log:
+  level: info
