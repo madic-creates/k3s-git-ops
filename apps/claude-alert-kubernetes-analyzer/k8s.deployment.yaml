@@ -75,7 +75,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: claude-alert-kubernetes-analyzer-env
-                  key: NTFY_PUBLISH_URLs
+                  key: NTFY_PUBLISH_URL
           volumeMounts:
             - name: tmp
               mountPath: /tmp
