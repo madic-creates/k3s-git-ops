@@ -59,7 +59,7 @@ off-site protection.
 └───────────────────────────────────────────────────────┘
 ┌───────────────────────────────────────────────────────┐
 │ backup-restore-test (longhorn ns)                     │
-│   weekly round-robin restore from local repo          │
+│   weekly full-fleet restore from local repo           │
 └───────────────────────────────────────────────────────┘
  metrics ──────────────── ntfy
       ▼                    ▼
@@ -97,7 +97,7 @@ or roll the deployment).
 | Downloader (*arr-stack) | `downloader` | `:50` hourly | `downloader` | `downloader` | hostPath, ZFS node |
 | Paperless-ngx | `paper` | `:00` hourly | `paperless` | `paperless` | 3 SMB PVCs (data, media, export) |
 | Retention | `longhorn` | `03:05` daily | n/a | `restic-retentionpolicies` | (forget + prune + integrity check) |
-| Restore-test | `longhorn` | `04:00` Sun | n/a | `backup-restore-test` | round-robin restore from local repo |
+| Restore-test | `longhorn` | `04:00` Sun | n/a | `backup-restore-test` | restore every tag from local repo, verify |
 | Wasabi mirror | `backup` | `05:00` daily | n/a | `backup-mirror-wasabi` | rclone copy local → Wasabi |
 
 Hourly slots are 10 minutes apart and the workload backups are capped at
@@ -358,7 +358,7 @@ Three PrometheusRule alerts ship in `apps/backup-script/k8s.backup-alerts.yaml`:
 | Alert | Severity | Trigger |
 |---|---|---|
 | `BackupOverdue` | warning | `time() - backup_start_timestamp > 7200` for 10m on any non-retention instance — at least two consecutive hourly slots missed |
-| `BackupRestoreTestFailed` | critical | `backup_restore_status > 0` for 1h — the weekly round-robin restore could not be verified |
+| `BackupRestoreTestFailed` | critical | `backup_restore_status > 0` for 1h — at least one tag's weekly full-fleet restore could not be verified |
 | `BackupRestoreTestStale` | warning | no `backup-restore-test` push in 9 days — CronJob suspended or failing |
 | `BackupMirrorFailed` | warning | `backup_mirror_status > 0` for 1h — daily Wasabi mirror returned non-zero |
 | `BackupMirrorStale` | warning | no `backup-mirror-wasabi` push in 2 days — off-site copy is freezing |

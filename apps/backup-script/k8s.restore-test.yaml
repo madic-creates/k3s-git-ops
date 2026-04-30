@@ -1,19 +1,16 @@
 ---
-# Weekly round-robin restore test for the backup fleet.
+# Weekly full-fleet restore test.
 #
-# Each Sunday at 04:00, this CronJob picks ONE backup tag (cycling
-# through all six over six weeks based on the ISO week number),
-# restores the latest snapshot of that tag to a scratch volume, and
-# runs a tag-specific sanity check on the result. The outcome is
-# pushed as backup_restore_status{tag=...} to the Pushgateway.
+# Each Sunday at 04:00, this CronJob restores the latest snapshot
+# of every configured tag from the local rest-server to an
+# emptyDir scratch volume and runs a tag-specific sanity check.
+# Each tag's outcome is pushed as
+# backup_restore_status{tag=...} to the Pushgateway under
+# instance=<tag>.
 #
-# Round-robin keeps the monthly Wasabi egress under ~10 GB even for
-# the largest tag (paperless ~8 GB), comfortably within the
-# free-egress envelope (1:1 with stored volume per Wasabi policy).
-#
-# Detection latency per class is up to 6 weeks. Acceptable for a
-# home cluster; a more aggressive cadence is documented in
-# https://github.com/madic-creates/k3s-git-ops/issues/148.
+# The test reads from rest-server over LAN — no Wasabi egress, no
+# 1:1 ratio cap. Restoring all tags every week therefore caps
+# detection latency at one week per tag.
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -28,7 +25,11 @@ spec:
   jobTemplate:
     spec:
       backoffLimit: 0
-      activeDeadlineSeconds: 3600
+      # 2 h is comfortable headroom: paperless dominates the runtime
+      # (~8 GB at LAN read speed); the other tags finish in seconds
+      # to a couple of minutes. emptyDir is wiped between iterations
+      # so the 10 GiB sizeLimit is enough for the single largest tag.
+      activeDeadlineSeconds: 7200
       template:
         metadata:
           labels:
@@ -37,8 +38,9 @@ spec:
         spec:
           automountServiceAccountToken: false
           restartPolicy: Never
-          # nobody — the script only reads from Wasabi and writes to
-          # an ephemeral scratch volume; no app data is touched.
+          # nobody — the script only reads from the local rest-server
+          # and writes to an ephemeral scratch volume; no app data is
+          # touched.
           securityContext:
             runAsUser: 65534
             runAsGroup: 65534
@@ -62,71 +64,77 @@ spec:
                 - |
                   set +e
                   JOB_START_TIME=$(date +%s)
-                  WEEK=$(date +%V)
+                  OVERALL_STATUS=0
 
-                  # Round-robin by ISO week number — picks the same tag
-                  # for the entire week regardless of which day the run
-                  # actually fires (handy for catch-up runs after a
-                  # missed slot).
+                  # Configured rotation. Add or remove tags here as the
+                  # backup fleet evolves; the verifier case statement
+                  # below must learn the new tag at the same time.
                   TAGS="mariadb emby nextpvr downloader paperless grafana"
-                  INDEX=$(( ($WEEK - 1) % 6 ))
-                  TAG=$(echo "$TAGS" | cut -d' ' -f$((INDEX + 1)))
 
-                  TARGET=/restore/$TAG
-                  echo "=== Restore-test tag=$TAG (week $WEEK) ==="
-                  rm -rf /restore/* && mkdir -p $TARGET
+                  for TAG in $TAGS; do
+                    TAG_START_TIME=$(date +%s)
+                    TARGET=/restore/$TAG
+                    echo
+                    echo "=== Restore-test tag=$TAG ==="
+                    rm -rf /restore/* && mkdir -p $TARGET
 
-                  restic restore latest --tag "$TAG" --target $TARGET
-                  RESTORE_EC=$?
+                    restic restore latest --tag "$TAG" --target $TARGET
+                    RESTORE_EC=$?
 
-                  if [ $RESTORE_EC -ne 0 ]; then
-                    echo "ERROR: restic restore exited $RESTORE_EC"
-                    STATUS=$RESTORE_EC
-                  else
-                    # Each verifier passes if the canonical file/dir
-                    # exists and is non-empty. restic itself checksums
-                    # every blob during restore, so bit-level integrity
-                    # is already covered — these checks add a sanity
-                    # layer on top (right files in right places).
-                    case "$TAG" in
-                      mariadb)
-                        [ -s "$TARGET/backup/mariadb.xb" ] && STATUS=0 || STATUS=1 ;;
-                      grafana)
-                        [ -s "$TARGET/backup/grafana/grafana.db" ] && STATUS=0 || STATUS=1 ;;
-                      emby)
-                        [ -s "$TARGET/backup/emby-config/system.xml" ] && STATUS=0 || STATUS=1 ;;
-                      nextpvr)
-                        [ -s "$TARGET/backup/nextpvr-config/config.xml" ] && STATUS=0 || STATUS=1 ;;
-                      downloader)
-                        STATUS=0
-                        for db in sonarr/sonarr.db radarr/radarr.db lidarr/lidarr.db; do
-                          [ -s "$TARGET/backup/$db" ] || STATUS=1
-                        done ;;
-                      paperless)
-                        if [ -d "$TARGET/backup/paperless-data" ] \
-                           && [ -d "$TARGET/backup/paperless-media" ] \
-                           && [ -d "$TARGET/backup/paperless-export" ]; then
+                    if [ $RESTORE_EC -ne 0 ]; then
+                      echo "ERROR: restic restore exited $RESTORE_EC"
+                      STATUS=$RESTORE_EC
+                    else
+                      # Each verifier passes if the canonical file/dir
+                      # exists and is non-empty. restic itself checksums
+                      # every blob during restore, so bit-level integrity
+                      # is already covered — these checks add a sanity
+                      # layer on top (right files in right places).
+                      case "$TAG" in
+                        mariadb)
+                          [ -s "$TARGET/backup/mariadb.xb" ] && STATUS=0 || STATUS=1 ;;
+                        grafana)
+                          [ -s "$TARGET/backup/grafana/grafana.db" ] && STATUS=0 || STATUS=1 ;;
+                        emby)
+                          [ -s "$TARGET/backup/emby-config/system.xml" ] && STATUS=0 || STATUS=1 ;;
+                        nextpvr)
+                          [ -s "$TARGET/backup/nextpvr-config/config.xml" ] && STATUS=0 || STATUS=1 ;;
+                        downloader)
                           STATUS=0
-                        else
-                          STATUS=1
-                        fi ;;
-                      *)
-                        echo "ERROR: no verifier defined for tag $TAG"
-                        STATUS=1 ;;
-                    esac
-                  fi
+                          for db in sonarr/sonarr.db radarr/radarr.db lidarr/lidarr.db; do
+                            [ -s "$TARGET/backup/$db" ] || STATUS=1
+                          done ;;
+                        paperless)
+                          if [ -d "$TARGET/backup/paperless-data" ] \
+                             && [ -d "$TARGET/backup/paperless-media" ] \
+                             && [ -d "$TARGET/backup/paperless-export" ]; then
+                            STATUS=0
+                          else
+                            STATUS=1
+                          fi ;;
+                        *)
+                          echo "ERROR: no verifier defined for tag $TAG"
+                          STATUS=1 ;;
+                      esac
+                    fi
 
-                  JOB_DURATION=$(( $(date +%s) - JOB_START_TIME ))
-                  echo "Verification status=$STATUS duration=${JOB_DURATION}s"
+                    TAG_DURATION=$(( $(date +%s) - TAG_START_TIME ))
+                    echo "Verification status=$STATUS duration=${TAG_DURATION}s"
 
-                  {
-                    echo "backup_restore_status{tag=\"$TAG\"} $STATUS"
-                    echo "backup_restore_duration_seconds{tag=\"$TAG\"} $JOB_DURATION"
-                  } | curl -s --data-binary @- \
-                       "$PUSHGATEWAY_URL/metrics/job/backup-restore-test/instance/$TAG"
+                    {
+                      echo "backup_restore_status{tag=\"$TAG\"} $STATUS"
+                      echo "backup_restore_duration_seconds{tag=\"$TAG\"} $TAG_DURATION"
+                    } | curl -s --data-binary @- \
+                         "$PUSHGATEWAY_URL/metrics/job/backup-restore-test/instance/$TAG"
+
+                    [ $STATUS -ne 0 ] && OVERALL_STATUS=$STATUS
+                  done
 
                   rm -rf /restore/*
-                  exit $STATUS
+                  JOB_DURATION=$(( $(date +%s) - JOB_START_TIME ))
+                  echo
+                  echo "=== All tags processed in ${JOB_DURATION}s, overall_status=$OVERALL_STATUS ==="
+                  exit $OVERALL_STATUS
               volumeMounts:
                 - name: home
                   mountPath: /home/restic
