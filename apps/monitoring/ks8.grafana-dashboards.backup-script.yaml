@@ -175,7 +175,12 @@ data:
                   "__name__ 1": true, "__name__ 2": true, "__name__ 3": true,
                   "job 1": true, "job 2": true, "job 3": true,
                   "exported_instance 1": true, "exported_instance 2": true, "exported_instance 3": true,
-                  "exported_job 1": true, "exported_job 2": true, "exported_job 3": true
+                  "exported_job 1": true, "exported_job 2": true, "exported_job 3": true,
+                  "container 1": true, "container 2": true, "container 3": true,
+                  "endpoint 1": true, "endpoint 2": true, "endpoint 3": true,
+                  "namespace 1": true, "namespace 2": true, "namespace 3": true,
+                  "pod 1": true, "pod 2": true, "pod 3": true,
+                  "service 1": true, "service 2": true, "service 3": true
                 },
                 "indexByName": {},
                 "renameByName": {
