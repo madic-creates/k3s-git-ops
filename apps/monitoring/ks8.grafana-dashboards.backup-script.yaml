@@ -319,7 +319,7 @@ data:
         {
           "type": "table",
           "title": "Restore tests",
-          "description": "Latest result of the weekly round-robin restore-test CronJob (apps/backup-script/k8s.restore-test.yaml). Each Sunday one of the six tags is restored to a scratch volume and verified; the cycle covers every tag every six weeks. Status is the exit code of restic restore plus the post-restore sanity check, joined on the instance label. Last tested shows when the metric was last pushed — a value much older than 6 weeks indicates the CronJob is stuck.",
+          "description": "Latest result of the weekly round-robin restore-test CronJob (apps/backup-script/k8s.restore-test.yaml). Each Sunday one tag from the configured rotation is restored from the local rest-server to an emptyDir scratch volume and verified; the cycle covers every tag once per rotation period. Status is the exit code of restic restore plus the post-restore sanity check (file-existence and SQLite-DB presence checks), joined on the instance label. Last tested shows when the metric was last pushed — a value much older than the rotation period indicates the CronJob is stuck rather than just on its off-cycle.",
           "id": 8,
           "gridPos": {"h": 8, "w": 24, "x": 0, "y": 31},
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
