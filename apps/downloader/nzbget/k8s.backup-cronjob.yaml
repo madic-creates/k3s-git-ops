@@ -38,7 +38,7 @@ spec:
             node-role/workload: zfs
           containers:
             - name: restic
-              image: ghcr.io/madic-creates/container-restic:latest@sha256:c5786cdded119d4bf44680e95f54a4cbb0f89ddb05eab83937709f0b6338a811
+              image: ghcr.io/madic-creates/container-restic:latest@sha256:58f2fad86c6d06cec34314873440dab6bb035d16a355fb79f9cb2ff7dbc802db
               imagePullPolicy: IfNotPresent
               command:
                 - /bin/sh
