@@ -5,7 +5,10 @@ alertmanager:
       uri: http://kube-prometheus-stack-alertmanager.monitoring.svc.cluster.local:9093
       external_uri: https://alertmanager.internal.neese-web.de
       timeout: 20s
-      proxy: false
+      # Proxy silence/group requests through karma's backend so the browser
+      # never has to call alertmanager directly (avoids cross-subdomain CORS
+      # and a second Authelia auth on alertmanager.internal.neese-web.de).
+      proxy: true
 # Authentication is enforced by Authelia ForwardAuth on Traefik.
 # Karma trusts the Remote-User header it sets so silences are attributed.
 authentication:
