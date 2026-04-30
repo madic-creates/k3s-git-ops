@@ -48,6 +48,27 @@ Apps use Kustomize's `helmCharts` feature to deploy Helm charts inline. Each app
 - `kustomize-secret-generator.yaml` - ksops configuration for decrypting secrets
 - `k8s.*.yaml` - Additional Kubernetes manifests
 
+## GitOps Workflow — Do Not Bypass ArgoCD
+
+**Never modify ArgoCD-managed objects directly with `kubectl edit`, `kubectl patch`, or `kubectl apply`.** Git is the source of truth; the cluster is a reconciled copy. Manual edits create drift that ArgoCD may silently revert (or worse, fail to detect when its sync timestamp is stale), so the change appears to work, gets reverted minutes later, and is impossible to reproduce.
+
+The only way to change a managed resource is:
+
+1. Edit the YAML in this repo
+2. `git commit` and `git push` to the remote tracked by ArgoCD
+3. Wait for ArgoCD to auto-sync, or trigger explicitly:
+   - `kubectl annotate -n argocd application <app> argocd.argoproj.io/refresh=hard --overwrite`
+   - or `argocd app sync <app>` if the CLI is logged in
+4. Verify with `kubectl get application -n argocd <app> -o jsonpath='SYNC={.status.sync.status} HEALTH={.status.health.status}{"\n"}'`
+
+Exceptions where direct `kubectl` is acceptable:
+- Read-only inspection (`kubectl get`, `kubectl logs`, `kubectl describe`, `kubectl exec` for diagnostics)
+- One-off Job triggers from a managed CronJob (`kubectl create job --from=cronjob/...`) — these are not tracked by ArgoCD
+- Ephemeral debug pods (`kubectl run --rm`)
+- Cluster-state operations not represented in Git (e.g. forcing a pod restart via `kubectl delete pod` to pick up a new ConfigMap mounted via `subPath`)
+
+If a quick verification of a manifest change is needed before committing, do it in a scratch namespace or with a dry-run, not by mutating the live managed resource.
+
 ## Secret Management with SOPS
 
 All sensitive data is encrypted using Mozilla SOPS with age encryption.
