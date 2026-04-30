@@ -11,7 +11,7 @@ resources:
   - k8s.deployment.yaml
   - k8s.service.yaml
   - k8s.np.rest-server.yaml
-  #- k8s.backup-mirror-wasabi.yaml
+  - k8s.backup-mirror-wasabi.yaml
   - k8s.np.backup-mirror-wasabi.yaml
 
 generators:
