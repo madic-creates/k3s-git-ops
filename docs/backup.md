@@ -1,190 +1,384 @@
 # Backup
 
-For backups I need a solution that backups the files within a persistend volume.
-I've taken a look at velero and the included backup solution from Longhorn but wasn't able
-to get what I want. Longhorn seems to be doing block based backups and with Velero I wasn't able to create file backups. Althoug I do not exclude that I've missed something.
+The cluster needs a backup solution that captures the contents of persistent
+volumes. Velero and Longhorn's built-in backup were both evaluated and ruled out:
+Longhorn does block-level backups, and Velero did not produce file-level snapshots
+in the way I wanted (admittedly I may have missed something).
 
-At the moment I'm evaluating restic as a sidecar container. The sidecar container uses crontab to create backups in regular intervals. The container mounts the crontab config and backup script from configmaps and reads the environment variables from a secret, which configure the backup.
+The current setup uses [restic](https://restic.net/){target=_blank}, a single
+shared backup script, and a fleet of standalone CronJobs. Each target has its own
+CronJob, but all of them share one repository, one password, and one retention pass.
 
-Backups with restic provide:
+restic provides everything I want from a backup tool:
 
 - ✅ ... encryption
 - ✅ ... compression
 - ✅ ... deduplication
 - ✅ ... retention policies
 
-So I can upload my backup to any storage backend without leaking any data. And because of deduplication and compression a lot of storage space can be saved. Included retention policies make it easy to delete old backups.
+The shared script (`backup.sh`) is small and config-driven via environment
+variables. It runs `restic backup`, optionally pushes Pushgateway metrics, and
+optionally sends a ntfy notification on failure.
 
-Script Features:
+## Architecture
 
-- Backup any folder to a restic supported storage backend
-- Delete old backups (Daily, Weekly, Monthly, Always Keep Last)
-- ntfy.sh notification on failure
-- prometheus pushgateway metrics
+```
+┌──────────────────────┐  ┌──────────────────────┐  ┌── more backup CronJobs
+│ backup-mariadb       │  │ backup-emby          │  │
+│   (databases ns)     │  │   (media ns)         │
+│ initContainer dumps  │  │ podAffinity:emby     │
+│ → restic backup ─────┼┐ │ → restic backup ─────┼──┤
+└──────────────────────┘│ └──────────────────────┘  │
+                        │                            │
+                        │   ┌─────────────────────┐  │
+                        │   │ backup.sh (shared)  │  │
+                        │   │ ConfigMap mirrored  │  │
+                        │   │ via Reflector       │  │
+                        │   └─────────────────────┘  │
+                        │                            │
+                        ▼                            ▼
+        ┌──────────────────────────────────────────────────┐
+        │ Wasabi S3: k3s-at-home-01/restic-backup          │
+        │   one repository, multiple tags                  │
+        └────────────┬─────────────────────────────────────┘
+                     │
+                     ▼
+        ┌──────────────────────────────────────────────────┐
+        │ restic-retentionpolicies (longhorn ns)           │
+        │   daily forget + prune                           │
+        └──────────────────────────────────────────────────┘
+                     │
+   metrics ──────────┴────────── ntfy
+        ▼                            ▼
+  Pushgateway                  ntfy.geekbundle
+```
 
-/// info
-The script runs restic and uploads the backup to the storage backend. Additionally it deletes old backups. It get's the configuration from environment variables.
-///
+The shared script lives as ConfigMap `crontab-backup-script` in the `longhorn`
+namespace and is mirrored into every namespace by
+[Reflector](https://github.com/emberstack/kubernetes-reflector){target=_blank},
+so every backup CronJob mounts it from its own namespace.
 
-```yaml title="Sidecar deployment example"
-apiVersion: apps/v1
-kind: Deployment
+The script source is in the
+[git repository](https://github.com/madic-creates/k3s-git-ops/blob/main/apps/backup-script/backup-script.yaml){target=_blank}.
+Pods using the script need to be restarted after script changes (delete the pod
+or roll the deployment).
+
+## Backup fleet
+
+| Target | Namespace | Schedule | Tag | Hostname | Source |
+|---|---|---|---|---|---|
+| MariaDB | `databases` | `:10` hourly (skip 02-03) | `mariadb` | `mariadb` | `kubectl exec` dump → `/backup/mariadb.xb` |
+| Grafana | `monitoring` | `:20` hourly | `grafana` | `grafana` | PVC `longhorn-pvc-grafana` |
+| Emby | `media` | `:30` hourly | `emby` | `emby` | PVC `longhorn-pvc-emby` |
+| NextPVR | `media` | `:40` hourly | `nextpvr` | `nextpvr` | PVC `longhorn-pvc-nextpvr-config` |
+| Downloader (*arr-stack) | `downloader` | `:50` hourly | `downloader` | `downloader` | hostPath, ZFS node |
+| Paperless-ngx | `paper` | `:00` hourly | `paperless` | `paperless` | 3 SMB PVCs (data, media, export) |
+| Retention | `longhorn` | `03:05` daily | n/a | `restic-retentionpolicies` | (forget + prune only) |
+
+Hourly slots are 10 minutes apart and each backup is capped at
+`activeDeadlineSeconds: 540`, so they cannot overlap with each other or with the
+daily retention pass at 03:05.
+
+The pod `app.kubernetes.io/name` label is always `backup-<target>` (e.g.
+`backup-grafana`) and pods carry `app.kubernetes.io/component: backup` so the
+Pushgateway NetworkPolicy can match by component.
+
+## CronJob skeleton
+
+Below is the Grafana CronJob, simplified. All non-mariadb backups follow the
+same pattern (PVC mounted at `/backup/<target>`, podAffinity to the app pod
+when the PVC is RWO):
+
+```yaml title="apps/monitoring/k8s.backup-grafana-cronjob.yaml"
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-grafana
+  namespace: monitoring
 spec:
-  template:
+  schedule: "20 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
+  startingDeadlineSeconds: 3600
+  jobTemplate:
     spec:
-      containers:
-        - name: backup-sidecar
-          image: ghcr.io/restic/restic:0.17.1
-          envFrom:
-            - secretRef:
-                name: backup-env-configuration
-          imagePullPolicy: IfNotPresent
-          command: ["/usr/sbin/crond", "-f", "-d", "6"]
-          volumeMounts:
-            - mountPath: /backup/config
-              name: config
-              readOnly: true
-            - name: crontab-config
-              mountPath: /etc/crontabs/root
-              subPath: crontab
+      backoffLimit: 2
+      activeDeadlineSeconds: 540
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: backup-grafana
+            app.kubernetes.io/component: backup
+        spec:
+          automountServiceAccountToken: false
+          restartPolicy: Never
+          securityContext:
+            runAsUser: 472
+            runAsGroup: 472
+            fsGroup: 472
+            runAsNonRoot: true
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: grafana
+                  namespaces: [monitoring]
+                  topologyKey: kubernetes.io/hostname
+          containers:
+            - name: restic
+              image: ghcr.io/madic-creates/container-restic:latest
+              command: ["/bin/sh", "/usr/local/bin/backup.sh"]
+              env:
+                - name: HOME
+                  value: /home/restic
+              envFrom:
+                - secretRef: { name: backup-env-configuration-grafana }
+              volumeMounts:
+                - name: backup-script
+                  mountPath: /usr/local/bin/backup.sh
+                  subPath: backup.sh
+                - name: grafana
+                  mountPath: /backup/grafana
+                  readOnly: true
+                - name: home
+                  mountPath: /home/restic
+          volumes:
+            - name: grafana
+              persistentVolumeClaim: { claimName: longhorn-pvc-grafana }
             - name: backup-script
-              mountPath: /usr/local/bin/backup.sh
-              subPath: backup.sh
-      volumes:
-        - name: crontab-config
-          configMap:
-            name: crontab
-        - name: backup-script
-          configMap:
-            name: crontab-backup-script
+              configMap: { name: crontab-backup-script }
+            - name: home
+              emptyDir: { medium: Memory, sizeLimit: 200Mi }
 ```
 
-```yaml title="crontab configuration"
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: crontab
-data:
-  crontab: |
-    # m h  dom mon dow   command
-    # Run script every hour
-    0 * * * * /bin/sh /usr/local/bin/backup.sh
+The matching encrypted Secret holds `RESTIC_REPOSITORY`, `RESTIC_PASSWORD`, the
+Wasabi credentials, the ntfy and Pushgateway settings, and the per-target
+`RESTIC_HOSTNAME` / `RESTIC_ADDITIONAL_BACKUP_PARAMETERS`. See the
+[restic configuration example](#restic-configuration-example) below.
+
+## Restore
+
+All snapshots are encrypted and stored in
+`s3:s3.eu-central-2.wasabisys.com/k3s-at-home-01/restic-backup`. Listing requires
+the repository password; restoring also requires the Wasabi credentials.
+
+### Generic workflow
+
+The simplest way to get a shell with restic, the Wasabi credentials, and the
+in-memory cache already wired up is to spawn a one-shot debug pod from the
+existing backup secret of the target you want to restore from:
+
+```bash
+kubectl run restic-shell -n monitoring --rm -it --restart=Never \
+  --image=ghcr.io/madic-creates/container-restic:latest \
+  --overrides='{
+    "spec": {
+      "containers": [{
+        "name": "restic-shell",
+        "image": "ghcr.io/madic-creates/container-restic:latest",
+        "command": ["sh"],
+        "stdin": true, "tty": true,
+        "envFrom": [{"secretRef": {"name": "backup-env-configuration-grafana"}}]
+      }]
+    }
+  }' -- sh
+
+# Inside the pod
+restic snapshots --tag grafana
+restic restore latest --tag grafana --target /tmp/restore
+ls /tmp/restore/backup/grafana/
 ```
 
-```yaml title="restic configuration"
-apiVersion: v1
-kind: Secret
-metadata:
-  name: backup-env-configuration
-stringData:
-  # Source directory to backup
-  RESTIC_SOURCE: /backup/config
-  # Backup repository (destination)
-  RESTIC_REPOSITORY: s3:s3.eu-central-2.wasabisys.com/path/to/backup
-  # Backup password
-  RESTIC_PASSWORD: <BackupPassword>
-  # Retention policies
-  KEEP_HOURLY: "48"
-  KEEP_DAILY: "7"
-  KEEP_WEEKLY: "4"
-  KEEP_LAST: "1"
-  # AWS credentials
-  AWS_ACCESS_KEY_ID: <SecureSuperSecretKey>
-  AWS_SECRET_ACCESS_KEY: <VerySecureSuperSecretKey>
+Pick the namespace and Secret name that matches the target you want to restore.
+Replace `--tag grafana` accordingly.
+
+### MariaDB
+
+The MariaDB backup is a `mariabackup --stream=xbstream` dump, restic-archived as
+`/backup/mariadb.xb`. Restore the stream, extract it, prepare the data
+directory, then either swap it into the live MariaDB or import the tables.
+
+```bash
+# In a debug pod with restic and mariadb-backup tools
+restic restore latest --tag mariadb --target /tmp/restore
+mkdir /tmp/extracted
+mbstream -x -C /tmp/extracted < /tmp/restore/backup/mariadb.xb
+mariabackup --prepare --target-dir=/tmp/extracted
+
+# Verify table counts (example)
+mysql -e "SELECT TABLE_SCHEMA, TABLE_NAME, TABLE_ROWS \
+          FROM information_schema.TABLES \
+          WHERE TABLE_SCHEMA NOT IN ('information_schema','performance_schema','mysql');"
 ```
 
-I won't include the backup script here, because it can change over time. The script is available in [my git repository](https://github.com/madic-creates/k3s-git-ops/blob/main/apps/backup-script/backup-script.yaml){target=_blank} as a ConfigMap. The ConfigMap get's replicated via reflector to all namespaces so all deployments can use the same script. But after changes to the script the pods using the script need to be restarted. This can be done by deleting the pods or by rolling out a new deployment.
+### Emby / NextPVR
+
+```bash
+restic restore latest --tag emby --target /tmp/emby-restore
+ls /tmp/emby-restore/backup/emby-config/
+# Look for system.xml, config files, and the metadata directory.
+
+restic restore latest --tag nextpvr --target /tmp/nextpvr-restore
+ls /tmp/nextpvr-restore/backup/nextpvr-config/
+```
+
+### Downloader (Sonarr / Radarr / Lidarr / NZBGet / NZBHydra2 / Trailarr)
+
+The downloader snapshot contains all six app config trees in a single tag. Pick
+the subfolder you need.
+
+```bash
+restic restore latest --tag downloader --target /tmp/restore-test
+
+# SQLite integrity check (example for Sonarr)
+sqlite3 /tmp/restore-test/backup/sonarr/sonarr.db "PRAGMA integrity_check;"
+sqlite3 /tmp/restore-test/backup/radarr/radarr.db "PRAGMA integrity_check;"
+sqlite3 /tmp/restore-test/backup/lidarr/lidarr.db "PRAGMA integrity_check;"
+```
+
+`-wal` and `-shm` files travel with the database file in the snapshot if they
+existed at backup time — make sure to restore them alongside the `.db`.
+
+### Paperless-ngx
+
+Three top-level paths come back: `paperless-data` (Postgres-style metadata,
+SQLite cache, etc.), `paperless-media` (the document archive itself), and
+`paperless-export`.
+
+```bash
+restic restore latest --tag paperless --target /tmp/paperless-restore
+ls /tmp/paperless-restore/backup/paperless-data/
+ls /tmp/paperless-restore/backup/paperless-media/documents/originals/
+sqlite3 /tmp/paperless-restore/backup/paperless-data/db.sqlite3 "PRAGMA integrity_check;"
+```
+
+### Grafana
+
+```bash
+restic restore latest --tag grafana --target /tmp/grafana-restore
+sqlite3 /tmp/grafana-restore/backup/grafana/grafana.db "PRAGMA integrity_check;"
+```
+
+`lost+found` at the PVC root is excluded by the backup; everything else (plugin
+data, dashboards from sidecar provisioning that have local edits, etc.) is in
+the snapshot.
 
 ## Notifications
 
-To get notified if a backup fails I'm using [ntfy](https://ntfy.sh/){target=_blank}. Ntfy is a simple notification service that can be self-hosted.
+If a backup fails the script sends a [ntfy](https://ntfy.sh/){target=_blank}
+notification. ntfy is a simple notification service that can be self-hosted.
 
 [![ntfy backup notification](images/ntfy_backup_alert.png){: style="height:600px" loading=lazy}](images/ntfy_backup_alert.png)
 
-### Pushgateway Integration
+## Pushgateway integration
 
-Additionaly the backup script supports integration with a Prometheus Pushgateway to send custom metrics about the backup process. This enables tracking of backup duration, start time, and status.
+The script pushes metrics to a Prometheus Pushgateway after each run. This
+enables tracking backup duration, start time, and status per target.
 
-#### Configuration
+### Configuration
 
-To enable metrics pushing to the Pushgateway, the following environment variables should be configured:
+Set in the per-target backup Secret:
 
-- **`PUSHGATEWAY_ENABLED`**: Set this to `"true"` to enable sending metrics to the Pushgateway
-- **`PUSHGATEWAY_URL`**: Specify the URL of the Pushgateway server where metrics should be sent to
+- **`PUSHGATEWAY_ENABLED`**: `"true"` to enable
+- **`PUSHGATEWAY_URL`**: full URL of the Pushgateway service
 
-#### Metrics Published
+### Metrics
 
-/// warning
-The metrics might change in the future. Currently I'm not realy satisfied. But maybe that's because I wasn't able to create a good grafana dashboard with them yet. I would appreciate any help. See issue [#3](https://github.com/madic-creates/k3s-git-ops/issues/3){target=_blank}
-///
+| Metric | Description |
+|---|---|
+| `backup_duration_seconds` | Duration of the backup run, in seconds |
+| `backup_start_timestamp` | Unix timestamp at which the run started |
+| `backup_status{status="success"\|"failure"}` | Restic exit code (0 on success, non-zero on failure) |
 
-The script publishes the following metrics to the Pushgateway:
+The pushgateway group is keyed by `job=backup, instance=<RESTIC_HOSTNAME>`, so
+each new push for a given target replaces the previous metrics — a successful
+run overwrites a stale failure metric automatically.
 
-- **`backup_duration_seconds`**: The time, in seconds, that the backup process took
-- **`backup_start_timestamp`**: The timestamp in epoch at which the backup process began
-- **`backup_status`**: The status of the backup process, with either `status="success"` or `status="failure"`
+A Grafana dashboard built on these metrics lives in
+`apps/monitoring/ks8.grafana-dashboards.backup-script.yaml`.
 
-**Example Environment Configuration:**
+## Alerts
 
-```yaml
-PUSHGATEWAY_ENABLED: "true"
-PUSHGATEWAY_URL: http://pushgateway.monitoring.svc.cluster.local
+Three PrometheusRule alerts ship in `apps/backup-script/k8s.backup-alerts.yaml`:
+
+| Alert | Severity | Trigger |
+|---|---|---|
+| `BackupOverdue` | warning | `time() - backup_start_timestamp > 7200` for 10m on any non-retention instance — at least two consecutive hourly slots missed |
+| `BackupFailed` | critical | `backup_status{status="failure"} == 1` for 5m — last run reported failure |
+| `BackupNeverRun` | warning | one of `mariadb`, `emby`, `nextpvr`, `downloader`, `paperless`, `grafana`, `restic-retentionpolicies` has no `backup_start_timestamp` series for 24h |
+
+## restic configuration example
+
+```yaml title="apps/<target>/backup-secrets.enc.yaml (decrypted)"
+apiVersion: v1
+kind: Secret
+metadata:
+  name: backup-env-configuration-grafana
+  namespace: monitoring
+  annotations:
+    kustomize.config.k8s.io/needs-hash: "true"
+stringData:
+  RESTIC_SOURCE: /backup/grafana
+  RESTIC_REPOSITORY: s3:s3.eu-central-2.wasabisys.com/k3s-at-home-01/restic-backup
+  RESTIC_PASSWORD: <shared restic password>
+  RESTIC_HOSTNAME: grafana
+  RESTIC_ADDITIONAL_BACKUP_PARAMETERS: --tag grafana --exclude lost+found
+  RESTIC_RETENTION_POLICIES_ENABLED: "false"
+  AWS_ACCESS_KEY_ID: <wasabi key>
+  AWS_SECRET_ACCESS_KEY: <wasabi secret>
+  NTFY_ENABLED: "true"
+  NTFY_CREDS: -u user:token
+  NTFY_SERVER: https://ntfy.geekbundle.org
+  NTFY_TOPIC: kubernetes-at-home
+  PUSHGATEWAY_ENABLED: "true"
+  PUSHGATEWAY_URL: http://prometheus-pushgateway.monitoring.svc.cluster.local:9091
 ```
 
-## 📝 Environment Variables
+`RESTIC_RETENTION_POLICIES_ENABLED: "false"` is set on every per-target Secret;
+all forget + prune happens in the centralized `restic-retentionpolicies`
+CronJob.
 
-The following environment variables are used to configure the backup script.
+## 📝 Environment variables
+
+The shared `backup.sh` reads the following variables. The `KEEP_*` variables are
+inert when `RESTIC_RETENTION_POLICIES_ENABLED=false` (which is the cluster
+default) — retention is centralized.
 
 | <div style="width:180px">Environment Variable</div>    | Default | Description                                           |
 |-------------------------|------|-----------------------------------------------------------------------------------------|
-| `RESTIC_SOURCE`         | Unset | Source directory to back up using Restic                                                       |
-| `RESTIC_REPOSITORY`     | Unset | Destination repository for the backup                                                          |
-| `RESTIC_PASSWORD`       | Unset | Password for encrypting the backup                                                             |
-| `RESTIC_HOSTNAME`       | `$(hostname | cut -d '-' -f1)` | **Optional.** Hostname to use for the backup. Defaults to the pod name. Especially usefull for pods with host networking. |
-| `AWS_ACCESS_KEY_ID`     | Unset | Access key ID for authenticating with an S3 compatible storage backend                         |
-| `AWS_SECRET_ACCESS_KEY` | Unset | Secret access key for authenticating with an S3 compatible storage backend                     |
-| `RESTIC_RETENTION_POLICIES_ENABLED` | `true` | **Optional.** Enable or disable retention policies |
-| `KEEP_HOURLY`           | 24 | **Optional.** Number of hourly backups to retain                                                             |
-| `KEEP_DAILY`            | 7 | **Optional.** Number of daily backups to keep                                                                |
-| `KEEP_WEEKLY`           | 4 | **Optional.** Number of weekly backups to maintain                                                           |
-| `KEEP_MONTHLY`          | 12 | **Optional.** Number of monthly backups to keep. Not implemented yet.                          |
-| `KEEP_YEARLY`           | 0 | **Optional.** Number of yearly backups to keep. Not implemented yet.                          |
-| `KEEP_LAST`             | 1 | **Optional.** Total number of most recent backups to keep, irrespective of time-based intervals              |
-| `NTFY_ENABLED`          | false | **Optional.** Indicates whether notification via ntfy is enabled. Possible values are `"true"` or `"false"`  |
-| `NTFY_TITLE`            | `${RESTIC_HOSTNAME - Backup failed}` | **Optional.** Title of the ntfy notification message. Can be a string or shell command                       |
-| `NTFY_CREDS`            | Unset | **Optional.** Credentials for authenticating with the ntfy notification service. Needs to include the `-u` option                |
-| `NTFY_PRIO`             | 4 | **Optional.** Priority level for the ntfy notification. Determines the importance of the notification        |
-| `NTFY_TAG`              | bangbang | **Optional.** Tags to categorize the ntfy notification, allowing filtering or grouping of messages           |
-| `NTFY_SERVER`           | ntfy.sh | **Optional.** URL of the ntfy server used for sending notifications                                          |
-| `NTFY_TOPIC`            | backup | **Optional.** Topic on the ntfy server where the message will be sent to                              |
-| `PUSHGATEWAY_ENABLED`   | false | **Optional.** Indicates whether sending metrics to the Pushgateway is enabled. Possible values are `"true"` or `"false"` |
-| `PUSHGATEWAY_URL`       | Unset | **Optional.** URL of the Pushgateway server for sending metrics                                              |
+| `RESTIC_SOURCE`         | Unset | Source directory (or space-separated directories) to back up |
+| `RESTIC_REPOSITORY`     | Unset | Destination repository for the backup |
+| `RESTIC_PASSWORD`       | Unset | Password for encrypting the backup |
+| `RESTIC_HOSTNAME`       | `$(hostname \| cut -d '-' -f1)` | **Optional.** Hostname recorded on each snapshot. Pin explicitly when the pod name doesn't start with the target name (especially for `hostNetwork` pods or renamed CronJobs). |
+| `RESTIC_ADDITIONAL_BACKUP_PARAMETERS` | Unset | **Optional.** Extra args passed to `restic backup` (typically `--tag <target>` and any `--exclude` patterns). |
+| `RESTIC_RETENTION_POLICIES_ENABLED` | `true` | **Optional.** Whether the script runs `restic forget` itself. Set to `"false"` so the central retention CronJob owns it. |
+| `RESTIC_CACHE_DIR`      | Unset | **Optional.** If set, the script also runs `restic check` after backup. |
+| `AWS_ACCESS_KEY_ID`     | Unset | S3 credentials |
+| `AWS_SECRET_ACCESS_KEY` | Unset | S3 credentials |
+| `KEEP_HOURLY`           | 24 | **Legacy.** Number of hourly snapshots to retain (only when `RESTIC_RETENTION_POLICIES_ENABLED=true`). |
+| `KEEP_DAILY`            | 7 | **Legacy.** Number of daily snapshots to retain. |
+| `KEEP_WEEKLY`           | 4 | **Legacy.** Number of weekly snapshots to retain. |
+| `KEEP_MONTHLY`          | 12 | **Legacy.** Not implemented. |
+| `KEEP_YEARLY`           | 0 | **Legacy.** Not implemented. |
+| `KEEP_LAST`             | 1 | **Legacy.** Total most-recent snapshots to retain regardless of time. |
+| `NTFY_ENABLED`          | false | **Optional.** `"true"` enables ntfy notifications on failure. |
+| `NTFY_TITLE`            | `${RESTIC_HOSTNAME} - Backup failed` | **Optional.** Notification title. Can be a string or a shell command. |
+| `NTFY_CREDS`            | Unset | **Optional.** Auth credentials including the `-u` option. |
+| `NTFY_PRIO`             | 4 | **Optional.** Notification priority. |
+| `NTFY_TAG`              | bangbang | **Optional.** Tags to categorize the notification. |
+| `NTFY_SERVER`           | ntfy.sh | **Optional.** ntfy server URL. |
+| `NTFY_TOPIC`            | backup | **Optional.** ntfy topic. |
+| `PUSHGATEWAY_ENABLED`   | false | **Optional.** `"true"` enables metric pushes. |
+| `PUSHGATEWAY_URL`       | Unset | **Optional.** Pushgateway URL. |
 
-```yaml title="Example environment variables"
-RESTIC_SOURCE: /backup/config
-RESTIC_REPOSITORY: s3:s3.eu-central-2.wasabisys.com/k3s-at-home-01/emby
-RESTIC_PASSWORD: bDuSsDS7uWf0OGrK4y5SBvEfIKkIVcK3gGZpxsVx6Ya6PfwkWANDZo8mRaoGnCE6
-KEEP_HOURLY: "48"
-KEEP_DAILY: "7"
-KEEP_WEEKLY: "4"
-KEEP_LAST: "1"
-AWS_ACCESS_KEY_ID: v1eoAeRYfHhcRsUsW
-AWS_SECRET_ACCESS_KEY: Hlk6wZiKdrqIafYLOdMbw9Z7WfKK8W6ata
-NTFY_ENABLED: "true"
-NTFY_TITLE: $(hostname | cut -d '-' -f1) - Backup failed
-# Needs to be with "-u"
-NTFY_CREDS: -u mne-adm:qhCVXJvzkf9SkjgFE9RDhtzycKbszdSnVw7fHFgS3cZCDmZMno25yfVhikrnPidS
-NTFY_PRIO: "4"
-NTFY_TAG: bangbang
-NTFY_SERVER: https://ntfy.geekbundle.org
-NTFY_TOPIC: kubernetes-at-home
-PUSHGATEWAY_ENABLED: "true"
-PUSHGATEWAY_URL: http://pushgateway.monitoring.svc.cluster.local:9091
-```
+## rclone (history)
 
-## rclone
-
-At some point I was also evaluating [rclone](https://rclone.org){target=_blank} as a sidecar container. But it doesn't support de-duplication and I want my storage costs to be as low as possible. For history reasons I keep the script that I've written and mounted in the container.
+At one point [rclone](https://rclone.org){target=_blank} was also evaluated for
+backups, but it has no de-duplication and storage costs would not have been
+acceptable. The reference script and configuration are kept here for historical
+context.
 
 ```shell title="rclone-backup.sh"
 #!/bin/sh
@@ -218,7 +412,6 @@ done
 # Log the completion of the backup process
 echo "$(date) Backup process completed" >> /data/run.log
 ```
-This required the following config map mounted to /config/rclone/rclone.conf
 
 ```yaml title="rclone configuration"
 ---
