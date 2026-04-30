@@ -27,6 +27,14 @@ spec:
         spec:
           automountServiceAccountToken: false
           restartPolicy: Never
+          # Run as root so restic can read files written by the *arr-stack
+          # apps (linuxserver.io images use UID 911 by default). The hostPath
+          # mounts are readOnly, so root inside the container cannot modify
+          # the source data.
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+            runAsNonRoot: false
           nodeSelector:
             node-role/workload: zfs
           containers:

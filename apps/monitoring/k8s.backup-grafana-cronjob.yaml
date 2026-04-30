@@ -25,6 +25,13 @@ spec:
         spec:
           automountServiceAccountToken: false
           restartPolicy: Never
+          # Run as root so restic can read files written by Grafana (UID 472)
+          # and any other future occupant of the PVC. The volume mount is
+          # readOnly, so root inside the container has no write capability.
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+            runAsNonRoot: false
           affinity:
             podAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
