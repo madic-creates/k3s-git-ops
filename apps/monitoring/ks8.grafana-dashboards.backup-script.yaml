@@ -321,7 +321,7 @@ data:
           "title": "Restore tests",
           "description": "Latest result of the weekly full-fleet restore-test CronJob (apps/backup-script/k8s.restore-test.yaml). Each Sunday every configured tag is restored from the local rest-server to an emptyDir scratch volume and verified. Status is the exit code of restic restore plus the post-restore sanity check (file-existence and SQLite-DB presence checks), joined on the instance label. Last tested shows when the metric was last pushed — a value much older than one week indicates the CronJob is stuck.",
           "id": 8,
-          "gridPos": {"h": 8, "w": 24, "x": 0, "y": 31},
+          "gridPos": {"h": 8, "w": 24, "x": 0, "y": 40},
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "targets": [
             {"expr": "backup_restore_status{job=\"backup-restore-test\"}", "format": "table", "instant": true, "refId": "A"},
@@ -395,7 +395,7 @@ data:
           "title": "Wasabi mirror status",
           "description": "Last result of the daily backup-mirror-wasabi CronJob (apps/backup-rest-server/k8s.backup-mirror-wasabi.yaml). 0 means rclone copy from the local rest-server to Wasabi succeeded. The local repo is the source of truth — a failed mirror leaves local intact but freezes the off-site copy.",
           "id": 9,
-          "gridPos": {"h": 4, "w": 12, "x": 0, "y": 39},
+          "gridPos": {"h": 4, "w": 12, "x": 0, "y": 48},
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "targets": [
             {"expr": "backup_mirror_status{job=\"backup-mirror-wasabi\"}", "refId": "A", "legendFormat": "{{status}}"}
@@ -429,7 +429,7 @@ data:
           "title": "Last Wasabi mirror",
           "description": "Time since the last successful (or failed) push from the backup-mirror-wasabi CronJob to the Pushgateway. The CronJob runs daily at 05:00; values much older than 24 h indicate the job is stuck.",
           "id": 10,
-          "gridPos": {"h": 4, "w": 12, "x": 12, "y": 39},
+          "gridPos": {"h": 4, "w": 12, "x": 12, "y": 48},
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "targets": [
             {"expr": "time() - push_time_seconds{job=\"backup-mirror-wasabi\"}", "refId": "A", "legendFormat": "age"}
@@ -461,7 +461,7 @@ data:
           "title": "Backup snapshot restore size",
           "description": "Bytes that a `restic restore latest` would extract for each host's most recent snapshot. Captured by backup.sh after every successful run via `restic stats latest --mode restore-size`. Pushgateway holds only the latest value per host, but Prometheus scrapes every 15 s and stores each scrape — the resulting time-series is the per-snapshot history, one step per backup run. Watch for sustained upward trends (capacity planning) or sudden drops (possible data loss).",
           "id": 11,
-          "gridPos": {"h": 9, "w": 24, "x": 0, "y": 43},
+          "gridPos": {"h": 9, "w": 24, "x": 0, "y": 31},
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "targets": [
             {"expr": "backup_snapshot_restore_size_bytes{job=\"backup\"}", "refId": "A", "legendFormat": "{{instance}}"}
