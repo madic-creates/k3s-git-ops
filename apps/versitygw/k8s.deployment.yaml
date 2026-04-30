@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: versitygw
-          image: ghcr.io/versity/versitygw:v1.0.19
+          image: ghcr.io/versity/versitygw:v1.4.1
           #image: forge.geekbundle.org/madic/versitygw:ldap-selfsigned
           imagePullPolicy: IfNotPresent
           args: ["posix", "/data"]
