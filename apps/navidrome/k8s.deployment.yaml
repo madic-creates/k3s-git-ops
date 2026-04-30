@@ -26,7 +26,7 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
       containers:
         - name: navidrome
-          image: ghcr.io/navidrome/navidrome:0.58.5
+          image: ghcr.io/navidrome/navidrome:0.61.2
           imagePullPolicy: IfNotPresent
           env:
             - name: ND_SCANSCHEDULE
