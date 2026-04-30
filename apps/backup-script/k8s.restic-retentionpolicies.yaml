@@ -8,7 +8,12 @@ spec:
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 1
   concurrencyPolicy: Forbid
-  schedule: "20 1 * * *"
+  # 03:05 daily. The other backup CronJobs are staggered around the hour
+  # (mariadb :10, grafana :20, emby :30, nextpvr :40, downloader :50,
+  # paperless :00); 03:05 lands in the gap before mariadb's 03:10 slot.
+  # `restic forget` and `prune` use --retry-lock 10m, so even an unlucky
+  # overlap with a long-running backup will block, not corrupt.
+  schedule: "5 3 * * *"
   jobTemplate:
     spec:
       backoffLimit: 0
@@ -62,12 +67,22 @@ spec:
                   rclone size wasabi:k3s-at-home-01 | tee -a $LOG
                   echo -e "\nRestic locks information" | tee -a $LOG
                   for id in $(restic list locks); do echo "=== $id ==="; restic cat lock $id; done
-                  echo -e "\nRetention policies for emby" | tee -a $LOG
-                  restic forget --retry-lock 10m --tag emby --group-by "host,tags" --keep-hourly 48 --keep-daily 7 --keep-weekly 2 --keep-monthly 0 --keep-yearly 0 --keep-last 4 2>&1 | tee -a $LOG || EXIT_CODE=$?
-                  echo -e "\nRetention policies for MariaDB" | tee -a $LOG
-                  restic forget --retry-lock 10m --tag MariaDB --group-by "host,tags" --keep-hourly 48 --keep-daily 7 --keep-weekly 2 --keep-monthly 0 --keep-yearly 0 --keep-last 4 2>&1 | tee -a $LOG || EXIT_CODE=$?
-                  echo -e "\nRetention policies for NextPVR" | tee -a $LOG
-                  restic forget --retry-lock 10m --tag NextPVR --group-by "host,tags" --keep-hourly 48 --keep-daily 7 --keep-weekly 2 --keep-monthly 0 --keep-yearly 0 --keep-last 4 2>&1 | tee -a $LOG || EXIT_CODE=$?
+                  # Legacy capital-case tags from the pre-migration era.
+                  # No new snapshots are written under these tags; once the
+                  # last legacy snapshot ages out via the keep-* policy,
+                  # this loop becomes a no-op and can be removed.
+                  for TAG in MariaDB NextPVR; do
+                    echo -e "\nRetention policies for ${TAG} (legacy tag)" | tee -a $LOG
+                    restic forget --retry-lock 10m --tag "${TAG}" --group-by "host,tags" --keep-hourly 48 --keep-daily 7 --keep-weekly 2 --keep-monthly 0 --keep-yearly 0 --keep-last 4 2>&1 | tee -a $LOG || EXIT_CODE=$?
+                  done
+                  # Current lowercase tags. mariadb is included even though
+                  # backup-mariadb still writes "--tag MariaDB" today —
+                  # restic forget on a tag with no snapshots is a no-op,
+                  # and the entry is ready for the upcoming migration.
+                  for TAG in mariadb emby nextpvr downloader paperless grafana; do
+                    echo -e "\nRetention policies for ${TAG}" | tee -a $LOG
+                    restic forget --retry-lock 10m --tag "${TAG}" --group-by "host,tags" --keep-hourly 48 --keep-daily 7 --keep-weekly 2 --keep-monthly 0 --keep-yearly 0 --keep-last 4 2>&1 | tee -a $LOG || EXIT_CODE=$?
+                  done
                   echo -e "\nPruning repository" | tee -a $LOG
                   restic prune --retry-lock 10m 2>&1 | tee -a $LOG || EXIT_CODE=$?
                   echo | tee -a $LOG
