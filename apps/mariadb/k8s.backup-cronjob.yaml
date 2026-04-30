@@ -41,22 +41,29 @@ roleRef:
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: mariadb-backup
+  name: backup-mariadb
   namespace: databases
 spec:
+  schedule: "10 0-1,3-23 * * *"
+  concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 1
-  concurrencyPolicy: Forbid
-  schedule: "0 0-1,3-23 * * *"
+  startingDeadlineSeconds: 3600
   jobTemplate:
     spec:
-      backoffLimit: 0
+      backoffLimit: 2
+      activeDeadlineSeconds: 540
       template:
         metadata:
           labels:
-            app.kubernetes.io/name: mariadb-backup
+            app.kubernetes.io/name: backup-mariadb
+            app.kubernetes.io/component: backup
         spec:
+          # automountServiceAccountToken stays at the default true — the
+          # initContainer needs the token to run kubectl exec into the
+          # mariadb pod for the dump.
           serviceAccountName: mariadb-backup-serviceaccount
+          restartPolicy: Never
           initContainers:
             - name: kubectl-mariadb-backup
               image: bitnami/kubectl:latest
@@ -68,14 +75,17 @@ spec:
                   kubectl exec -n databases $POD_NAME -- bash -c "rm -f /backup/mariadb.xb && mariadb-backup --skip-ssl-verify-server-cert --host 127.0.0.1 --user=root --password=\$(cat \$MARIADB_ROOT_PASSWORD_FILE) --backup --target-dir=/backup --stream=xbstream > /backup/mariadb.xb"
           containers:
             - name: restic
-              image: ghcr.io/restic/restic:0.18.1
-              envFrom:
-                - secretRef:
-                    name: backup-env-configuration-mariadb
+              image: ghcr.io/madic-creates/container-restic:latest@sha256:c5786cdded119d4bf44680e95f54a4cbb0f89ddb05eab83937709f0b6338a811
               imagePullPolicy: IfNotPresent
               command:
                 - /bin/sh
                 - /usr/local/bin/backup.sh
+              env:
+                - name: HOME
+                  value: /home/restic
+              envFrom:
+                - secretRef:
+                    name: backup-env-configuration-mariadb
               volumeMounts:
                 - name: backup-script
                   mountPath: /usr/local/bin/backup.sh
@@ -83,13 +93,20 @@ spec:
                 - name: backup
                   mountPath: /backup
                   readOnly: true
+                - name: home
+                  mountPath: /home/restic
+              # Match the bitnami/mariadb image UID (1001) so restic can
+              # read the dump file written by the initContainer's
+              # kubectl-exec'd mariadb-backup process.
               securityContext:
+                runAsUser: 1001
+                runAsGroup: 1001
+                runAsNonRoot: true
                 allowPrivilegeEscalation: false
                 capabilities:
                   drop:
                     - ALL
                 privileged: false
-          restartPolicy: Never
           volumes:
             - name: backup
               persistentVolumeClaim:
@@ -97,3 +114,7 @@ spec:
             - name: backup-script
               configMap:
                 name: crontab-backup-script
+            - name: home
+              emptyDir:
+                medium: Memory
+                sizeLimit: 200Mi

@@ -42,7 +42,7 @@ spec:
         k8s:app.kubernetes.io/name: restic-retentionpolicies
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: databases
-        k8s:app.kubernetes.io/name: mariadb-backup
+        k8s:app.kubernetes.io/name: backup-mariadb
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: media
         k8s:app.kubernetes.io/name: backup-emby
