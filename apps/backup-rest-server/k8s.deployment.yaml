@@ -56,10 +56,11 @@ spec:
           args:
             - --listen=:8000
             - --path=/data
+            # rest-server looks for .htpasswd inside --path by default;
+            # we keep the secret mount separate from the data volume,
+            # so point at it explicitly.
+            - --htpasswd-file=/etc/htpasswd/htpasswd
           env:
-            # Tell rest-server where the htpasswd file lives.
-            - name: HTPASSWD_FILE
-              value: /etc/htpasswd/htpasswd
             # Expose Prometheus metrics on /metrics. Pushgateway already
             # has scrape rules for the backup namespace — this gives us
             # request rates and bytes-served for free.
