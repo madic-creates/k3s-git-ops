@@ -20,59 +20,50 @@ The shared script (`backup.sh`) is small and config-driven via environment
 variables. It runs `restic backup`, optionally pushes Pushgateway metrics, and
 optionally sends a ntfy notification on failure.
 
-/// note | Migrating from the previous Wasabi-only setup
-The architecture below assumes the local-first migration is complete. The
-one-time runbook lives at
-[`docs/operations/backup-migration-runbook.md`](operations/backup-migration-runbook.md){target=_blank}.
-///
-
 ## Architecture
 
 The fleet writes **local-first**: every workload pushes to a Restic
 REST-server running on node04, backed by `/vol_raidz1/restic-local`.
 A daily mirror CronJob copies the local repository to Wasabi for
-off-site protection. Wasabi is no longer the source of truth — it is
-a one-way mirror.
+off-site protection.
 
 ```
-┌──────────────────────┐  ┌──────────────────────┐  ┌── more backup CronJobs
-│ backup-mariadb       │  │ backup-emby          │  │
-│   (databases ns)     │  │   (media ns)         │
-│ initContainer dumps  │  │ podAffinity:emby     │
-│ → restic backup ─────┼┐ │ → restic backup ─────┼──┤
-└──────────────────────┘│ └──────────────────────┘  │
-                        │                            │
-                        │   ┌─────────────────────┐  │
-                        │   │ backup.sh (shared)  │  │
-                        │   │ ConfigMap mirrored  │  │
-                        │   │ via Reflector       │  │
-                        │   └─────────────────────┘  │
-                        │                            │
-                        ▼                            ▼
-        ┌──────────────────────────────────────────────────┐
-        │ rest-server.backup.svc.cluster.local:8000        │
-        │   one repository, multiple tags                  │
-        │   data on node04: /vol_raidz1/restic-local       │
-        └────────────┬─────────────────────────────────────┘
-                     │ daily 05:00, rclone copy
-                     ▼
-        ┌──────────────────────────────────────────────────┐
-        │ Wasabi S3: k3s-at-home-01/restic-backup          │
-        │   off-site mirror (read for restore only)        │
-        └──────────────────────────────────────────────────┘
-
-  ┌───────────────────────────────────────────────────────┐
-  │ restic-retentionpolicies (longhorn ns)                │
-  │   daily 03:05 forget + prune + check on local repo    │
-  └───────────────────────────────────────────────────────┘
-  ┌───────────────────────────────────────────────────────┐
-  │ backup-restore-test (longhorn ns)                     │
-  │   weekly round-robin restore from local repo          │
-  └───────────────────────────────────────────────────────┘
-
-   metrics ──────────────── ntfy
-        ▼                        ▼
-  Pushgateway              ntfy.geekbundle
+┌──────────────────────┐  ┌──────────────────────┐ ┌── more backup CronJobs
+│ backup-mariadb       │  │ backup-emby          │ │
+│   (databases ns)     │  │   (media ns)         │ │
+│ initContainer dumps  │  │ podAffinity:emby     │ │
+│ → restic backup ────┐│  │ → restic backup ─────┼─┤
+└─────────────────────┼┘  └──────────────────────┘ │
+                      │                            │
+                      │   ┌─────────────────────┐  │
+                      │   │ backup.sh (shared)  │  │
+                      │   │ ConfigMap mirrored  │  │
+                      │   │ via Reflector       │  │
+                      │   └─────────────────────┘  │
+                      │                            │
+                      ▼                            ▼
+      ┌──────────────────────────────────────────────────┐
+      │ rest-server.backup.svc.cluster.local:8000        │
+      │   one repository, multiple tags                  │
+      │   data on node04: /vol_raidz1/restic-local       │
+      └────────────┬─────────────────────────────────────┘
+                   │ daily 05:00, rclone copy
+                   ▼
+      ┌──────────────────────────────────────────────────┐
+      │ Wasabi S3: k3s-at-home-01/restic-backup          │
+      │   off-site mirror (read for restore only)        │
+      └──────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────┐
+│ restic-retentionpolicies (longhorn ns)                │
+│   daily 03:05 forget + prune + check on local repo    │
+└───────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────┐
+│ backup-restore-test (longhorn ns)                     │
+│   weekly round-robin restore from local repo          │
+└───────────────────────────────────────────────────────┘
+ metrics ──────────────── ntfy
+      ▼                    ▼
+Pushgateway           ntfy.geekbundle
 ```
 
 ### Why local-first
