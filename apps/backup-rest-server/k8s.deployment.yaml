@@ -33,10 +33,13 @@ spec:
         node-role/workload: zfs
       # The repo is owned by 65534 on the host filesystem (set up
       # during initial provisioning). fsGroup does not apply to
-      # hostPath; the host-side chown is the source of truth.
+      # hostPath, but it does apply to the htpasswd Secret mount —
+      # the Secret would otherwise be group root and rest-server
+      # (running as 65534) could not read it.
       securityContext:
         runAsUser: 65534
         runAsGroup: 65534
+        fsGroup: 65534
         runAsNonRoot: true
       containers:
         - name: rest-server
@@ -110,4 +113,5 @@ spec:
         - name: htpasswd
           secret:
             secretName: rest-server-htpasswd
-            defaultMode: 0400
+            # 0440 + fsGroup=65534 → root:65534 with group-read.
+            defaultMode: 0440
