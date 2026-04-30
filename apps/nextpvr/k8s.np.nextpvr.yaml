@@ -80,7 +80,7 @@ spec:
   # Allow backup sidecar to push metrics to Pushgateway
   - toEndpoints:
     - matchLabels:
-        k8s:io.kubernetes.pod.namespace: prometheus
+        k8s:io.kubernetes.pod.namespace: monitoring
         k8s:app.kubernetes.io/name: prometheus-pushgateway
     toPorts:
     - ports:
