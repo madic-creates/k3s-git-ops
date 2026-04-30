@@ -72,3 +72,29 @@ spec:
           annotations:
             summary: "A backup instance has never reported metrics"
             description: "One or more of the expected backup instances has not pushed any metrics. Check CronJob status for: mariadb, emby, nextpvr, downloader, paperless, grafana, restic-retentionpolicies."
+
+        - alert: BackupRestoreTestFailed
+          # The weekly round-robin restore-test pushes
+          # backup_restore_status per tag. Non-zero means restic
+          # restore failed or the post-restore sanity check tripped.
+          expr: |
+            backup_restore_status > 0
+          for: 1h
+          labels:
+            severity: critical
+          annotations:
+            summary: "Restore test failed for tag {{ $labels.tag }}"
+            description: "The weekly automated restore for {{ $labels.tag }} could not be verified (kubectl logs -n longhorn -l app.kubernetes.io/name=backup-restore-test)."
+
+        - alert: BackupRestoreTestStale
+          # Fires if no restore-test push has happened in the last
+          # 9 days. The CronJob runs weekly on Sundays; 9 days
+          # tolerates one missed slot before alerting.
+          expr: |
+            time() - push_time_seconds{job="backup-restore-test"} > 86400 * 9
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: "Restore test has not run in over 9 days"
+            description: "The weekly backup-restore-test CronJob has not pushed metrics for over 9 days. Check whether the CronJob is suspended or failing."

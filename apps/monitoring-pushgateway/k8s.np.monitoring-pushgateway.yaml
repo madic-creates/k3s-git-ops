@@ -41,6 +41,9 @@ spec:
         k8s:io.kubernetes.pod.namespace: longhorn
         k8s:app.kubernetes.io/name: restic-retentionpolicies
     - matchLabels:
+        k8s:io.kubernetes.pod.namespace: longhorn
+        k8s:app.kubernetes.io/name: backup-restore-test
+    - matchLabels:
         k8s:io.kubernetes.pod.namespace: databases
         k8s:app.kubernetes.io/name: backup-mariadb
     - matchLabels:

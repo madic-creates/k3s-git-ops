@@ -4,6 +4,8 @@ resources:
   - k8s.restic-retentionpolicies.yaml
   - k8s.np.backup-script.yaml
   - k8s.backup-alerts.yaml
+  - k8s.restore-test.yaml
+  - k8s.np.backup-restore-test.yaml
 
 generators:
   - kustomize-secret-generator.yaml
