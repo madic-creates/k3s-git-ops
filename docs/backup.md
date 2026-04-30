@@ -20,7 +20,19 @@ The shared script (`backup.sh`) is small and config-driven via environment
 variables. It runs `restic backup`, optionally pushes Pushgateway metrics, and
 optionally sends a ntfy notification on failure.
 
+/// note | Migrating from the previous Wasabi-only setup
+The architecture below assumes the local-first migration is complete. The
+one-time runbook lives at
+[`docs/operations/backup-migration-runbook.md`](operations/backup-migration-runbook.md){target=_blank}.
+///
+
 ## Architecture
+
+The fleet writes **local-first**: every workload pushes to a Restic
+REST-server running on node04, backed by `/vol_raidz1/restic-local`.
+A daily mirror CronJob copies the local repository to Wasabi for
+off-site protection. Wasabi is no longer the source of truth — it is
+a one-way mirror.
 
 ```
 ┌──────────────────────┐  ┌──────────────────────┐  ┌── more backup CronJobs
@@ -38,20 +50,40 @@ optionally sends a ntfy notification on failure.
                         │                            │
                         ▼                            ▼
         ┌──────────────────────────────────────────────────┐
-        │ Wasabi S3: k3s-at-home-01/restic-backup          │
+        │ rest-server.backup.svc.cluster.local:8000        │
         │   one repository, multiple tags                  │
+        │   data on node04: /vol_raidz1/restic-local       │
         └────────────┬─────────────────────────────────────┘
-                     │
+                     │ daily 05:00, rclone copy
                      ▼
         ┌──────────────────────────────────────────────────┐
-        │ restic-retentionpolicies (longhorn ns)           │
-        │   daily forget + prune                           │
+        │ Wasabi S3: k3s-at-home-01/restic-backup          │
+        │   off-site mirror (read for restore only)        │
         └──────────────────────────────────────────────────┘
-                     │
-   metrics ──────────┴────────── ntfy
-        ▼                            ▼
-  Pushgateway                  ntfy.geekbundle
+
+  ┌───────────────────────────────────────────────────────┐
+  │ restic-retentionpolicies (longhorn ns)                │
+  │   daily 03:05 forget + prune + check on local repo    │
+  └───────────────────────────────────────────────────────┘
+  ┌───────────────────────────────────────────────────────┐
+  │ backup-restore-test (longhorn ns)                     │
+  │   weekly round-robin restore from local repo          │
+  └───────────────────────────────────────────────────────┘
+
+   metrics ──────────────── ntfy
+        ▼                        ▼
+  Pushgateway              ntfy.geekbundle
 ```
+
+### Why local-first
+
+- Backups run at gigabit LAN speed regardless of the upstream uplink.
+- Wasabi's free-egress envelope (1:1 monthly egress to storage)
+  becomes a non-issue — the mirror only writes, restores happen
+  primarily against the local repo.
+- A Wasabi outage no longer breaks ongoing backups, only off-site
+  freshness.
+- Restoring 100 GB locally is wire-speed, not internet-speed.
 
 The shared script lives as ConfigMap `crontab-backup-script` in the `longhorn`
 namespace and is mirrored into every namespace by
@@ -73,11 +105,14 @@ or roll the deployment).
 | NextPVR | `media` | `:40` hourly | `nextpvr` | `nextpvr` | PVC `longhorn-pvc-nextpvr-config` |
 | Downloader (*arr-stack) | `downloader` | `:50` hourly | `downloader` | `downloader` | hostPath, ZFS node |
 | Paperless-ngx | `paper` | `:00` hourly | `paperless` | `paperless` | 3 SMB PVCs (data, media, export) |
-| Retention | `longhorn` | `03:05` daily | n/a | `restic-retentionpolicies` | (forget + prune only) |
+| Retention | `longhorn` | `03:05` daily | n/a | `restic-retentionpolicies` | (forget + prune + integrity check) |
+| Restore-test | `longhorn` | `04:00` Sun | n/a | `backup-restore-test` | round-robin restore from local repo |
+| Wasabi mirror | `backup` | `05:00` daily | n/a | `backup-mirror-wasabi` | rclone copy local → Wasabi |
 
-Hourly slots are 10 minutes apart and each backup is capped at
-`activeDeadlineSeconds: 540`, so they cannot overlap with each other or with the
-daily retention pass at 03:05.
+Hourly slots are 10 minutes apart and the workload backups are capped at
+`activeDeadlineSeconds: 540` (paperless gets 7200 for the cold-start upload),
+so they cannot overlap with each other or with the daily 03:05 / 04:00 / 05:00
+maintenance passes.
 
 The pod `app.kubernetes.io/name` label is always `backup-<target>` (e.g.
 `backup-grafana`) and pods carry `app.kubernetes.io/component: backup` so the
@@ -160,14 +195,20 @@ Wasabi credentials, the ntfy and Pushgateway settings, and the per-target
 
 ## Restore
 
-All snapshots are encrypted and stored in
-`s3:s3.eu-central-2.wasabisys.com/k3s-at-home-01/restic-backup`. Listing requires
-the repository password; restoring also requires the Wasabi credentials.
+All snapshots are encrypted and stored on the local rest-server at
+`rest:http://rest-server.backup.svc.cluster.local:8000/`. Listing and restoring
+both require the rest-server's HTTP basic-auth credentials and the restic
+repository password — both live in every per-target `backup-secrets.enc.yaml`.
+
+The Wasabi mirror at
+`s3:s3.eu-central-2.wasabisys.com/k3s-at-home-01/restic-backup` is the
+fallback. Use it when the local repo is unavailable; the credentials are in
+`apps/backup-script/restic-secrets.enc.yaml` under the `WASABI_*` prefix.
 
 ### Generic workflow
 
-The simplest way to get a shell with restic, the Wasabi credentials, and the
-in-memory cache already wired up is to spawn a one-shot debug pod from the
+The simplest way to get a shell with restic, the rest-server credentials, and
+the in-memory cache already wired up is to spawn a one-shot debug pod from the
 existing backup secret of the target you want to restore from:
 
 ```bash
@@ -192,7 +233,27 @@ ls /tmp/restore/backup/grafana/
 ```
 
 Pick the namespace and Secret name that matches the target you want to restore.
-Replace `--tag grafana` accordingly.
+Replace `--tag grafana` accordingly. The repository URL the secret points at is
+the local rest-server (`rest:http://...:8000/`), so restores stream from node04
+at LAN speed.
+
+### Restoring from the Wasabi off-site mirror
+
+If the local rest-server is unavailable (node04 down, ZFS pool offline, etc.),
+restore directly from the Wasabi mirror by overriding the repository URL
+inside the debug pod:
+
+```bash
+# Inside a restic-shell pod, before running restic:
+export RESTIC_REPOSITORY='s3:s3.eu-central-2.wasabisys.com/k3s-at-home-01/restic-backup'
+export AWS_ACCESS_KEY_ID='<wasabi key>'
+export AWS_SECRET_ACCESS_KEY='<wasabi secret>'
+restic snapshots --tag grafana
+```
+
+The Wasabi creds live encrypted in `apps/backup-script/restic-secrets.enc.yaml`
+under the `WASABI_*` prefix. The shared `RESTIC_PASSWORD` is the same for both
+repos (`restic copy` between them is a straight blob copy).
 
 ### MariaDB
 
@@ -306,6 +367,10 @@ Three PrometheusRule alerts ship in `apps/backup-script/k8s.backup-alerts.yaml`:
 | Alert | Severity | Trigger |
 |---|---|---|
 | `BackupOverdue` | warning | `time() - backup_start_timestamp > 7200` for 10m on any non-retention instance — at least two consecutive hourly slots missed |
+| `BackupRestoreTestFailed` | critical | `backup_restore_status > 0` for 1h — the weekly round-robin restore could not be verified |
+| `BackupRestoreTestStale` | warning | no `backup-restore-test` push in 9 days — CronJob suspended or failing |
+| `BackupMirrorFailed` | warning | `backup_mirror_status > 0` for 1h — daily Wasabi mirror returned non-zero |
+| `BackupMirrorStale` | warning | no `backup-mirror-wasabi` push in 2 days — off-site copy is freezing |
 | `BackupFailed` | critical | `backup_status{status="failure"} == 1` for 5m — last run reported failure |
 | `BackupNeverRun` | warning | one of `mariadb`, `emby`, `nextpvr`, `downloader`, `paperless`, `grafana`, `restic-retentionpolicies` has no `backup_start_timestamp` series for 24h |
 
@@ -321,13 +386,11 @@ metadata:
     kustomize.config.k8s.io/needs-hash: "true"
 stringData:
   RESTIC_SOURCE: /backup/grafana
-  RESTIC_REPOSITORY: s3:s3.eu-central-2.wasabisys.com/k3s-at-home-01/restic-backup
+  RESTIC_REPOSITORY: rest:http://backup:<rest-server password>@rest-server.backup.svc.cluster.local:8000/
   RESTIC_PASSWORD: <shared restic password>
   RESTIC_HOSTNAME: grafana
   RESTIC_ADDITIONAL_BACKUP_PARAMETERS: --tag grafana --exclude lost+found
   RESTIC_RETENTION_POLICIES_ENABLED: "false"
-  AWS_ACCESS_KEY_ID: <wasabi key>
-  AWS_SECRET_ACCESS_KEY: <wasabi secret>
   NTFY_ENABLED: "true"
   NTFY_CREDS: -u user:token
   NTFY_SERVER: https://ntfy.geekbundle.org
