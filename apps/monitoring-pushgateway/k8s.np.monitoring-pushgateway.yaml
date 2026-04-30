@@ -52,6 +52,9 @@ spec:
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: downloader
         k8s:app.kubernetes.io/name: backup-downloader
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: paper
+        k8s:app.kubernetes.io/name: backup-paperless
     toPorts:
     - ports:
       - port: "9091"

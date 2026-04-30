@@ -1,0 +1,142 @@
+---
+# Hourly Paperless-ngx backup via restic.
+# Mounts the data, media, and export SMB PVCs read-only and pushes a
+# combined snapshot to Wasabi. The consumption inbox (smb-pvc-documents)
+# and trash (smb-pvc-container-paperless-trash) are excluded — inbox
+# documents are ingested into data/media, trash is disposable.
+#
+# Co-located with the paperless pod via podAffinity so the data PVC
+# (ReadWriteOnce) can be mounted on the same node.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-paperless
+  namespace: paper
+spec:
+  schedule: "0 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
+  startingDeadlineSeconds: 3600
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 540
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: backup-paperless
+            app.kubernetes.io/component: backup
+        spec:
+          automountServiceAccountToken: false
+          restartPolicy: Never
+          # SMB PVs force uid=1000 / gid=1000 with file mode 0660.
+          # Files are not world-readable, so the backup pod must run
+          # as the same UID/GID to read every document.
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            runAsNonRoot: true
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: paperless
+                  namespaces:
+                    - paper
+                  topologyKey: kubernetes.io/hostname
+          containers:
+            - name: restic
+              image: ghcr.io/madic-creates/container-restic:latest@sha256:c5786cdded119d4bf44680e95f54a4cbb0f89ddb05eab83937709f0b6338a811
+              imagePullPolicy: IfNotPresent
+              command:
+                - /bin/sh
+                - /usr/local/bin/backup.sh
+              env:
+                - name: HOME
+                  value: /home/restic
+              envFrom:
+                - secretRef:
+                    name: backup-env-configuration-paperless
+              volumeMounts:
+                - name: backup-script
+                  mountPath: /usr/local/bin/backup.sh
+                  subPath: backup.sh
+                - name: paperless-data
+                  mountPath: /backup/paperless-data
+                  readOnly: true
+                - name: paperless-media
+                  mountPath: /backup/paperless-media
+                  readOnly: true
+                - name: paperless-export
+                  mountPath: /backup/paperless-export
+                  readOnly: true
+                - name: home
+                  mountPath: /home/restic
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
+                privileged: false
+          volumes:
+            - name: paperless-data
+              persistentVolumeClaim:
+                claimName: smb-pvc-container-paperless-data
+            - name: paperless-media
+              persistentVolumeClaim:
+                claimName: smb-pvc-container-paperless-media
+            - name: paperless-export
+              persistentVolumeClaim:
+                claimName: smb-pvc-container-paperless-export
+            - name: backup-script
+              configMap:
+                name: crontab-backup-script
+            - name: home
+              emptyDir:
+                medium: Memory
+                sizeLimit: 500Mi
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: backup-paperless
+  namespace: paper
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: backup-paperless
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s:k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: monitoring
+            k8s:io.kubernetes.pod.namespace: monitoring
+            k8s:app.kubernetes.io/name: prometheus-pushgateway
+      toPorts:
+        - ports:
+            - port: "9091"
+              protocol: TCP
+    # SMB CSI driver mounts happen at the kubelet level — the CronJob
+    # pod itself does not need to talk to the SMB server. Only outbound
+    # HTTPS for Wasabi S3 and ntfy is required.
+    - toEntities:
+        - world
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+            - port: "80"
+              protocol: TCP

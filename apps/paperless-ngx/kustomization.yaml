@@ -3,6 +3,10 @@ resources:
   - namespace.yaml
   - k8s.smb.yaml
   - k8s.np.paperless-ngx.yaml
+  - k8s.backup-cronjob.yaml
+
+generators:
+  - kustomize-secret-generator.yaml
 
 namespace: paper
 
