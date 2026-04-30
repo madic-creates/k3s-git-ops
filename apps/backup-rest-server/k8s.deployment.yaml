@@ -40,12 +40,19 @@ spec:
         runAsNonRoot: true
       containers:
         - name: rest-server
-          image: restic/rest-server:0.13.0
+          image: restic/rest-server:0.14.0
           imagePullPolicy: IfNotPresent
+          # The image's CMD is `rest-server` only — without an
+          # ENTRYPOINT, K8s `args:` would replace CMD and `exec` would
+          # try to run `--listen` as a binary. Spell out the command
+          # explicitly so the binary is invoked regardless of how the
+          # upstream Dockerfile evolves.
           # --no-auth would skip the htpasswd check; we always require
           # auth even though the service is cluster-internal.
           # --private-repos puts each user under its own subdir; we
           # use a single shared user so disable that.
+          command:
+            - rest-server
           args:
             - --listen=:8000
             - --path=/data
