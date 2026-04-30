@@ -10,6 +10,7 @@ resources:
   - k8s.cronjob-ldap-cert-update.yaml
   - k8s.rbac-ldap-cert-update.yaml
   - k8s.np.ldap-cert-update.yaml
+  - k8s.backup-cronjob.yaml
 
 namespace: media
 
@@ -99,24 +100,6 @@ helmCharts:
                       - jellyfin
                       - nextpvr
               topologyKey: "kubernetes.io/hostname"
-      additionalContainers:
-        - name: backup-sidecar
-          image: ghcr.io/restic/restic:0.18.1
-          envFrom:
-            - secretRef:
-                name: backup-env-configuration-emby
-          imagePullPolicy: IfNotPresent
-          command: ["/usr/sbin/crond", "-f", "-d", "6"]
-          volumeMounts:
-            - name: crontab-config
-              mountPath: /etc/crontabs/root
-              subPath: crontab
-            - name: backup-script
-              mountPath: /usr/local/bin/backup.sh
-              subPath: backup.sh
-            - mountPath: /backup/config
-              name: config
-              #readOnly: true
 
 patches:
   # Disable auto-mount of service account token
@@ -152,7 +135,7 @@ patches:
             protocol: TCP
             targetPort: https
             nodePort: 31961
-  # Add volumes to Deployment and disable service account token mount
+  # Disable service account token mount on the Deployment.
   - target:
       group: apps
       version: v1
@@ -168,13 +151,6 @@ patches:
         template:
           spec:
             automountServiceAccountToken: false
-            volumes:
-              - name: crontab-config
-                configMap:
-                  name: crontab-emby
-              - name: backup-script
-                configMap:
-                  name: crontab-backup-script
 
 generators:
   - kustomize-secret-generator.yaml
