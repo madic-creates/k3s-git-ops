@@ -7,6 +7,7 @@ resources:
   - ks8.grafana-dashboards.backup-script.yaml
   - k8s.prometheusrule.backup-script.yaml
   - k8s.np.monitoring.yaml
+  - k8s.backup-grafana-cronjob.yaml
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "16"
