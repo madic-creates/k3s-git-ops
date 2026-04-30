@@ -257,11 +257,12 @@ data:
         {
           "type": "timeseries",
           "title": "Time since last backup",
+          "description": "restic-retentionpolicies is excluded — it runs once daily and would otherwise dwarf the y-axis for the more frequent backup hosts.",
           "id": 7,
           "gridPos": {"h": 9, "w": 24, "x": 0, "y": 23},
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "targets": [
-            {"expr": "time() - backup_start_timestamp{job=\"backup\"}", "refId": "A", "legendFormat": "{{instance}}"}
+            {"expr": "time() - backup_start_timestamp{job=\"backup\",instance!=\"restic-retentionpolicies\"}", "refId": "A", "legendFormat": "{{instance}}"}
           ],
           "fieldConfig": {
             "defaults": {
