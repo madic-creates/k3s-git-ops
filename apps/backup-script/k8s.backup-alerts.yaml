@@ -1,0 +1,74 @@
+---
+# Alerts for the backup fleet (Restic via Pushgateway).
+#
+# All hourly backup CronJobs (mariadb, emby, nextpvr, downloader,
+# paperless, grafana) push three metrics per run: backup_status,
+# backup_duration_seconds, backup_start_timestamp. The daily
+# retention CronJob (restic-retentionpolicies) pushes the same
+# shape but only once per day.
+#
+# Alerts are scraped by kube-prometheus-stack via the
+# `release: kube-prometheus-stack` label selector.
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: backup-alerts
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: backup.rules
+      rules:
+        - alert: BackupOverdue
+          # Hourly backups should be no more than ~70 min apart even
+          # in the worst case (skip 2-3 AM for mariadb still leaves
+          # the others). 2 h covers two missed slots — a fluke is
+          # one missed slot, two means systemic.
+          # restic-retentionpolicies is excluded (daily schedule, its
+          # age would always look "overdue" to an hourly threshold).
+          expr: |
+            time() - backup_start_timestamp{instance!="restic-retentionpolicies"} > 7200
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Backup overdue for {{ $labels.instance }}"
+            description: "Backup for {{ $labels.instance }} has not started in over 2 hours (age {{ $value | humanizeDuration }})."
+
+        - alert: BackupFailed
+          # Each backup script pushes either backup_status{status=success} 0
+          # or backup_status{status=failure} <exit_code>. The pushgateway
+          # group is keyed by job+instance, so each push replaces the
+          # previous metrics for that target — a successful run wipes a
+          # prior failure metric automatically. This rule therefore
+          # reflects only the latest run's outcome.
+          expr: |
+            backup_status{status="failure"} == 1
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Backup failed for {{ $labels.instance }}"
+            description: "Last backup run for {{ $labels.instance }} reported failure (exit code {{ $value }})."
+
+        - alert: BackupNeverRun
+          # Fires if any expected backup target has never pushed
+          # metrics. 24 h gives plenty of headroom for cluster
+          # bootstrap or downtime — flips to firing only when a
+          # target has truly stopped reporting since the cluster
+          # has been up for a day.
+          expr: |
+            absent(backup_start_timestamp{instance="mariadb"})
+            or absent(backup_start_timestamp{instance="emby"})
+            or absent(backup_start_timestamp{instance="nextpvr"})
+            or absent(backup_start_timestamp{instance="downloader"})
+            or absent(backup_start_timestamp{instance="paperless"})
+            or absent(backup_start_timestamp{instance="grafana"})
+            or absent(backup_start_timestamp{instance="restic-retentionpolicies"})
+          for: 24h
+          labels:
+            severity: warning
+          annotations:
+            summary: "A backup instance has never reported metrics"
+            description: "One or more of the expected backup instances has not pushed any metrics. Check CronJob status for: mariadb, emby, nextpvr, downloader, paperless, grafana, restic-retentionpolicies."
