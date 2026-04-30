@@ -51,6 +51,16 @@ spec:
     - ports:
       - port: "9091"
         protocol: TCP
+  # nextpvr runs with hostNetwork=true (its CEP is empty), so its pushes are
+  # seen by Cilium as host traffic and don't match the pod-label rule above.
+  # Allow host and remote-node entities so hostNetwork pods can push too.
+  - fromEntities:
+      - host
+      - remote-node
+    toPorts:
+    - ports:
+      - port: "9091"
+        protocol: TCP
   # Allow any pod in the monitoring namespace to push metrics
   # This enables other monitoring tools and exporters to use the pushgateway
   - fromEndpoints:
