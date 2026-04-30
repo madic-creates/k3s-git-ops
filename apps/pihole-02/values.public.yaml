@@ -1,4 +1,4 @@
 image:
     repository: ghcr.io/pi-hole/pihole
-    tag: 2025.11.1
+    tag: 2026.04.1
     pullPolicy: IfNotPresent
