@@ -17,6 +17,9 @@ spec:
           labels:
             app.kubernetes.io/name: restic-retentionpolicies
         spec:
+          # Script never talks to the Kubernetes API (only S3, Pushgateway,
+          # Postfix) — skip the default ServiceAccount token mount.
+          automountServiceAccountToken: false
           # Runs as nobody — this CronJob only touches the remote restic
           # repo and an in-memory cache; no app files are accessed.
           securityContext:
