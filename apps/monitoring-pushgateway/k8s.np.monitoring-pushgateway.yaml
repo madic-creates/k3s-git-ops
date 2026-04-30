@@ -34,6 +34,8 @@ spec:
   # mariadb-backup (databases) is the database backup CronJob.
   # emby and nextpvr (media) run the backup as a sidecar inside the app pod,
   # so the source label matches the application's own pod label.
+  # backup-downloader (downloader) backs up the *arr-stack and downloader
+  # configs from hostPath volumes on the ZFS node.
   - fromEndpoints:
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: longhorn
@@ -47,6 +49,9 @@ spec:
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: media
         k8s:app.kubernetes.io/name: nextpvr
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: downloader
+        k8s:app.kubernetes.io/name: backup-downloader
     toPorts:
     - ports:
       - port: "9091"

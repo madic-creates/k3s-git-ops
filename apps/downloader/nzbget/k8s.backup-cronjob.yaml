@@ -1,0 +1,139 @@
+---
+# Hourly backup of *arr-stack and downloader configs via restic.
+# All paths live on the ZFS host's local filesystem and are mounted
+# read-only via hostPath. Pinned to the ZFS node via nodeSelector.
+# Headphones and Epic Games are intentionally excluded — they are
+# not mounted, so restic never sees them.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-downloader
+  namespace: downloader
+spec:
+  schedule: "50 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
+  startingDeadlineSeconds: 3600
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 540
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: backup-downloader
+            app.kubernetes.io/component: backup
+        spec:
+          automountServiceAccountToken: false
+          restartPolicy: Never
+          nodeSelector:
+            node-role/workload: zfs
+          containers:
+            - name: restic
+              image: ghcr.io/restic/restic:0.18.1
+              imagePullPolicy: IfNotPresent
+              command:
+                - /bin/sh
+                - /usr/local/bin/backup.sh
+              envFrom:
+                - secretRef:
+                    name: backup-env-configuration-downloader
+              volumeMounts:
+                - name: backup-script
+                  mountPath: /usr/local/bin/backup.sh
+                  subPath: backup.sh
+                - name: sonarr-config
+                  mountPath: /backup/sonarr
+                  readOnly: true
+                - name: radarr-config
+                  mountPath: /backup/radarr
+                  readOnly: true
+                - name: nzbget-config
+                  mountPath: /backup/nzbget
+                  readOnly: true
+                - name: nzbhydra2-config
+                  mountPath: /backup/nzbhydra2
+                  readOnly: true
+                - name: trailarr-config
+                  mountPath: /backup/trailarr
+                  readOnly: true
+                - name: lidarr-config
+                  mountPath: /backup/lidarr
+                  readOnly: true
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
+                privileged: false
+          volumes:
+            - name: backup-script
+              configMap:
+                name: crontab-backup-script
+            - name: sonarr-config
+              hostPath:
+                path: /vol_raidz1/docker/configs/downloader/sonarr/config
+                type: Directory
+            - name: radarr-config
+              hostPath:
+                path: /vol_raidz1/docker/configs/downloader/radarr/config
+                type: Directory
+            - name: nzbget-config
+              hostPath:
+                path: /vol_raidz1/docker/configs/downloader/nzbget/config
+                type: Directory
+            - name: nzbhydra2-config
+              hostPath:
+                path: /vol_raidz1/docker/configs/downloader/nzbhydra2/config
+                type: Directory
+            - name: trailarr-config
+              hostPath:
+                path: /vol_raidz1/docker/configs/downloader/trailarr/config
+                type: Directory
+            - name: lidarr-config
+              hostPath:
+                path: /vol_raidz1/container-scheduler/downloader-lidarr
+                type: Directory
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: backup-downloader
+  namespace: downloader
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: backup-downloader
+  egress:
+    # DNS
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s:k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    # Prometheus Pushgateway (metrics)
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: monitoring
+            k8s:io.kubernetes.pod.namespace: monitoring
+            k8s:app.kubernetes.io/name: prometheus-pushgateway
+      toPorts:
+        - ports:
+            - port: "9091"
+              protocol: TCP
+    # Wasabi S3, ntfy, Alpine package repos
+    - toEntities:
+        - world
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+            - port: "80"
+              protocol: TCP
