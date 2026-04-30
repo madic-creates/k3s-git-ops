@@ -72,8 +72,16 @@ spec:
 
                   echo
                   echo "Starting rclone copy local-repo -> wasabi:$WASABI_BUCKET/$WASABI_PATH"
+                  # -v: INFO-level logs — emits a line per transferred,
+                  #   skipped, or deleted object. Steady-state usage
+                  #   adds tens of files per day, manageable.
+                  # --stats=30s: multi-line transfer stats every 30s
+                  #   so you can see throughput, ETA, error counts.
+                  # --stats-log-level INFO: stats land in the normal
+                  #   log stream instead of stderr-only.
                   rclone copy /local-repo wasabi:$WASABI_BUCKET/$WASABI_PATH \
-                    --transfers=8 --stats=60s --stats-one-line
+                    --transfers=8 \
+                    -v --stats=30s --stats-log-level INFO
                   EXIT_CODE=$?
 
                   JOB_DURATION=$(( $(date +%s) - JOB_START_TIME ))
