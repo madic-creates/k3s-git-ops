@@ -347,13 +347,11 @@ data:
                   "namespace 1": true, "namespace 2": true, "namespace 3": true,
                   "pod 1": true, "pod 2": true, "pod 3": true,
                   "service 1": true, "service 2": true, "service 3": true,
-                  "tag 1": true, "tag 2": true,
-                  "repo 2": true
+                  "tag 1": true, "tag 2": true
                 },
                 "indexByName": {},
                 "renameByName": {
                   "instance": "Tag",
-                  "repo 1": "Repo",
                   "Value #A": "Status",
                   "Value #B": "Duration",
                   "Value #C": "Last tested"

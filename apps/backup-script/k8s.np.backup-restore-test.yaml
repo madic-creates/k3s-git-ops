@@ -35,7 +35,7 @@ spec:
         - ports:
             - port: "9091"
               protocol: TCP
-    # Local restic REST-server (default weekly restore source)
+    # Local restic REST-server is the only restore source.
     - toEndpoints:
         - matchLabels:
             k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: backup
@@ -44,11 +44,4 @@ spec:
       toPorts:
         - ports:
             - port: "8000"
-              protocol: TCP
-    # Wasabi for the quarterly off-site verification run
-    - toEntities:
-        - world
-      toPorts:
-        - ports:
-            - port: "443"
               protocol: TCP
