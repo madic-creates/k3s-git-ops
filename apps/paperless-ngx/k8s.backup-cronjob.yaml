@@ -21,7 +21,13 @@ spec:
   jobTemplate:
     spec:
       backoffLimit: 2
-      activeDeadlineSeconds: 540
+      # 2 hours — paperless can hold ~tens of GB of documents, and the
+      # initial restic upload to Wasabi takes that long on a slow
+      # household upload link. Subsequent incremental runs finish in
+      # seconds, so the higher cap only matters for the very first
+      # backup. concurrencyPolicy: Forbid means a long initial run
+      # simply skips its own next slot; other targets are unaffected.
+      activeDeadlineSeconds: 7200
       template:
         metadata:
           labels:
