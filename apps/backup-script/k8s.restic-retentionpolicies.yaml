@@ -17,9 +17,31 @@ spec:
           labels:
             app.kubernetes.io/name: restic-retentionpolicies
         spec:
+          # Runs as nobody — this CronJob only touches the remote restic
+          # repo and an in-memory cache; no app files are accessed.
+          securityContext:
+            runAsUser: 65534
+            runAsGroup: 65534
+            fsGroup: 65534
+            runAsNonRoot: true
           containers:
             - name: restic
-              image: ghcr.io/restic/restic:0.18.1
+              image: ghcr.io/madic-creates/container-restic:latest@sha256:c5786cdded119d4bf44680e95f54a4cbb0f89ddb05eab83937709f0b6338a811
+              env:
+                # Writable HOME on the tmpfs emptyDir — needed once we
+                # dropped root, since restic and rclone otherwise try to
+                # create $HOME/.cache or $HOME/.rclone.conf under "/".
+                - name: HOME
+                  value: /home/restic
+                # Pin restic's cache to the same tmpfs so the "Pruning
+                # repository" step has fast access to the indexes within
+                # one run.
+                - name: RESTIC_CACHE_DIR
+                  value: /home/restic/.cache/restic
+                # Move rclone config out of /root because we no longer
+                # are root.
+                - name: RCLONE_CONFIG
+                  value: /etc/rclone/rclone.conf
               envFrom:
                 - secretRef:
                     name: restic-backup
@@ -33,7 +55,6 @@ spec:
                   JOB_START_TIME=$(date +%s)
                   LOG=$(mktemp)
                   mkdir -p "$RESTIC_CACHE_DIR" | tee -a $LOG
-                  apk add --no-cache rclone curl | tee -a $LOG
                   echo| tee -a $LOG
                   rclone size wasabi:k3s-at-home-01 | tee -a $LOG
                   echo -e "\nRestic locks information" | tee -a $LOG
@@ -74,10 +95,16 @@ spec:
                 privileged: false
               volumeMounts:
                 - name: rclone-config
-                  mountPath: /root/.rclone.conf
+                  mountPath: /etc/rclone/rclone.conf
                   subPath: rclone.conf
+                - name: home
+                  mountPath: /home/restic
           volumes:
             - name: rclone-config
               configMap:
                 name: rclone-config
+            - name: home
+              emptyDir:
+                medium: Memory
+                sizeLimit: 1Gi
           restartPolicy: Never
