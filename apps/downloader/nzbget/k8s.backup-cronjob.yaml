@@ -43,6 +43,11 @@ spec:
               command:
                 - /bin/sh
                 - /usr/local/bin/backup.sh
+              env:
+                # Give restic a writable HOME so it can keep its repo cache
+                # under $HOME/.cache/restic between runs.
+                - name: HOME
+                  value: /home/restic
               envFrom:
                 - secretRef:
                     name: backup-env-configuration-downloader
@@ -50,6 +55,8 @@ spec:
                 - name: backup-script
                   mountPath: /usr/local/bin/backup.sh
                   subPath: backup.sh
+                - name: home
+                  mountPath: /home/restic
                 - name: sonarr-config
                   mountPath: /backup/sonarr
                   readOnly: true
@@ -78,6 +85,10 @@ spec:
             - name: backup-script
               configMap:
                 name: crontab-backup-script
+            - name: home
+              emptyDir:
+                medium: Memory
+                sizeLimit: 500Mi
             - name: sonarr-config
               hostPath:
                 path: /vol_raidz1/docker/configs/downloader/sonarr/config
