@@ -32,8 +32,8 @@ spec:
   # All sources are matched by app.kubernetes.io/name (the canonical pod label).
   # restic-retentionpolicies (longhorn) is the cluster-wide retention CronJob.
   # mariadb-backup (databases) is the database backup CronJob.
-  # emby and nextpvr (media) run the backup as a sidecar inside the app pod,
-  # so the source label matches the application's own pod label.
+  # backup-emby and backup-nextpvr (media) replaced the previous in-pod
+  # sidecars and now run as standalone CronJobs.
   # backup-downloader (downloader) backs up the *arr-stack and downloader
   # configs from hostPath volumes on the ZFS node.
   - fromEndpoints:
@@ -45,10 +45,10 @@ spec:
         k8s:app.kubernetes.io/name: mariadb-backup
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: media
-        k8s:app.kubernetes.io/name: emby
+        k8s:app.kubernetes.io/name: backup-emby
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: media
-        k8s:app.kubernetes.io/name: nextpvr
+        k8s:app.kubernetes.io/name: backup-nextpvr
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: downloader
         k8s:app.kubernetes.io/name: backup-downloader
