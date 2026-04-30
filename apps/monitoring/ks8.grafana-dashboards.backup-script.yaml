@@ -34,8 +34,9 @@ data:
         {
           "type": "stat",
           "title": "Hosts reporting",
+          "description": "Number of hosts currently pushing backup metrics to the Pushgateway. Counts every distinct `backup_status{job=\"backup\"}` series regardless of success or failure. A drop here means a host stopped reporting entirely.",
           "id": 1,
-          "gridPos": {"h": 4, "w": 6, "x": 0, "y": 0},
+          "gridPos": {"h": 3, "w": 6, "x": 0, "y": 0},
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "targets": [
             {"expr": "count(backup_status{job=\"backup\"})", "refId": "A", "legendFormat": "hosts"}
@@ -64,8 +65,9 @@ data:
         {
           "type": "stat",
           "title": "Healthy",
+          "description": "Hosts whose most recent backup ended successfully. Calculated as `count(backup_status{status=\"success\"} == 0)` — the metric value is the restic exit code, so 0 means success. Reflects only the latest pushed status and ignores age (see \"Stale\" for freshness).",
           "id": 2,
-          "gridPos": {"h": 4, "w": 6, "x": 6, "y": 0},
+          "gridPos": {"h": 3, "w": 6, "x": 6, "y": 0},
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "targets": [
             {"expr": "count(backup_status{job=\"backup\",status=\"success\"} == 0) or vector(0)", "refId": "A", "legendFormat": "healthy"}
@@ -94,8 +96,9 @@ data:
         {
           "type": "stat",
           "title": "Failed",
+          "description": "Hosts whose most recent backup ended with a non-zero restic exit code. Calculated as `count(backup_status{status=\"failure\"} != 0)`. Only the latest pushed status counts — an old failure replaced by a later successful run is no longer reported here.",
           "id": 3,
-          "gridPos": {"h": 4, "w": 6, "x": 12, "y": 0},
+          "gridPos": {"h": 3, "w": 6, "x": 12, "y": 0},
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "targets": [
             {"expr": "count(backup_status{job=\"backup\",status=\"failure\"} != 0) or vector(0)", "refId": "A", "legendFormat": "failed"}
@@ -124,8 +127,9 @@ data:
         {
           "type": "stat",
           "title": "Stale (>26h)",
+          "description": "Hosts whose last backup started more than 26 hours ago, regardless of status. Calculated as `count((time() - backup_start_timestamp) > 26*3600)`. The 26h threshold gives a 2h grace window over the daily backup schedule. A failed-but-fresh host is not stale; a successful-but-old one is.",
           "id": 4,
-          "gridPos": {"h": 4, "w": 6, "x": 18, "y": 0},
+          "gridPos": {"h": 3, "w": 6, "x": 18, "y": 0},
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "targets": [
             {"expr": "count((time() - backup_start_timestamp{job=\"backup\"}) > 26*3600) or vector(0)", "refId": "A", "legendFormat": "stale"}
@@ -154,8 +158,9 @@ data:
         {
           "type": "table",
           "title": "Backups per host",
+          "description": "Snapshot of the most recent backup run per host. Each row joins five instant queries on `instance`: status text (success/failure), restic exit code, run duration, age of the last run, and absolute start/end timestamps (end = start + duration). The Pushgateway only retains the latest push per host, so this table is not a history — see the time-series panels below for trends.",
           "id": 5,
-          "gridPos": {"h": 10, "w": 24, "x": 0, "y": 4},
+          "gridPos": {"h": 10, "w": 24, "x": 0, "y": 3},
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "targets": [
             {"expr": "backup_status{job=\"backup\"}", "format": "table", "instant": true, "refId": "A"},
@@ -252,8 +257,9 @@ data:
         {
           "type": "timeseries",
           "title": "Backup duration",
+          "description": "Duration in seconds of each backup run over time, as reported by `backup_duration_seconds{job=\"backup\"}`. One line per host. Useful for spotting growth in backup size, restic repository slowdowns, or network bottlenecks.",
           "id": 6,
-          "gridPos": {"h": 9, "w": 24, "x": 0, "y": 14},
+          "gridPos": {"h": 9, "w": 24, "x": 0, "y": 13},
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "targets": [
             {"expr": "backup_duration_seconds{job=\"backup\"}", "refId": "A", "legendFormat": "{{instance}}"}
@@ -278,9 +284,9 @@ data:
         {
           "type": "timeseries",
           "title": "Time since last backup",
-          "description": "restic-retentionpolicies is excluded — it runs once daily and would otherwise dwarf the y-axis for the more frequent backup hosts.",
+          "description": "Age of the most recent backup per host, calculated as `time() - backup_start_timestamp`. The red threshold line at 26h matches the staleness limit used by the top-row \"Stale\" stat. restic-retentionpolicies is excluded — it runs once daily and would otherwise dwarf the y-axis for the more frequent backup hosts.",
           "id": 7,
-          "gridPos": {"h": 9, "w": 24, "x": 0, "y": 23},
+          "gridPos": {"h": 9, "w": 24, "x": 0, "y": 22},
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "targets": [
             {"expr": "time() - backup_start_timestamp{job=\"backup\",instance!=\"restic-retentionpolicies\"}", "refId": "A", "legendFormat": "{{instance}}"}
