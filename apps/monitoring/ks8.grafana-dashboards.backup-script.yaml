@@ -160,7 +160,9 @@ data:
           "targets": [
             {"expr": "backup_status{job=\"backup\"}", "format": "table", "instant": true, "refId": "A"},
             {"expr": "backup_duration_seconds{job=\"backup\"}", "format": "table", "instant": true, "refId": "B"},
-            {"expr": "time() - backup_start_timestamp{job=\"backup\"}", "format": "table", "instant": true, "refId": "C"}
+            {"expr": "time() - backup_start_timestamp{job=\"backup\"}", "format": "table", "instant": true, "refId": "C"},
+            {"expr": "backup_start_timestamp{job=\"backup\"} * 1000", "format": "table", "instant": true, "refId": "D"},
+            {"expr": "(backup_start_timestamp{job=\"backup\"} + backup_duration_seconds{job=\"backup\"}) * 1000", "format": "table", "instant": true, "refId": "E"}
           ],
           "transformations": [
             {
@@ -171,16 +173,16 @@ data:
               "id": "organize",
               "options": {
                 "excludeByName": {
-                  "Time 1": true, "Time 2": true, "Time 3": true,
-                  "__name__ 1": true, "__name__ 2": true, "__name__ 3": true,
-                  "job 1": true, "job 2": true, "job 3": true,
-                  "exported_instance 1": true, "exported_instance 2": true, "exported_instance 3": true,
-                  "exported_job 1": true, "exported_job 2": true, "exported_job 3": true,
-                  "container 1": true, "container 2": true, "container 3": true,
-                  "endpoint 1": true, "endpoint 2": true, "endpoint 3": true,
-                  "namespace 1": true, "namespace 2": true, "namespace 3": true,
-                  "pod 1": true, "pod 2": true, "pod 3": true,
-                  "service 1": true, "service 2": true, "service 3": true
+                  "Time 1": true, "Time 2": true, "Time 3": true, "Time 4": true, "Time 5": true,
+                  "__name__ 1": true, "__name__ 2": true, "__name__ 3": true, "__name__ 4": true, "__name__ 5": true,
+                  "job 1": true, "job 2": true, "job 3": true, "job 4": true, "job 5": true,
+                  "exported_instance 1": true, "exported_instance 2": true, "exported_instance 3": true, "exported_instance 4": true, "exported_instance 5": true,
+                  "exported_job 1": true, "exported_job 2": true, "exported_job 3": true, "exported_job 4": true, "exported_job 5": true,
+                  "container 1": true, "container 2": true, "container 3": true, "container 4": true, "container 5": true,
+                  "endpoint 1": true, "endpoint 2": true, "endpoint 3": true, "endpoint 4": true, "endpoint 5": true,
+                  "namespace 1": true, "namespace 2": true, "namespace 3": true, "namespace 4": true, "namespace 5": true,
+                  "pod 1": true, "pod 2": true, "pod 3": true, "pod 4": true, "pod 5": true,
+                  "service 1": true, "service 2": true, "service 3": true, "service 4": true, "service 5": true
                 },
                 "indexByName": {},
                 "renameByName": {
@@ -188,7 +190,9 @@ data:
                   "status": "Status",
                   "Value #A": "Exit code",
                   "Value #B": "Duration",
-                  "Value #C": "Last run age"
+                  "Value #C": "Last run age",
+                  "Value #D": "Started at",
+                  "Value #E": "Finished at"
                 }
               }
             }
@@ -227,6 +231,18 @@ data:
                       {"color": "red", "value": 93600}
                     ]
                   }}
+                ]
+              },
+              {
+                "matcher": {"id": "byName", "options": "Started at"},
+                "properties": [
+                  {"id": "unit", "value": "dateTimeAsIso"}
+                ]
+              },
+              {
+                "matcher": {"id": "byName", "options": "Finished at"},
+                "properties": [
+                  {"id": "unit", "value": "dateTimeAsIso"}
                 ]
               }
             ]
