@@ -52,15 +52,17 @@ spec:
     - ports:
       - port: "25"
         protocol: TCP
-  # Allow external access for:
-  # - S3/Wasabi API (restic/rclone backup storage)
-  # - ntfy.sh (push notifications when NTFY_ENABLED=true)
-  # - Alpine package repositories (apk add curl, rclone)
-  - toEntities:
-    - world
+  # Local restic REST-server (forget+prune target after migration)
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: backup
+        k8s:io.kubernetes.pod.namespace: backup
+        k8s:app.kubernetes.io/name: rest-server
     toPorts:
     - ports:
-      - port: "443"
+      - port: "8000"
         protocol: TCP
-      - port: "80"
-        protocol: TCP
+  # SMTP for the retention pass report (sendmail to internal Postfix)
+  # is already covered by the Postfix toEndpoints rule above.
+  # No public internet egress needed any more — Wasabi access lives
+  # in the dedicated backup-mirror-wasabi CronJob.

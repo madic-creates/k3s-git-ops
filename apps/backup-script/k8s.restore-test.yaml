@@ -62,17 +62,33 @@ spec:
                 - |
                   set +e
                   JOB_START_TIME=$(date +%s)
+                  WEEK=$(date +%V)
 
                   # Round-robin by ISO week number — picks the same tag
                   # for the entire week regardless of which day the run
                   # actually fires (handy for catch-up runs after a
                   # missed slot).
                   TAGS="mariadb emby nextpvr downloader paperless grafana"
-                  INDEX=$(( ($(date +%V) - 1) % 6 ))
+                  INDEX=$(( ($WEEK - 1) % 6 ))
                   TAG=$(echo "$TAGS" | cut -d' ' -f$((INDEX + 1)))
 
+                  # Quarterly off-site verification: in weeks 13, 26,
+                  # 39 and 52 we override the repo from local rest-server
+                  # to Wasabi so the off-site copy is exercised at least
+                  # four times a year. Tag selection is unchanged — same
+                  # round-robin, just against a different backend.
+                  REPO_LABEL=local
+                  if [ "$WEEK" = "13" ] || [ "$WEEK" = "26" ] \
+                     || [ "$WEEK" = "39" ] || [ "$WEEK" = "52" ]; then
+                    echo "=== Quarterly Wasabi verification (week $WEEK) ==="
+                    export RESTIC_REPOSITORY="$WASABI_RESTIC_REPOSITORY"
+                    export AWS_ACCESS_KEY_ID="$WASABI_AWS_ACCESS_KEY_ID"
+                    export AWS_SECRET_ACCESS_KEY="$WASABI_AWS_SECRET_ACCESS_KEY"
+                    REPO_LABEL=wasabi
+                  fi
+
                   TARGET=/restore/$TAG
-                  echo "=== Restore-test tag=$TAG (week $(date +%V)) ==="
+                  echo "=== Restore-test tag=$TAG repo=$REPO_LABEL (week $WEEK) ==="
                   rm -rf /restore/* && mkdir -p $TARGET
 
                   restic restore latest --tag "$TAG" --target $TARGET
@@ -119,8 +135,8 @@ spec:
                   echo "Verification status=$STATUS duration=${JOB_DURATION}s"
 
                   {
-                    echo "backup_restore_status{tag=\"$TAG\"} $STATUS"
-                    echo "backup_restore_duration_seconds{tag=\"$TAG\"} $JOB_DURATION"
+                    echo "backup_restore_status{tag=\"$TAG\",repo=\"$REPO_LABEL\"} $STATUS"
+                    echo "backup_restore_duration_seconds{tag=\"$TAG\",repo=\"$REPO_LABEL\"} $JOB_DURATION"
                   } | curl -s --data-binary @- \
                        "$PUSHGATEWAY_URL/metrics/job/backup-restore-test/instance/$TAG"
 

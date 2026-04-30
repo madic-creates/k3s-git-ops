@@ -98,3 +98,28 @@ spec:
           annotations:
             summary: "Restore test has not run in over 9 days"
             description: "The weekly backup-restore-test CronJob has not pushed metrics for over 9 days. Check whether the CronJob is suspended or failing."
+
+        - alert: BackupMirrorFailed
+          # The daily Wasabi mirror pushes backup_mirror_status. Any
+          # non-zero value means rclone copy returned a failure.
+          # Off-site copy gradually goes stale until fixed.
+          expr: |
+            backup_mirror_status > 0
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: "Wasabi mirror failed"
+            description: "The daily backup-mirror-wasabi CronJob exited non-zero. Local snapshots are still safe; off-site copy is freezing. Check kubectl logs -n backup -l app.kubernetes.io/name=backup-mirror-wasabi."
+
+        - alert: BackupMirrorStale
+          # No push in over 2 days = mirror skipped at least one slot
+          # (daily). Off-site protection is degrading.
+          expr: |
+            time() - push_time_seconds{job="backup-mirror-wasabi"} > 86400 * 2
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: "Wasabi mirror has not run in over 2 days"
+            description: "The daily backup-mirror-wasabi CronJob has not pushed metrics. Check whether the CronJob is suspended or its pod is failing to start."

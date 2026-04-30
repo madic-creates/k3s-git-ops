@@ -347,11 +347,13 @@ data:
                   "namespace 1": true, "namespace 2": true, "namespace 3": true,
                   "pod 1": true, "pod 2": true, "pod 3": true,
                   "service 1": true, "service 2": true, "service 3": true,
-                  "tag 1": true, "tag 2": true
+                  "tag 1": true, "tag 2": true,
+                  "repo 2": true
                 },
                 "indexByName": {},
                 "renameByName": {
                   "instance": "Tag",
+                  "repo 1": "Repo",
                   "Value #A": "Status",
                   "Value #B": "Duration",
                   "Value #C": "Last tested"
@@ -389,6 +391,72 @@ data:
             ]
           },
           "options": {"showHeader": true}
+        },
+        {
+          "type": "stat",
+          "title": "Wasabi mirror status",
+          "description": "Last result of the daily backup-mirror-wasabi CronJob (apps/backup-rest-server/k8s.backup-mirror-wasabi.yaml). 0 means rclone copy from the local rest-server to Wasabi succeeded. The local repo is the source of truth — a failed mirror leaves local intact but freezes the off-site copy.",
+          "id": 9,
+          "gridPos": {"h": 4, "w": 12, "x": 0, "y": 39},
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "targets": [
+            {"expr": "backup_mirror_status{job=\"backup-mirror-wasabi\"}", "refId": "A", "legendFormat": "{{status}}"}
+          ],
+          "options": {
+            "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "center",
+            "textMode": "value_and_name"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "mappings": [
+                {"type": "value", "options": {"0": {"color": "green", "text": "OK"}}},
+                {"type": "range", "options": {"from": 1, "to": 9999, "result": {"color": "red", "text": "FAILED"}}}
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {"color": "green", "value": null},
+                  {"color": "red", "value": 1}
+                ]
+              }
+            },
+            "overrides": []
+          }
+        },
+        {
+          "type": "stat",
+          "title": "Last Wasabi mirror",
+          "description": "Time since the last successful (or failed) push from the backup-mirror-wasabi CronJob to the Pushgateway. The CronJob runs daily at 05:00; values much older than 24 h indicate the job is stuck.",
+          "id": 10,
+          "gridPos": {"h": 4, "w": 12, "x": 12, "y": 39},
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "targets": [
+            {"expr": "time() - push_time_seconds{job=\"backup-mirror-wasabi\"}", "refId": "A", "legendFormat": "age"}
+          ],
+          "options": {
+            "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "center",
+            "textMode": "auto"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s",
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {"color": "green", "value": null},
+                  {"color": "yellow", "value": 86400},
+                  {"color": "red", "value": 172800}
+                ]
+              }
+            },
+            "overrides": []
+          }
         }
       ],
       "refresh": "1m",

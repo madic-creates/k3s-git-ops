@@ -58,6 +58,9 @@ spec:
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: paper
         k8s:app.kubernetes.io/name: backup-paperless
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: backup
+        k8s:app.kubernetes.io/name: backup-mirror-wasabi
     toPorts:
     - ports:
       - port: "9091"

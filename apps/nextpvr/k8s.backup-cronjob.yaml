@@ -113,11 +113,20 @@ spec:
         - ports:
             - port: "9091"
               protocol: TCP
+    # Local restic REST-server (primary backup target)
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: backup
+            k8s:io.kubernetes.pod.namespace: backup
+            k8s:app.kubernetes.io/name: rest-server
+      toPorts:
+        - ports:
+            - port: "8000"
+              protocol: TCP
+    # ntfy notifications on failure
     - toEntities:
         - world
       toPorts:
         - ports:
             - port: "443"
-              protocol: TCP
-            - port: "80"
               protocol: TCP
