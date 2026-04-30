@@ -315,6 +315,80 @@ data:
             "legend": {"displayMode": "table", "placement": "right", "showLegend": true, "calcs": ["lastNotNull", "max"]},
             "tooltip": {"mode": "multi", "sort": "desc"}
           }
+        },
+        {
+          "type": "table",
+          "title": "Restore tests",
+          "description": "Latest result of the weekly round-robin restore-test CronJob (apps/backup-script/k8s.restore-test.yaml). Each Sunday one of the six tags is restored to a scratch volume and verified; the cycle covers every tag every six weeks. Status is the exit code of restic restore plus the post-restore sanity check, joined on the instance label. Last tested shows when the metric was last pushed — a value much older than 6 weeks indicates the CronJob is stuck.",
+          "id": 8,
+          "gridPos": {"h": 8, "w": 24, "x": 0, "y": 31},
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "targets": [
+            {"expr": "backup_restore_status{job=\"backup-restore-test\"}", "format": "table", "instant": true, "refId": "A"},
+            {"expr": "backup_restore_duration_seconds{job=\"backup-restore-test\"}", "format": "table", "instant": true, "refId": "B"},
+            {"expr": "push_time_seconds{job=\"backup-restore-test\"} * 1000", "format": "table", "instant": true, "refId": "C"}
+          ],
+          "transformations": [
+            {
+              "id": "joinByField",
+              "options": {"byField": "instance", "mode": "outer"}
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time 1": true, "Time 2": true, "Time 3": true,
+                  "__name__ 1": true, "__name__ 2": true, "__name__ 3": true,
+                  "job 1": true, "job 2": true, "job 3": true,
+                  "exported_instance 1": true, "exported_instance 2": true, "exported_instance 3": true,
+                  "exported_job 1": true, "exported_job 2": true, "exported_job 3": true,
+                  "container 1": true, "container 2": true, "container 3": true,
+                  "endpoint 1": true, "endpoint 2": true, "endpoint 3": true,
+                  "namespace 1": true, "namespace 2": true, "namespace 3": true,
+                  "pod 1": true, "pod 2": true, "pod 3": true,
+                  "service 1": true, "service 2": true, "service 3": true,
+                  "tag 1": true, "tag 2": true
+                },
+                "indexByName": {},
+                "renameByName": {
+                  "instance": "Tag",
+                  "Value #A": "Status",
+                  "Value #B": "Duration",
+                  "Value #C": "Last tested"
+                }
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "custom": {"align": "auto", "displayMode": "auto"}
+            },
+            "overrides": [
+              {
+                "matcher": {"id": "byName", "options": "Status"},
+                "properties": [
+                  {"id": "custom.displayMode", "value": "color-background"},
+                  {"id": "mappings", "value": [
+                    {"type": "value", "options": {"0": {"color": "green", "text": "OK"}}},
+                    {"type": "range", "options": {"from": 1, "to": 9999, "result": {"color": "red", "text": "FAILED"}}}
+                  ]}
+                ]
+              },
+              {
+                "matcher": {"id": "byName", "options": "Duration"},
+                "properties": [
+                  {"id": "unit", "value": "s"}
+                ]
+              },
+              {
+                "matcher": {"id": "byName", "options": "Last tested"},
+                "properties": [
+                  {"id": "unit", "value": "dateTimeAsIso"}
+                ]
+              }
+            ]
+          },
+          "options": {"showHeader": true}
         }
       ],
       "refresh": "1m",
