@@ -85,6 +85,13 @@ spec:
                   done
                   echo -e "\nPruning repository" | tee -a $LOG
                   restic prune --retry-lock 10m 2>&1 | tee -a $LOG || EXIT_CODE=$?
+                  # Verify a deterministic 5% sample of pack files is
+                  # actually readable. Catches Wasabi-side bit-rot,
+                  # missing pack files, and index inconsistencies that
+                  # forget/prune would otherwise miss. Over ~20 daily
+                  # runs the entire repo gets covered statistically.
+                  echo -e "\nIntegrity check (5% sample)" | tee -a $LOG
+                  restic check --retry-lock 10m --read-data-subset 5% 2>&1 | tee -a $LOG || EXIT_CODE=$?
                   echo | tee -a $LOG
                   rclone size wasabi:k3s-at-home-01 | tee -a $LOG
                   JOB_DURATION=$(( $(date +%s) - JOB_START_TIME ))
