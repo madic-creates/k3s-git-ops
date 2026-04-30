@@ -15,7 +15,7 @@ resources:
   - namespace.yaml
   - k8s.backup-pvc.yaml
   - k8s.np.mariadb.yaml
-  - k8s.np.mariadb-backup.yaml
+  - k8s.np.backup-mariadb.yaml
   - k8s.np.databases-default-deny.yaml
   - k8s.backup-cronjob.yaml
 

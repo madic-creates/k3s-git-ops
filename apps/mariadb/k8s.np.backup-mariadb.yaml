@@ -5,14 +5,14 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: mariadb-backup
+  name: backup-mariadb
   namespace: databases
   annotations:
     argocd.argoproj.io/sync-wave: "08"
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: mariadb-backup
+      app.kubernetes.io/name: backup-mariadb
   ingress:
   # No ingress needed - backup job only makes outbound connections
   - {}
