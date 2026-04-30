@@ -79,17 +79,17 @@ alertmanager:
             - name: "null"
             - name: claude-and-ntfy
               webhook_configs:
-                - url: ENC[AES256_GCM,data:LMtp8UfGALJtN8Qzcn06evMJir5RjMmOVvd4Jlycf9iK1rg2JLsLBfLPNZ3FoAsJS9Q8ntfmNOvKsqPVdo80rql/o5V4Wg==,iv:pPN+wRMh4v4iP99bAzA0tZKSwb+N7iegQq37zPss+2E=,tag:jvjl6oK8FZyTTRBAYji3eA==,type:str]
+                - url: ENC[AES256_GCM,data:QS6gMYbBL7xDeYTv7EivdAoK7DTXNZ7WqRKHfAaH9TKb6Zd3VzcYXd0BNFC/Rx2TZAGtWRH6wJyae/pHqji15FtQLtqKedPKEW+WSFZq6oIa,iv:5X/UHz05Qa048F4XczoVyoaQNfpyXaStydEwPEVUQfM=,tag:0+6mb8YdVMRWuFY5vc6dcQ==,type:str]
                   send_resolved: false
                   http_config:
                     authorization:
                         type: Bearer
                         credentials: ENC[AES256_GCM,data:bXKAhDHT7QAAp+Eo7A8JSLitbh1oNCwewurvxqm+NyDlJvOvw7/Zm8fuK3l3/W6qz6WTgO/KRHw12FgAYk8nxA==,iv:j0R8R9wyxaXCZwHGaFCsGJ9wNHsshdj+HImbHaKlFFg=,tag:SYSnYGEmNnQbjfePSdTRtg==,type:str]
-                - url: ENC[AES256_GCM,data:NU85/eBU+mEOuUMy9I9Jnm4OaWZ6DOoKT7eQX/ONn20m2ASEmQOQVPRPh+Ft+OvdO8mDomj7NZWOXQ==,iv:XbocAOVwx1z3ecmYK095L1RDHNO0LC41pHEvGQIZ0Bs=,tag:UybbJSb5+oozgc1UNCnS+Q==,type:str]
+                - url: ENC[AES256_GCM,data:lM5px1mMRsZQIzE2xCUdWjHwbDj30NfhBF7X3imRB30Z2gzrbmdYUZYDuct5OCvK1a2k7jGtYsMJKw==,iv:Sy3xgT+YpR1hQj85GzVButhPSuQmf3H431znP/JVP+o=,tag:yvRnXME0kNVAYvQoDBKfHQ==,type:str]
                   http_config:
                     basic_auth:
-                        username: ENC[AES256_GCM,data:b2L34g0zavR1Uxmz/GpYyEX6GcGcPxn/,iv:VTgmLvfasmmddaTF01SrByoo272BRvApb8iyp3bzoHs=,tag:/H0PfeVmuz171w3Bv/KkxQ==,type:str]
-                        password: ENC[AES256_GCM,data:TF9VV/w8smRvCz8eamlLD5OrTjSCOJ6K,iv:9QtJ3E4x2cV55mAt5AD0claMgs0ricSjmvFws+shS7w=,tag:mEE8KWZDgoB4fafitNqIAQ==,type:str]
+                        username: ENC[AES256_GCM,data:H/r5BiJi0UBWqt47q33Be1dqycwc1Dos,iv:BPZV4L75CvsjICvuVqUXIQUCNs818XHhb+R+RaG3sgw=,tag:i6AVfB+KnhL7YX2rsydG0g==,type:str]
+                        password: ENC[AES256_GCM,data:2TZsJ0Hgc7fgaEJJWl04SzAjs99CGq3Y,iv:Kj06u3c/5Voq7srkkfffEUSWICfVrZpvZtGizqZY18A=,tag:22DJpQmzNdHT7qFCkWpEsg==,type:str]
             - name: ntfy
               webhook_configs:
                 - url: ENC[AES256_GCM,data:lM5px1mMRsZQIzE2xCUdWjHwbDj30NfhBF7X3imRB30Z2gzrbmdYUZYDuct5OCvK1a2k7jGtYsMJKw==,iv:Sy3xgT+YpR1hQj85GzVButhPSuQmf3H431znP/JVP+o=,tag:yvRnXME0kNVAYvQoDBKfHQ==,type:str]
@@ -366,7 +366,7 @@ sops:
             cjFIVXZPeTA0OXZObjFRZXZyb0ZqUU0Ki/DT+E/OXYb1VFBKkntm09AvAjczVh7W
             I/ywpOMRXtxSTUpegF9WjDs1XsioaoCk0pO4yLZGmcbYKUmfv43NrA==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2026-04-29T20:59:15Z"
-    mac: ENC[AES256_GCM,data:Kk+FFz5tiPWdYFsC36soWMef8Ka8evs2QJ2GtFKQETxyOCQm8JcmaeBFzkwaPffr4+h/rh8wrGqyFEAJiwG2BTQfqKU16fGNaanM6dpvYk0IJcVYdsJfXMqAwo6LM4epcYo+eIItc1Mx3tAuxdwhWp2nOP3sQZns70HHx6RxkdE=,iv:FknJpRbpCOBGGaITQL3qfb2JrJ5f5KiDJgSm03fgaAM=,tag:2pqCUw7Px+AqaBPPicAphA==,type:str]
+    lastmodified: "2026-04-30T06:01:57Z"
+    mac: ENC[AES256_GCM,data:rShALpn2C0x9AgXkgcka9SS8NKTrDaQG0su3A4mvQfFEB3XxYtVviufJGzo5rkJVYTHmcSNeMyMqU9S427RpiCezLqhNUt6Ca9LAXBy3tk1FtNJdVEYm5Ayt2V4LgJhKFAyDFyAdiZwSNPyq0P/fdeU2r6MBsGovCFsliOGMjdI=,iv:77S/TOgLySgedlL7h8TngURCWVje6UjRg65PW5g003c=,tag:IxBAi0zpuFI2zRQo4V3pgA==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
     version: 3.12.2
