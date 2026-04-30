@@ -455,6 +455,35 @@ data:
             },
             "overrides": []
           }
+        },
+        {
+          "type": "timeseries",
+          "title": "Backup snapshot restore size",
+          "description": "Bytes that a `restic restore latest` would extract for each host's most recent snapshot. Captured by backup.sh after every successful run via `restic stats latest --mode restore-size`. Pushgateway holds only the latest value per host, but Prometheus scrapes every 15 s and stores each scrape — the resulting time-series is the per-snapshot history, one step per backup run. Watch for sustained upward trends (capacity planning) or sudden drops (possible data loss).",
+          "id": 11,
+          "gridPos": {"h": 9, "w": 24, "x": 0, "y": 43},
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "targets": [
+            {"expr": "backup_snapshot_restore_size_bytes{job=\"backup\"}", "refId": "A", "legendFormat": "{{instance}}"}
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "bytes",
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "stepAfter",
+                "lineWidth": 1,
+                "fillOpacity": 10,
+                "showPoints": "auto",
+                "stacking": {"mode": "none"}
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {"displayMode": "table", "placement": "right", "showLegend": true, "calcs": ["lastNotNull", "max", "min"]},
+            "tooltip": {"mode": "multi", "sort": "desc"}
+          }
         }
       ],
       "refresh": "1m",

@@ -68,10 +68,32 @@ data:
         fi
         JOB_DURATION=$(( $(date +%s) - JOB_START_TIME ))
 
+        # On a successful backup, query the just-created snapshot's
+        # restore-size — the bytes a `restic restore latest` would
+        # extract onto the filesystem. Pushed alongside the existing
+        # status/duration metrics so each backup run produces one
+        # data point per host. Prometheus scrapes Pushgateway at
+        # 15-second intervals so the value is captured into the TSDB
+        # well before the next backup run replaces it, giving a full
+        # time-series of per-snapshot restore size.
+        SNAPSHOT_RESTORE_SIZE=""
+        if [ "$1" = "0" ]; then
+          SNAPSHOT_RESTORE_SIZE=$(restic stats latest \
+              --host "${RESTIC_HOSTNAME}" \
+              --mode restore-size \
+              --json 2>/dev/null \
+            | sed -n 's/.*"total_size":\([0-9]*\).*/\1/p')
+        fi
+
         # Construct the text data for the metrics
         metrics="backup_duration_seconds ${JOB_DURATION}
     backup_start_timestamp ${JOB_START_TIME}
     backup_status{status=\"${JOB_STATUS}\"} $1"
+
+        if [ -n "${SNAPSHOT_RESTORE_SIZE}" ] && [ "${SNAPSHOT_RESTORE_SIZE}" -gt 0 ] 2>/dev/null; then
+          metrics="${metrics}
+    backup_snapshot_restore_size_bytes ${SNAPSHOT_RESTORE_SIZE}"
+        fi
 
         # Send the metrics to the Pushgateway
         echo "$(date) Sending metrics to Pushgateway"
