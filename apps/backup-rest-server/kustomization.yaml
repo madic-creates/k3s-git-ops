@@ -1,0 +1,18 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: backup
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "15"
+
+resources:
+  - namespace.yaml
+  - k8s.deployment.yaml
+  - k8s.service.yaml
+  - k8s.np.rest-server.yaml
+  #- k8s.backup-mirror-wasabi.yaml
+  - k8s.np.backup-mirror-wasabi.yaml
+
+generators:
+  - kustomize-secret-generator.yaml

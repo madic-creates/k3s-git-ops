@@ -1,0 +1,105 @@
+---
+# Restic REST server — local-first repository for the backup fleet.
+# Pinned to the ZFS node via nodeSelector; the repository data lives
+# on the host filesystem at /vol_raidz1/restic-local. A daily mirror
+# CronJob (k8s.backup-mirror-wasabi.yaml) syncs the on-disk repo to
+# Wasabi for off-site protection.
+#
+# Single replica with strategy: Recreate because the underlying
+# storage is hostPath on a single node — multiple replicas would
+# corrupt the repo on concurrent writes.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rest-server
+  namespace: backup
+  labels:
+    app.kubernetes.io/name: rest-server
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: rest-server
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: rest-server
+    spec:
+      automountServiceAccountToken: false
+      nodeSelector:
+        node-role/workload: zfs
+      # The repo is owned by 65534 on the host filesystem (set up
+      # during initial provisioning). fsGroup does not apply to
+      # hostPath; the host-side chown is the source of truth.
+      securityContext:
+        runAsUser: 65534
+        runAsGroup: 65534
+        runAsNonRoot: true
+      containers:
+        - name: rest-server
+          image: restic/rest-server:0.13.0
+          imagePullPolicy: IfNotPresent
+          # --no-auth would skip the htpasswd check; we always require
+          # auth even though the service is cluster-internal.
+          # --private-repos puts each user under its own subdir; we
+          # use a single shared user so disable that.
+          args:
+            - --listen=:8000
+            - --path=/data
+          env:
+            # Tell rest-server where the htpasswd file lives.
+            - name: HTPASSWD_FILE
+              value: /etc/htpasswd/htpasswd
+            # Expose Prometheus metrics on /metrics. Pushgateway already
+            # has scrape rules for the backup namespace — this gives us
+            # request rates and bytes-served for free.
+            - name: PROMETHEUS_NO_AUTH
+              value: "true"
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: htpasswd
+              mountPath: /etc/htpasswd
+              readOnly: true
+          resources:
+            requests:
+              cpu: 25m
+              memory: 32Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 10
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+      volumes:
+        - name: data
+          hostPath:
+            path: /vol_raidz1/restic-local
+            type: Directory
+        - name: htpasswd
+          secret:
+            secretName: rest-server-htpasswd
+            defaultMode: 0400

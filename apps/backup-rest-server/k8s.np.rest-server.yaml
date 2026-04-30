@@ -1,0 +1,70 @@
+---
+# Network Policy for the Restic REST-server.
+# Ingress: port 8000 from every namespace that runs a backup CronJob,
+# plus prometheus for metrics scraping.
+# Egress: DNS only — rest-server is a passive store, makes no
+# outbound calls. The mirror to Wasabi is a separate CronJob.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: rest-server
+  namespace: backup
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: rest-server
+  ingress:
+    # Ingress for backup writes from every backup workload namespace.
+    # Sources are matched by the app.kubernetes.io/component=backup
+    # label that all backup-* CronJobs carry.
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: databases
+            k8s:app.kubernetes.io/component: backup
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: media
+            k8s:app.kubernetes.io/component: backup
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: monitoring
+            k8s:app.kubernetes.io/component: backup
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: paper
+            k8s:app.kubernetes.io/component: backup
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: downloader
+            k8s:app.kubernetes.io/component: backup
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: longhorn
+            k8s:app.kubernetes.io/name: restic-retentionpolicies
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: longhorn
+            k8s:app.kubernetes.io/name: backup-restore-test
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: backup
+            k8s:app.kubernetes.io/name: backup-mirror-wasabi
+      toPorts:
+        - ports:
+            - port: "8000"
+              protocol: TCP
+    # Prometheus scrapes /metrics for request-rate observability.
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: monitoring
+            k8s:app.kubernetes.io/name: prometheus
+      toPorts:
+        - ports:
+            - port: "8000"
+              protocol: TCP
+  egress:
+    # DNS only — the server itself never reaches out.
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s:k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP

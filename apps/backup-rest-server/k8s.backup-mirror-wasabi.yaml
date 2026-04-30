@@ -1,0 +1,132 @@
+---
+# Daily mirror of the local restic repository to Wasabi.
+#
+# Local is the source of truth; Wasabi is the off-site copy. Uses
+# rclone copy (not sync) — files are added to Wasabi but never
+# deleted, so an accidental local-repo wipe does not propagate.
+# Aging out happens naturally via Wasabi's 90-day minimum retention
+# and periodic manual cleanup if needed.
+#
+# Pinned to node04 via nodeSelector because it needs hostPath
+# access to /vol_raidz1/restic-local — the very same path the
+# rest-server Deployment serves.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-mirror-wasabi
+  namespace: backup
+spec:
+  schedule: "0 5 * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
+  startingDeadlineSeconds: 3600
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      # 4 h headroom for catch-up after a local outage. Daily
+      # incrementals usually finish in minutes.
+      activeDeadlineSeconds: 14400
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: backup-mirror-wasabi
+            app.kubernetes.io/component: backup
+        spec:
+          automountServiceAccountToken: false
+          restartPolicy: Never
+          nodeSelector:
+            node-role/workload: zfs
+          # Read-only access to the local repo, write-only to Wasabi.
+          # Match rest-server's UID/GID so we can read the on-disk
+          # repo without a chmod dance.
+          securityContext:
+            runAsUser: 65534
+            runAsGroup: 65534
+            runAsNonRoot: true
+          containers:
+            - name: rclone
+              image: ghcr.io/madic-creates/container-restic:latest@sha256:c5786cdded119d4bf44680e95f54a4cbb0f89ddb05eab83937709f0b6338a811
+              imagePullPolicy: IfNotPresent
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set +e
+                  JOB_START_TIME=$(date +%s)
+
+                  mkdir -p $HOME/.config/rclone
+                  cat > $HOME/.config/rclone/rclone.conf <<EOF
+                  [wasabi]
+                  type = s3
+                  provider = Wasabi
+                  access_key_id = $AWS_ACCESS_KEY_ID
+                  secret_access_key = $AWS_SECRET_ACCESS_KEY
+                  region = eu-central-2
+                  endpoint = $WASABI_ENDPOINT
+                  EOF
+
+                  echo "=== Mirror $(date) ==="
+                  echo "Local repo size:"
+                  du -sh /local-repo 2>/dev/null || echo "  (not measurable)"
+
+                  echo
+                  echo "Starting rclone copy local-repo -> wasabi:$WASABI_BUCKET/$WASABI_PATH"
+                  rclone copy /local-repo wasabi:$WASABI_BUCKET/$WASABI_PATH \
+                    --transfers=8 --stats=60s --stats-one-line
+                  EXIT_CODE=$?
+
+                  JOB_DURATION=$(( $(date +%s) - JOB_START_TIME ))
+                  echo "Mirror exit=$EXIT_CODE duration=${JOB_DURATION}s"
+
+                  if [ "$EXIT_CODE" = "0" ]; then JOB_STATUS=success; else JOB_STATUS=failure; fi
+
+                  {
+                    echo "backup_mirror_status{status=\"${JOB_STATUS}\"} $EXIT_CODE"
+                    echo "backup_mirror_duration_seconds $JOB_DURATION"
+                  } | curl -s --data-binary @- \
+                       "$PUSHGATEWAY_URL/metrics/job/backup-mirror-wasabi/instance/wasabi"
+
+                  if [ "$EXIT_CODE" != "0" ] && [ "$NTFY_ENABLED" = "true" ]; then
+                    echo "Mirror failed exit=$EXIT_CODE duration=${JOB_DURATION}s" | \
+                      curl -s $NTFY_CREDS \
+                           -H "Title: Backup mirror to Wasabi failed" \
+                           -H "Priority: 4" \
+                           -H "Tags: warning" \
+                           -d @- "$NTFY_SERVER/$NTFY_TOPIC"
+                  fi
+
+                  exit $EXIT_CODE
+              env:
+                - name: HOME
+                  value: /home/rclone
+              envFrom:
+                - secretRef:
+                    name: backup-mirror-wasabi-creds
+              volumeMounts:
+                - name: local-repo
+                  mountPath: /local-repo
+                  readOnly: true
+                - name: home
+                  mountPath: /home/rclone
+                - name: tmp
+                  mountPath: /tmp
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
+                privileged: false
+                readOnlyRootFilesystem: true
+          volumes:
+            - name: local-repo
+              hostPath:
+                path: /vol_raidz1/restic-local
+                type: Directory
+            - name: home
+              emptyDir:
+                medium: Memory
+                sizeLimit: 100Mi
+            - name: tmp
+              emptyDir:
+                sizeLimit: 1Gi
