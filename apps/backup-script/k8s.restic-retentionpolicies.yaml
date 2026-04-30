@@ -88,10 +88,21 @@ spec:
                   # Verify a deterministic 5% sample of pack files is
                   # actually readable. Catches Wasabi-side bit-rot,
                   # missing pack files, and index inconsistencies that
-                  # forget/prune would otherwise miss. Over ~20 daily
-                  # runs the entire repo gets covered statistically.
-                  echo -e "\nIntegrity check (5% sample)" | tee -a $LOG
-                  restic check --retry-lock 10m --read-data-subset 5% 2>&1 | tee -a $LOG || EXIT_CODE=$?
+                  # forget/prune would otherwise miss.
+                  #
+                  # Runs only on Sundays. Daily 5% would generate
+                  # ~150% of stored volume in monthly egress, which
+                  # exceeds Wasabi's 1:1 egress-to-storage ratio and
+                  # would risk account limitation. Weekly 5% works
+                  # out to ~20% of stored volume per month — well
+                  # under the ratio — at the cost of stretching full
+                  # repo coverage from ~3 weeks to ~20 weeks. That
+                  # is plenty for catching slow-moving bit-rot in a
+                  # home cluster.
+                  if [ "$(date +%u)" = "7" ]; then
+                    echo -e "\nIntegrity check (5% sample, weekly)" | tee -a $LOG
+                    restic check --retry-lock 10m --read-data-subset 5% 2>&1 | tee -a $LOG || EXIT_CODE=$?
+                  fi
                   echo | tee -a $LOG
                   rclone size wasabi:k3s-at-home-01 | tee -a $LOG
                   JOB_DURATION=$(( $(date +%s) - JOB_START_TIME ))
