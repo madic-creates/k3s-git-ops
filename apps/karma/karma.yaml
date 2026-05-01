@@ -30,3 +30,55 @@ listen:
   port: 8080
 log:
   level: info
+# One-click ack: turns the alert group into a short-lived silence
+# attributed to the Authelia Remote-User. Lets us mute noise without
+# opening the full silence form. 30m fits a homelab; pair with kthxbye
+# later if we need silences to auto-extend while the alert keeps firing.
+alertAcknowledgement:
+  enabled: true
+  duration: 30m
+  author: karma
+  comment: ACK via karma on %NOWLOC%
+# Default the UI to active alerts only; silenced/inhibited stay one click away.
+filters:
+  default:
+    - "@state=active"
+# Drop volatile labels from the silence form so a silence survives a pod
+# reschedule. They stay visible in the alert view; only the silence
+# matcher is broadened.
+silenceForm:
+  strip:
+    labels:
+      - pod
+      - instance
+labels:
+  # kube-prometheus-stack attaches a lot of plumbing labels that add no
+  # triage value. Hide them in the UI; alertname/severity/namespace etc.
+  # are what we actually look at.
+  strip:
+    - endpoint
+    - container
+    - prometheus
+    - service
+    - job
+  color:
+    # Same color for every namespace value so alerts from the same
+    # workload visually cluster.
+    static:
+      - namespace
+    # Fixed severity colors matching the kube-prometheus-stack levels
+    # (critical/warning/info/none).
+    custom:
+      severity:
+        - value: critical
+          color: "#ff220c"
+        - value: warning
+          color: "#ffae42"
+        - value: info
+          color: "#87c4e0"
+        - value: none
+          color: "#736598"
+ui:
+  # Split the grid by severity — critical/warning/info each get their own
+  # column. Biggest triage win on a single-cluster setup.
+  multiGridLabel: severity
