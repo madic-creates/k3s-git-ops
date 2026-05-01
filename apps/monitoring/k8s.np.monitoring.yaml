@@ -274,6 +274,15 @@ spec:
     - ports:
       - port: "9090"
         protocol: TCP
+  # Allow claude-alert-kubernetes-analyzer to query Prometheus for alert context
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: monitoring
+        k8s:app.kubernetes.io/name: claude-alert-kubernetes-analyzer
+    toPorts:
+    - ports:
+      - port: "9090"
+        protocol: TCP
   egress:
   # Allow DNS resolution
   - toEndpoints:
