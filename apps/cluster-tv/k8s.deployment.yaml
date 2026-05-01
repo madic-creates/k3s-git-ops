@@ -31,7 +31,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: cluster-tv
-          image: ghcr.io/madic-creates/cluster-tv:latest@sha256:f4df7e70da6c42311223755458e2ed02846122ea9e2dc2690957c26a3e89536a
+          image: ghcr.io/madic-creates/cluster-tv:latest@sha256:017220aa54f5cbf42abecb02b6d44d20666384db5e15d43a9062f8bae61cbe6a
           ports:
             - containerPort: 8080
               name: http
