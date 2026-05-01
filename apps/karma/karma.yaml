@@ -9,6 +9,16 @@ alertmanager:
       # never has to call alertmanager directly (avoids cross-subdomain CORS
       # and a second Authelia auth on alertmanager.internal.neese-web.de).
       proxy: true
+      # Dead man's switch: kube-prometheus-stack ships an always-firing
+      # "Watchdog" alert (severity=none). If it disappears the alerting
+      # pipeline (Prometheus -> Alertmanager -> karma) is broken; karma will
+      # surface a warning in the UI. visible defaults to false so the
+      # heartbeat alert itself stays out of the regular alert list.
+      healthcheck:
+        filters:
+          watchdog:
+            - alertname=Watchdog
+            - severity=none
 # Authentication is enforced by Authelia ForwardAuth on Traefik.
 # Karma trusts the Remote-User header it sets so silences are attributed.
 authentication:
