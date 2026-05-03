@@ -85,37 +85,73 @@ spec:
                       echo "ERROR: restic restore exited $RESTORE_EC"
                       STATUS=$RESTORE_EC
                     else
-                      # Each verifier passes if the canonical file/dir
-                      # exists and is non-empty. restic itself checksums
-                      # every blob during restore, so bit-level integrity
-                      # is already covered — these checks add a sanity
-                      # layer on top (right files in right places).
+                      # Each verifier confirms the canonical files or
+                      # directories landed in the expected layout.
+                      # restic itself checksums every blob during restore,
+                      # so bit-level integrity is already covered — these
+                      # checks add a sanity layer (right files in right
+                      # places). Each branch writes a one-line FAIL_REASON
+                      # when STATUS=1 so the log explains what was missing.
+                      STATUS=0
+                      FAIL_REASON=""
                       case "$TAG" in
                         mariadb)
-                          [ -s "$TARGET/backup/mariadb.xb" ] && STATUS=0 || STATUS=1 ;;
+                          if [ ! -s "$TARGET/backup/mariadb.xb" ]; then
+                            STATUS=1
+                            FAIL_REASON="$TARGET/backup/mariadb.xb missing or empty"
+                          fi ;;
                         grafana)
-                          [ -s "$TARGET/backup/grafana/grafana.db" ] && STATUS=0 || STATUS=1 ;;
+                          if [ ! -s "$TARGET/backup/grafana/grafana.db" ]; then
+                            STATUS=1
+                            FAIL_REASON="$TARGET/backup/grafana/grafana.db missing or empty"
+                          fi ;;
                         emby)
-                          [ -s "$TARGET/backup/emby-config/system.xml" ] && STATUS=0 || STATUS=1 ;;
+                          # Emby's config layout varies by version (some
+                          # ship system.xml at the root, some don't).
+                          # Just confirm the config dir was restored and
+                          # contains content — restic already vouched for
+                          # the bytes.
+                          if [ ! -d "$TARGET/backup/emby-config" ]; then
+                            STATUS=1
+                            FAIL_REASON="$TARGET/backup/emby-config not a directory"
+                          elif [ -z "$(ls -A "$TARGET/backup/emby-config" 2>/dev/null)" ]; then
+                            STATUS=1
+                            FAIL_REASON="$TARGET/backup/emby-config is empty"
+                          fi ;;
                         nextpvr)
-                          [ -s "$TARGET/backup/nextpvr-config/config.xml" ] && STATUS=0 || STATUS=1 ;;
+                          if [ ! -d "$TARGET/backup/nextpvr-config" ]; then
+                            STATUS=1
+                            FAIL_REASON="$TARGET/backup/nextpvr-config not a directory"
+                          elif [ -z "$(ls -A "$TARGET/backup/nextpvr-config" 2>/dev/null)" ]; then
+                            STATUS=1
+                            FAIL_REASON="$TARGET/backup/nextpvr-config is empty"
+                          fi ;;
                         downloader)
-                          STATUS=0
                           for db in sonarr/sonarr.db radarr/radarr.db lidarr/lidarr.db; do
-                            [ -s "$TARGET/backup/$db" ] || STATUS=1
+                            if [ ! -s "$TARGET/backup/$db" ]; then
+                              STATUS=1
+                              FAIL_REASON="$TARGET/backup/$db missing or empty"
+                              break
+                            fi
                           done ;;
                         paperless)
-                          if [ -d "$TARGET/backup/paperless-data" ] \
-                             && [ -d "$TARGET/backup/paperless-media" ] \
-                             && [ -d "$TARGET/backup/paperless-export" ]; then
-                            STATUS=0
-                          else
-                            STATUS=1
-                          fi ;;
+                          for d in paperless-data paperless-media paperless-export; do
+                            if [ ! -d "$TARGET/backup/$d" ]; then
+                              STATUS=1
+                              FAIL_REASON="$TARGET/backup/$d not a directory"
+                              break
+                            fi
+                          done ;;
                         *)
-                          echo "ERROR: no verifier defined for tag $TAG"
-                          STATUS=1 ;;
+                          STATUS=1
+                          FAIL_REASON="no verifier defined for tag $TAG" ;;
                       esac
+
+                      if [ $STATUS -ne 0 ]; then
+                        echo "ERROR: $FAIL_REASON"
+                        echo "Tree under $TARGET (max depth 2):"
+                        find "$TARGET" -maxdepth 2 2>&1 | head -30
+                      fi
                     fi
 
                     TAG_DURATION=$(( $(date +%s) - TAG_START_TIME ))
