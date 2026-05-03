@@ -1,0 +1,50 @@
+---
+# Network Policy for Prometheus Blackbox Exporter
+# This service performs synthetic probes (HTTP, TCP, ICMP, DNS) against arbitrary
+# targets and exposes Prometheus metrics about their availability and latency.
+# Requirements:
+# - DNS resolution for resolving probe target hostnames
+# - Ingress from Prometheus for metrics scraping (port 9115)
+# - Egress to anywhere (the whole point of a blackbox prober is reaching arbitrary
+#   internal and external endpoints; restricting this would defeat the purpose).
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: prometheus-blackbox-exporter
+  namespace: monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "17"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus-blackbox-exporter
+  ingress:
+  # Allow Prometheus to scrape blackbox-exporter metrics and probe results.
+  # The /probe endpoint is what actually triggers the synthetic checks.
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: monitoring
+        k8s:app.kubernetes.io/name: prometheus
+    toPorts:
+    - ports:
+      - port: "9115"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS for resolving probe target hostnames.
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow probes against any in-cluster or external endpoint. Blackbox is a
+  # generic prober; restricting destinations defeats its purpose. Tighten only
+  # if a concrete probe-target list is maintained.
+  - toEntities:
+      - cluster
+      - world
