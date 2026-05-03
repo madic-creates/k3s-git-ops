@@ -18,47 +18,47 @@ serviceMonitor:
         # ----- HTTP(S) reachability checks, every 3 minutes -----
         # Module http_2xx follows redirects, accepts default 2xx, prefers IPv4.
         - name: http-01
-          url: ENC[AES256_GCM,data:H5S/L4iGV4vVVJiOxURng2T6+8gwMfiktxs=,iv:goG/lslNDbVJMuJ6vquqzGBv1/wiEWQK6K5GoiP24dk=,tag:oEsWJHdLXQQpV+laHr7+Aw==,type:str]
+          url: ENC[AES256_GCM,data:UEkyb1dGkpyZ0YGoJHSfOygSZiw/h01JLQ==,iv:bk9F7r8mXVvAATTP3qB5mNss+JOXGWfFunJTjKuSrec=,tag:9XAccLggYT5IkKTk6GXO2w==,type:str]
         - name: http-02
-          url: ENC[AES256_GCM,data:SojHd+kBTYaaAijUGsB5GuGY7X3UPJJ4EE0F,iv:bAoTNu5OWRfuLD+2CHaiu2SGGVY2OZGh4dUfRmk5KfY=,tag:VGOYO17W7zUZ5Ho0NOEwFQ==,type:str]
+          url: ENC[AES256_GCM,data:WDKTMEENCLKUB6MCRiqeluAmnTENPntR5vna,iv:+Io8G32x8mxA8Yxqus3lFbDCxdHb7+RDSWVL9tOWe/4=,tag:tJLTNJuuOXYjRos4lHvfAQ==,type:str]
         - name: http-03
-          url: ENC[AES256_GCM,data:iKfCl6SQq5IULDiXgR6u1vVanq3dGcnu,iv:MaCNjgqbkKrkpIYbzVK5nJCzDZ1P+zf2CPN24MRj89Y=,tag:Zf4nxlAXPcthZd9eDz7e3A==,type:str]
+          url: ENC[AES256_GCM,data:NtL2v9qpwvbG2RJy8XJm0w5611P4OVUW,iv:rABVQzT7SEzTF/75ZnFasLHP6qTOGh7J9pUT/w+bCf4=,tag:raHAE77RXOXEQE7LE5FOrQ==,type:str]
         - name: http-04
-          url: ENC[AES256_GCM,data:bbJZ4hVn7WeNH21oG9C8YyUZfScL5m1lDcncLrk=,iv:0iIAQG+cmw+1Rkb0GaN7+g1AsO4RuY445mmR2Jd9VuI=,tag:RwdMg9CHt7zzfoSwFo4OTQ==,type:str]
+          url: ENC[AES256_GCM,data:F8aUcMbav+bdrpn9ah0ELGgmebYaaYpAz30Tu+c=,iv:F8Y05kS4iucFhkfe8yar2uMIubp4qLPTLnDdkASmD78=,tag:/VvaS/0FuG9i+ukkxvg4eQ==,type:str]
         - name: http-05
-          url: ENC[AES256_GCM,data:uyy64pRLGRlFpUVgBpPaZ+B5eFPEgV6QqZk=,iv:/kdL8z2szM8MuNGS5trXeCjJVkmPKiJHt6Ep7ZalCqk=,tag:ihX1Zol5CXQYfvZo/r4KpA==,type:str]
+          url: ENC[AES256_GCM,data:usFlFtkk6I73TTM8PnIV5oq/VRRjelnbxG4=,iv:QEAeif6QoJGkZSRxg2UZ3HuK1NQC/Mzoc9cHN9g7/Rc=,tag:MjTozb0e9XPMjrp+cFBDHQ==,type:str]
         - name: http-06
-          url: ENC[AES256_GCM,data:/FYXK9F2aJMrWgcqB/QENeDapHbMchYWQlW1,iv:2LMCYH338siZyuIDRPEynJoKcr/X2RSVQF1e8gycgRs=,tag:km5wl3HksRs4mlMhMPILsg==,type:str]
+          url: ENC[AES256_GCM,data:m/uxe7IczbcZrCGd2ZHzaljF2HDceqricOPi,iv:HTnyqsnaYKStH7lyDiUZAMucDIwToOKSfdPm2y7kYp0=,tag:mWaOXQskWFPF6ISQ68gQLA==,type:str]
         # ----- TLS-only certificate checks, every 6 hours -----
         # tcp_connect_tls performs a TCP+TLS handshake without an HTTP request,
         # exposing probe_ssl_earliest_cert_expiry / probe_ssl_last_chain_expiry.
         - name: cert-01
-          url: ENC[AES256_GCM,data:1RE30O/p7Hahu3sheRZFBliqWKP86g==,iv:5IgAiWm2lGKj3AuZD7kZkbAlj//2a6CXd2PYyEeq7RA=,tag:yQRkyGw1uhCpEiWIdrihsQ==,type:str]
+          url: ENC[AES256_GCM,data:jrc1mebnTb1TwZLJfJpVdYbUdhfv,iv:zl4mOqQmbGpwkdzjyLgYR5zz1zHsFRZe3ZJtWC9uif0=,tag:C2Kcm870uKZwL/FKAQ/o0A==,type:str]
           module: tcp_connect_tls
           interval: 6h
           scrapeTimeout: 15s
         - name: cert-02
-          url: ENC[AES256_GCM,data:0N5gDuXlKSKjaqA0Wpw1dK5jeo6oVNc=,iv:0zJAxVowavPOvHRNQWoeTTcLrhv6gVoLFCgqEHtLMLg=,tag:JlVe2SXB86iBMEwadzBr1A==,type:str]
+          url: ENC[AES256_GCM,data:91EUpJ0ELUebcHrr5AmQtIBp3LF2A7U=,iv:MaYU3//zTZdHqCbbV+yojD2n1F1cAGFtgY0lHkFntbI=,tag:5Eprk3nBfOL07sPAHPeNeA==,type:str]
           module: tcp_connect_tls
           interval: 6h
           scrapeTimeout: 15s
         - name: cert-03
-          url: ENC[AES256_GCM,data:hAyhmEGfBSV6FJO7yLRnUvEFHxs=,iv:Er30/JJZBuBqyDL5dwsG/c8aGIA3BBeBXjn9s+SUPq4=,tag:EBhrIlGt4pnZ6yhtYL2p2w==,type:str]
+          url: ENC[AES256_GCM,data:ma1IF6blu5P4JAhhLn/jJRIWQi4=,iv:39+09YzlAHYZB492VazjmQPeIg7iZaowqxj8sZ/wOes=,tag:28VWWBUcaWt+uXSPfU0MvQ==,type:str]
           module: tcp_connect_tls
           interval: 6h
           scrapeTimeout: 15s
         - name: cert-04
-          url: ENC[AES256_GCM,data:HQ90cuGLAessBZDvIlP/8zpZmIzcTG7/MA==,iv:U7RLIK8poWiPKJkWuUVXTSzxj+7df3uJcxETaqe7MRI=,tag:qHChTBBcD10ZiwwMPyk/gw==,type:str]
+          url: ENC[AES256_GCM,data:fAOjl2mj/MQc1L8IAREWjj5HuazZ9Y/XAQ==,iv:QCpSaaIuCBAV5uQ1DPnJ7C4lX2wUntZDwOm8QhVzpx0=,tag:tSkn2xrbiN9+XcMKsnYnIg==,type:str]
           module: tcp_connect_tls
           interval: 6h
           scrapeTimeout: 15s
         - name: cert-05
-          url: ENC[AES256_GCM,data:31Pzy+QomQxqXKWQvgcxys1Tvy8Ndw==,iv:bz466Makpz/fau/AEidsDHaQANThg97b8BUGj3w8e3s=,tag:6zfU8IqlIga/mrBL6rQVuw==,type:str]
+          url: ENC[AES256_GCM,data:J5D0TbNVREaoMXi7odLSvIWqBZiT6Q==,iv:BnbOXaAyPWGiwTSetp99irQsuyN3a/2/775bQOzCm8s=,tag:j8mlI1lBu3j4CjlE000YFA==,type:str]
           module: tcp_connect_tls
           interval: 6h
           scrapeTimeout: 15s
         - name: cert-06
-          url: ENC[AES256_GCM,data:67svBukGUqABVJ6Y5f3oJiWZrMMelh8=,iv:O23e1dXKIWPYpn11vBby9JSxJS+pjko90yTsHT8w5/g=,tag:8LqR02I9M+KlWYpv81gjTA==,type:str]
+          url: ENC[AES256_GCM,data:uEZ1Cbenb3wkBTfl8OUN7bu7+aMmbtM=,iv:soD1RpzkdCsXH76Viq8oBsY34T7Sj7xF+RWrUv0s/84=,tag:U+rEV5fgKTtfuqNmRfkT4A==,type:str]
           module: tcp_connect_tls
           interval: 6h
           scrapeTimeout: 15s
@@ -67,7 +67,7 @@ serviceMonitor:
         # not honoured by the TCP prober, so the SNI server name is fixed in the
         # dedicated module below (encrypted in `server_name`). -----
         - name: cert-special-01
-          url: ENC[AES256_GCM,data:mTgRabw+/ScypIUUp9jrbG/W,iv:MRYm59oi/z1sjQeD1e11SF/+vWwAEcPerCtJe7vKRdc=,tag:reHAlSiJj/kYdSeTet6l0A==,type:str]
+          url: ENC[AES256_GCM,data:Xj/hwD8XYSQvPVuJkIkKH1jv,iv:umZKcRTbRfgJ0XqdIr8us+JECYQ2pqONe8ofWHJ/oZ8=,tag:bujqNxKrgJtJB1E88NQVXg==,type:str]
           module: tcp_connect_tls_with_sni
           interval: 6h
           scrapeTimeout: 15s
@@ -111,7 +111,7 @@ config:
             tcp:
                 tls: true
                 tls_config:
-                    server_name: ENC[AES256_GCM,data:dXKY1A3JqGZoMHGDcauVUkjA6gT31Q==,iv:MoMbX8PpMCHWaEpOdAw1N0InSA1csQHGgNhaplzRi5s=,tag:84Z1FBpvOAZnvDwigP6zyA==,type:str]
+                    server_name: ENC[AES256_GCM,data:y1jkjCqOJ6X2OZNtazbOKm1/PkHG3A==,iv:VsxFG0dbJN5p1Pfus8pcWl5KWdbMnzGlCagsqJPnHa0=,tag:bQhaQ6IqGJKjWIwun0KAzg==,type:str]
                 preferred_ip_protocol: ip4
 resources:
     requests:
@@ -124,22 +124,22 @@ sops:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBncVFZQk1kd1NtZVkzQUcy
-            Qkg2S2pYeDVTVlBia3ZXMUlKWGxPVnUyR0dzCkdlaVRYejZLSTkzSmFicVh2eFFG
-            ZjZhcytnVU81QVdLaXN6VzhXcDVGWGcKLS0tIHdiY1lNUTZGUE5jTy91OERoYWdk
-            RXMyR1pIMzF1MWthR2xZY2Y1UGdNdlEKz7bMOz4Y//uTf7uhdHp2POZYIW+L1huL
-            uD28gImGVl23bDUOJVW82pNVxVOK2gDxjZsRWVG4bRWwxB0+bcGtbw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBSelZMcllRclZaVzlHc3Vq
+            cUtSNDMyTGl1cnpsVDlaU2FFK001Qm5FYm0wCmlrRGN2N3BTQ3Y3KzJEeGR3U1Bj
+            K3hjSFhFVUcwaGZobHhQWVJDdi9pcGMKLS0tIEVFaXJaSFZtbEFQZmVXZVlTVFo3
+            RWxwQm94U3ZyY2ZFdWxIb2NicHVlMkkK3CEVYD6PVZr+hcN7y8Ge7DNmVDn+TBeU
+            EKRRginv3R4TVtCzXTo2FCpFNZ1RnjcoD2S78U/412ZmToZWyRBBeQ==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAyU3hPOGEzSlgzOW8wOWlJ
-            cUNkenJoRG5aRUZpWitiNHZFdVg1bkp4dlZ3CmNwSTFBenpsdzJUV3RlcHI5YzRz
-            YTdYNWtTcnhhYmI4dEpLOXNIMjJ0cncKLS0tIGZhcERYdWJYK2NsLzByb0VZQlFO
-            YmZSWUVDYmNvTDVISmRUL0xPZGVyWG8KVSI0btkoTuzM+90fw4bMxdt5KBxvIDYn
-            1zWBpNQwRcCc+wtyVmRZYmqfrDmgks6wDL8UYnrJuAMQ+ns3pUFWkg==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA1ci8vdllLbnNuVWJDNitY
+            Qk9UQ1FMdVN0ZkxyQmdiUlVZNmNGZ3l5T0FZCjBtWmg3clBET3pQOWNzYTU4Ty9N
+            VDFpcWpRU0k2U1A2T0ZaYVhrNDFwdnMKLS0tIEw1blpmRVU1TDc0Nk9jcm5uWTcr
+            bmRVZnZrMkxITVQ0R0w1RWw2dWJKZncKKAVemfEmdrrI0v/7M50fXfroqxWQzvCS
+            /hnEyp5YQR3WeZa98jzjjPdO7KJv2wI8M1TxT6m13dL5qFL/woyi4g==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2026-05-03T16:14:36Z"
-    mac: ENC[AES256_GCM,data:nnXyM+YU+Sb7Xa7EQGA+Cqak7v39weTz4EJGbzKoLGTPqCQLoRSNKghGB33AFv9aNIfejArnpO8Ric7rw+FOTGkVr0yBCO7nssbYDQVVRbjO7HPVnfQfJIqdN2gpJp8MnmgX38TxGj28QsWGIhWLkxQPsn1Xpk/XkVFg9VoaMLI=,iv:x8eaIumu9Cr3ygdKfBHmolzE+Suo0fz4Z27mH3UVux8=,tag:hwwR1UQ2udQ+mjGA4T+Qjg==,type:str]
+    lastmodified: "2026-05-03T16:24:32Z"
+    mac: ENC[AES256_GCM,data:34MvNk5qoZVMFN3Y/WuJtVZRV9gKc8MVlcf/zcOO1KJntI6Nn/mvZGSw1kxQsktnwN3BAW4b7gIli8nC9akJa+EI3kITwaiOklEm2D6VFpu9Eew7qNnwCjBAU2/Sf6Ta0lMOxiQddDLyqLROAkDZlfsH6saKFw6BqYsB7hZnkPo=,iv:evf/V1aAAM5Fqxj+dG1FFXkKCpoBye4Efx7VdcSiss4=,tag:3AKFO8NfmKP688fBFffsVg==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
     version: 3.12.2
