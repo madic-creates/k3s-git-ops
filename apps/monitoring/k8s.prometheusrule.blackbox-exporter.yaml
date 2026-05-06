@@ -1,0 +1,40 @@
+# Alerts on TLS cert expiry observed by blackbox-exporter HTTPS probes.
+# `probe_ssl_earliest_cert_expiry` is a unix timestamp; values <= 0 mean the
+# TLS handshake itself failed, so we filter `> 0` to avoid alerting on probe
+# failures (those are a separate concern).
+# cert-manager / Let's Encrypt renews ~30 days before expiry. Reaching 14
+# days means renewal has not happened, 7 days means it must be fixed now.
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: blackbox-exporter
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: blackbox-exporter.rules
+      rules:
+        - alert: BlackboxCertExpiringSoon
+          expr: |
+            probe_ssl_earliest_cert_expiry > 0
+            and (probe_ssl_earliest_cert_expiry - time()) >= 7 * 86400
+            and (probe_ssl_earliest_cert_expiry - time()) < 14 * 86400
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "TLS cert at {{ $labels.instance }} expires within 14 days"
+            description: "Earliest cert in the chain at {{ $labels.instance }} expires at {{ $value | humanizeTimestamp }}. cert-manager / Let's Encrypt renewal has likely failed — check the Certificate resource and probe_ssl_last_chain_info for cert details."
+
+        - alert: BlackboxCertExpiringCritical
+          expr: |
+            probe_ssl_earliest_cert_expiry > 0
+            and (probe_ssl_earliest_cert_expiry - time()) < 7 * 86400
+          for: 15m
+          labels:
+            severity: critical
+          annotations:
+            summary: "TLS cert at {{ $labels.instance }} expires within 7 days"
+            description: "Earliest cert in the chain at {{ $labels.instance }} expires at {{ $value | humanizeTimestamp }}. Renewal is clearly broken; manual intervention required immediately."
