@@ -1,0 +1,47 @@
+# Ad-hoc test pod that triggers the KubePodCrashLooping alert.
+# Not managed by ArgoCD/Kustomize — apply manually for testing only.
+#
+#   kubectl apply -f scripts/alert-trigger-pod.yaml
+#   # wait ~5-10 min for KubePodCrashLooping to fire
+#   kubectl delete -f scripts/alert-trigger-pod.yaml
+#
+# Namespace "monitoring" is in the claude-alert-kubernetes-analyzer
+# ALLOWED_NAMESPACES list, so the analyzer will receive the webhook.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: alert-trigger-crashloop
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: alert-trigger-crashloop
+    app.kubernetes.io/component: test
+    app.kubernetes.io/managed-by: manual
+spec:
+  restartPolicy: Always
+  terminationGracePeriodSeconds: 1
+  automountServiceAccountToken: false
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65534
+    runAsGroup: 65534
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+    - name: crash
+      image: busybox:1.37
+      command:
+        - sh
+        - -c
+        - 'echo "alert-trigger: simulating crash to fire KubePodCrashLooping"; sleep 2; exit 1'
+      resources:
+        requests:
+          cpu: 1m
+          memory: 8Mi
+        limits:
+          cpu: 50m
+          memory: 32Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop: ["ALL"]
