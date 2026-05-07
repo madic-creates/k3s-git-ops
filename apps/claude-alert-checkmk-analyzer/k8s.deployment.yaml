@@ -30,13 +30,24 @@ spec:
           type: RuntimeDefault
       containers:
         - name: analyzer
-          image: ghcr.io/madic-creates/claude-alert-checkmk-analyzer:latest@sha256:85c3c9f9b5c57aba9b394b3143a92b1f5c675558b753aa119f910f32ecc10f53
+          image: ghcr.io/madic-creates/claude-alert-checkmk-analyzer:latest@sha256:3295184d656a571f2b8e8d88201b4aea487b6b29357ac200919ed86594d20ad3
           ports:
             - containerPort: 8080
               name: http
           envFrom:
             - secretRef:
                 name: claude-alert-checkmk-analyzer-env
+          env:
+            - name: ANTHROPIC_AUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: claude-alert-checkmk-analyzer-env
+                  key: API_KEY
+            - name: ANTHROPIC_BASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: claude-alert-checkmk-analyzer-env
+                  key: API_BASE_URL
           volumeMounts:
             - name: tmp
               mountPath: /tmp
