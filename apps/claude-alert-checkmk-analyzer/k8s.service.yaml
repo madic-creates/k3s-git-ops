@@ -16,3 +16,7 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+    - port: 9101
+      targetPort: metrics
+      protocol: TCP
+      name: metrics

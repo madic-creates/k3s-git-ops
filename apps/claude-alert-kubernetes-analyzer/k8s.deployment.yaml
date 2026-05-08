@@ -35,6 +35,8 @@ spec:
           ports:
             - containerPort: 8080
               name: http
+            - containerPort: 9101
+              name: metrics
           env:
             - name: PORT
               value: "8080"
