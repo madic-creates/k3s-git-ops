@@ -22,3 +22,4 @@ CLAUDE.local.md
 *.decrypted.yaml
 apps/argo-cd-apps/argocd.secret*.yaml
 !apps/argo-cd-apps/argocd.secret*.enc.yaml
+.todos/
