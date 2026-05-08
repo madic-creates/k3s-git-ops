@@ -1,0 +1,21 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: claude-alert-kubernetes-analyzer
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: claude-alert-kubernetes-analyzer
+  annotations:
+    argocd.argoproj.io/sync-wave: "10"
+spec:
+  endpoints:
+    - interval: 1m
+      path: /metrics
+      port: http
+      scheme: http
+  namespaceSelector:
+    matchNames:
+      - monitoring
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: claude-alert-kubernetes-analyzer
