@@ -60,6 +60,7 @@ resources:
   #- 65-prox01-grafana.yaml
   - 65-headphones.yaml
   #- 65-prox01-ipmi-exporter.yaml
+  - 65-llama-cpp.yaml
   #- 65-prox01-node-exporter.yaml
   #- 65-prox01-nut-upsd.yaml
   - 65-nzbget.yaml

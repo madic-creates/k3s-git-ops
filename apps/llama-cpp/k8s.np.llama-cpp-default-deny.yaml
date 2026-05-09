@@ -1,0 +1,13 @@
+---
+# Default Deny Network Policy for namespace
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: llama-cpp-default-deny
+  namespace: llama-cpp
+spec:
+  endpointSelector: {}
+  ingress:
+    - {}
+  egress:
+    - {}

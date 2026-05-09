@@ -1,0 +1,133 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llama-cpp
+  namespace: llama-cpp
+  labels:
+    app: llama-cpp
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    # Single-tenant GPU; rolling would deadlock on nvidia.com/gpu.
+    type: Recreate
+  selector:
+    matchLabels:
+      app: llama-cpp
+  template:
+    metadata:
+      labels:
+        app: llama-cpp
+    spec:
+      runtimeClassName: nvidia
+      nodeSelector:
+        node-role/workload: zfs
+      initContainers:
+        # Fail fast with a clear error if the operator forgot to stage the
+        # GGUF on node04, or if the file got truncated. Cheaper than a
+        # CrashLoop on the main container, which buries the cause in
+        # llama.cpp logs.
+        - name: verify-model
+          image: alpine:3.20@sha256:d9e853e87e55526f6b2917df91a2115c36dd7c696a35be12163d44e6e2a4b6bc
+          command:
+            - sh
+            - -c
+            - |
+              set -eu
+              MODEL=/models/Qwen2.5-Coder-7B-Instruct-Q4_K_M.gguf
+              EXPECTED_SHA256=1664fccab734674a50763490a8c6931b70e3f2f8ec10031b54806d30e5f956b6
+              test -f "$MODEL" || { echo "model file missing: $MODEL"; exit 1; }
+              # GGUF magic number is the ASCII string "GGUF" at offset 0
+              head -c4 "$MODEL" | grep -q '^GGUF' || {
+                echo "not a GGUF file (header mismatch)"; exit 1; }
+              echo "$EXPECTED_SHA256  $MODEL" | sha256sum -c -
+          volumeMounts:
+            - name: models
+              mountPath: /models
+              readOnly: true
+      containers:
+        - name: llama-cpp
+          image: ghcr.io/ggml-org/llama.cpp:server-cuda@sha256:7e447b8dfec5c13025b3e269b1c0fbb0dee41e3e4b9ee55906fcbea9d847043f
+          args:
+            - --model
+            - /models/Qwen2.5-Coder-7B-Instruct-Q4_K_M.gguf
+            - --host
+            - 0.0.0.0
+            - --port
+            - "8080"
+            - --n-gpu-layers
+            - "99"
+            - --ctx-size
+            - "32768"
+            - --cache-type-k
+            - q8_0
+            - --cache-type-v
+            - q8_0
+            - --parallel
+            - "1"
+            - --flash-attn
+            - --api-key-file
+            - /etc/llama-cpp/api-key
+            - --alias
+            - qwen2.5-coder-7b
+            - --jinja
+          ports:
+            - containerPort: 8080
+              name: http
+          resources:
+            requests:
+              cpu: "2"
+              memory: 8Gi
+              nvidia.com/gpu: 1
+            limits:
+              cpu: "4"
+              memory: 12Gi
+              nvidia.com/gpu: 1
+          volumeMounts:
+            - name: models
+              mountPath: /models
+              readOnly: true
+            - name: api-key
+              mountPath: /etc/llama-cpp
+              readOnly: true
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 120  # cold model load can be slow
+            periodSeconds: 30
+            failureThreshold: 6
+      volumes:
+        - name: models
+          hostPath:
+            path: /zfs/llama-cpp/models
+            type: Directory
+        - name: api-key
+          secret:
+            secretName: llama-cpp-env
+            defaultMode: 0400
+            items:
+              - key: API_KEY
+                path: api-key
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: llama-cpp
+  namespace: llama-cpp
+spec:
+  selector:
+    app: llama-cpp
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+      protocol: TCP
+  type: ClusterIP

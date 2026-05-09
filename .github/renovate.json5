@@ -43,6 +43,7 @@
         'apps/monitoring-checkmk-server/**',
         'apps/argo-cd-apps-helm/**',
         'apps/nvidia-device-plugin/**',
+        'apps/llama-cpp/**',
       ],
       automerge: false,
     },

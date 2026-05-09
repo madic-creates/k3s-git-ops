@@ -1,0 +1,17 @@
+---
+namespace: llama-cpp
+
+resources:
+  - namespace.yaml
+  - k8s.deployment.yaml
+  - k8s.np.llama-cpp-default-deny.yaml
+  - k8s.np.llama-cpp.yaml
+
+# ksops decrypts secrets.enc.yaml and llama-cpp.ingress.enc.yaml at build time
+# and produces the resources as if they were regular resources. The encrypted
+# files are intentionally NOT in `resources:`.
+generators:
+  - kustomize-secret-generator.yaml
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "65"
