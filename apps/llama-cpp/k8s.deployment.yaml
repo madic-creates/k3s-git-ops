@@ -67,6 +67,7 @@ spec:
             - --parallel
             - "1"
             - --flash-attn
+            - "on"
             - --api-key-file
             - /etc/llama-cpp/api-key
             - --alias
