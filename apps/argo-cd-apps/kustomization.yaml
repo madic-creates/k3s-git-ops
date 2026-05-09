@@ -109,6 +109,7 @@ replacements:
         reject:
           - name: 51-codeserver
           - name: 13-pihole03
+          - name: 12-pihole-helm
         fieldPaths:
           - spec.source.repoURL
       # 51-codeserver is a multi-source Application; only the $values source
@@ -125,6 +126,11 @@ replacements:
       - select:
           kind: Application
           name: 13-pihole03
+        fieldPaths:
+          - spec.sources.1.repoURL
+      - select:
+          kind: Application
+          name: 12-pihole-helm
         fieldPaths:
           - spec.sources.1.repoURL
 
