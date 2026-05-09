@@ -48,6 +48,11 @@ spec:
   # Homepage needs to query pods, nodes, ingresses, and metrics
   - toEntities:
     - kube-apiserver
+  # Allow widget proxying to in-cluster services (Emby, Sonarr, Pi-hole, etc.).
+  # Homepage is a dashboard that by design reaches many cluster backends —
+  # listing each endpoint individually would be unmaintainable.
+  - toEntities:
+    - cluster
   # Allow HTTPS to external services for widgets and integrations
   # (weather, status pages, external APIs, etc.)
   - toEntities:
@@ -57,4 +62,13 @@ spec:
       - port: "443"
         protocol: TCP
       - port: "80"
+        protocol: TCP
+  # Allow Fritz!Box TR-064/UPnP-IGD for fritzbox widget
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "49000"
+        protocol: TCP
+      - port: "49443"
         protocol: TCP
