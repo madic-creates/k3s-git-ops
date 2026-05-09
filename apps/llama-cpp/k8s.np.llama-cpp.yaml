@@ -1,9 +1,7 @@
 ---
-# llama-cpp Network Policy
-# Allows:
-# - Ingress from Traefik on port 8080 (the OpenAI API surface)
-# - DNS egress (CoreDNS) — required for Service-name resolution at startup
-# No other egress: the model is local, no internet access at runtime.
+# llama-cpp application-specific network policy.
+# Selecting the pod via endpointSelector implicitly puts it under default-deny;
+# only explicitly allowed traffic passes.
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
@@ -16,19 +14,17 @@ spec:
     matchLabels:
       app: llama-cpp
   ingress:
-    # Traefik -> llama-cpp on port 8080. Traefik is the kube-system Helm
-    # release `traefik-kube-system`. This selector matches the instance label
-    # that the chart sets — same pattern as apps/lldap/k8s.np.lldap.yaml.
+    # Traefik forwards client traffic to the OpenAI API surface
     - fromEndpoints:
         - matchLabels:
-            k8s:io.kubernetes.pod.namespace: kube-system
             k8s:app.kubernetes.io/instance: traefik-kube-system
+            k8s:io.kubernetes.pod.namespace: kube-system
       toPorts:
         - ports:
             - port: "8080"
               protocol: TCP
   egress:
-    # DNS via CoreDNS
+    # DNS
     - toEndpoints:
         - matchLabels:
             k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
