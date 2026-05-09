@@ -30,10 +30,12 @@ spec:
           type: RuntimeDefault
       containers:
         - name: analyzer
-          image: ghcr.io/madic-creates/claude-alert-checkmk-analyzer:latest@sha256:85c3c9f9b5c57aba9b394b3143a92b1f5c675558b753aa119f910f32ecc10f53
+          image: ghcr.io/madic-creates/claude-alert-checkmk-analyzer:latest@sha256:bf8135d5dec18cef5dd4bed499a59040adf9bda4acffeb0d03b8386272c06f38
           ports:
             - containerPort: 8080
               name: http
+            - containerPort: 9101
+              name: metrics
           envFrom:
             - secretRef:
                 name: claude-alert-checkmk-analyzer-env

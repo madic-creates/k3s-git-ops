@@ -5,6 +5,7 @@ resources:
   - k8s.deployment.yaml
   - k8s.service.yaml
   - k8s.rbac.yaml
+  - k8s.servicemonitor.yaml
   - k8s.np.claude-alert-analyzer.yaml
 generators:
   - kustomize-secret-generator.yaml

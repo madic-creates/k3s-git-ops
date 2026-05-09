@@ -4,6 +4,7 @@ namespace: monitoring
 resources:
   - k8s.deployment.yaml
   - k8s.service.yaml
+  - k8s.servicemonitor.yaml
   - k8s.np.claude-alert-checkmk-analyzer.yaml
 generators:
   - kustomize-secret-generator.yaml

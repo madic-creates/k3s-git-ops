@@ -7,70 +7,41 @@ serviceMonitor:
     # One ServiceMonitor per entry below. The chart turns each into a scrape
     # config that calls the blackbox-exporter Service with `?target=...&module=...`.
     # Target names are deliberately generic so the file stays committable —
-    # the actual hostnames live in the SOPS-encrypted `url` / `server_name`
-    # fields. Resolve names via `sops -d` when correlating with metrics.
+    # the actual hostnames live in the SOPS-encrypted `url` / `hostname` fields.
+    # Resolve names via `sops -d` when correlating with metrics.
     enabled: true
     defaults:
         interval: 3m
         scrapeTimeout: 10s
         module: http_2xx
     targets:
-        # ----- HTTP(S) reachability checks, every 3 minutes -----
+        # ----- HTTP(S) reachability + TLS cert checks, every 3 minutes -----
         # Module http_2xx follows redirects, accepts default 2xx, prefers IPv4.
+        # For HTTPS URLs the http prober also performs the TLS handshake, so
+        # probe_ssl_earliest_cert_expiry / probe_ssl_last_chain_expiry are
+        # exported from the same scrape — no separate cert-only probe needed.
         - name: http-01
-          url: ENC[AES256_GCM,data:UEkyb1dGkpyZ0YGoJHSfOygSZiw/h01JLQ==,iv:bk9F7r8mXVvAATTP3qB5mNss+JOXGWfFunJTjKuSrec=,tag:9XAccLggYT5IkKTk6GXO2w==,type:str]
+          url: ENC[AES256_GCM,data:hSkudpCPVKPWlGZpAnClLOV98fdC5LEjyQ==,iv:HrpWJhm/W1f4gFvUaGgYoD1jrsg05sCIuBBhDInWniE=,tag:urhokLwQOGlf9YYAGPAqZQ==,type:str]
         - name: http-02
-          url: ENC[AES256_GCM,data:WDKTMEENCLKUB6MCRiqeluAmnTENPntR5vna,iv:+Io8G32x8mxA8Yxqus3lFbDCxdHb7+RDSWVL9tOWe/4=,tag:tJLTNJuuOXYjRos4lHvfAQ==,type:str]
+          url: ENC[AES256_GCM,data:mSfo0Z9d1JyJ+O0USR2T7iBOQVIAZqo2fcjF,iv:BGs+aSczdqHiZCGZNMofwdkWh9NzTtYnbvF0BpM6i6E=,tag:OvrH9nuw/6UKLekZiXOOeg==,type:str]
         - name: http-03
-          url: ENC[AES256_GCM,data:NtL2v9qpwvbG2RJy8XJm0w5611P4OVUW,iv:rABVQzT7SEzTF/75ZnFasLHP6qTOGh7J9pUT/w+bCf4=,tag:raHAE77RXOXEQE7LE5FOrQ==,type:str]
+          url: ENC[AES256_GCM,data:3ipccsmGTMUSS4R4KUOPCIe2IrOmbbiP,iv:8cXv5eyGow1dQThkKrDM1uTOfP6BAiz/dADjekTSBdk=,tag:FmaERi9Du+nxPFDY6LP7pw==,type:str]
         - name: http-04
-          url: ENC[AES256_GCM,data:F8aUcMbav+bdrpn9ah0ELGgmebYaaYpAz30Tu+c=,iv:F8Y05kS4iucFhkfe8yar2uMIubp4qLPTLnDdkASmD78=,tag:/VvaS/0FuG9i+ukkxvg4eQ==,type:str]
+          url: ENC[AES256_GCM,data:/jD52qlMEjzhvcNl4v3FmUMMtfBshREYFfZSskA=,iv:o+m9gJDw3b/Oq8Tuc6zXftDB2dvxTtTFkJ3BZEeJmFU=,tag:MpwpnPs7qpyhCFU4rLFyEw==,type:str]
         - name: http-05
-          url: ENC[AES256_GCM,data:usFlFtkk6I73TTM8PnIV5oq/VRRjelnbxG4=,iv:QEAeif6QoJGkZSRxg2UZ3HuK1NQC/Mzoc9cHN9g7/Rc=,tag:MjTozb0e9XPMjrp+cFBDHQ==,type:str]
+          url: ENC[AES256_GCM,data:TFg3ite6dw8Q5WMW3ggTir2nK6cN7UhKvr8=,iv:qPAfIva/df2qabKE/dyghVFc4c+k0Lm8ZFdz7jyk4PI=,tag:WD86KDKoWLrI60jIe5iuLA==,type:str]
         - name: http-06
-          url: ENC[AES256_GCM,data:m/uxe7IczbcZrCGd2ZHzaljF2HDceqricOPi,iv:HTnyqsnaYKStH7lyDiUZAMucDIwToOKSfdPm2y7kYp0=,tag:mWaOXQskWFPF6ISQ68gQLA==,type:str]
-        # ----- TLS-only certificate checks, every 6 hours -----
-        # tcp_connect_tls performs a TCP+TLS handshake without an HTTP request,
-        # exposing probe_ssl_earliest_cert_expiry / probe_ssl_last_chain_expiry.
-        - name: cert-01
-          url: ENC[AES256_GCM,data:jrc1mebnTb1TwZLJfJpVdYbUdhfv,iv:zl4mOqQmbGpwkdzjyLgYR5zz1zHsFRZe3ZJtWC9uif0=,tag:C2Kcm870uKZwL/FKAQ/o0A==,type:str]
-          module: tcp_connect_tls
-          interval: 6h
-          scrapeTimeout: 15s
-        - name: cert-02
-          url: ENC[AES256_GCM,data:91EUpJ0ELUebcHrr5AmQtIBp3LF2A7U=,iv:MaYU3//zTZdHqCbbV+yojD2n1F1cAGFtgY0lHkFntbI=,tag:5Eprk3nBfOL07sPAHPeNeA==,type:str]
-          module: tcp_connect_tls
-          interval: 6h
-          scrapeTimeout: 15s
-        - name: cert-03
-          url: ENC[AES256_GCM,data:ma1IF6blu5P4JAhhLn/jJRIWQi4=,iv:39+09YzlAHYZB492VazjmQPeIg7iZaowqxj8sZ/wOes=,tag:28VWWBUcaWt+uXSPfU0MvQ==,type:str]
-          module: tcp_connect_tls
-          interval: 6h
-          scrapeTimeout: 15s
-        - name: cert-04
-          url: ENC[AES256_GCM,data:fAOjl2mj/MQc1L8IAREWjj5HuazZ9Y/XAQ==,iv:QCpSaaIuCBAV5uQ1DPnJ7C4lX2wUntZDwOm8QhVzpx0=,tag:tSkn2xrbiN9+XcMKsnYnIg==,type:str]
-          module: tcp_connect_tls
-          interval: 6h
-          scrapeTimeout: 15s
-        - name: cert-05
-          url: ENC[AES256_GCM,data:J5D0TbNVREaoMXi7odLSvIWqBZiT6Q==,iv:BnbOXaAyPWGiwTSetp99irQsuyN3a/2/775bQOzCm8s=,tag:j8mlI1lBu3j4CjlE000YFA==,type:str]
-          module: tcp_connect_tls
-          interval: 6h
-          scrapeTimeout: 15s
-        - name: cert-06
-          url: ENC[AES256_GCM,data:uEZ1Cbenb3wkBTfl8OUN7bu7+aMmbtM=,iv:soD1RpzkdCsXH76Viq8oBsY34T7Sj7xF+RWrUv0s/84=,tag:U+rEV5fgKTtfuqNmRfkT4A==,type:str]
-          module: tcp_connect_tls
-          interval: 6h
-          scrapeTimeout: 15s
-        # ----- Special case: wildcard cert probed against a fixed IP. The chart's
-        # target-level `hostname` parameter only applies to the HTTP prober and is
-        # not honoured by the TCP prober, so the SNI server name is fixed in the
-        # dedicated module below (encrypted in `server_name`). -----
+          url: ENC[AES256_GCM,data:+p6mu6t3CetTIi92HqFmrH+rY8WV+YWIMq3z,iv:1yvXZogYpDa9Jw8b1Jw1NXuz1x6uRZ8qjs1ThfybdME=,tag:K+YPS2MrjN6QFXPbah1sNQ==,type:str]
+        # ----- Special case: wildcard cert probed against a fixed IP. -----
+        # The chart's target-level `hostname` parameter is forwarded to the
+        # blackbox-exporter as a query string and tells the http prober which
+        # name to use for both the SNI and the Host header. That lets us
+        # validate the wildcard cert against an IP without DNS, while the
+        # ingress at that hostname returns 2xx so the standard http_2xx
+        # module applies and dashboards need no special handling.
         - name: cert-special-01
-          url: ENC[AES256_GCM,data:Xj/hwD8XYSQvPVuJkIkKH1jv,iv:umZKcRTbRfgJ0XqdIr8us+JECYQ2pqONe8ofWHJ/oZ8=,tag:bujqNxKrgJtJB1E88NQVXg==,type:str]
-          module: tcp_connect_tls_with_sni
-          interval: 6h
-          scrapeTimeout: 15s
+          url: ENC[AES256_GCM,data:Frxh3luieb1wDG7AneL0jIsiPEVcwg==,iv:ekFKNsCfDA6TqR4ugu/z1bQhb9zW/puDo4Tlp0OxxAE=,tag:cZoW25jQeMYz5K0Fszy7Ig==,type:str]
+          hostname: ENC[AES256_GCM,data:5Hc4HvxE2gz7lTphJuO/x0GFsV9U,iv:Dm5/TdXHmMda5Yd/dUK++SeSsK9O5k5PF6pSeiFCbF8=,tag:3dAne7El/B8qN1FydqYCLg==,type:str]
 # Probe modules.
 config:
     modules:
@@ -103,16 +74,6 @@ config:
             tcp:
                 tls: true
                 preferred_ip_protocol: ip4
-        # TLS handshake with an explicit SNI server name (encrypted). Used when
-        # probing an IP directly to validate a wildcard certificate.
-        tcp_connect_tls_with_sni:
-            prober: tcp
-            timeout: 10s
-            tcp:
-                tls: true
-                tls_config:
-                    server_name: ENC[AES256_GCM,data:y1jkjCqOJ6X2OZNtazbOKm1/PkHG3A==,iv:VsxFG0dbJN5p1Pfus8pcWl5KWdbMnzGlCagsqJPnHa0=,tag:bQhaQ6IqGJKjWIwun0KAzg==,type:str]
-                preferred_ip_protocol: ip4
 resources:
     requests:
         cpu: 25m
@@ -124,22 +85,22 @@ sops:
         - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBSelZMcllRclZaVzlHc3Vq
-            cUtSNDMyTGl1cnpsVDlaU2FFK001Qm5FYm0wCmlrRGN2N3BTQ3Y3KzJEeGR3U1Bj
-            K3hjSFhFVUcwaGZobHhQWVJDdi9pcGMKLS0tIEVFaXJaSFZtbEFQZmVXZVlTVFo3
-            RWxwQm94U3ZyY2ZFdWxIb2NicHVlMkkK3CEVYD6PVZr+hcN7y8Ge7DNmVDn+TBeU
-            EKRRginv3R4TVtCzXTo2FCpFNZ1RnjcoD2S78U/412ZmToZWyRBBeQ==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB4QTllSFhzSlRLb3c1OUZW
+            K25pTFduUjdzUUZqWkxPNnRydG5mWUUyNlM0CnlIaSttRms3aHd1ZllTWm1EZ29O
+            N3F3RXJrbUtCVXNBdW9oOEVuQ0FndDAKLS0tIDhFOXdvVUFqTFFHb3QxdHNvQXFy
+            K0pOVzE0b2RYa3QxaE5qUXhTREpWb3cKays1hwg4Kj6PiGqMimrFOFjf5J6Dlz4c
+            T47EPQbsZYj/cP6u/UyzgH9wOrFIKBd8tHyRecNhjCtjUtxJUwUcIw==
             -----END AGE ENCRYPTED FILE-----
         - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA1ci8vdllLbnNuVWJDNitY
-            Qk9UQ1FMdVN0ZkxyQmdiUlVZNmNGZ3l5T0FZCjBtWmg3clBET3pQOWNzYTU4Ty9N
-            VDFpcWpRU0k2U1A2T0ZaYVhrNDFwdnMKLS0tIEw1blpmRVU1TDc0Nk9jcm5uWTcr
-            bmRVZnZrMkxITVQ0R0w1RWw2dWJKZncKKAVemfEmdrrI0v/7M50fXfroqxWQzvCS
-            /hnEyp5YQR3WeZa98jzjjPdO7KJv2wI8M1TxT6m13dL5qFL/woyi4g==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBvdlBSQmJxM2dUNFNFQ1Rh
+            Vk01K3pVdEtKMU9lNFI1aXlxYnpENFNORzNjClBxT2RrS0xxUmxnZm1wWC84WVRt
+            Ukw4aDlTeTY5eldLS09CQllURy9abzAKLS0tIDAvU1QxNGVRVHpRTUFxNnVLQ3JZ
+            WndtSUJGWUlSS3lRVExFaUdTUXNjR2sKZfTbJOHjKV7Vop9FjA8ISPb/bneTaOFU
+            Km1OX+Vhhhf/WD7mhlkT+ZZK3+3L+vyYbNnYH7pQknaZ55D9855PGQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2026-05-03T16:24:32Z"
-    mac: ENC[AES256_GCM,data:34MvNk5qoZVMFN3Y/WuJtVZRV9gKc8MVlcf/zcOO1KJntI6Nn/mvZGSw1kxQsktnwN3BAW4b7gIli8nC9akJa+EI3kITwaiOklEm2D6VFpu9Eew7qNnwCjBAU2/Sf6Ta0lMOxiQddDLyqLROAkDZlfsH6saKFw6BqYsB7hZnkPo=,iv:evf/V1aAAM5Fqxj+dG1FFXkKCpoBye4Efx7VdcSiss4=,tag:3AKFO8NfmKP688fBFffsVg==,type:str]
+    lastmodified: "2026-05-06T08:43:53Z"
+    mac: ENC[AES256_GCM,data:/ktaKAyrsl9/XNBi2ePHjtDZNO/xqUympUo1ixASTWCRrEYJ24X6WgPOKJNks6GacYMSGzddE+Eqi8i3cdEgZ14sCJEXP8saLVJ1FE5YuS8f8R1v8VHatIslwSpB4Tey9wq0Pz9A+if/7nZokgNP4/h3C2lWpvhE2pXxDcCnQj0=,iv:6sxQqcXRYfeqifqX2PTX2DSLg8SvKf+edNmoEhRoD/I=,tag:Kr6h1QcRt1S05MuZk9QG1w==,type:str]
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
     version: 3.12.2

@@ -31,10 +31,12 @@ spec:
           type: RuntimeDefault
       containers:
         - name: analyzer
-          image: ghcr.io/madic-creates/claude-alert-kubernetes-analyzer:latest@sha256:ee06e7dbc0cc48e30e33987288626bd88f8442e874dfd665235a35887e427dfc
+          image: ghcr.io/madic-creates/claude-alert-kubernetes-analyzer:latest@sha256:eb2c6880bfc67bfb7cf4f5ec2d8a8d153a6467e6c61e427bc42f1da5eea4b759
           ports:
             - containerPort: 8080
               name: http
+            - containerPort: 9101
+              name: metrics
           env:
             - name: PORT
               value: "8080"
@@ -51,16 +53,16 @@ spec:
               value: "monitoring,databases,media,kube-system"
             - name: MAX_LOG_BYTES
               value: "2048"
-            - name: API_KEY
+            - name: ANTHROPIC_AUTH_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: claude-alert-kubernetes-analyzer-env
-                  key: API_KEY
-            - name: API_BASE_URL
+                  key: ANTHROPIC_AUTH_TOKEN
+            - name: ANTHROPIC_BASE_URL
               valueFrom:
                 secretKeyRef:
                   name: claude-alert-kubernetes-analyzer-env
-                  key: API_BASE_URL
+                  key: ANTHROPIC_BASE_URL
             - name: WEBHOOK_SECRET
               valueFrom:
                 secretKeyRef:
