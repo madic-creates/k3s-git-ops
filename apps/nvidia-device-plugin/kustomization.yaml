@@ -23,6 +23,20 @@ helmCharts:
       runtimeClassName: nvidia
       nodeSelector:
         feature.node.kubernetes.io/pci-0300_10de.present: "true"
+      # The chart's default nodeAffinity targets `pci-10de.present` (no PCI
+      # class prefix). Our NFD configuration emits `pci-0300_10de.present`
+      # (with the 0300 display-controller class prefix) instead, and node04
+      # has an AMD CPU so the Tegra fallback `cpu-model.vendor_id=NVIDIA`
+      # also misses. Override the affinity to match our actual label.
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: feature.node.kubernetes.io/pci-0300_10de.present
+                    operator: In
+                    values:
+                      - "true"
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "24"
