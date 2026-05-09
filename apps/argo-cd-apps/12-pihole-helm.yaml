@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: 12-pihole02-helm
+  name: 12-pihole-helm
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
