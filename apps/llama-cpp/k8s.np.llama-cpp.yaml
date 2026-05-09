@@ -16,13 +16,13 @@ spec:
     matchLabels:
       app: llama-cpp
   ingress:
-    # Traefik -> llama-cpp on port 8080.
-    # Traefik runs as a DaemonSet in the kube-system namespace in this cluster
-    # (see apps/traefik/), not in a dedicated `traefik` namespace.
+    # Traefik -> llama-cpp on port 8080. Traefik is the kube-system Helm
+    # release `traefik-kube-system`. This selector matches the instance label
+    # that the chart sets — same pattern as apps/lldap/k8s.np.lldap.yaml.
     - fromEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: kube-system
-            k8s:app.kubernetes.io/name: traefik
+            k8s:app.kubernetes.io/instance: traefik-kube-system
       toPorts:
         - ports:
             - port: "8080"
