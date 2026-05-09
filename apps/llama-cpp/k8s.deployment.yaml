@@ -107,7 +107,7 @@ spec:
       volumes:
         - name: models
           hostPath:
-            path: /zfs/llama-cpp/models
+            path: /vol_raidz1/downloads/llama-cpp/models
             type: Directory
         - name: api-key
           secret:
