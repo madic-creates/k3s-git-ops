@@ -1,0 +1,41 @@
+---
+# NVIDIA Device Plugin Network Policy
+# The device plugin DaemonSet runs on nodes with NVIDIA GPUs and registers
+# GPU resources with the kubelet. It needs:
+# 1. To accept gRPC from the kubelet (host) on the device-plugin socket
+# 2. DNS resolution
+# 3. Outbound to host (kubelet) and the kube-apiserver
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: nvidia-device-plugin
+  namespace: nvidia-device-plugin
+  annotations:
+    argocd.argoproj.io/sync-wave: "24"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: nvidia-device-plugin
+  ingress:
+    # Kubelet -> device plugin (registration + AllocateResponse)
+    - fromEntities:
+        - host
+  egress:
+    # DNS via CoreDNS
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s:k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    # Device plugin -> kubelet (host) over the device-plugin socket
+    - toEntities:
+        - host
+    # Device plugin -> kube-apiserver for node status
+    - toEntities:
+        - kube-apiserver

@@ -1,0 +1,28 @@
+---
+namespace: nvidia-device-plugin
+
+resources:
+  - namespace.yaml
+  - k8s.np.nvidia-device-plugin-default-deny.yaml
+  - k8s.np.nvidia-device-plugin.yaml
+
+helmCharts:
+  - name: nvidia-device-plugin
+    repo: https://nvidia.github.io/k8s-device-plugin
+    version: 0.19.1
+    namespace: nvidia-device-plugin
+    releaseName: nvidia-device-plugin
+    includeCRDs: true
+    # NOTE: chart 0.19.1 always renders an MPS-control-daemon DaemonSet in
+    # addition to the device plugin DaemonSet. We do not use MPS sharing
+    # (the downstream llama-cpp workload requires exclusive GPU access),
+    # so the MPS daemon idles. There is no simple values flag to disable
+    # it in this chart version; revisit with a kustomize delete patch if
+    # the idle daemon becomes a real cost.
+    valuesInline:
+      runtimeClassName: nvidia
+      nodeSelector:
+        feature.node.kubernetes.io/pci-0300_10de.present: "true"
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "24"

@@ -34,6 +34,7 @@ resources:
   - 18-monitoring-checkmk.yaml
   - 20-csi-smb.yaml
   - 20-docker-registry-cache.yaml
+  - 24-nvidia-device-plugin.yaml
   - 24-intel-gpu.yaml
   - 30-emby.yaml
   - 31-nextpvr.yaml

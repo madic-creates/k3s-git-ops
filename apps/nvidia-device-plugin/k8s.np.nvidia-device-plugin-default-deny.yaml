@@ -1,0 +1,15 @@
+---
+# Default Deny Network Policy for namespace
+# Applies to ALL pods in the namespace and provides the baseline rule
+# that all pods inherit.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: nvidia-device-plugin-default-deny
+  namespace: nvidia-device-plugin
+spec:
+  endpointSelector: {}
+  ingress:
+    - {}
+  egress:
+    - {}
