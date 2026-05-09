@@ -37,47 +37,9 @@ spec:
               name: http
             - containerPort: 9101
               name: metrics
-          env:
-            - name: PORT
-              value: "8080"
-            - name: PROMETHEUS_URL
-              value: "http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090"
-            - name: CLAUDE_MODEL
-              valueFrom:
-                secretKeyRef:
-                  name: claude-alert-kubernetes-analyzer-env
-                  key: CLAUDE_MODEL
-            - name: COOLDOWN_SECONDS
-              value: "300"
-            - name: ALLOWED_NAMESPACES
-              value: "monitoring,databases,media,kube-system"
-            - name: MAX_LOG_BYTES
-              value: "2048"
-            - name: ANTHROPIC_AUTH_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: claude-alert-kubernetes-analyzer-env
-                  key: ANTHROPIC_AUTH_TOKEN
-            - name: ANTHROPIC_BASE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: claude-alert-kubernetes-analyzer-env
-                  key: ANTHROPIC_BASE_URL
-            - name: WEBHOOK_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: claude-alert-kubernetes-analyzer-env
-                  key: WEBHOOK_SECRET
-            - name: NTFY_PUBLISH_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: claude-alert-kubernetes-analyzer-env
-                  key: NTFY_PUBLISH_TOKEN
-            - name: NTFY_PUBLISH_URL
-              valueFrom:
-                secretKeyRef:
-                  name: claude-alert-kubernetes-analyzer-env
-                  key: NTFY_PUBLISH_URL
+          envFrom:
+            - secretRef:
+                name: claude-alert-kubernetes-analyzer-env
           volumeMounts:
             - name: tmp
               mountPath: /tmp
