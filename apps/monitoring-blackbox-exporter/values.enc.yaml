@@ -21,17 +21,15 @@ serviceMonitor:
         # probe_ssl_earliest_cert_expiry / probe_ssl_last_chain_expiry are
         # exported from the same scrape — no separate cert-only probe needed.
         - name: http-01
-          url: ENC[AES256_GCM,data:hSkudpCPVKPWlGZpAnClLOV98fdC5LEjyQ==,iv:HrpWJhm/W1f4gFvUaGgYoD1jrsg05sCIuBBhDInWniE=,tag:urhokLwQOGlf9YYAGPAqZQ==,type:str]
+          url: ENC[AES256_GCM,data:nVxqCMtOGpi800ItqLLbrecckbdlffKomQ==,iv:KoAXuRL+oGbirw3zldF2dvh2nh6X7Vt0ah2d5Tnk8vU=,tag:LILpW2+Z7QwNnNHASQFcYw==,type:str]
         - name: http-02
-          url: ENC[AES256_GCM,data:mSfo0Z9d1JyJ+O0USR2T7iBOQVIAZqo2fcjF,iv:BGs+aSczdqHiZCGZNMofwdkWh9NzTtYnbvF0BpM6i6E=,tag:OvrH9nuw/6UKLekZiXOOeg==,type:str]
+          url: ENC[AES256_GCM,data:PPtXwhGP0rzvRqVV9y1aBYleZ+gf990htsB7,iv:rvVKZPQ0mwUEedgUdE88a+rg70dNnhLb4eIOX/7iCb0=,tag:Zlzc7AvKKB05hye1NZLbgw==,type:str]
         - name: http-03
-          url: ENC[AES256_GCM,data:3ipccsmGTMUSS4R4KUOPCIe2IrOmbbiP,iv:8cXv5eyGow1dQThkKrDM1uTOfP6BAiz/dADjekTSBdk=,tag:FmaERi9Du+nxPFDY6LP7pw==,type:str]
-        - name: http-04
-          url: ENC[AES256_GCM,data:/jD52qlMEjzhvcNl4v3FmUMMtfBshREYFfZSskA=,iv:o+m9gJDw3b/Oq8Tuc6zXftDB2dvxTtTFkJ3BZEeJmFU=,tag:MpwpnPs7qpyhCFU4rLFyEw==,type:str]
+          url: ENC[AES256_GCM,data:anAwdURFWN2XkMsTJ3Iw1lGv+Zb7c8a3,iv:K+L9WDaY+VrpVDhXOUAkTh+xuE3LGNbKcXLGntxD3W0=,tag:TSUC4KdjORuZUHqXLML/fQ==,type:str]
         - name: http-05
-          url: ENC[AES256_GCM,data:TFg3ite6dw8Q5WMW3ggTir2nK6cN7UhKvr8=,iv:qPAfIva/df2qabKE/dyghVFc4c+k0Lm8ZFdz7jyk4PI=,tag:WD86KDKoWLrI60jIe5iuLA==,type:str]
+          url: ENC[AES256_GCM,data:QJi+LtkZysiyXSpMyh2CTGg9btmPFWoOH5g=,iv:LS1XBPt5rszolpf9D7kTlrFlDIScu9x22lyoBkHUuQY=,tag:OXMA7gc5jG4JNixNfdpBGg==,type:str]
         - name: http-06
-          url: ENC[AES256_GCM,data:+p6mu6t3CetTIi92HqFmrH+rY8WV+YWIMq3z,iv:1yvXZogYpDa9Jw8b1Jw1NXuz1x6uRZ8qjs1ThfybdME=,tag:K+YPS2MrjN6QFXPbah1sNQ==,type:str]
+          url: ENC[AES256_GCM,data:AD58kSj6+y3gooO4ujgWgYNPQMBYbybnTZ44,iv:m69yRrtV2psbD/DqPk4EOwC3ypn20534gUjea/zzvUY=,tag:G8Oq+qPYnzLhMoQTHaKWcg==,type:str]
         # ----- Special case: wildcard cert probed against a fixed IP. -----
         # The chart's target-level `hostname` parameter is forwarded to the
         # blackbox-exporter as a query string and tells the http prober which
@@ -40,8 +38,8 @@ serviceMonitor:
         # ingress at that hostname returns 2xx so the standard http_2xx
         # module applies and dashboards need no special handling.
         - name: cert-special-01
-          url: ENC[AES256_GCM,data:Frxh3luieb1wDG7AneL0jIsiPEVcwg==,iv:ekFKNsCfDA6TqR4ugu/z1bQhb9zW/puDo4Tlp0OxxAE=,tag:cZoW25jQeMYz5K0Fszy7Ig==,type:str]
-          hostname: ENC[AES256_GCM,data:5Hc4HvxE2gz7lTphJuO/x0GFsV9U,iv:Dm5/TdXHmMda5Yd/dUK++SeSsK9O5k5PF6pSeiFCbF8=,tag:3dAne7El/B8qN1FydqYCLg==,type:str]
+          url: ENC[AES256_GCM,data:BIX6kYw5IN4y14SLEeNJ5njSYkRhVA==,iv:vHLlzHljAKivdgiXbI9/bg5vBIZvg80olBXOJ138O20=,tag:FzrWlg6yYpV0HdRee8sl6w==,type:str]
+          hostname: ENC[AES256_GCM,data:Ccj9TnQgDoeZQnf6zTK6pwB7HXRT,iv:P+0hZOMbW1RmuTcrXcP6wY8CaTw+ROHRkvSlkeytAHY=,tag:ft1qt/8Fw/TaxT0EJVGgEA==,type:str]
 # Probe modules.
 config:
     modules:
@@ -82,25 +80,25 @@ resources:
         memory: 128Mi
 sops:
     age:
-        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
-          enc: |
+        - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB4QTllSFhzSlRLb3c1OUZW
-            K25pTFduUjdzUUZqWkxPNnRydG5mWUUyNlM0CnlIaSttRms3aHd1ZllTWm1EZ29O
-            N3F3RXJrbUtCVXNBdW9oOEVuQ0FndDAKLS0tIDhFOXdvVUFqTFFHb3QxdHNvQXFy
-            K0pOVzE0b2RYa3QxaE5qUXhTREpWb3cKays1hwg4Kj6PiGqMimrFOFjf5J6Dlz4c
-            T47EPQbsZYj/cP6u/UyzgH9wOrFIKBd8tHyRecNhjCtjUtxJUwUcIw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBQd3l3d3QyRXlHekZJS2Ru
+            b3d6dnFTRXQ0MkxialMxd0FZSk5LRCt5OENRCnRmbFZONVFIenJmM3B5T1dCdDBk
+            MmVGL29RUzJGUkoyYk4zZ3p4WEE5eG8KLS0tIGc4OS9QMlNwbS9VRUI5bnRSYVdQ
+            ZXc3dTZ5aUE2Qmk2SUU5ZjdrMlhyUnMKZZasxMuxdcT6b2janVbT2+ICwih2uEfr
+            Yv58Z30uKxZH27AVrB/06gA7A4QrnDP/H2fKgZ+9I5/L1Iio2pMZ7w==
             -----END AGE ENCRYPTED FILE-----
-        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
-          enc: |
+          recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+        - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBvdlBSQmJxM2dUNFNFQ1Rh
-            Vk01K3pVdEtKMU9lNFI1aXlxYnpENFNORzNjClBxT2RrS0xxUmxnZm1wWC84WVRt
-            Ukw4aDlTeTY5eldLS09CQllURy9abzAKLS0tIDAvU1QxNGVRVHpRTUFxNnVLQ3JZ
-            WndtSUJGWUlSS3lRVExFaUdTUXNjR2sKZfTbJOHjKV7Vop9FjA8ISPb/bneTaOFU
-            Km1OX+Vhhhf/WD7mhlkT+ZZK3+3L+vyYbNnYH7pQknaZ55D9855PGQ==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBLOW8yRUMvTXBJbnFRcTVl
+            YVkva0xSdWZldlNsdXdIMFFiV0E1SkFFc0JRCmxmMGd2eENzQjFSR0VPUnovblNC
+            Mkd2SjlJUXd6NzZJcU0rY2J4VCtKSjQKLS0tIERBUFNYYnF6UjRsakV5ZTQzMGx4
+            KzNUdmZiT05KU0toMm5ad1FqQktFTlEK/z94VE0tJp7i+MpGlhZbnCW8ESvQZXQc
+            eIAKda5nbZpvm/nMy5UNCKyj7AbC+H3jrRLM5XLQvKtgatgnLIvv8g==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2026-05-06T08:43:53Z"
-    mac: ENC[AES256_GCM,data:/ktaKAyrsl9/XNBi2ePHjtDZNO/xqUympUo1ixASTWCRrEYJ24X6WgPOKJNks6GacYMSGzddE+Eqi8i3cdEgZ14sCJEXP8saLVJ1FE5YuS8f8R1v8VHatIslwSpB4Tey9wq0Pz9A+if/7nZokgNP4/h3C2lWpvhE2pXxDcCnQj0=,iv:6sxQqcXRYfeqifqX2PTX2DSLg8SvKf+edNmoEhRoD/I=,tag:Kr6h1QcRt1S05MuZk9QG1w==,type:str]
+          recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
-    version: 3.12.2
+    lastmodified: "2026-05-10T21:35:41Z"
+    mac: ENC[AES256_GCM,data:frgOuCd2z0kylnUUUTIeuTdjVRy6Or3CpNB5/bD8Pu5YDWIrJ9snaZwrExH18cAE8v7TYWDYFByoh4prkYc1RhcYiOe9HBMq1RQ01iGTXur3zkLcgVLCHXrrH3SXxSrfJh+f5OewUj443hGq22mteLOyWRTs0mV1mh6gS/BKcAw=,iv:G7/6WA7AvEIqubFTJDvg3VWT6rfFalGCmC9T+VPyk4c=,tag:MELaEj+uky1CPgOulE6rKw==,type:str]
+    version: 3.13.0
