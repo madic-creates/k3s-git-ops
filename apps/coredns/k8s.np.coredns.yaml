@@ -53,12 +53,14 @@ spec:
     - kube-apiserver
     - host
   # Allow CoreDNS to forward DNS queries to cluster-internal Pi-hole DNS servers
-  # Used for conditional forwarding within the cluster
+  # Used for conditional forwarding within the cluster.
+  # Pi-hole pods are selected via app.kubernetes.io/name (Helm chart convention);
+  # using "app: pihole" silently drops traffic because no pod carries that label.
   - toEndpoints:
     - matchLabels:
         k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: dns
         k8s:io.kubernetes.pod.namespace: dns
-        k8s:app: pihole
+        k8s:app.kubernetes.io/name: pihole
     toPorts:
     - ports:
       - port: "53"
