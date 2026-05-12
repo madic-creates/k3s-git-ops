@@ -26,9 +26,9 @@ spec:
     spec:
       backoffLimit: 0
       # 2 h is comfortable headroom: paperless dominates the runtime
-      # (~8 GB at LAN read speed); the other tags finish in seconds
-      # to a couple of minutes. emptyDir is wiped between iterations
-      # so the 10 GiB sizeLimit is enough for the single largest tag.
+      # at LAN read speed; the other tags finish in seconds to a
+      # couple of minutes. emptyDir is wiped between iterations so
+      # the 20 GiB sizeLimit is enough for the single largest tag.
       activeDeadlineSeconds: 7200
       template:
         metadata:
@@ -188,8 +188,9 @@ spec:
                 medium: Memory
                 sizeLimit: 200Mi
             # Disk-backed scratch volume sized for the largest tag
-            # (paperless, ~8 GB today). Switch to a Longhorn PVC if
-            # any tag exceeds this; tmpfs would consume too much RAM.
+            # (paperless dominates today). Switch to a Longhorn PVC
+            # if any tag exceeds this; tmpfs would consume too much
+            # RAM.
             - name: workspace
               emptyDir:
-                sizeLimit: 10Gi
+                sizeLimit: 20Gi
