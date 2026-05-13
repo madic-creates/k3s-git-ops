@@ -77,3 +77,12 @@ spec:
         protocol: TCP
       - port: "80"
         protocol: TCP
+  # Allow communication with NZBHydra2 in same namespace (post-processing notifications)
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: downloader
+        k8s:app.kubernetes.io/name: nzbhydra2
+    toPorts:
+    - ports:
+      - port: "5076"
+        protocol: TCP
