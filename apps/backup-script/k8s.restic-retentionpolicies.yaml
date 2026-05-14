@@ -75,7 +75,7 @@ spec:
                   # backup-mariadb still writes "--tag MariaDB" today —
                   # restic forget on a tag with no snapshots is a no-op,
                   # and the entry is ready for the upcoming migration.
-                  for TAG in mariadb emby nextpvr downloader paperless grafana; do
+                  for TAG in mariadb emby nextpvr downloader paperless grafana minecraft; do
                     echo -e "\nRetention policies for ${TAG}" | tee -a $LOG
                     restic forget --retry-lock 10m --tag "${TAG}" --group-by "host,tags" --keep-hourly 48 --keep-daily 7 --keep-weekly 2 --keep-monthly 0 --keep-yearly 0 --keep-last 4 2>&1 | tee -a $LOG || EXIT_CODE=$?
                   done

@@ -34,6 +34,9 @@ spec:
             k8s:io.kubernetes.pod.namespace: downloader
             k8s:app.kubernetes.io/component: backup
         - matchLabels:
+            k8s:io.kubernetes.pod.namespace: minecraft
+            k8s:app.kubernetes.io/component: backup
+        - matchLabels:
             k8s:io.kubernetes.pod.namespace: longhorn
             k8s:app.kubernetes.io/name: restic-retentionpolicies
         - matchLabels:

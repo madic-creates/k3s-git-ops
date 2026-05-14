@@ -59,6 +59,9 @@ spec:
         k8s:io.kubernetes.pod.namespace: paper
         k8s:app.kubernetes.io/name: backup-paperless
     - matchLabels:
+        k8s:io.kubernetes.pod.namespace: minecraft
+        k8s:app.kubernetes.io/name: backup-minecraft
+    - matchLabels:
         k8s:io.kubernetes.pod.namespace: backup
         k8s:app.kubernetes.io/name: backup-mirror-wasabi
     toPorts:

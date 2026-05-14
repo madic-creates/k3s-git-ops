@@ -69,7 +69,7 @@ spec:
                   # Configured rotation. Add or remove tags here as the
                   # backup fleet evolves; the verifier case statement
                   # below must learn the new tag at the same time.
-                  TAGS="mariadb emby nextpvr downloader paperless grafana"
+                  TAGS="mariadb emby nextpvr downloader paperless grafana minecraft"
 
                   for TAG in $TAGS; do
                     TAG_START_TIME=$(date +%s)
@@ -142,6 +142,14 @@ spec:
                               break
                             fi
                           done ;;
+                        minecraft)
+                          # The world name comes from minecraftServer.worldSaveName
+                          # in the helm valuesInline. level.dat is the canonical
+                          # marker that the world directory was actually restored.
+                          if [ ! -s "$TARGET/backup/minecraft/SmallServerHub/level.dat" ]; then
+                            STATUS=1
+                            FAIL_REASON="$TARGET/backup/minecraft/SmallServerHub/level.dat missing or empty"
+                          fi ;;
                         *)
                           STATUS=1
                           FAIL_REASON="no verifier defined for tag $TAG" ;;

@@ -65,13 +65,14 @@ spec:
             or absent(backup_start_timestamp{instance="downloader"})
             or absent(backup_start_timestamp{instance="paperless"})
             or absent(backup_start_timestamp{instance="grafana"})
+            or absent(backup_start_timestamp{instance="minecraft"})
             or absent(backup_start_timestamp{instance="restic-retentionpolicies"})
           for: 24h
           labels:
             severity: warning
           annotations:
             summary: "A backup instance has never reported metrics"
-            description: "One or more of the expected backup instances has not pushed any metrics. Check CronJob status for: mariadb, emby, nextpvr, downloader, paperless, grafana, restic-retentionpolicies."
+            description: "One or more of the expected backup instances has not pushed any metrics. Check CronJob status for: mariadb, emby, nextpvr, downloader, paperless, grafana, minecraft, restic-retentionpolicies."
 
         - alert: BackupRestoreTestFailed
           # The weekly round-robin restore-test pushes
