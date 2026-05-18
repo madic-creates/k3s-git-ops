@@ -31,7 +31,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: karma
-          image: ghcr.io/prymitive/karma:v0.130
+          image: ghcr.io/prymitive/karma:v0.131
           args:
             - --config.file=/etc/karma/karma.yaml
           ports:
