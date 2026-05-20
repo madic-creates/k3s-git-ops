@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: backup-env-configuration-minecraft
+    namespace: minecraft
+    annotations:
+        kustomize.config.k8s.io/needs-hash: "true"
+stringData:
+    RESTIC_SOURCE: ENC[AES256_GCM,data:f9PKiD2MR3HVxKMbGP7OD2c=,iv:eCMvEcBKq8y3u7xPdqgkizpEgJ5zyYksbau4XajZ1dE=,tag:AbqVN696MLJ8AQXh5KwGuA==,type:str]
+    RESTIC_REPOSITORY: ENC[AES256_GCM,data:QgCNskZcZjUFWdq/jSB5MWjRZIT7xh2Sy1AKxJPfh3cEkPhXuYEyp46kec20VnqHMkP4FBpHXwg3N8NyPpzeXSEScV52BiL6upFeXVSH8+yJ0mBucTMu0VfnVm74Vw==,iv:hly8DwdU8nw66SVf62HjVBNlUhh0Cjex32wsO3rvL7U=,tag:M7Cm5gmjqHVHUDl/+gmghw==,type:str]
+    RESTIC_PASSWORD: ENC[AES256_GCM,data:h/Wd8r9F+uB0Udo0wgrB2+kFPDOfLVnjDHeVw9U9Ih30QNv5I4y6KdWxZB5CC1o+frk1KVAVrL7GiueZzLZ0vA==,iv:HpVV+ado00tDRErFY/9hm6wlNnmrRSzjmvJa5rrEBDk=,tag:PmHHGMn98LIJRN5sDftvxg==,type:str]
+    RESTIC_HOSTNAME: ENC[AES256_GCM,data:i7jJr/vqBQ1x,iv:qs5cthkSThil+clzxsrBfCIWKXzM/10Mgy2p/CvgdS0=,tag:7mbyaWy4EtLiCcGb1UkRVQ==,type:str]
+    RESTIC_ADDITIONAL_BACKUP_PARAMETERS: ENC[AES256_GCM,data:c8GeDaZOhZa6hWNX6X+AkO7EN72Vwrq2+zzmnMgMKqkxJYwI/RjidA5NEQHeXIYbJEYG2JX5BLxYQDHHfS44pk6ivJikPLGJydDORazyMhDKACD+DA==,iv:0J0+mutci4905urb8F86AurkgPEaUitFNV1v5EEGNfU=,tag:SvRKkn1re6E45wahdups/g==,type:str]
+    RESTIC_RETENTION_POLICIES_ENABLED: ENC[AES256_GCM,data:q3tYRkM=,iv:snOZZXH0O+JdXm6BUQgXa74rjcA/d3/l/JmkODgrKuo=,tag:yh8MaEbP/PEJZ80cnUli7A==,type:str]
+    NTFY_ENABLED: ENC[AES256_GCM,data:VBkITw==,iv:fNvHJqUm0NAdCaA2J3WGeOBoYsrduhXKEihEhS+O7nw=,tag:mJ0nZ4XmIds7O3nrxMWoeQ==,type:str]
+    NTFY_CREDS: ENC[AES256_GCM,data:flTSFbFxwaSccvLIcdL1QduofhcLGQNq4JCpI/gxqev/WpceN9noQX3bfrYSOj9jIHdUFLtMBthJQzg1sr0AJmq6bbB+jsTf3fH7,iv:AdzIHczAFBhPxlN2ZHhY84gSjdt2TpENvcjjDyxVvKU=,tag:DL1ghnDNtxWyjwkX0qBxmw==,type:str]
+    NTFY_SERVER: ENC[AES256_GCM,data:R8Fs/UhoyBFgPyO1jewxKHaMnv1Z1m43cUjs,iv:+f88b7IgkDD/OeZTVcgmjEJXsOi7ddLjtZRKtop/iVM=,tag:PtB9aBRcmygXqET24BNf7g==,type:str]
+    NTFY_TOPIC: ENC[AES256_GCM,data:K6mn4FRQ/Hy2z8cebPvMAA1Q,iv:nrxu+2sp3Ls3AceKX1uh2ndJMWGh+Aipy5QqhSC15Sg=,tag:ttw9yULsnKVy7s2HSffGaw==,type:str]
+    PUSHGATEWAY_ENABLED: ENC[AES256_GCM,data:lbQ4Ig==,iv:7PKk+pAYkfc/X/+Vg/wzx6nCiLNK+EOyMAOLUTZQkeA=,tag:59prKmXVgdmP1oqRl5mHkQ==,type:str]
+    PUSHGATEWAY_URL: ENC[AES256_GCM,data:bFJpbcg5cEVlsq6u7XV2QCYMAOQmkwo/aFZDfPPILYjBcxmDNVTPRKjXmUsOkaDWg+AfyX1YVgxKz10aubvl,iv:8NvmGYbTSgnnVezRj09b6Q5RJFyiY2+Wh1TClkwC6LE=,tag:cqGy8IxbhniYCK53UyNWDw==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB5WUxhMVp5MGhaaENEdnBR
+            VlpndWkxK0YvUVFzQXdmMXIvYVBRTXFhclFvCnVWc2tLM2VQd3R0K1NMWTFhT25O
+            K0ZYYVBuL0dhSkNaL3BPamR2dHRmbHcKLS0tIDBOM2JuTGtidW1vN28wTHNmTmta
+            QkRxMjZWeFpid1A3dHJjamdtTm5zdUEK372H2Yfu/c6YTM56mSjF7BvsbqZFqSuT
+            49H5Q2S1rU7a7ZQvpwx7OrC/uKM/l7gdb4usx3KJ5xXCl7hPKYVjhQ==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBibEVFOEpqMW1RYnNOem5R
+            cDhTZ0xxRkZ3Q00xRHRXcHBvSCtkbDFpR1NBCkdjWFVZWEtPSXlUVUhXVzBOanNS
+            ODZ0MjFWbERCVDkweVJwbzZ6aTZSQ1UKLS0tIFlxM3pidEgvNDgreElIMWdodHRw
+            a0g1RFpxdkR3VzhtZXNjcWF4ZDZFcTAKZVrfMqqvbapIzMqrUMUhHz9ABqV00LO6
+            IIz1Fd6JlO9Ecw4y/lxFeLyy65NGeOoq2FgagTjYhCFEOQsl+9ykxg==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
+    lastmodified: "2026-05-14T08:51:05Z"
+    mac: ENC[AES256_GCM,data:voEf+wteKNDi2TBZaniivnOEw2919lRgFw3QgVCYdmHxtkn2Ebgy2rfBMbK8l4yCexruMOli2/PpCz2w3Cx1e2H/J5lahpMfn95J7WsJb5uuf6LcfSAa4BkLFzzwSf5TeTErK1JOCifWudM/fJ4uJaNv7hktdteTNb4OQHR+JbA=,iv:l7erIpFcGZK+T3gVPScUXC55EOBFWyzmx5mc+Oj8rjo=,tag:fGI29NjlAuVLPyRtRtAXDA==,type:str]
+    version: 3.13.0
