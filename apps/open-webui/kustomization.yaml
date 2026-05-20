@@ -1,0 +1,45 @@
+---
+namespace: open-webui
+
+resources:
+  - namespace.yaml
+  - k8s.np.open-webui-default-deny.yaml
+  - k8s.np.open-webui.yaml
+
+# ksops decrypts secrets.enc.yaml and ingress.enc.yaml at build time and
+# injects the resources as if they were regular resources. The encrypted
+# files are intentionally NOT in `resources:`.
+generators:
+  - kustomize-secret-generator.yaml
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "66"
+
+helmCharts:
+  - name: open-webui
+    repo: https://helm.openwebui.com/
+    version: 14.6.0
+    releaseName: open-webui
+    namespace: open-webui
+    includeCRDs: false
+    valuesInline:
+      ollama:
+        enabled: false
+      enableOpenaiApi: true
+      ingress:
+        enabled: false
+      persistence:
+        enabled: true
+        size: 10Gi
+        storageClass: longhorn
+        accessModes:
+          - ReadWriteOnce
+      replicaCount: 1
+      strategy:
+        type: Recreate
+      service:
+        type: ClusterIP
+        port: 80
+      extraEnvFrom:
+        - secretRef:
+            name: open-webui-env
