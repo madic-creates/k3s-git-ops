@@ -33,7 +33,7 @@ spec:
         - name: stirling-pdf
           # https://github.com/Stirling-Tools/Stirling-PDF
           # https://hub.docker.com/r/stirlingtools/stirling-pdf
-          image: docker pull ghcr.io/stirling-tools/stirling-pdf:2.11.0
+          image: ghcr.io/stirling-tools/stirling-pdf:2.11.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
