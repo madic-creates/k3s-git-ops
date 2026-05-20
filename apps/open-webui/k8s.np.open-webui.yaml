@@ -56,3 +56,12 @@ spec:
         - ports:
             - port: "443"
               protocol: TCP
+    # Cluster Redis for Open WebUI websocket pub/sub
+    - toEndpoints:
+        - matchLabels:
+            k8s:app.kubernetes.io/name: redis
+            k8s:io.kubernetes.pod.namespace: databases
+      toPorts:
+        - ports:
+            - port: "6379"
+              protocol: TCP

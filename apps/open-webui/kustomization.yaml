@@ -22,24 +22,4 @@ helmCharts:
     releaseName: open-webui
     namespace: open-webui
     includeCRDs: false
-    valuesInline:
-      ollama:
-        enabled: false
-      enableOpenaiApi: true
-      ingress:
-        enabled: false
-      persistence:
-        enabled: true
-        size: 10Gi
-        storageClass: longhorn
-        accessModes:
-          - ReadWriteOnce
-      replicaCount: 1
-      strategy:
-        type: Recreate
-      service:
-        type: ClusterIP
-        port: 80
-      extraEnvFrom:
-        - secretRef:
-            name: open-webui-env
+    valuesFile: values.yaml
