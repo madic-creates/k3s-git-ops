@@ -47,11 +47,15 @@ spec:
         - ports:
             - port: "8080"
               protocol: TCP
-    # External HTTPS: Tavily API + Authelia OIDC discovery (the issuer URL
-    # is the public hostname and must resolve via the external route, same
-    # pattern Argo CD uses for its OIDC integration).
+    # External + cluster-host HTTPS:
+    # - Tavily API (world:443)
+    # - Authelia OIDC discovery via auth.k8s.neese-web.de, which resolves to
+    #   the Traefik LB IP (a Node IP) — Cilium classifies that as
+    #   host/remote-node, not world.
     - toEntities:
         - world
+        - host
+        - remote-node
       toPorts:
         - ports:
             - port: "443"
