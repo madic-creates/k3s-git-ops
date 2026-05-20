@@ -8,8 +8,11 @@ commonAnnotations:
   argocd.argoproj.io/sync-wave: "50"
 
 helmCharts:
+  # github.io URL redirects HTTPS->HTTP to docs.stirlingpdf.com; the helm-go
+  # client in the ArgoCD CMP hangs on that redirect, so target the destination
+  # directly over HTTPS.
   - name: stirling-pdf-chart
-    repo: https://stirling-tools.github.io/Stirling-PDF-chart
+    repo: https://docs.stirlingpdf.com/Stirling-PDF-chart
     version: 3.1.0
     releaseName: stirling-pdf
     namespace: stirling-pdf
