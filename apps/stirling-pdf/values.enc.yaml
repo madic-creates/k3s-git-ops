@@ -1,0 +1,60 @@
+# nameOverride keeps the selector label app.kubernetes.io/name=stirling-pdf
+# (chart default would be "stirling-pdf-chart"). Required so the existing
+# CiliumNetworkPolicy selector keeps matching the pods.
+nameOverride: stirling-pdf
+fullnameOverride: stirling-pdf
+# Authelia handles authentication via Traefik ForwardAuth middleware,
+# so Stirling's own login is disabled.
+envs:
+    - name: DOCKER_ENABLE_SECURITY
+      value: "false"
+    - name: SECURITY_ENABLELOGIN
+      value: "false"
+    - name: LANGS
+      value: en_GB,de_DE
+    - name: SYSTEM_DEFAULTLOCALE
+      value: de-DE
+resources:
+    requests:
+        cpu: 500m
+        memory: 1Gi
+    limits:
+        cpu: 4000m
+        memory: 4Gi
+service:
+    type: ClusterIP
+    externalPort: 80
+    # Empty targetPort -> service routes to container's "http" named port (8080)
+# Ingress is managed via the SOPS-encrypted ingress.enc.yaml.
+ingress:
+    enabled: false
+# Stateless deployment - no persistent storage.
+persistence:
+    enabled: false
+# We don't scrape Stirling-PDF metrics today.
+serviceMonitor:
+    enabled: false
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBRRWg2NGtmQTYzTnFWWXFi
+            U1Q2OGlVZUNLejAramRaNnJGUE03S0ZwNWkwCjZtN1ZEeXphdm4vNWlPUy93MTNn
+            SVBCd3FDdFNLNDRaT0YzVmpjYmg5SHMKLS0tIGVmY1VyNDIxcGNJaXlURmltNGRG
+            bmV6NDloM21sNFFoZ0FIdzU2VWhxYnMK/E3jARQrY29WVEsmD5bztWW+XD4gspzJ
+            8Z7NYVet1zn7mSHQWNbP23k2uZx4tLCLRDc6EcHMbu9GKIW6PeR1xg==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBLUiswQzIwTWw0YTNxSy9u
+            T1NEVnhNYW43ZEdUTlM0eVNRVm1BTmcwR0VrCmptdFAxQkdDQnNBV3ZlVnFRTGtr
+            akp4eEY5VUpmUWZ6V2I4Mm5Ra1hSeDQKLS0tIGh5cXRLajVBVG5rL1poM1lYTkxQ
+            SWV4UU4yeUFMT2FnTkt3RUdjRnhSOHcKq4lEhuUJLXA4ujFBVG/9DrdsvUDciUl0
+            E2d9X58RsPoQ/5yXbZjxwv5iNcRWZ/TGNwufYE2/CworC3tTqVJntw==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
+    lastmodified: "2026-05-20T08:03:40Z"
+    mac: ENC[AES256_GCM,data:ZdIwBihKp1HeHdYngeOucZep7ZUTOLtxb+oGRpSjCoKD0x4cG0bUAoqSm5xNF1HTEK1rwXqBaATEWIKSyH6iGlP+aPDmTCR2ixn8VyboC3MQL1V++DZSJgUd3BSbmtSPLWuSZDw7mjZwXmyMokFHx6gh43/sdgaYnJKYkOhTYn8=,iv:xx7PifH18R8CCZGdYUjPTA4VmacovWDO5ujFm1vy7Z0=,tag:G4tWNjLI47LYYChcixjVOg==,type:str]
+    version: 3.13.1

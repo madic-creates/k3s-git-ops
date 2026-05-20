@@ -1,0 +1,50 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name: stirling-pdf
+    namespace: stirling-pdf
+    annotations:
+        traefik.ingress.kubernetes.io/router.entrypoints: web239,websecure239
+        traefik.ingress.kubernetes.io/router.tls: "true"
+        traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect@kubernetescrd, authelia-forwardauth-authelia@kubernetescrd
+spec:
+    ingressClassName: traefik
+    tls:
+        - hosts:
+            - ENC[AES256_GCM,data:3sLJJWBE30VaeMnPJbN3ZH7CVKAS7BpRDw==,iv:CEbVNqPOe1mGiuW5i+0L+Vl7pc8YCCnDZb1T7Y+yugc=,tag:ZwVtx7OU55hB/ui5zu08Og==,type:str]
+          secretName: wildcard-cloudflare-production-02
+    rules:
+        - host: ENC[AES256_GCM,data:NH9ZMnwMmI/1RrF6T0XEzYiL8ddN8At4lQ==,iv:atNjOyLp7IzXdqjVdHRnWE4a6TyJWOFMxWktlWsEQEE=,tag:0bzDBhu+36TC5qFTboYnGw==,type:str]
+          http:
+            paths:
+                - path: /
+                  pathType: Prefix
+                  backend:
+                    service:
+                        name: stirling-pdf
+                        port:
+                            number: 80
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA3WGFseENNa1FCSWxJbFFT
+            YzZqbXpLZzJueXdKR0IvU1AvbWQrb09rZzNNCjBFcnNha3hPZDVub0liRGxmeE5B
+            TEJwc0F6d0s1ZjRCdklaejRBN3RMWTQKLS0tIGVreVdBdnp3dDhydXk0blcyVjN6
+            VjBMUmpnQjcyQXlMQS81akhHUGlhd1UKBnoXYHRgys6sUmCotWGCozbukOSyzNLM
+            5Wm47OdwThzOXWmI9HuJdetrtamvLuGyLs36ZS4R1JHJrbo7xCH/Hg==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBoalFhWVBBSHljRHVRVk4z
+            Tmorb0tBY3lNeDNUTXdCK1QzMTY5WVZQNFJVCmhTU3g3cDdLeUhrR0sycWpFOUxy
+            VXQ3b3JlTmlZU1ZXR1VrZ1VQWGhKM0kKLS0tIDY1RnRWRHZBU1ZGbFhXcXZ2UWFm
+            cnc1RC9HTUVPVlBpQTRUWHNXZWR0bE0K/otxdUzzscfMqResvwwkv6q9ApBsFrlF
+            j8ZKo7upIaPzlUqiW9BG6bZz2yPAE31THgXlEC3q67k2GhmqIK8kCQ==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
+    lastmodified: "2026-05-20T06:53:04Z"
+    mac: ENC[AES256_GCM,data:sP7SgkJ+c4vdA1IURg2qLLyjlHK+cQ+QDqpDdmvaSFTXQAKrNFewCkk1KJYACALyp2RfSoGrk+CZWUAZ5NkNCEAPW9HlscbaUL0eMJPpFNogTJ5/y6cuS27bIQLmjiFzy339n9PKxcLgriH5RoLB08rlSd+UCDARUocdlAssCM0=,iv:Sb+oymsZXTGNDYctcyswJqJANO/v39d5Zt/tF7HIy+Q=,tag:WlKiv0mzT0kh++/zIoy66w==,type:str]
+    version: 3.13.1

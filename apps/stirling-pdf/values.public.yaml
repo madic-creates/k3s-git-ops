@@ -1,0 +1,4 @@
+image:
+  registry: ghcr.io
+  repository: stirling-tools/stirling-pdf
+  tag: "2.11.0"
