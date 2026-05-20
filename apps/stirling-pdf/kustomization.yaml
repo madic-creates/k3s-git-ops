@@ -13,7 +13,9 @@ helmCharts:
     version: 3.1.0
     releaseName: stirling-pdf
     namespace: stirling-pdf
-    valuesFile: values.yaml
+    valuesFile: values.public.yaml
+    additionalValuesFiles:
+      - values.secrets.yaml
 
 generators:
   - kustomize-secret-generator.yaml
