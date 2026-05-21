@@ -43,10 +43,10 @@ resources:
   #- 35-minecraft.yaml
   - 40-paperless-gpt.yaml
   - 40-paperless-ngx.yaml
-  - 50-codeserver-resources.yaml
+  #- 50-codeserver-resources.yaml
   - 50-omnitools.yaml
-  - 50-stirling-pdf.yaml
-  - 51-codeserver.yaml
+  #- 50-stirling-pdf.yaml
+  #- 51-codeserver.yaml
   - 55-claude-alert-checkmk-analyzer.yaml
   - 55-claude-alert-kubernetes-analyzer.yaml
   - 60-semaphore.yaml
@@ -78,10 +78,11 @@ resources:
   - 65-unifi-controller.yaml
   #- 65-prox01-watchtower.yaml
   #- 65-wardrowbe.yaml
+  #- 66-open-webui.yaml
   - 70-descheduler.yaml
   - 80-whoami.yaml
   - 86-kube-doom.yaml
-  - 90-cluster-tv.yaml
+  #- 90-cluster-tv.yaml
   #- 90-gethomepage.yaml
   #- 90-goldilocks.yaml
   - 91-tamagotchi.yaml

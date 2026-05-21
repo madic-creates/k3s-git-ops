@@ -30,6 +30,16 @@ spec:
     - ports:
       - port: "9500"
         protocol: TCP
+  # RCON from the hourly backup CronJob to flush world saves before
+  # backup (save-off + save-all flush) and re-enable saves afterwards.
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: minecraft
+        k8s:app.kubernetes.io/name: backup-minecraft
+    toPorts:
+    - ports:
+      - port: "25575"
+        protocol: TCP
   egress:
   # DNS
   - toEndpoints:
@@ -51,15 +61,6 @@ spec:
     toPorts:
     - ports:
       - port: "3306"
-        protocol: TCP
-  # Allow access to versitygw for backup
-  - toEndpoints:
-    - matchLabels:
-        k8s:app.kubernetes.io/name: versitygw
-        k8s:io.kubernetes.pod.namespace: longhorn
-    toPorts:
-    - ports:
-      - port: "7070"
         protocol: TCP
   # Allow access to gostatic for plugin downloads
   - toEndpoints:

@@ -1,0 +1,48 @@
+ollama:
+    enabled: false
+enableOpenaiApi: true
+ingress:
+    enabled: false
+persistence:
+    enabled: true
+    size: 10Gi
+    storageClass: longhorn
+    accessModes:
+        - ReadWriteOnce
+replicaCount: 1
+service:
+    type: ClusterIP
+    port: 80
+extraEnvFrom:
+    - secretRef:
+        name: open-webui-env
+websocket:
+    enabled: true
+    manager: redis
+    url: ENC[AES256_GCM,data:6a+JFRdoqBZuGnPd6fBYoRRL1QMevGa/HhOrQApWuO1VUeU06SdOFiXQtte3PSkPSOK30Y/jFA==,iv:Y8XBCNjBUPE2RKLCKq6nm8k2d2SMSthXFqluUNpxKYs=,tag:5wok3QaCqhRjps9vhHDX7A==,type:str]
+    redis:
+        enabled: false
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBoL0pJaG5RNjJoUWZuL3FO
+            UnpQamcrSk5KRTg2aENlS2JJeGdrRHNLK1VFCkpEUWc0UERzOVp3YzJLS29Ncnk4
+            KzRVV21DL0VlSnV1blRMTnVKaGVuOWMKLS0tIFNGeGNCNDIrUXQ4L29ZdjVJRG1N
+            eHExd0JaTDgvRGtlcG85elpWMDBjeWsKgUpfoSMrSS9sVvO7SzMlU9Cl0t3ZpT9G
+            t9E24JGLk2+74iaoH9jDuOGKHFWvk4aqL3Vwy/eEkpMhWJlVdAL9xw==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBLcVl6MkljY3R4RHFrZmZo
+            L1ZUSlEyZzU1VXBnYVp1a1E0Y2tEYVRTSTFVCm1MK2xib2k2dzhLa2s1Wk80amdH
+            OHpKK21xVk1lUjdzOC9XazNHNWpiNkEKLS0tIFpocEt3UEpTRUhHZzJ6ZkljUTZS
+            eTdCSFErSVdraTVnOEovakxlRzF6ZjAK/4QI4EmMN9uMBtv3gzORW+7XFdx6ZaLR
+            D7ZMfQnQcBb9Ia+FDc5umplQmzxLD7WOXj8jmaYPc4bzCmKSP0xTjg==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
+    lastmodified: "2026-05-20T13:44:42Z"
+    mac: ENC[AES256_GCM,data:ZdQVHybddv3xuIHXZL1oqy2iqGuKdRPTtEN4ceBsB8WdIbd/ErYVWj9PziQWCtrFGvpUgi4WA73Pcl1G1V8VX/zE/v8JLlVBRdmQ8r7DXHl7m7Ze5tWh/desI9+F6CD8QD1AulfTpSA91ja9wj92SG3um3KcZw/LXRZX3IY+ze8=,iv:8fXMN32aA5KBGcyo6GAlMQ7iEe6h+cs6Y/WyWd/IL5Q=,tag:jvdrf6Q5Z5iC+f+9vlheNg==,type:str]
+    version: 3.13.0

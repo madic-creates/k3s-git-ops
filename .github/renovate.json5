@@ -44,6 +44,7 @@
         'apps/argo-cd-apps-helm/**',
         'apps/nvidia-device-plugin/**',
         'apps/llama-cpp/**',
+        'apps/open-webui/**',
       ],
       automerge: false,
     },

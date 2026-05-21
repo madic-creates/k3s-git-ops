@@ -23,6 +23,15 @@ spec:
         - ports:
             - port: "8080"
               protocol: TCP
+    # Open WebUI calls llama-cpp directly via cluster Service as its OpenAI backend
+    - fromEndpoints:
+        - matchLabels:
+            k8s:app.kubernetes.io/name: open-webui
+            k8s:io.kubernetes.pod.namespace: open-webui
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
   egress:
     # DNS
     - toEndpoints:

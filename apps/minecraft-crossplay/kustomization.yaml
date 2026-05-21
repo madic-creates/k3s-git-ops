@@ -8,6 +8,8 @@ resources:
   - namespace.yaml
   - k8s.np.default-deny.yaml
   - k8s.np.minecraft.yaml
+  - k8s.backup-cronjob.yaml
+  - k8s.pvc.yaml
 
 helmCharts:
   - name: minecraft
@@ -44,6 +46,7 @@ helmCharts:
         #storageClass: longhorn
         dataDir:
           enabled: true
+          existingClaim: minecraft-crossplay-datadir
           Size: 10Gi
           accessModes:
             - ReadWriteOnce
@@ -158,33 +161,12 @@ helmCharts:
               port: 8080
               loadBalancerSourceRanges: []
               loadBalancerIP: "192.168.1.235"
+      # Backup is no longer done by the helm chart's mcbackup sidecar.
+      # See k8s.backup-cronjob.yaml for the standalone CronJob that
+      # replaces it (writes to the shared rest-server in the backup ns,
+      # tag=minecraft).
       mcbackup:
-        enabled: true
-        backupInterval: 1h
-        pruneBackupsDays: 7
-        excludes: "*.jar,cache,logs"
-        backupName: mc_home
-        # backup methods, see https://github.com/itzg/docker-mc-backup e.g. tar, rclone, restic, rsync
-        backupMethod: restic
-        resticRepository: "s3:http://versitygw.longhorn.svc.cluster.local:7070/backups-minecraft"
-        resticAdditionalTags: "mc_backups"
-        pruneResticRetention: "--keep-hourly 72 --keep-daily 14 --keep-weekly 3 --keep-monthly 0 --keep-yearly 0"
-        resticHostname: k8s-homelab
-        resticEnvs:
-          RESTIC_PASSWORD_FILE: /data/.resticpwd
-        envFrom:
-          - secretRef:
-              name: minecraft-crossplay-backup-secrets
-      extraVolumes:
-        - volumeMounts:
-            - name: restic-password
-              mountPath: /data/.resticpwd
-              subPath: .resticpwd
-              readOnly: true
-          volumes:
-            - name: restic-password
-              secret:
-                secretName: minecraft-restic-password
+        enabled: false
 
 generators:
   - kustomize-secret-generator.yaml

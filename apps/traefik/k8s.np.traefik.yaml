@@ -191,6 +191,10 @@ spec:
     - matchLabels:
         k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: stirling-pdf
         k8s:io.kubernetes.pod.namespace: stirling-pdf
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: open-webui
+        k8s:io.kubernetes.pod.namespace: open-webui
   # Allow Traefik to communicate with services in kube-system namespace
   # This includes the Traefik dashboard service and other system services
   - toEndpoints:

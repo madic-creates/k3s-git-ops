@@ -32,6 +32,15 @@ spec:
     - ports:
       - port: "6379"
         protocol: TCP
+  # Allow Open WebUI to connect to Redis on port 6379 for websocket pub/sub
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: open-webui
+        k8s:io.kubernetes.pod.namespace: open-webui
+    toPorts:
+    - ports:
+      - port: "6379"
+        protocol: TCP
   # Allow internal health checks and operations within databases namespace
   - fromEndpoints:
     - matchLabels:

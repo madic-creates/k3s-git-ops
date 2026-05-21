@@ -1,0 +1,16 @@
+---
+# Default Deny Network Policy for namespace.
+# Selecting all pods (empty endpointSelector) puts them under Cilium's
+# default-deny semantics; the targeted policy in k8s.np.open-webui.yaml
+# adds the specific allows we need.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: open-webui-default-deny
+  namespace: open-webui
+spec:
+  endpointSelector: {}
+  ingress:
+    - {}
+  egress:
+    - {}
