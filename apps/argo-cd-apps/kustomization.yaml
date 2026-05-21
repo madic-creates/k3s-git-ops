@@ -46,7 +46,7 @@ resources:
   #- 50-codeserver-resources.yaml
   - 50-omnitools.yaml
   #- 50-stirling-pdf.yaml
-  - 51-codeserver.yaml
+  #- 51-codeserver.yaml
   - 55-claude-alert-checkmk-analyzer.yaml
   - 55-claude-alert-kubernetes-analyzer.yaml
   - 60-semaphore.yaml
