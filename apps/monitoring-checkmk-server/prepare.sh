@@ -6,8 +6,8 @@ CHECK_SSL_CERT_VERSION=2.93.0
 
 echo "Installing and configuring thruk web interface"
 apt-get -qq update && apt-get -qq install apt-utils && apt-get install -qqy lsb-release
-curl -s "https://labs.consol.de/repo/stable/GPG-KEY-4096" -o /etc/apt/auth.conf.d/labs.consol.de-RPM-GPG-KEY
-echo "deb [signed-by=/etc/apt/auth.conf.d/labs.consol.de-RPM-GPG-KEY] http://labs.consol.de/repo/stable/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/labs-consol-stable.list
+curl -fsS "https://labs.consol.de/repo/stable/monitoring-repo-consol-de-gpg-2026.asc" -o /etc/apt/trusted.gpg.d/monitoring-repo-consol-de-gpg-2026.asc
+echo "deb [signed-by=/etc/apt/trusted.gpg.d/monitoring-repo-consol-de-gpg-2026.asc] http://labs.consol.de/repo/stable/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/labs-consol-stable.list
 rm -f /etc/apache2/conf-enabled/zzz_omd.conf
 apt-get -qq update && apt-get install -qqy thruk nano libipc-run-perl freeipmi jq file bc htop
 apt-get -qq clean all
