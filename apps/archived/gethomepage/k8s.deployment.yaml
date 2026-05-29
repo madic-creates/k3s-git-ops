@@ -35,7 +35,7 @@ spec:
         # configs (e.g. proxmox.yaml) into /app/config at startup, which fails.
         # Stage the ConfigMap into a writable emptyDir before the main container starts.
         - name: copy-config
-          image: busybox:1.37
+          image: busybox:1.38
           imagePullPolicy: IfNotPresent
           command:
             - sh
