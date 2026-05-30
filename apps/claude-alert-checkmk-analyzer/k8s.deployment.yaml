@@ -40,6 +40,8 @@ spec:
             - secretRef:
                 name: claude-alert-checkmk-analyzer-env
           volumeMounts:
+            - name: history
+              mountPath: /var/lib/analyzer
             - name: tmp
               mountPath: /tmp
             - name: ssh-key
@@ -56,7 +58,7 @@ spec:
               memory: 32Mi
             limits:
               cpu: 200m
-              memory: 128Mi
+              memory: 256Mi
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
@@ -87,3 +89,6 @@ spec:
           secret:
             secretName: claude-alert-checkmk-analyzer-known-hosts
             defaultMode: 0400
+        - name: history
+          persistentVolumeClaim:
+            claimName: claude-alert-checkmk-analyzer-history

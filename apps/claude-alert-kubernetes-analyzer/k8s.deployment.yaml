@@ -43,13 +43,15 @@ spec:
           volumeMounts:
             - name: tmp
               mountPath: /tmp
+            - name: history
+              mountPath: /var/lib/analyzer
           resources:
             requests:
               cpu: 10m
               memory: 32Mi
             limits:
               cpu: 200m
-              memory: 128Mi
+              memory: 256Mi
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
@@ -72,3 +74,6 @@ spec:
           emptyDir:
             medium: Memory
             sizeLimit: 1Mi
+        - name: history
+          persistentVolumeClaim:
+            claimName: claude-alert-kubernetes-analyzer-history

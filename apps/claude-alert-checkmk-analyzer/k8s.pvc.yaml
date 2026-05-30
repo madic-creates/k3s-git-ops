@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: claude-alert-checkmk-analyzer-history
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: claude-alert-checkmk-analyzer
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
