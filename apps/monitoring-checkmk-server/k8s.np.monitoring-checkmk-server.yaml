@@ -36,6 +36,14 @@ spec:
     - ports:
       - port: '5000'
         protocol: TCP
+  # Allow agent registration from anywhere (port 8000)
+  # CheckMK agents register with the server via the agent receiver on port 8000
+  - fromEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: '8000'
+        protocol: TCP
   egress:
   # Allow DNS resolution via CoreDNS
   - toEndpoints:
