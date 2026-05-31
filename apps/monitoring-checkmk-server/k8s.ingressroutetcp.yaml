@@ -1,0 +1,27 @@
+---
+# Exposes the CheckMK agent-receiver (port 8000) through Traefik with TLS
+# passthrough. The agent-receiver performs its own mutual TLS, so Traefik must
+# NOT terminate the connection — it only forwards the raw TCP stream, routing by
+# the SNI in the ClientHello. Agents register against checkmk.k8s.neese-web.de
+# (same FQDN as the web UI); registration discovers port 8000 via the REST API
+# on 443 and then connects directly to the agent-receiver on 8000.
+#
+# This binds to the dedicated 'agentreceiver' Traefik entrypoint (published on
+# the LoadBalancer at :8000). Because that entrypoint is used exclusively for the
+# agent-receiver, HostSNI(`*`) is safe and avoids embedding the (otherwise
+# encrypted) domain name in a plaintext manifest.
+apiVersion: traefik.io/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: checkmk-agent-receiver
+  namespace: monitoring
+spec:
+  entryPoints:
+    - agentreceiver
+  routes:
+    - match: HostSNI(`*`)
+      services:
+        - name: checkmk-service
+          port: 8000
+  tls:
+    passthrough: true

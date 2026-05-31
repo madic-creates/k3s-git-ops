@@ -68,6 +68,15 @@ helmCharts:
           http:
             tls:
               enabled: true
+        # Dedicated entrypoint for the CheckMK agent-receiver (TLS passthrough).
+        # Internal port 8200 (8000 is already used by the 'web' entrypoint);
+        # published on the default LoadBalancer (.231) as :8000 so agents can
+        # register against checkmk.k8s.neese-web.de:8000.
+        agentreceiver:
+          port: 8200
+          expose:
+            default: true
+          exposedPort: 8000
       image:
         pullPolicy: IfNotPresent
       resources:

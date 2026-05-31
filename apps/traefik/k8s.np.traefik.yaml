@@ -25,7 +25,8 @@ spec:
   ingress:
   # Allow external HTTP/HTTPS traffic to Traefik ingress endpoints
   # Traefik serves as the main entry point for all cluster HTTP/HTTPS services
-  # Ports: 8000 (web/HTTP), 8010 (web239), 8443 (websecure/HTTPS), 8444 (websecure239)
+  # Ports: 8000 (web/HTTP), 8010 (web239), 8443 (websecure/HTTPS), 8444 (websecure239),
+  #        8200 (agentreceiver, published as :8000 — CheckMK agent-receiver TLS passthrough)
   - fromEntities:
     - world
     - cluster
@@ -38,6 +39,8 @@ spec:
       - port: "8443"
         protocol: TCP
       - port: "8444"
+        protocol: TCP
+      - port: "8200"
         protocol: TCP
   # Allow health check probes from kubelet (host)
   # Traefik dashboard and metrics endpoints need to be accessible for health checks

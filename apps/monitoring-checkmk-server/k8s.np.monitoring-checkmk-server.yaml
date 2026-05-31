@@ -36,10 +36,15 @@ spec:
     - ports:
       - port: '5000'
         protocol: TCP
-  # Allow agent registration from anywhere (port 8000)
-  # CheckMK agents register with the server via the agent receiver on port 8000
-  - fromEntities:
-    - world
+  # Allow Traefik to reach the agent-receiver (port 8000) for agent registration.
+  # Exposed via a dedicated Traefik entrypoint with TLS passthrough, so the
+  # connection arrives from the Traefik pod (not directly from world). Agents
+  # connect to checkmk.k8s.neese-web.de:8000 and Traefik forwards the raw stream.
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:app.kubernetes.io/name: traefik
     toPorts:
     - ports:
       - port: '8000'
