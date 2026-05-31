@@ -121,6 +121,7 @@ spec:
         family: IPv4
   # Allow access to monitored hosts on common service ports
   # CheckMK monitors various services (SNMP, HTTP, databases, etc.)
+  # Port 6556 is the Checkmk agent port the server pulls agent data from.
   - toEntities:
     - world
     - host
@@ -135,6 +136,8 @@ spec:
       - port: '5432'
         protocol: TCP
       - port: '6379'
+        protocol: TCP
+      - port: '6556'
         protocol: TCP
       - port: '49000'
         protocol: TCP
