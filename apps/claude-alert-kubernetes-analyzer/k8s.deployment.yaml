@@ -31,7 +31,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: analyzer
-          image: ghcr.io/madic-creates/claude-alert-kubernetes-analyzer:latest@sha256:c57abeeb4e282d0f21dbbe3127a41c9f8f0868a784c067153937bfe23eaf98c7
+          image: ghcr.io/madic-creates/claude-alert-kubernetes-analyzer:latest@sha256:02157320de5921516663a8bb72b8849bcd77ca652950046ab549db777534064b
           ports:
             - containerPort: 8080
               name: http
