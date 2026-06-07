@@ -29,7 +29,7 @@ spec:
           - svc.cluster.local # Default search domain
       containers:
         - name: nextpvr
-          image: nextpvr/nextpvr_amd64:latest@sha256:c357ce295f21a5e3c4c52aa91c1d5ffec143c18606ae01c46cad99ae318816dd
+          image: nextpvr/nextpvr_amd64:latest@sha256:d6c9e0d034124cdf51075164199b9efbc97c02e0c00f2d765ecc63a6e8dba7e4
           volumeMounts:
             - name: config-vol
               mountPath: /config
