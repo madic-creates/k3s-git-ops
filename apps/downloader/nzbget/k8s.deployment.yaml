@@ -22,7 +22,7 @@ spec:
         node-role/workload: zfs
       containers:
       - name: nzbget
-        image: forge.geekbundle.org/madic/docker-nzbget@sha256:a0e1f0ccf0ca2f93ec8c81581910bc036746270276697a526ca8f3bb2d5657ab
+        image: forge.geekbundle.org/madic/docker-nzbget@sha256:ee0646d754647a65b0ef5992cf538c1538aea77a9c020660b90fbd4d5570912d
         env:
           - name: PUID
             value: "0"
