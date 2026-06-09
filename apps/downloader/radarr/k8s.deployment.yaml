@@ -22,7 +22,7 @@ spec:
         node-role/workload: zfs
       containers:
       - name: radarr
-        image: forge.geekbundle.org/madic/docker-radarr@sha256:ae9e24c887a4be727af1e631a833faa3c418f10a544a2339076b80297d799bb4
+        image: forge.geekbundle.org/madic/docker-radarr@sha256:9ee2f37426af4455d6750cb52d20840d158c98b5b0a0d5d01f34b472f3f733ba
         env:
           - name: PUID
             value: "0"
