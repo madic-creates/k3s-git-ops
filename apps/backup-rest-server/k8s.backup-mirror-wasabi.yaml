@@ -46,7 +46,7 @@ spec:
             runAsNonRoot: true
           containers:
             - name: rclone
-              image: ghcr.io/madic-creates/container-restic:latest@sha256:c5786cdded119d4bf44680e95f54a4cbb0f89ddb05eab83937709f0b6338a811
+              image: ghcr.io/madic-creates/container-restic:latest@sha256:3190fda0b21b5fb26c300bc2b9c14107fa26256ffede288da995c792b14136fb
               imagePullPolicy: IfNotPresent
               command:
                 - /bin/sh
