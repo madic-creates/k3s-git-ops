@@ -4,7 +4,7 @@ namespace: reflector
 helmCharts:
   - name: reflector
     repo: https://emberstack.github.io/helm-charts
-    version: 10.0.46
+    version: 10.0.49
     releaseName: reflector
     namespace: reflector
 
