@@ -60,7 +60,7 @@ spec:
             # Copying it into a shared tmpfs avoids carrying a separate
             # rcon image and keeps Renovate's per-tag updates trivial.
             - name: copy-rcon-cli
-              image: ghcr.io/itzg/minecraft-server:2025.12.1-java21
+              image: ghcr.io/itzg/minecraft-server:2026.6.1-java21
               imagePullPolicy: IfNotPresent
               command:
                 - /bin/sh
