@@ -10,10 +10,12 @@ spec:
   cordon: true
   nodeSelector:
     matchExpressions:
-      - key: node-role.kubernetes.io/master
-        operator: In
-        values:
-          - "true"
+      # Use the control-plane role label so ALL server nodes are matched.
+      # The legacy node-role.kubernetes.io/master label is no longer set by
+      # newer k3s versions, which previously left such nodes (e.g. node02)
+      # unmatched by this plan and stuck on an old version.
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
   serviceAccountName: system-upgrade
   upgrade:
     image: rancher/k3s-upgrade
@@ -30,7 +32,10 @@ spec:
   cordon: true
   nodeSelector:
     matchExpressions:
-      - key: node-role.kubernetes.io/master
+      # Agent nodes are everything that is NOT a control-plane/server node.
+      # Mirrors the server-plan selector above (control-plane role label),
+      # so control-plane nodes are never misclassified as agents.
+      - key: node-role.kubernetes.io/control-plane
         operator: DoesNotExist
   prepare:
     args:
