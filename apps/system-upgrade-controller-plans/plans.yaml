@@ -19,7 +19,12 @@ spec:
   serviceAccountName: system-upgrade
   upgrade:
     image: rancher/k3s-upgrade
-  channel: https://update.k3s.io/v1-release/channels/stable
+  # Pin an explicit version instead of the stable channel. The channel
+  # endpoint was returning two different versions on alternating reconciles
+  # (v1.35.5 and v1.36.2), causing the controller to flap and create
+  # conflicting upgrade/downgrade Jobs against control-plane (etcd) nodes.
+  # A pinned version is deterministic; bump it manually (or via Renovate).
+  version: v1.36.2+k3s1
 ---
 # Agent plan
 apiVersion: upgrade.cattle.io/v1
@@ -45,4 +50,9 @@ spec:
   serviceAccountName: system-upgrade
   upgrade:
     image: rancher/k3s-upgrade
-  channel: https://update.k3s.io/v1-release/channels/stable
+  # Pin an explicit version instead of the stable channel. The channel
+  # endpoint was returning two different versions on alternating reconciles
+  # (v1.35.5 and v1.36.2), causing the controller to flap and create
+  # conflicting upgrade/downgrade Jobs against control-plane (etcd) nodes.
+  # A pinned version is deterministic; bump it manually (or via Renovate).
+  version: v1.36.2+k3s1
