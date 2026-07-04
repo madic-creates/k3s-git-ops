@@ -5,7 +5,7 @@ commonAnnotations:
 helmCharts:
   - name: prometheus-blackbox-exporter
     repo: https://prometheus-community.github.io/helm-charts
-    version: 11.13.0
+    version: 11.15.0
     releaseName: prometheus-blackbox-exporter
     namespace: monitoring
     includeCRDs: true
