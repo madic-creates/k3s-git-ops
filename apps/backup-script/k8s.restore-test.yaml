@@ -48,7 +48,7 @@ spec:
             runAsNonRoot: true
           containers:
             - name: restore-test
-              image: ghcr.io/madic-creates/container-restic:latest@sha256:3190fda0b21b5fb26c300bc2b9c14107fa26256ffede288da995c792b14136fb
+              image: ghcr.io/madic-creates/container-restic:latest@sha256:5882ed8d36b4381ee2e6a7dad1a0c99f0341653a262209d655c69cee89770e62
               imagePullPolicy: IfNotPresent
               env:
                 - name: HOME
