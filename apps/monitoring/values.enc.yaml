@@ -15,11 +15,11 @@ alertmanager:
             traefik.ingress.kubernetes.io/router.tls: "true"
             traefik.ingress.kubernetes.io/router.middlewares: authelia-forwardauth-authelia@kubernetescrd
         hosts:
-            - ENC[AES256_GCM,data:kyPSpyjqwdRbiqP4dqCniLvWh06wbMlff7q8btRSHd5AyA==,iv:iqDvyKx/rmnACZ6PI5T7NVjdmgZ0vImz8jpsLqDun2k=,tag:wSosGpJHL1KZw5RE6u4Yzg==,type:str]
+            - ENC[AES256_GCM,data:yF4vonL7pczC0MozLTE9jRR12KG0MOHCis3PXLHNaQTFHQ==,iv:d6DpxpvYRSHcVQx+S6PUkpa3wXG1B1C5RCmo+6gU0gY=,tag:I41bvOESC3PQwDSg0BBmAw==,type:str]
         tls:
             - secretName: wildcard-cloudflare-production-02
               hosts:
-                - ENC[AES256_GCM,data:1DYIU7rri5vKXoMBT0rsBEKr5j3mX/7ZOirE0mlLL8fKvA==,iv:7CoMZRpbaDhGHu3NkYD7F9Qd5J0UunCsIZY4I/rA69o=,tag:bsIcKGCF8ax6UCEtqA2ocg==,type:str]
+                - ENC[AES256_GCM,data:i3DkE0dmJ/u0MoRCVXTxV2jLHc7axERZYk/ZixgKw/vZqw==,iv:E2DumOtwPgzNDcPDb0kCxNnq38sp0ZPU5YgP1OH69UY=,tag:xk3/vZXjtlI64kYR9QeiSw==,type:str]
     alertmanagerSpec:
         # PVC configuration
         storage:
@@ -89,19 +89,19 @@ alertmanager:
             - name: "null"
             - name: claude-analyzer
               webhook_configs:
-                - url: ENC[AES256_GCM,data:Je7/fXog1wVF25UYgw3Wm40tKFAIOvUfAi7Fl9zoHIwobUv8kjPlTSJSKT22PMkFNKhBbdSBXw7hMn2PU10ruE/gO0Na1g0mtnQbTHbnGyEg,iv:xtCHA6EBkGECkhkLBBs4ORmnqNALNfAywDChrIcMhRI=,tag:fsWfDbaPzSA4WqlyWIQPng==,type:str]
+                - url: ENC[AES256_GCM,data:li50+iIE07k+ErOyeadeMXeHNVq7zPTWop5G4IB3QWr0AIp1k/bduRUVgmGJpC3SMEA5N25LVM8ohi1p9JZdyXLMkCRjPewRztX2DPrf7qNO,iv:pJmQFBLd6DnlqKmJ42a+3XMEJQW0aX1faU5Bmmu3gnY=,tag:Q/C2qyPblQjaE0jENbyq1w==,type:str]
                   send_resolved: false
                   http_config:
                     authorization:
                         type: Bearer
-                        credentials: ENC[AES256_GCM,data:wKxDAS1WNZqi/5yjkX6mJA4hVteQVMDmfsOM6NJzqZ6OG0GQVXNr8IVdlkTdJZJrfRVTkcZSSegGuzhbu9OPmw==,iv:kj+QfgyrsUsNU59vBOTmf6Uc73HFAnNV6yOUNWvwrPA=,tag:WsrFUzHPGD6wtAsXTjkAew==,type:str]
+                        credentials: ENC[AES256_GCM,data:LAdjJNfc3g+9nYzSXghh1RQVijiF7he+qnDXnmUuA775IddFlb5Wcmlrv6hMwKeNVxmWQKWaUWCKkCcCw4RSrw==,iv:gO0LwWF2JSaUnUu1fIN7bEDB8pibISsExhhB8lPKJlw=,tag:rfRd4OBYIR9Kz35o8dUcVA==,type:str]
             - name: ntfy
               webhook_configs:
-                - url: ENC[AES256_GCM,data:bP/vAVq/8T4hhzUL0Y3mygWmIRbwWvhx5Eu00eSYM7jkK/A4ajWylIqhD8dn0UsBAJjZHXC76GSQIg==,iv:g6Dtq8cfDc+glo9usiGEr4CtqLgzwiBMcNTxXfzE6y4=,tag:5kFJvRCzz1q7pVnN7mVS5g==,type:str]
+                - url: ENC[AES256_GCM,data:HV4aX+msVyqi5dnEkWBJzRyGnhv3RqGjwpJLUCvaw0xIcQ377NIVsKLTt/IbZjLfiqemk2TcqtxX1Q==,iv:gnqZFTGsbO/LV2Hz7Rwzn9PTWXzBur5zNDg77jElUs4=,tag:tU51wGtwBOpbc8xr5KKEeA==,type:str]
                   http_config:
                     basic_auth:
-                        username: ENC[AES256_GCM,data:unwml/cQ9c1nkTWO7jVHiUXZ3sa2Q5aO,iv:4oAef0hIUdunLmAG6aIiiQWZ4RPrompjUv6Qk/r9iXM=,tag:GCv21dXMCjMkBmlpbs6G5A==,type:str]
-                        password: ENC[AES256_GCM,data:DfEQJj6bFuQg+NQyx6VpPmIJyuyNVDqh,iv:JwPkZ/TwGbloSYGtOa+Ms12Aht07Neu0qWCKzucujaQ=,tag:5hvy5jduWtDVvdchrAn+QA==,type:str]
+                        username: ENC[AES256_GCM,data:fL//5QqnmzOw6PLdno/+CzJozQyVF/kd,iv:JesFKsPNVbN3Pdd2yKpJ+FHyNyEDqTp8K5EcaDp2Wk0=,tag:aiNmD8r4pPi66KXDuQBYgA==,type:str]
+                        password: ENC[AES256_GCM,data:YDU7ZCvL9a/uqpG8VQYP705LLplBJxcD,iv:lwT0UEi8qChXScs2+1ic/Dbtd8Mj1xm2SCxp5xeYxnY=,tag:SPXtoGSk2MbKfZMQK5WOSA==,type:str]
         templates:
             - /etc/alertmanager/config/*.tmpl
 prometheus:
@@ -186,7 +186,7 @@ grafana:
     deploymentStrategy:
         type: Recreate
     # Admin user password
-    adminPassword: ENC[AES256_GCM,data:0ObbPLpil/Lvo+FDDk3tSeTQhSaCsX3IHCOcjrgH3cs=,iv:++LUom5hJEKx66U3WWFc2zWjiuuoAM8TujSdr6WEOK8=,tag:zTteOYPvZ031HvEld5HhsQ==,type:str]
+    adminPassword: ENC[AES256_GCM,data:tWTPlEtxapiwFBnJaqa70RYR2TskOxYyp0PA3YdPynk=,iv:7/GzigfRacFRVAMeyiz2iifFWzGg4OPkGLJLD1robu4=,tag:5sZL68CdsIgvflgZxQQo+w==,type:str]
     sidecar:
         dashboards:
             provider:
@@ -243,7 +243,7 @@ grafana:
                   type: loki
                   access: proxy
                   basicAuth: false
-                  url: ENC[AES256_GCM,data:/0Pt/cT/czcV8Af44RuhxqbIpOVMuS5dc4Dc8G+1DgjKbw==,iv:1SQO4n1005Np45fezj8sRZEGoKuVjeNlhb27K0SrfDg=,tag:EqPyxqHlEKnMPy8wq2Kdtg==,type:str]
+                  url: ENC[AES256_GCM,data:7Ij+GRllydqRU1g2QgolLUO+0F+xAcPlW/7tjqArxWl2Pw==,iv:n35vbHFxBNuqEI53s2r3CHzcCc5FXQA92MRfO3PBBy0=,tag:hO9grYtWSzeHBE2/Ur1W6g==,type:str]
                   jsonData:
                     maxLines: 1000
     # Required for the dashboards configuration
@@ -316,18 +316,18 @@ grafana:
             oauth_allow_insecure_email_lookup: true
             disable_login_form: true
         server:
-            root_url: ENC[AES256_GCM,data:seUPE/BzZp3t3ulZIGSwn80MIiwZJ9/jrmH1gfvEMcH0RmJBrQ==,iv:/3kylhEd7QkUhLa5/84sN+NPYxJpEncxaIic50Uq3nU=,tag:LCZHg3X5ZENJ9yURRN1G+Q==,type:str]
+            root_url: ENC[AES256_GCM,data:t9Rojw9nZj1MSfZgg1tV1jYx4374TzN5A+bhW7pupXGfmD5nrQ==,iv:nIr4kMx8ekA9TFEZ76nDJNg0548prVUwDVKRjXBlaOc=,tag:+nqGdFwDEzm+JmDKkqQ4jA==,type:str]
         auth.generic_oauth:
             enabled: true
             name: Authelia
             icon: signin
             client_id: grafana
-            client_secret: ENC[AES256_GCM,data:CRAZMsbA4lGzMZiNi5Qg6f1ZqGwJXtorwkOfdXJdS64=,iv:y8PQ3HgIjBxEQ+zZd5wU1n9ICLEW0YIZTnRoFRV2Tqw=,tag:qFsFPaL1rNNFerovOJ7xKw==,type:str]
+            client_secret: ENC[AES256_GCM,data:DHi/Pm3+cGBCkIvJMXv8W3VbUXgDkWh8FaKgqdlcZpo=,iv:Y+IgweTHxmqypJPDqijNiS+SkcOLT/N+Lvb7Kj8bFzs=,tag:L1jCM0WLGqjElTbQLyoAIw==,type:str]
             scopes: openid profile email groups
             empty_scopes: false
-            auth_url: ENC[AES256_GCM,data:311EHQgIRyW/i0sQGWW1Y9yWinblEF350Jdx4mR5pHoy2/EK8yUa5dfMISCB5t20+5l8+g==,iv:VWdMLIYjk2VpUosO4WFQfbiGuJseNi1EqvwZMAD+Bg4=,tag:6DOdGFCQqQxeiC0+2X8PHQ==,type:str]
+            auth_url: ENC[AES256_GCM,data:DjLFXw1ztYElBlN5sBqSfBf4lstTitHFxkawgWJqtBH5xNMKdEFekVgyWdXSMh6+V0QGrQ==,iv:Q+00IhzzQkDFAJePfyDGKtjWOEQxjWiH62fLtB/5piU=,tag:JWIa0F79RMwTVaFOJpLTAg==,type:str]
             token_url: https://auth.k8s.neese-web.de/api/oidc/token
-            api_url: ENC[AES256_GCM,data:4mpt3GyJz0FFSQx9SBEfSjdMjsQUyCm+evWdZ0dp4FXDw7ZYGHzWIiwHDtIc/4A=,iv:p5UR14V+ZUtk4xcPVD9zWUj65g5YOhpm/oS8dq5lKUY=,tag:W41/SY3HtLZ9Bf9u1Sh7sg==,type:str]
+            api_url: ENC[AES256_GCM,data:D+MstlmJkUB8ui3yBvGR+XswAedOtrIK9AsP4XKPKQ9BpMJif79IA0S7RwpbqOc=,iv:85D3h/s7c00KOe2mRQWdv9Lpwyuiq+cJeh98H5yOxLs=,tag:aWwpw7Xc302iYFq5IzogJA==,type:str]
             login_attribute_path: preferred_username
             groups_attribute_path: groups
             role_attribute_path: contains(groups[*], 'GrafanaAdmin') && 'GrafanaAdmin' || contains(groups[*], 'admin') && 'Admin' || contains(groups[*], 'editor') && 'Editor' || contains(groups[*], 'viewer') && 'Viewer'
@@ -346,7 +346,7 @@ grafana:
 prometheus-node-exporter:
     resources:
         limits:
-            cpu: null
+            #cpu: null
             memory: 100Mi
         requests:
             cpu: 100m
@@ -355,23 +355,23 @@ sops:
     age:
         - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBac2kwN0MzQ3kwUnFtWXdo
-            MXIwWVZvNURBaUV4NXFVMjcyc0pmRjJKeTJBCkk5eG5sblJWeEVaU21VbkN2MnM5
-            bDFlUkhZZGZsNG9kV3FBWk5nNTV2WFkKLS0tIGd2N3ZjMHlsRXhET2JlMDVUN3pU
-            aG4vbVd5VUtvdTMyaldrWTl1c1N6bkUKrx2Zhzu5c9ervw5dNbjuK/ZvSa+XMSUB
-            Wk6837pWT4wbIzeYOH0MO/E7LUdCis1gnwGC/7vyyaESAalLtNvM+g==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB0SVlza2VqM2xEbm1jMEhl
+            aERnbXo5OVVuK1VmSURCdGJXQjQvRG1veWgwCjUzTEFMVHA2ZzZ4ZzFwaFRrWnNC
+            aFFTbHBzUzYxWFpGYWxhUmxXR3c2cTgKLS0tIE1FY0p2S3FWc3ZOVDRrVjYrcTNX
+            cHFUL1IrYnhUbFZzRW05UWlMSjV4d2MKRZcyud2aPYu5Te1+q/bZj6Ilkcz8Avoc
+            zdZkfzDxrPB8FpWsL0gP95Z3hoZLkpW+vkSKCLmNe5wkH97AFNIRwQ==
             -----END AGE ENCRYPTED FILE-----
           recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
         - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBHNFJmT0xzSVJKOGk0Z3Bl
-            UDFzVlpTc3JTSFExQjZibExQV0diRWppODFNCk9YeGdYeWpCMkdmbEdMNS8va0hW
-            VU5qejd3R3FqMjViMzZLRitkVTVRWEkKLS0tIG1Rb1RpSDZKZ0Rkb3dkbS9yVVoz
-            U2RPdFhnK1FVNEFTTERpdENkVTg4K2sKOXcY4lCeDObIjD4zK0pRKYZcG98GLtlo
-            61x+RzI/blAjRrU7FgcTlOZD1CReabsCW9oR3t9BF5b6TP1IGlJIMw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBlRVdOODJJbU9sSk9TMHNM
+            bmJYVXVuTy94U0ZGU1dqQ3B4NnNhZVdHMTFZCmFxa25yNWpPVjF0RWFFT25QNXVr
+            M2NweDNESTRjeE9uMlFPSXR2UFNyT2MKLS0tIFUzdDBLOXhSc056M2lySWVxM3Zn
+            OXlsM1RuN0JIbzF3MTh4bXozdTJWdHcKGF1WFOC4K2ZohKvxtmGp3g1GOsyJkCCV
+            6YEIQUKoHz4gV7aQxmjhiAxsg6qPO1tLDQf7GfJ+yenbL7h0LKRLVQ==
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
-    lastmodified: "2026-05-28T10:28:12Z"
-    mac: ENC[AES256_GCM,data:CwvDbhoD3q10V86oT7acRxUk9NQmGZG/SItcPP73WSbL5i1eltgMW5Vb9toV5pofOwici5R5k9MLYgOkDoR2vnCuBed0TQygJTGlSnMf7QeLY4ttKZfOmBbgbx/u8/vu94SrP4iXxa+WliKLH5MNQlpynPSMVTB1qnxHYKSE6go=,iv:KxIwrgCrAdEYTWLYsvDMCNdbCRg+XnvUVZTBIq06rDg=,tag:ssJlIZHIPuse156l4imMlg==,type:str]
-    version: 3.13.1
+    lastmodified: "2026-07-07T21:05:51Z"
+    mac: ENC[AES256_GCM,data:XNaxohTl59j7OniCd/P7ximg5L0eDH149coydHY2xtqMJY6PbFPizugivMjBm2tkcT1aQ7rMDliEVaK9wbOl/gZsclBay+/LUbc4G1HhPE4cf4xUGBcWJu9/U1xEaN3l6jxdUWrP/e7HVwjbNOXIgWTWKCYkSRrgDNF0lvMjF5w=,iv:eufBdK7L+vfihvbmR+wQsg8Sg+hD7uXYFyhQKoVFzxs=,tag:sGEreR5Knbf3y+MFXWIFqA==,type:str]
+    version: 3.13.2
