@@ -7,5 +7,6 @@ resources:
   - k8s.rbac.yaml
   - k8s.servicemonitor.yaml
   - k8s.np.claude-alert-analyzer.yaml
+  - k8s.pvc.yaml
 generators:
   - kustomize-secret-generator.yaml
