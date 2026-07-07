@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: paperless-gpt
-          image: ghcr.io/icereed/paperless-gpt:v0.25.1
+          image: ghcr.io/icereed/paperless-gpt:v0.26.0
           resources:
             requests:
               cpu: 100m
