@@ -18,7 +18,7 @@ commonAnnotations:
 helmCharts:
   - name: open-webui
     repo: https://helm.openwebui.com/
-    version: 14.8.0
+    version: 14.11.0
     releaseName: open-webui
     namespace: open-webui
     includeCRDs: false
