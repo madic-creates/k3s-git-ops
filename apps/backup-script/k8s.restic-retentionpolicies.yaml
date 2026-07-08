@@ -26,7 +26,7 @@ spec:
           # Postfix) — skip the default ServiceAccount token mount.
           automountServiceAccountToken: false
           # Runs as nobody — this CronJob only touches the remote restic
-          # repo and an in-memory cache; no app files are accessed.
+          # repo and a node-disk cache; no app files are accessed.
           securityContext:
             runAsUser: 65534
             runAsGroup: 65534
@@ -36,7 +36,7 @@ spec:
             - name: restic
               image: ghcr.io/madic-creates/container-restic:latest@sha256:5882ed8d36b4381ee2e6a7dad1a0c99f0341653a262209d655c69cee89770e62
               env:
-                # Writable HOME on the tmpfs emptyDir — needed once we
+                # Writable HOME on the node-disk emptyDir — needed once we
                 # dropped root, since restic otherwise tries to create
                 # $HOME/.cache under "/".
                 - name: HOME
