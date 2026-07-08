@@ -29,7 +29,7 @@ spec:
         # CrashLoop on the main container, which buries the cause in
         # llama.cpp logs.
         - name: verify-model
-          image: alpine:3.20@sha256:d9e853e87e55526f6b2917df91a2115c36dd7c696a35be12163d44e6e2a4b6bc
+          image: alpine:3.24@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b
           command:
             - sh
             - -c
@@ -48,7 +48,7 @@ spec:
               readOnly: true
       containers:
         - name: llama-cpp
-          image: ghcr.io/ggml-org/llama.cpp:server-cuda@sha256:2e323f437c6169a94f9edf5f8b8cf2fca8c70104e4196effa3a3d58f03eefb40
+          image: ghcr.io/ggml-org/llama.cpp:server-cuda@sha256:1852b15c1290e4a36d14f51dc1267c19a50936e4b1e46dc323dc621be629f4b2
           args:
             - --model
             - /models/Qwen2.5-Coder-7B-Instruct-Q4_K_M.gguf
