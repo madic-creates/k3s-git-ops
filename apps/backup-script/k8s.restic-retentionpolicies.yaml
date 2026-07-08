@@ -41,9 +41,9 @@ spec:
                 # $HOME/.cache under "/".
                 - name: HOME
                   value: /home/restic
-                # Pin restic's cache to the same tmpfs so the "Pruning
-                # repository" step has fast access to the indexes within
-                # one run.
+                # Pin restic's cache to the node-disk emptyDir below so the
+                # "Pruning repository" and "Integrity check" steps have room
+                # for the pack data they download within one run.
                 - name: RESTIC_CACHE_DIR
                   value: /home/restic/.cache/restic
               envFrom:
@@ -122,7 +122,12 @@ spec:
                   mountPath: /home/restic
           volumes:
             - name: home
+              # Node-disk cache, not RAM. `restic prune` and especially
+              # `check --read-data-subset 5%` download pack data into
+              # $RESTIC_CACHE_DIR; that working set outgrew the old 1Gi
+              # memory tmpfs and hit ENOSPC (job exit 11). Encrypted repo
+              # packs only (no plaintext), so node disk is safe; node
+              # ephemeral storage (~215Gi) is abundant while RAM is contended.
               emptyDir:
-                medium: Memory
-                sizeLimit: 1Gi
+                sizeLimit: 20Gi
           restartPolicy: Never

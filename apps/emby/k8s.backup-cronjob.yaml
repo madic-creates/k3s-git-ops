@@ -78,9 +78,15 @@ spec:
               configMap:
                 name: crontab-backup-script
             - name: home
+              # Node-disk cache, not RAM. restic caches parent-snapshot
+              # data/tree packs while diffing an incremental backup; that
+              # working set outgrew the old 200Mi memory tmpfs and hit
+              # ENOSPC ("no space left on device"), failing every run.
+              # Cache blobs are encrypted repo packs (no plaintext), so
+              # node disk is safe, and node ephemeral storage (~215Gi) is
+              # abundant while node RAM is contended.
               emptyDir:
-                medium: Memory
-                sizeLimit: 200Mi
+                sizeLimit: 5Gi
 ---
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
