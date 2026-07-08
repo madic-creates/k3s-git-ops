@@ -17,7 +17,8 @@ spec:
   jobTemplate:
     spec:
       backoffLimit: 2
-      activeDeadlineSeconds: 540
+      # 50 minutes
+      activeDeadlineSeconds: 3000
       template:
         metadata:
           labels:
