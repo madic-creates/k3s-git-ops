@@ -192,9 +192,15 @@ spec:
                 privileged: false
           volumes:
             - name: home
+              # Node-disk cache, not RAM. restic caches the repo index,
+              # snapshots and tree packs while restoring; that working
+              # set outgrew the old 200Mi memory tmpfs and hit ENOSPC
+              # ("no space left on device") on the index, failing the
+              # restore. Cache blobs are encrypted repo packs (no
+              # plaintext), so node disk is safe, and node ephemeral
+              # storage (~215Gi) is abundant while node RAM is contended.
               emptyDir:
-                medium: Memory
-                sizeLimit: 200Mi
+                sizeLimit: 5Gi
             # Disk-backed scratch volume sized for the largest tag
             # (paperless dominates today). Switch to a Longhorn PVC
             # if any tag exceeds this; tmpfs would consume too much
