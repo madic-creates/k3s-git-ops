@@ -2,12 +2,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: llama-cpp
+  name: llama-cpp-andy-4
   namespace: llama-cpp
   labels:
     app: llama-cpp
+    model: andy-4
 spec:
-  replicas: 1
+  # Starts at 0 so the GPU stays available to the qwen2.5-coder Deployment by
+  # default. Switch on demand with `kubectl scale`; replicas is ignored by
+  # ArgoCD (see apps/argo-cd-apps/65-llama-cpp.yaml) so no git sync is needed:
+  #   kubectl -n llama-cpp scale deploy/llama-cpp-qwen2.5-coder --replicas=0
+  #   kubectl -n llama-cpp scale deploy/llama-cpp-andy-4        --replicas=1
+  # Andy-4 (DeepSeek-R1-Distill-Llama-8B, Q4_K_M ~4.9 GB) is the Mindcraft /
+  # Minecraft agent model; it fits the single 8 GB GPU alongside its KV cache.
+  replicas: 0
   revisionHistoryLimit: 2
   strategy:
     # Single-tenant GPU; rolling would deadlock on nvidia.com/gpu.
@@ -15,19 +23,21 @@ spec:
   selector:
     matchLabels:
       app: llama-cpp
+      model: andy-4
   template:
     metadata:
       labels:
         app: llama-cpp
+        model: andy-4
     spec:
       runtimeClassName: nvidia
       nodeSelector:
         node-role/workload: zfs
       initContainers:
         # Fail fast with a clear error if the operator forgot to stage the
-        # GGUF on node04, or if the file got truncated. Cheaper than a
-        # CrashLoop on the main container, which buries the cause in
-        # llama.cpp logs.
+        # GGUF, or if the file got truncated. Cheaper than a CrashLoop on the
+        # main container, which buries the cause in llama.cpp logs.
+        # SHA256 pinned from huggingface.co/Sweaterdog/Andy-4 (Andy-4.Q4_K_M.gguf).
         - name: verify-model
           image: alpine:3.24@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b
           command:
@@ -35,8 +45,8 @@ spec:
             - -c
             - |
               set -eu
-              MODEL=/models/Qwen2.5-Coder-7B-Instruct-Q4_K_M.gguf
-              EXPECTED_SHA256=1664fccab734674a50763490a8c6931b70e3f2f8ec10031b54806d30e5f956b6
+              MODEL=/models/Andy-4.Q4_K_M.gguf
+              EXPECTED_SHA256=a0d6e2fd5a47f2fa0a7ab2454c928f166bc2c75ead73ff08f15d52d2b42d044a
               test -f "$MODEL" || { echo "model file missing: $MODEL"; exit 1; }
               # GGUF magic number is the ASCII string "GGUF" at offset 0
               head -c4 "$MODEL" | grep -q '^GGUF' || {
@@ -51,15 +61,16 @@ spec:
           image: ghcr.io/ggml-org/llama.cpp:server-cuda@sha256:1852b15c1290e4a36d14f51dc1267c19a50936e4b1e46dc323dc621be629f4b2
           args:
             - --model
-            - /models/Qwen2.5-Coder-7B-Instruct-Q4_K_M.gguf
+            - /models/Andy-4.Q4_K_M.gguf
             - --host
             - 0.0.0.0
             - --port
             - "8080"
             - --n-gpu-layers
             - "99"
+            # Andy-4 ships with an 8192-token context window.
             - --ctx-size
-            - "32768"
+            - "8192"
             - --cache-type-k
             - q8_0
             - --cache-type-v
@@ -71,7 +82,7 @@ spec:
             - --api-key-file
             - /etc/llama-cpp/api-key
             - --alias
-            - qwen2.5-coder-7b
+            - andy-4
             - --jinja
           ports:
             - containerPort: 8080
@@ -117,18 +128,3 @@ spec:
             items:
               - key: API_KEY
                 path: api-key
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: llama-cpp
-  namespace: llama-cpp
-spec:
-  selector:
-    app: llama-cpp
-  ports:
-    - name: http
-      port: 8080
-      targetPort: http
-      protocol: TCP
-  type: ClusterIP

@@ -17,9 +17,18 @@ spec:
   destination:
     server: "https://kubernetes.default.svc"
     namespace: default
+  # replicas is managed out-of-band via `kubectl scale` to switch the active
+  # model on demand (qwen2.5-coder <-> andy-4) without a git commit. ArgoCD must
+  # ignore the field AND honour that during sync, otherwise selfHeal reverts it.
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/replicas
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
+      - RespectIgnoreDifferences=true
     automated:
       prune: true
       selfHeal: true
