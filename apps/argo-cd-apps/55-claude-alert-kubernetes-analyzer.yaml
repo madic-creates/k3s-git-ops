@@ -16,9 +16,19 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
+  # Allow scaling the deployment manually (e.g. to 0) without ArgoCD reverting it
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      name: claude-alert-kubernetes-analyzer
+      namespace: monitoring
+      jsonPointers:
+        - /spec/replicas
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
       - CreateNamespace=false
+      # Required so ignoreDifferences is also honoured during sync, not only in the diff view
+      - RespectIgnoreDifferences=true
