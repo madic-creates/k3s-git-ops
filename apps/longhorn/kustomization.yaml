@@ -11,6 +11,7 @@ helmCharts:
         backupTargetCredentialSecret: wasabi-secret
         orphanAutoDeletion: true
         removeSnapshotsDuringFilesystemTrim: true
+        nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
       longhornUI:
         replicas: 1
       longhornConversionWebhook:
