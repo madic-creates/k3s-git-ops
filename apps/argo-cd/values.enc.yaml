@@ -12,7 +12,7 @@ configs:
         argo-cd:
             type: helm
             name: argo-cd
-            url: ENC[AES256_GCM,data:Bv5KeFUBqdzgDb3oHfKwDgvrCqb/5aWfQt6fUOzxMQZJ5BbS,iv:eAbcTWFX016rU20YjWdFpc7ItbB2BiMdCOzfOdTFXjA=,tag:eReJY4aNfIKj29FcHejcWg==,type:str]
+            url: ENC[AES256_GCM,data:dZeQlQVLER5FVkNcZeUpQDnS7MgFiLQKujIrnPJpXvNoaVqe,iv:gcOOfJB9yrs9J39aqcHpqaCzqw5KbK2+1o9/5rs5XMc=,tag:QyUSzbovn4M5v2y/cgAD8g==,type:str]
     credentialTemplates:
         # Git credentials
         #git-ops-dev:
@@ -20,14 +20,14 @@ configs:
         #  username: git@example.com
         #  password: OnlySecureWithExclamationMark!
         k3s-git-ops:
-            url: ENC[AES256_GCM,data:027sy3flSoiprMz39lyG2/FyAYUoBuCrwxSDWyvziQXiLUPMpA==,iv:VwX9Oz6YZ7LKOv1Yp2ETc+BRJAd2MnPbRW0HlRBbP4w=,tag:LKeWjdnKg/D8mQ+PFiWEsA==,type:str]
-            username: ENC[AES256_GCM,data:NaTDj13A,iv:Bx46+dHePDviU4L3vodhsc/DCwlz3s5KTGRQqhtIh0g=,tag:6agZ+nMenMOY817PXNeiiA==,type:str]
-            password: ENC[AES256_GCM,data:PRoKmHSuZFT/mJFD6je1cLMmokeXmL5ZvlSVSOdrsihyUPF/JLF5zKYPb9uXN4cmvHdoK2y0m6u+4vWZ5G1CePEljowDKVK60kubbPWSEIXshsn/aDNbo0ZB3GoX,iv:SIQoLK13kf9DJMZmSQSvMCV5DVnZxra8cFxIcbhV3Gg=,tag:bhR4n7rk2fBKhJslwRommQ==,type:str]
+            url: ENC[AES256_GCM,data:WFrFTnf4Y2ZE4Bss7OZdMDEOzsyBWOMShgQslpqy7AlmO+s4/Q==,iv:0ZndydJxy3qHpXKTjthjhIpprpv4BGou8D1szS7bmYw=,tag:QSlp+7e+Qmr21JPUdrzCnQ==,type:str]
+            username: ENC[AES256_GCM,data:zX0FpvMf,iv:0PoLYoWLOhG/nXYePl+fZ8njzt25q/E4r5+E/3pOLI4=,tag:LhtnlBXbOoFGzOTUt82/xw==,type:str]
+            password: ENC[AES256_GCM,data:5pC86nEI/3bY8+NVEdCfxPmiGUoYt78DAM4WQXEPxkXOEbpcLWg3LO3h8vxypL6VlOuIGj0iSTMunHZRovG6wpxm7ldFxwdqEEsUptgosPZjMytJ7bQa7ZlJHh3W,iv:cNORVBbscGs/OihtIsIHKul4CgD0tjfnlB+XhUZrNFI=,tag:w79EivEON/rP3hjlFDfBlw==,type:str]
     cm:
         accounts.cluster-tv: apiKey
         admin.enabled: true
         kustomize.buildOptions: --enable-helm --enable-alpha-plugins --enable-exec
-        url: ENC[AES256_GCM,data:Oat8fFZcjXHN6gEmSENXdkmv1HMq0HGRLadlb3VOBPn3Lqs8,iv:+ymlqi1sgxcTHAFfSvu0RTG2vl9631+Cb0S9oBtzQKk=,tag:5m0QnYdylxF6jXCgwxNEhQ==,type:str]
+        url: ENC[AES256_GCM,data:I0FAIGXWryMhfWhIbjjSvy4FZQv95mf6fFNcA+x/r6y63XEi,iv:Ay3Ejz9T5k+dm9XAtpZiCH1LYaJNGno7kxRv3VRaf34=,tag:M6McgIT3TsaXm94M8FskkQ==,type:str]
         # Enable ArgoCD sync waves between apps in Kubernetes
         # https://argo-cd.readthedocs.io/en/stable/operator-manual/health/#argocd-app
         resource.customizations.health.argoproj.io_Application: |
@@ -64,7 +64,7 @@ configs:
         #    - profile
         #    - groups
         #    - email
-        oidc.config: ENC[AES256_GCM,data:rNgHM636PAYIoA1V9y8kf23t+YY98Z8a10g4p/voGnvVxOuEgLO1OJeadJ7ra86FEui+Bz0wB2ihqhVjGbgp8YqWe98boBbIP3Au08Ft01jcxKR0be+Swie9aZgkRrazUyoLXi48AdK+dVKc0uRGnC1xMiJdc9N43tRyDBIFdZDDhkBOSFp2BrGMRxRKVLEg58GwkB+hR5YJywGbodydpVfrrgBWyU+D9W8dBIDioPaXNRuIlTHxoLOzL0bFnLET85N1nsf757hf6EzCIFMLKwVKFifLM/T3De1eeWL80YSs6zaQ95SCpV5R,iv:s/f1Em9QrGq/afM7O+dfOB3CJ5LBrGwyb+xbBeu/YIU=,tag:O62PustjzGANDRSITUlnQA==,type:str]
+        oidc.config: ENC[AES256_GCM,data:S8c2gstDdIH5uLpj1ltIuTpYF7s32PfPFQSn1oHbC8lK1/mr/0Q+1Va65eshJxQ+gwB10q2f7nA4suN1wcuClQDqpdFxau4gAX0aEz39IpLHV0LsmwVNsIXB+ESu++t3HE/nZ69wFI0ItEqUZHUPaR5SJh2mVP4NAAUeRbINeb2+d5AAfWyyi9ctvhTGQenffseqG/JIUQZh0IIk13U7s4bcG3CXyjDLS7mNr/U60iXQYSfdJkHoxwPMaUjni6TrI8jUFpEVRri2wN4uuULa5wY7OhHkv4NYoKdNIQhI0Hq84W7XOePe9Yuw,iv:gxro4X91Ak/pPxmsKv1WWB9B7BhLgdJUkrdl9sl8VJg=,tag:REmANm8FTvZCZAlfpCJatg==,type:str]
     rbac:
         policy.csv: |
             p, role:org-admin, applications, *, */*, allow
@@ -76,7 +76,7 @@ configs:
             g, cluster-tv, role:readonly
     secret:
         # htpasswd -nbBC 10 "" $ARGO_PWD | tr -d ':\n' | sed 's/$2y/$2a/'
-        argocdServerAdminPassword: ENC[AES256_GCM,data:j9EY52b1Ejg7xNbmzS+RIsmU4RCzsbsWEOA1ENHDHFAuytcqrd/Vbk3N7YvCAZEYPb475X9+wOl4CI81,iv:LD66JKUDPTO+rV3sdvTv/H48UJbfOTYwt6NPfFPFHjA=,tag:UXpr+m4pNG0MpJoebPXEqw==,type:str]
+        argocdServerAdminPassword: ENC[AES256_GCM,data:N/7PTyR4FYfGrrvkx5iBcOyVpd9uDchbQzUn5b7mQ9sVK/YtSXtLcGbEZ6ERPa+vDTuWF8StZQSewjNj,iv:fBRXjkWVNAseV/b+IYRq+OV9duSjAIBV4pvRW6ChwmI=,tag:UUL4I8yIY2Eyd2vHbWVLcQ==,type:str]
         argocdServerAdminPasswordMtime: "2024-05-13T08:32:44Z"
 server:
     ingress:
@@ -86,10 +86,10 @@ server:
             #cert-manager.io/cluster-issuer: netcup-issuer-staging
             #cert-manager.io/cluster-issuer: ca-issuer
             traefik.ingress.kubernetes.io/router.entrypoints: web239,websecure239
-        hostname: ENC[AES256_GCM,data:OJz1xfJEESFATgPODtjBIAELMZx+/OcOY4UT0g==,iv:YvzyPO3N+dOi72qeL8KaDQ1VeVJ13ZR62DCTOCV9Ki4=,tag:ZnTM2cPptfA/G0wT1WLisg==,type:str]
+        hostname: ENC[AES256_GCM,data:/+QPwRaUhvavT2c17RmMMpNvAZpjoz7/rBQGPw==,iv:kUPvFbq2I0hUY4Ph3NSf7lUeKATRJoYJg5YR46Yh2o8=,tag:5d7mq35bApIxzZV4kZ8ToA==,type:str]
         extraTls:
             - hosts:
-                - ENC[AES256_GCM,data:5j7BKrIrT8QI+B4zMY69Wb/ymNVG0ETWPr95jw==,iv:SO2VbgUpoqP/wORm27vh7BOAhcI5YwobJaClG+hpboo=,tag:wZznauf3TAPzJgS1c5VVPw==,type:str]
+                - ENC[AES256_GCM,data:rI4kV7ZToHSFBFglyDKfcGGQFp+6MTxm0PWMDg==,iv:1G7jckccswbTmDhG3Tun5RUJyjy4gMW7c3JRCKTQlmU=,tag:ozlT+TJNnuc5ZGfc/nBitQ==,type:str]
               secretName: wildcard-cloudflare-production-02
 repoServer:
     # Use init containers to configure custom tooling
@@ -240,10 +240,10 @@ controller:
     resources:
         limits:
             cpu: 1024m
-            memory: 1024Mi
+            memory: 2048Mi
         requests:
             cpu: 250m
-            memory: 256Mi
+            memory: 512Mi
     affinity:
         podAntiAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
@@ -256,25 +256,25 @@ controller:
                   topologyKey: kubernetes.io/hostname
 sops:
     age:
-        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
-          enc: |
+        - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA2OHlBYlNUalRjV2pZN0cr
-            OG0rT3hhcUxEVXdkV0x1emRMMXl5RWxzbms4ClRRVmNtS05WcTJSdGFlZWZnWUdZ
-            cWhRNHd2R3Y1d3ZVMWpNS1kvOWZBakkKLS0tIHRmbVR3WkxNdCtUdDNpQzlrU2Ru
-            N3lTODdoLzVnTnpoNXoxRnhYMXEvTk0K7o4Sbhckp3HGfmW7TjauP2QQhOtTueGA
-            mesl2+ETDGLRURZhqm02Jh8tGQsVJLJH5TLJ/J6nCiqET5lnEEnoFg==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAyL2tBczJYeVoydHYvQk5L
+            cW9LQXI4WFNJa1NsUEVLU3c3bnpqL25idUVnCkFla0xMTFBaM2xYck5waGZNVDRO
+            V1dTYURxSmJRQzhCaEhkUFJmV1ZEVWMKLS0tIFIyTzhMVTlHZjI5cUtoOHQ0RzZV
+            TXhETklvSW5uUE9vNnJvRkxDWmhwWWcKPUCCeFZOYtoPSPgIgRC4Y2jUhYeEJ6kR
+            91p4+xyF7+n4qMrsEvAtdGNeVHq4MYbCDRBBOP3jVsRoa2hG1IdRhw==
             -----END AGE ENCRYPTED FILE-----
-        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
-          enc: |
+          recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+        - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAwZW9mWWNaMGtsVXEwQTJI
-            cndVb0F5b2dhMGVHUWxmeXExNkNHNEFjaGpZCkd2eUE1ZGhBRGtneEt3c2FOUC9p
-            OGFXa1NrSG9qTGRBYkkrY3A5UlJsN3MKLS0tIDJQZ1QxZ0N3bTNRTHNQaHlQam04
-            YU14ek0xNlZqUW1yeEpCbzkwTmM4bEkK7slGDvFW21+bmf7skClIIPQsbYIowkoO
-            sAjMyl0LHrXzqCdT0OIGLAWyZEnZDVXiqGUT80trxHQR12YVmzYH6w==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBQQktjRlJNM2tWcEZNa2Zo
+            c096end2K2s3amdMZGRyTEJreUt3SjFIVWlzCjJpNTh3cDdNRFpqeEpFZWJDNU54
+            ZXplK0JLZzREUkxVU2FzUUJvcmd1NmMKLS0tIDltVzh2aXZ3dlF5bWE4NHFCUmxv
+            VGk3RU1zSEhkREl2NzlIaFhzbjJOcVEK4xmn5EhAGPTQdRvcjadkYN5awiLXpM/l
+            WJObmC/WkX9hE78EmMSsK89FQQRrZRCee9QxcSh/G78gGvK3MPrcew==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2026-04-28T17:17:25Z"
-    mac: ENC[AES256_GCM,data:+ZouIDgQ+bQPPU443Bs9FNN47CwwAGmNtpV66oBbSf8uznIzxyOMBMxwiBnX7Vk/wVivyfTXo5ogi8JPtOwphkkECXs8UBempRdtTOT5LFbQFuAVzLuN56j0Y8C6Gq84GdetEfNmqgfH2hOUBN3Un4eoz5yzy69QIa6dc+7sgas=,iv:gVyOWl8uif9/nzFxpTU5gjQPDiH9SKeqpLc8Nh3r7no=,tag:DJMMCohguQeZgFsj6msEPw==,type:str]
-    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
-    version: 3.12.2
+          recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
+    lastmodified: "2026-07-23T22:43:59Z"
+    mac: ENC[AES256_GCM,data:P0Q1RUvTlJmAfyCGdd8BsgW23M8haBbrq3vCNo+I5/QUUyDV4/Mk0GEcBCkn777pGXpdLqcmFFq5d/7svRzOkik63Iw4fzjDfERWX4jru/byjmlPIb1oBwIaD31YGAC7fqaWCszDAxERrvZspzl7OThidRGcEZZdBiL9IMZu/wc=,iv:sKFHBbmxc6sB02WQgyhv7pUQBqgsAjp/bxrKNndofu0=,tag:c4g9jIWH/jZGIhL/JgCryw==,type:str]
+    version: 3.13.2
