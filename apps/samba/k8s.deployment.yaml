@@ -47,8 +47,23 @@ spec:
             mountPath: /etc/samba/smb.conf
             subPath: smb.conf
             readOnly: true
-          - name: vol-raidz1
-            mountPath: /vol_raidz1
+          # Only the paths actually served as shares are mounted. Mounting
+          # the whole pool made every dataset below it busy in samba's mount
+          # namespace, which blocked `zfs destroy` on unrelated datasets.
+          - name: backups
+            mountPath: /vol_raidz1/backups
+          - name: video
+            mountPath: /vol_raidz1/video
+          - name: downloads
+            mountPath: /vol_raidz1/downloads
+          - name: music
+            mountPath: /vol_raidz1/music
+          - name: photo
+            mountPath: /vol_raidz1/photo
+          - name: documents
+            mountPath: /vol_raidz1/documents
+          - name: container-scheduler
+            mountPath: /vol_raidz1/container-scheduler
           - name: samba-data
             mountPath: /var/lib/samba
           - name: group
@@ -61,9 +76,33 @@ spec:
         - name: smb-conf
           configMap:
             name: samba-config
-        - name: vol-raidz1
+        - name: backups
           hostPath:
-            path: /vol_raidz1
+            path: /vol_raidz1/backups
+            type: Directory
+        - name: video
+          hostPath:
+            path: /vol_raidz1/video
+            type: Directory
+        - name: downloads
+          hostPath:
+            path: /vol_raidz1/downloads
+            type: Directory
+        - name: music
+          hostPath:
+            path: /vol_raidz1/music
+            type: Directory
+        - name: photo
+          hostPath:
+            path: /vol_raidz1/photo
+            type: Directory
+        - name: documents
+          hostPath:
+            path: /vol_raidz1/documents
+            type: Directory
+        - name: container-scheduler
+          hostPath:
+            path: /vol_raidz1/container-scheduler
             type: Directory
         - name: samba-data
           hostPath:
