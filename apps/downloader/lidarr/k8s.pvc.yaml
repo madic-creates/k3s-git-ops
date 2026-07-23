@@ -1,0 +1,18 @@
+---
+# Config volume for lidarr. Replaces the hostPath mount on
+# /vol_raidz1/container-scheduler/downloader-lidarr.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: longhorn-pvc-lidarr-config
+  namespace: downloader
+  labels:
+    app.kubernetes.io/name: lidarr
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: longhorn
+  volumeMode: Filesystem

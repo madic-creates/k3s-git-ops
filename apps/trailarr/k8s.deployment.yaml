@@ -7,7 +7,8 @@ metadata:
   labels:
     app.kubernetes.io/name: trailarr
 spec:
-  replicas: 1
+  # Temporarily 0 for the hostPath -> PVC config migration.
+  replicas: 0
   revisionHistoryLimit: 3
   strategy:
     type: Recreate

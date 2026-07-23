@@ -8,7 +8,8 @@ metadata:
   labels:
     app.kubernetes.io/name: nzbget
 spec:
-  replicas: 1
+  # Temporarily 0 for the hostPath -> PVC config migration.
+  replicas: 0
   revisionHistoryLimit: 3
   selector:
     matchLabels:

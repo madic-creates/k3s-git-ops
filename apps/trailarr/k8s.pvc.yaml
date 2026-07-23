@@ -1,0 +1,18 @@
+---
+# Config volume for trailarr. Replaces the hostPath mount on
+# /vol_raidz1/docker/configs/downloader/trailarr/config.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: longhorn-pvc-trailarr-config
+  namespace: downloader
+  labels:
+    app.kubernetes.io/name: trailarr
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: longhorn
+  volumeMode: Filesystem

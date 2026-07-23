@@ -1,0 +1,19 @@
+---
+# Config volume for the UniFi controller (MongoDB plus site config).
+# Replaces the hostPath mount on
+# /vol_raidz1/docker/configs/unify-controller/config.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: longhorn-pvc-unifi-controller-config
+  namespace: media
+  labels:
+    app.kubernetes.io/name: unifi-controller
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: longhorn
+  volumeMode: Filesystem

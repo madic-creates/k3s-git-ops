@@ -1,0 +1,37 @@
+---
+# Config volume for radarr. Replaces the hostPath mount on
+# /vol_raidz1/docker/configs/downloader/radarr/config.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: longhorn-pvc-radarr-config
+  namespace: downloader
+  labels:
+    app.kubernetes.io/name: radarr
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: longhorn
+  volumeMode: Filesystem
+---
+# settings.ini for the Trailer-Downloader post-processing script.
+# Replaces the hostPath mount on
+# /vol_raidz1/docker/configs/downloader/Trailer-Downloader-Config.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: longhorn-pvc-radarr-trailer-downloader
+  namespace: downloader
+  labels:
+    app.kubernetes.io/name: radarr
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: longhorn
+  volumeMode: Filesystem

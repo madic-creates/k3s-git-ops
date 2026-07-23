@@ -6,6 +6,7 @@ namespace: downloader
 resources:
   - k8s.namespace.yaml
   - k8s.np.downloader-default-deny.yaml
+  - k8s.pvc.yaml
   - k8s.deployment.yaml
   - k8s.service.yaml
   - k8s.np.nzbget.yaml

@@ -8,6 +8,7 @@ commonAnnotations:
   argocd.argoproj.io/sync-wave: "34"
 
 resources:
+  - k8s.pvc.yaml
   - k8s.deployment.yaml
   - k8s.service.yaml
   - k8s.np.trailarr.yaml

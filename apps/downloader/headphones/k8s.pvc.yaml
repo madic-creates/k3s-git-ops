@@ -1,0 +1,18 @@
+---
+# Config volume for headphones. Replaces the hostPath mount on
+# /vol_raidz1/docker/configs/downloader/headphones/config.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: longhorn-pvc-headphones-config
+  namespace: downloader
+  labels:
+    app.kubernetes.io/name: headphones
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: longhorn
+  volumeMode: Filesystem
