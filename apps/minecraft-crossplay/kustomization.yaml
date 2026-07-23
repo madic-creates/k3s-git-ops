@@ -19,6 +19,14 @@ helmCharts:
     namespace: minecraft
     includeCRDs: false
     valuesInline:
+      # Lower ndots so external names (e.g. api.spiget.org) are resolved
+      # directly instead of being tried against the cluster search domains
+      # first (default ndots:5). In-cluster short names still resolve via
+      # the search list; our internal references are already FQDNs.
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
       image:
         repository: ghcr.io/itzg/minecraft-server
         tag: 2025.12.1-java21
