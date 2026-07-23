@@ -38,15 +38,8 @@ spec:
         volumeMounts:
           - name: config
             mountPath: /config
-          - name: letsencrypt
-            mountPath: /letsencrypt
-            readOnly: true
       volumes:
         - name: config
           hostPath:
             path: /vol_raidz1/docker/configs/unify-controller/config
-            type: Directory
-        - name: letsencrypt
-          hostPath:
-            path: /vol_raidz1/backups/minio/backups-vps07/letsencrypt
             type: Directory
