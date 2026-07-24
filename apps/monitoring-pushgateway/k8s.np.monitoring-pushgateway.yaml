@@ -35,7 +35,12 @@ spec:
   # backup-emby and backup-nextpvr (media) replaced the previous in-pod
   # sidecars and now run as standalone CronJobs.
   # backup-downloader (downloader) backs up the *arr-stack and downloader
-  # configs from hostPath volumes on the ZFS node.
+  # configs from their Longhorn PVCs.
+  # backup-unifi-controller (media) backs up the UniFi controller PVC.
+  # A backup job missing from this list still completes its restic run, but
+  # its final metrics push is dropped and it exits 28 (curl timeout), so the
+  # Job is marked Failed. Add new backup jobs here at the same time as they
+  # join the fleet.
   - fromEndpoints:
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: longhorn
@@ -52,6 +57,9 @@ spec:
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: media
         k8s:app.kubernetes.io/name: backup-nextpvr
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: media
+        k8s:app.kubernetes.io/name: backup-unifi-controller
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: downloader
         k8s:app.kubernetes.io/name: backup-downloader
