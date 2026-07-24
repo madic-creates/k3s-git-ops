@@ -8,9 +8,12 @@ metadata:
   labels:
     app.kubernetes.io/name: unifi-controller
 spec:
-  # Temporarily 0 for the hostPath -> PVC config migration.
-  replicas: 0
+  replicas: 1
   revisionHistoryLimit: 3
+  # The config volume is ReadWriteOnce; a rolling update would let a second
+  # pod attach it and write the same MongoDB data directory.
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app.kubernetes.io/name: unifi-controller
@@ -41,6 +44,5 @@ spec:
             mountPath: /config
       volumes:
         - name: config
-          hostPath:
-            path: /vol_raidz1/docker/configs/unify-controller/config
-            type: Directory
+          persistentVolumeClaim:
+            claimName: longhorn-pvc-unifi-controller-config

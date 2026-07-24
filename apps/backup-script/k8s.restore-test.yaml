@@ -69,7 +69,7 @@ spec:
                   # Configured rotation. Add or remove tags here as the
                   # backup fleet evolves; the verifier case statement
                   # below must learn the new tag at the same time.
-                  TAGS="mariadb emby nextpvr downloader paperless grafana minecraft"
+                  TAGS="mariadb emby nextpvr downloader paperless grafana minecraft unifi"
 
                   for TAG in $TAGS; do
                     TAG_START_TIME=$(date +%s)
@@ -149,6 +149,13 @@ spec:
                           if [ ! -s "$TARGET/backup/minecraft/SmallServerHub/level.dat" ]; then
                             STATUS=1
                             FAIL_REASON="$TARGET/backup/minecraft/SmallServerHub/level.dat missing or empty"
+                          fi ;;
+                        unifi)
+                          # system.properties is written by the controller for
+                          # every site and lives directly under data/.
+                          if [ ! -s "$TARGET/backup/unifi-controller/data/system.properties" ]; then
+                            STATUS=1
+                            FAIL_REASON="$TARGET/backup/unifi-controller/data/system.properties missing or empty"
                           fi ;;
                         *)
                           STATUS=1

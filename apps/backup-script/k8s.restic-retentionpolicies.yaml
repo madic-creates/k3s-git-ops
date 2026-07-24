@@ -9,8 +9,9 @@ spec:
   successfulJobsHistoryLimit: 1
   concurrencyPolicy: Forbid
   # 03:05 daily. The other backup CronJobs are staggered around the hour
-  # (mariadb :10, grafana :20, emby :30, nextpvr :40, downloader :50,
-  # paperless :00); 03:05 lands in the gap before mariadb's 03:10 slot.
+  # (mariadb :10, grafana :20, unifi :25, emby :30, nextpvr :40,
+  # downloader :50, paperless :00); 03:05 lands in the gap before
+  # mariadb's 03:10 slot.
   # `restic forget` and `prune` use --retry-lock 10m, so even an unlucky
   # overlap with a long-running backup will block, not corrupt.
   schedule: "5 3 * * *"
@@ -75,7 +76,7 @@ spec:
                   # backup-mariadb still writes "--tag MariaDB" today —
                   # restic forget on a tag with no snapshots is a no-op,
                   # and the entry is ready for the upcoming migration.
-                  for TAG in mariadb emby nextpvr downloader paperless grafana minecraft; do
+                  for TAG in mariadb emby nextpvr downloader paperless grafana minecraft unifi; do
                     echo -e "\nRetention policies for ${TAG}" | tee -a $LOG
                     restic forget --retry-lock 10m --tag "${TAG}" --group-by "host,tags" --keep-hourly 48 --keep-daily 7 --keep-weekly 2 --keep-monthly 0 --keep-yearly 0 --keep-last 4 2>&1 | tee -a $LOG || EXIT_CODE=$?
                   done

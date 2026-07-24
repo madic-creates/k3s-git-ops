@@ -8,9 +8,12 @@ metadata:
   labels:
     app.kubernetes.io/name: radarr
 spec:
-  # Temporarily 0 for the hostPath -> PVC config migration.
-  replicas: 0
+  replicas: 1
   revisionHistoryLimit: 3
+  # The config volume is ReadWriteOnce; a rolling update would let a second
+  # pod attach it and write the same database.
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app.kubernetes.io/name: radarr
@@ -56,9 +59,8 @@ spec:
             readOnly: true
       volumes:
         - name: config
-          hostPath:
-            path: /vol_raidz1/docker/configs/downloader/radarr/config
-            type: Directory
+          persistentVolumeClaim:
+            claimName: longhorn-pvc-radarr-config
         - name: video
           hostPath:
             path: /vol_raidz1/video
@@ -76,6 +78,5 @@ spec:
             path: /vol_raidz1/downloads
             type: Directory
         - name: trailer-config
-          hostPath:
-            path: /vol_raidz1/docker/configs/downloader/Trailer-Downloader-Config
-            type: Directory
+          persistentVolumeClaim:
+            claimName: longhorn-pvc-radarr-trailer-downloader

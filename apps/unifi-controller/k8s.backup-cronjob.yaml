@@ -1,17 +1,17 @@
 ---
-# Hourly backup of *arr-stack and downloader configs via restic.
-# Every config tree is a ReadWriteOnce Longhorn PVC, mounted read-only.
-# The nodeSelector below pins this Job to the same node as the workloads,
-# which is what allows it to attach volumes those pods already hold.
-# Headphones and Epic Games are intentionally excluded — they are
-# not mounted, so restic never sees them.
+# Hourly UniFi controller config backup via restic.
+# Modelled on apps/emby/k8s.backup-cronjob.yaml.
+# Co-located with the unifi-controller pod via podAffinity because the
+# Longhorn PVC is ReadWriteOnce.
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: backup-downloader
-  namespace: downloader
+  name: backup-unifi-controller
+  namespace: media
 spec:
-  schedule: "50 * * * *"
+  # The fleet is staggered per ten-minute slot; :25 is the free one
+  # between grafana (:20) and emby (:30).
+  schedule: "25 * * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 1
@@ -19,24 +19,31 @@ spec:
   jobTemplate:
     spec:
       backoffLimit: 2
-      activeDeadlineSeconds: 540
+      # 50 minutes
+      activeDeadlineSeconds: 3000
       template:
         metadata:
           labels:
-            app.kubernetes.io/name: backup-downloader
+            app.kubernetes.io/name: backup-unifi-controller
             app.kubernetes.io/component: backup
         spec:
           automountServiceAccountToken: false
           restartPolicy: Never
-          # All downloader apps share PGID 1002 (PUIDs differ: 0/1000/1001).
-          # Running as that group gives restic read access to every config
-          # file via the group bit (linuxserver.io umask 022 → mode 644).
+          # unifi-controller runs with PUID/PGID 1000, so every file under
+          # /config is owned by 1000:1000 — no need to read as root.
           securityContext:
             runAsUser: 1000
-            runAsGroup: 1002
+            runAsGroup: 1000
             runAsNonRoot: true
-          nodeSelector:
-            node-role/workload: zfs
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: unifi-controller
+                  namespaces:
+                    - media
+                  topologyKey: kubernetes.io/hostname
           containers:
             - name: restic
               image: ghcr.io/madic-creates/container-restic:latest@sha256:5882ed8d36b4381ee2e6a7dad1a0c99f0341653a262209d655c69cee89770e62
@@ -45,37 +52,20 @@ spec:
                 - /bin/sh
                 - /usr/local/bin/backup.sh
               env:
-                # Give restic a writable HOME so it can keep its repo cache
-                # under $HOME/.cache/restic between runs.
                 - name: HOME
                   value: /home/restic
               envFrom:
                 - secretRef:
-                    name: backup-env-configuration-downloader
+                    name: backup-env-configuration-unifi
               volumeMounts:
                 - name: backup-script
                   mountPath: /usr/local/bin/backup.sh
                   subPath: backup.sh
+                - name: unifi-config
+                  mountPath: /backup/unifi-controller
+                  readOnly: true
                 - name: home
                   mountPath: /home/restic
-                - name: sonarr-config
-                  mountPath: /backup/sonarr
-                  readOnly: true
-                - name: radarr-config
-                  mountPath: /backup/radarr
-                  readOnly: true
-                - name: nzbget-config
-                  mountPath: /backup/nzbget
-                  readOnly: true
-                - name: nzbhydra2-config
-                  mountPath: /backup/nzbhydra2
-                  readOnly: true
-                - name: trailarr-config
-                  mountPath: /backup/trailarr
-                  readOnly: true
-                - name: lidarr-config
-                  mountPath: /backup/lidarr
-                  readOnly: true
               securityContext:
                 allowPrivilegeEscalation: false
                 capabilities:
@@ -83,43 +73,29 @@ spec:
                     - ALL
                 privileged: false
           volumes:
+            - name: unifi-config
+              persistentVolumeClaim:
+                claimName: longhorn-pvc-unifi-controller-config
             - name: backup-script
               configMap:
                 name: crontab-backup-script
             - name: home
+              # Node-disk cache, not RAM — same reasoning as the emby job:
+              # restic's parent-snapshot working set outgrows a small memory
+              # tmpfs and hits ENOSPC. Cache blobs are encrypted repo packs.
               emptyDir:
-                medium: Memory
-                sizeLimit: 500Mi
-            - name: sonarr-config
-              persistentVolumeClaim:
-                claimName: longhorn-pvc-sonarr-config
-            - name: radarr-config
-              persistentVolumeClaim:
-                claimName: longhorn-pvc-radarr-config
-            - name: nzbget-config
-              persistentVolumeClaim:
-                claimName: longhorn-pvc-nzbget-config
-            - name: nzbhydra2-config
-              persistentVolumeClaim:
-                claimName: longhorn-pvc-nzbhydra2-config
-            - name: trailarr-config
-              persistentVolumeClaim:
-                claimName: longhorn-pvc-trailarr-config
-            - name: lidarr-config
-              persistentVolumeClaim:
-                claimName: longhorn-pvc-lidarr-config
+                sizeLimit: 5Gi
 ---
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: backup-downloader
-  namespace: downloader
+  name: backup-unifi-controller
+  namespace: media
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: backup-downloader
+      app.kubernetes.io/name: backup-unifi-controller
   egress:
-    # DNS
     - toEndpoints:
         - matchLabels:
             k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
@@ -131,7 +107,6 @@ spec:
               protocol: UDP
             - port: "53"
               protocol: TCP
-    # Prometheus Pushgateway (metrics)
     - toEndpoints:
         - matchLabels:
             k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: monitoring

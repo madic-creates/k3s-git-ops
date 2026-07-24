@@ -7,8 +7,7 @@ metadata:
   labels:
     app.kubernetes.io/name: lidarr
 spec:
-  # Temporarily 0 for the hostPath -> PVC config migration.
-  replicas: 0
+  replicas: 1
   revisionHistoryLimit: 3
   strategy:
     type: Recreate
@@ -47,9 +46,8 @@ spec:
       restartPolicy: Always
       volumes:
         - name: config-vol
-          hostPath:
-            path: /vol_raidz1/container-scheduler/downloader-lidarr
-            type: DirectoryOrCreate
+          persistentVolumeClaim:
+            claimName: longhorn-pvc-lidarr-config
         - name: music-vol
           hostPath:
             path: /vol_raidz1/music

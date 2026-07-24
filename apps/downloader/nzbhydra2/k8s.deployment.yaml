@@ -8,9 +8,12 @@ metadata:
   labels:
     app.kubernetes.io/name: nzbhydra2
 spec:
-  # Temporarily 0 for the hostPath -> PVC config migration.
-  replicas: 0
+  replicas: 1
   revisionHistoryLimit: 3
+  # The config volume is ReadWriteOnce; a rolling update would let a second
+  # pod attach it and write the same database.
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app.kubernetes.io/name: nzbhydra2
@@ -46,10 +49,9 @@ spec:
             mountPath: /downloads
       volumes:
         - name: config
-          hostPath:
-            path: /vol_raidz1/docker/configs/downloader/nzbhydra2/config
-            type: Directory
+          persistentVolumeClaim:
+            claimName: longhorn-pvc-nzbhydra2-config
+        # nzbhydra2 never stores anything durable here; the old hostPath
+        # directory was empty.
         - name: downloads
-          hostPath:
-            path: /vol_raidz1/docker/configs/downloader/nzbhydra2/downloads
-            type: Directory
+          emptyDir: {}
