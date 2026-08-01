@@ -1,6 +1,6 @@
 image:
     repository: ghcr.io/paperless-ngx/paperless-ngx
-    tag: 3.0.4
+    tag: 3.0.5
 env:
     - name: TZ
       value: Europe/Berlin
