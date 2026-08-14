@@ -23,7 +23,7 @@ spec:
         node-role/workload: zfs
       containers:
         - name: trailarr
-          image: nandyalu/trailarr:0.10.2
+          image: nandyalu/trailarr:0.11.0
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
