@@ -55,7 +55,7 @@ spec:
               readOnly: true
       containers:
         - name: llama-cpp
-          image: ghcr.io/ggml-org/llama.cpp:server-cuda@sha256:a50b12bb92de0253d2737824ca1887f410e07b4dd3e3028f74a5a0a67c789e4b
+          image: ghcr.io/ggml-org/llama.cpp:server-cuda@sha256:f74f5805191a8030bff26e2a7890d737fc2b5d0931220c953d25e1b7d7613ef5
           args:
             - --model
             - /models/Qwen2.5-Coder-7B-Instruct-Q4_K_M.gguf
