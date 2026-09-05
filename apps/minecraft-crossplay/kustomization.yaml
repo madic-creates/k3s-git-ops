@@ -29,7 +29,7 @@ helmCharts:
             value: "1"
       image:
         repository: ghcr.io/itzg/minecraft-server
-        tag: 2025.12.1-java21
+        tag: 2026.9.0-java21
         pullPolicy: IfNotPresent
         pullSecret: ""
       resources:
