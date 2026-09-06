@@ -288,7 +288,7 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "expr": "increase(deye_production_total_kwh[1d])",
+              "expr": "max(increase(deye_production_total_kwh[1d]))",
               "format": "time_series",
               "interval": "1d",
               "legendFormat": "PV-Ertrag",
@@ -329,7 +329,7 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "expr": "deye_production_today_kwh",
+              "expr": "max(deye_production_today_kwh)",
               "legendFormat": "Heute",
               "refId": "A"
             }
@@ -360,7 +360,7 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "expr": "deye_production_total_kwh",
+              "expr": "max(deye_production_total_kwh)",
               "legendFormat": "Gesamt",
               "refId": "A"
             }
@@ -457,7 +457,7 @@ data:
               "targets": [
                 {
                   "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-                  "expr": "deye_dc_power_watts",
+                  "expr": "max by (string) (deye_dc_power_watts)",
                   "legendFormat": "{{string}}",
                   "refId": "A"
                 }
@@ -495,7 +495,7 @@ data:
               "targets": [
                 {
                   "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-                  "expr": "deye_dc_voltage_volts",
+                  "expr": "max by (string) (deye_dc_voltage_volts)",
                   "legendFormat": "{{string}}",
                   "refId": "A"
                 }
@@ -530,7 +530,7 @@ data:
               "targets": [
                 {
                   "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-                  "expr": "deye_ac_voltage_volts",
+                  "expr": "max(deye_ac_voltage_volts)",
                   "legendFormat": "Netzspannung",
                   "refId": "A"
                 }
@@ -564,7 +564,7 @@ data:
               "targets": [
                 {
                   "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-                  "expr": "deye_ac_frequency_hertz",
+                  "expr": "max(deye_ac_frequency_hertz)",
                   "legendFormat": "Netzfrequenz",
                   "refId": "A"
                 }
@@ -598,7 +598,7 @@ data:
               "targets": [
                 {
                   "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-                  "expr": "deye_radiator_temperature_celsius",
+                  "expr": "max(deye_radiator_temperature_celsius)",
                   "legendFormat": "Temperatur",
                   "refId": "A"
                 }
@@ -639,19 +639,22 @@ data:
               "targets": [
                 {
                   "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-                  "expr": "deye_logger_online",
+                  "expr": "max(deye_logger_online)",
+                  "instant": true,
                   "legendFormat": "Logger-Stick",
                   "refId": "A"
                 },
                 {
                   "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-                  "expr": "up{job=\"mqtt2prometheus\"}",
+                  "expr": "max(up{job=\"mqtt2prometheus\"})",
+                  "instant": true,
                   "legendFormat": "Solar-Exporter",
                   "refId": "B"
                 },
                 {
                   "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-                  "expr": "up{job=\"fritzbox-exporter\"}",
+                  "expr": "max(up{job=\"fritzbox-exporter\"})",
+                  "instant": true,
                   "legendFormat": "FRITZ!Box-Exporter",
                   "refId": "C"
                 }
