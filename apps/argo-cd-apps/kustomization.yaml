@@ -28,6 +28,7 @@ resources:
   - 16-ntfy-alertmanager.yaml
   - 16-versitygw.yaml
   - 17-monitoring-blackbox-exporter.yaml
+  - 17-monitoring-fritzbox-exporter.yaml
   #- 17-monitoring-kubernetes-event-exporter.yaml
   #- 17-monitoring-loki.yaml
   - 17-monitoring-pushgateway.yaml
@@ -56,7 +57,6 @@ resources:
   #- 65-prox01-docker-stats-exporter.yaml
   - 65-epicgames-freegames.yaml
   #- 65-forgejo-runner.yaml
-  #- 65-prox01-fritzbox-exporter.yaml
   - 65-gostatic.yaml
   #- 65-prox01-grafana.yaml
   - 65-headphones.yaml
@@ -79,6 +79,7 @@ resources:
   #- 65-prox01-watchtower.yaml
   #- 65-wardrowbe.yaml
   #- 66-open-webui.yaml
+  - 66-solar.yaml
   - 70-descheduler.yaml
   - 80-whoami.yaml
   - 86-kube-doom.yaml

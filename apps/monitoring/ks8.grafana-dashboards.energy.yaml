@@ -1,0 +1,690 @@
+# Grafana dashboard for household electricity consumption and PV generation.
+# Discovered automatically by the Grafana sidecar via the grafana_dashboard label.
+#
+# Data sources: fritzbox-exporter (grid import, via the FRITZ!Smart Energy plug)
+# and mqtt2prometheus in the solar namespace (Deye SUN-M160G4 micro inverter).
+# Derived series come from apps/monitoring/k8s.prometheusrule.energy.yaml.
+#
+# Series colours are fixed rather than themed because a Grafana dashboard JSON
+# carries one palette for both light and dark. #CF7526 (generation) and #4C7EE0
+# (grid import) were validated to pass the lightness band, chroma floor, CVD
+# separation and contrast checks against both surfaces; the four-string palette
+# below likewise, with the yellow relying on the table legend for label relief.
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-energy
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  energy.json: |-
+    {
+      "annotations": {"list": []},
+      "editable": true,
+      "graphTooltip": 1,
+      "links": [],
+      "panels": [
+        {
+          "type": "stat",
+          "title": "Erzeugung",
+          "description": "Aktuelle AC-Leistung des Deye-Wechselrichters.",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "gridPos": {"h": 4, "w": 6, "x": 0, "y": 0},
+          "id": 1,
+          "fieldConfig": {
+            "defaults": {
+              "unit": "watt",
+              "decimals": 0,
+              "color": {"mode": "fixed", "fixedColor": "#CF7526"},
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "textMode": "auto",
+            "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}
+          },
+          "targets": [
+            {
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "expr": "home:power_generation:watts",
+              "legendFormat": "Erzeugung",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Netzbezug",
+          "description": "Aktuell aus dem öffentlichen Netz bezogene Leistung, gemessen von der FRITZ!Smart Energy.",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "gridPos": {"h": 4, "w": 6, "x": 6, "y": 0},
+          "id": 2,
+          "fieldConfig": {
+            "defaults": {
+              "unit": "watt",
+              "decimals": 0,
+              "color": {"mode": "fixed", "fixedColor": "#4C7EE0"},
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "textMode": "auto",
+            "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}
+          },
+          "targets": [
+            {
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "expr": "home:power_grid_import:watts",
+              "legendFormat": "Netzbezug",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Gesamtverbrauch",
+          "description": "Netzbezug plus Erzeugung. Bei Einspeisung ins Netz überschätzt dieser Wert den echten Verbrauch — siehe Plausibilitätscheck weiter unten.",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "gridPos": {"h": 4, "w": 6, "x": 12, "y": 0},
+          "id": 3,
+          "fieldConfig": {
+            "defaults": {
+              "unit": "watt",
+              "decimals": 0,
+              "color": {"mode": "fixed", "fixedColor": "text"},
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "textMode": "auto",
+            "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}
+          },
+          "targets": [
+            {
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "expr": "home:power_total:watts",
+              "legendFormat": "Gesamtverbrauch",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "type": "gauge",
+          "title": "Autarkie",
+          "description": "Anteil des Gesamtverbrauchs, der gerade aus eigener Erzeugung gedeckt wird.",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "gridPos": {"h": 4, "w": 6, "x": 18, "y": 0},
+          "id": 4,
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "decimals": 0,
+              "min": 0,
+              "max": 100,
+              "color": {"mode": "fixed", "fixedColor": "#CF7526"},
+              "thresholds": {"mode": "absolute", "steps": [{"color": "#CF7526", "value": null}]},
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "options": {
+            "showThresholdLabels": false,
+            "showThresholdMarkers": false,
+            "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}
+          },
+          "targets": [
+            {
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "expr": "home:autarky:ratio * 100",
+              "legendFormat": "Autarkie",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "Leistung: Erzeugung und Netzbezug (gestapelt)",
+          "description": "Die Stapelhöhe ist der Gesamtverbrauch, der gelbe Anteil die Eigendeckung.",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "gridPos": {"h": 9, "w": 16, "x": 0, "y": 4},
+          "id": 5,
+          "fieldConfig": {
+            "defaults": {
+              "unit": "watt",
+              "decimals": 0,
+              "min": 0,
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 2,
+                "fillOpacity": 70,
+                "showPoints": "never",
+                "stacking": {"mode": "normal", "group": "A"},
+                "axisSoftMin": 0
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {"id": "byName", "options": "Erzeugung"},
+                "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#CF7526"}}]
+              },
+              {
+                "matcher": {"id": "byName", "options": "Netzbezug"},
+                "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#4C7EE0"}}]
+              }
+            ]
+          },
+          "options": {
+            "legend": {"displayMode": "table", "placement": "bottom", "showLegend": true, "calcs": ["lastNotNull", "max", "mean"]},
+            "tooltip": {"mode": "multi", "sort": "desc"}
+          },
+          "targets": [
+            {
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "expr": "home:power_generation:watts",
+              "legendFormat": "Erzeugung",
+              "refId": "A"
+            },
+            {
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "expr": "home:power_grid_import:watts",
+              "legendFormat": "Netzbezug",
+              "refId": "B"
+            }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "Autarkie",
+          "description": "Eigendeckungsgrad über die Zeit.",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "gridPos": {"h": 9, "w": 8, "x": 16, "y": 4},
+          "id": 6,
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "decimals": 0,
+              "min": 0,
+              "max": 100,
+              "color": {"mode": "fixed", "fixedColor": "#CF7526"},
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 2,
+                "fillOpacity": 25,
+                "showPoints": "never"
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {"displayMode": "list", "placement": "bottom", "showLegend": false},
+            "tooltip": {"mode": "single", "sort": "none"}
+          },
+          "targets": [
+            {
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "expr": "home:autarky:ratio * 100",
+              "legendFormat": "Autarkie",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "type": "barchart",
+          "title": "Energie pro Tag",
+          "description": "Tageswerte: selbst erzeugte Energie gegen aus dem Netz bezogene Energie.",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "gridPos": {"h": 8, "w": 16, "x": 0, "y": 13},
+          "id": 7,
+          "fieldConfig": {
+            "defaults": {
+              "unit": "kwatth",
+              "decimals": 1,
+              "custom": {
+                "lineWidth": 0,
+                "fillOpacity": 90,
+                "gradientMode": "none",
+                "axisSoftMin": 0
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {"id": "byName", "options": "PV-Ertrag"},
+                "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#CF7526"}}]
+              },
+              {
+                "matcher": {"id": "byName", "options": "Netzbezug"},
+                "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#4C7EE0"}}]
+              }
+            ]
+          },
+          "options": {
+            "orientation": "auto",
+            "showValue": "auto",
+            "stacking": "none",
+            "groupWidth": 0.7,
+            "barWidth": 0.9,
+            "xTickLabelRotation": -45,
+            "legend": {"displayMode": "list", "placement": "bottom", "showLegend": true},
+            "tooltip": {"mode": "multi", "sort": "desc"}
+          },
+          "targets": [
+            {
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "expr": "increase(deye_production_total_kwh[1d])",
+              "format": "time_series",
+              "interval": "1d",
+              "legendFormat": "PV-Ertrag",
+              "refId": "A"
+            },
+            {
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "expr": "sum(increase(fritz_ha_multimeter_energy_Wh{ain=~\"16000.?0036823.*\"}[1d])) / 1000",
+              "format": "time_series",
+              "interval": "1d",
+              "legendFormat": "Netzbezug",
+              "refId": "B"
+            }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Ertrag heute",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "gridPos": {"h": 4, "w": 8, "x": 16, "y": 13},
+          "id": 8,
+          "fieldConfig": {
+            "defaults": {
+              "unit": "kwatth",
+              "decimals": 2,
+              "color": {"mode": "fixed", "fixedColor": "#CF7526"},
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "textMode": "auto",
+            "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}
+          },
+          "targets": [
+            {
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "expr": "deye_production_today_kwh",
+              "legendFormat": "Heute",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Ertrag gesamt",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "gridPos": {"h": 4, "w": 8, "x": 16, "y": 17},
+          "id": 9,
+          "fieldConfig": {
+            "defaults": {
+              "unit": "kwatth",
+              "decimals": 1,
+              "color": {"mode": "fixed", "fixedColor": "text"},
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "textMode": "auto",
+            "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}
+          },
+          "targets": [
+            {
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "expr": "deye_production_total_kwh",
+              "legendFormat": "Gesamt",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "Plausibilitätscheck: Netzbezug gegen Erzeugung",
+          "description": "Nicht gestapelt. Die FRITZ-Steckdose misst nur Beträge, keine Richtung: steigt der Netzbezug gemeinsam mit der Erzeugung statt zu fallen, wird gerade ins Netz eingespeist und Gesamtverbrauch sowie Autarkie sind in dieser Phase zu hoch.",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "gridPos": {"h": 8, "w": 24, "x": 0, "y": 21},
+          "id": 10,
+          "fieldConfig": {
+            "defaults": {
+              "unit": "watt",
+              "decimals": 0,
+              "min": 0,
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 2,
+                "fillOpacity": 0,
+                "showPoints": "never"
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {"id": "byName", "options": "Erzeugung"},
+                "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#CF7526"}}]
+              },
+              {
+                "matcher": {"id": "byName", "options": "Netzbezug"},
+                "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#4C7EE0"}}]
+              }
+            ]
+          },
+          "options": {
+            "legend": {"displayMode": "list", "placement": "bottom", "showLegend": true},
+            "tooltip": {"mode": "multi", "sort": "desc"}
+          },
+          "targets": [
+            {
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "expr": "home:power_generation:watts",
+              "legendFormat": "Erzeugung",
+              "refId": "A"
+            },
+            {
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "expr": "home:power_grid_import:watts",
+              "legendFormat": "Netzbezug",
+              "refId": "B"
+            }
+          ]
+        },
+        {
+          "type": "row",
+          "title": "Anlagengesundheit",
+          "collapsed": true,
+          "gridPos": {"h": 1, "w": 24, "x": 0, "y": 29},
+          "id": 100,
+          "panels": [
+            {
+              "type": "timeseries",
+              "title": "DC-Leistung je String",
+              "description": "Ein dauerhaft abweichender String deutet auf Verschattung oder ein defektes Modul.",
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "gridPos": {"h": 8, "w": 12, "x": 0, "y": 30},
+              "id": 11,
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "watt",
+                  "decimals": 0,
+                  "min": 0,
+                  "custom": {
+                    "drawStyle": "line",
+                    "lineInterpolation": "smooth",
+                    "lineWidth": 2,
+                    "fillOpacity": 0,
+                    "showPoints": "never"
+                  }
+                },
+                "overrides": [
+                  {"matcher": {"id": "byName", "options": "pv1"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#2a78d6"}}]},
+                  {"matcher": {"id": "byName", "options": "pv2"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#d95926"}}]},
+                  {"matcher": {"id": "byName", "options": "pv3"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#199e70"}}]},
+                  {"matcher": {"id": "byName", "options": "pv4"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#c98500"}}]}
+                ]
+              },
+              "options": {
+                "legend": {"displayMode": "table", "placement": "right", "showLegend": true, "calcs": ["lastNotNull", "max"]},
+                "tooltip": {"mode": "multi", "sort": "desc"}
+              },
+              "targets": [
+                {
+                  "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+                  "expr": "deye_dc_power_watts",
+                  "legendFormat": "{{string}}",
+                  "refId": "A"
+                }
+              ]
+            },
+            {
+              "type": "timeseries",
+              "title": "DC-Spannung je String",
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "gridPos": {"h": 8, "w": 12, "x": 12, "y": 30},
+              "id": 12,
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "volt",
+                  "decimals": 1,
+                  "custom": {
+                    "drawStyle": "line",
+                    "lineInterpolation": "smooth",
+                    "lineWidth": 2,
+                    "fillOpacity": 0,
+                    "showPoints": "never"
+                  }
+                },
+                "overrides": [
+                  {"matcher": {"id": "byName", "options": "pv1"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#2a78d6"}}]},
+                  {"matcher": {"id": "byName", "options": "pv2"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#d95926"}}]},
+                  {"matcher": {"id": "byName", "options": "pv3"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#199e70"}}]},
+                  {"matcher": {"id": "byName", "options": "pv4"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#c98500"}}]}
+                ]
+              },
+              "options": {
+                "legend": {"displayMode": "table", "placement": "right", "showLegend": true, "calcs": ["lastNotNull", "max"]},
+                "tooltip": {"mode": "multi", "sort": "desc"}
+              },
+              "targets": [
+                {
+                  "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+                  "expr": "deye_dc_voltage_volts",
+                  "legendFormat": "{{string}}",
+                  "refId": "A"
+                }
+              ]
+            },
+            {
+              "type": "timeseries",
+              "title": "Netzspannung am Wechselrichter",
+              "description": "Bei zu hoher Netzspannung regelt der Wechselrichter ab — die häufigste Erklärung für unerwartet geringe Erzeugung.",
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "gridPos": {"h": 7, "w": 8, "x": 0, "y": 38},
+              "id": 13,
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "volt",
+                  "decimals": 1,
+                  "color": {"mode": "fixed", "fixedColor": "#4C7EE0"},
+                  "custom": {
+                    "drawStyle": "line",
+                    "lineInterpolation": "smooth",
+                    "lineWidth": 2,
+                    "fillOpacity": 0,
+                    "showPoints": "never"
+                  }
+                },
+                "overrides": []
+              },
+              "options": {
+                "legend": {"displayMode": "list", "placement": "bottom", "showLegend": false},
+                "tooltip": {"mode": "single", "sort": "none"}
+              },
+              "targets": [
+                {
+                  "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+                  "expr": "deye_ac_voltage_volts",
+                  "legendFormat": "Netzspannung",
+                  "refId": "A"
+                }
+              ]
+            },
+            {
+              "type": "timeseries",
+              "title": "Netzfrequenz",
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "gridPos": {"h": 7, "w": 8, "x": 8, "y": 38},
+              "id": 14,
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "hertz",
+                  "decimals": 2,
+                  "color": {"mode": "fixed", "fixedColor": "#4C7EE0"},
+                  "custom": {
+                    "drawStyle": "line",
+                    "lineInterpolation": "smooth",
+                    "lineWidth": 2,
+                    "fillOpacity": 0,
+                    "showPoints": "never"
+                  }
+                },
+                "overrides": []
+              },
+              "options": {
+                "legend": {"displayMode": "list", "placement": "bottom", "showLegend": false},
+                "tooltip": {"mode": "single", "sort": "none"}
+              },
+              "targets": [
+                {
+                  "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+                  "expr": "deye_ac_frequency_hertz",
+                  "legendFormat": "Netzfrequenz",
+                  "refId": "A"
+                }
+              ]
+            },
+            {
+              "type": "timeseries",
+              "title": "Wechselrichtertemperatur",
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "gridPos": {"h": 7, "w": 8, "x": 16, "y": 38},
+              "id": 15,
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "celsius",
+                  "decimals": 1,
+                  "color": {"mode": "fixed", "fixedColor": "#CF7526"},
+                  "custom": {
+                    "drawStyle": "line",
+                    "lineInterpolation": "smooth",
+                    "lineWidth": 2,
+                    "fillOpacity": 0,
+                    "showPoints": "never"
+                  }
+                },
+                "overrides": []
+              },
+              "options": {
+                "legend": {"displayMode": "list", "placement": "bottom", "showLegend": false},
+                "tooltip": {"mode": "single", "sort": "none"}
+              },
+              "targets": [
+                {
+                  "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+                  "expr": "deye_radiator_temperature_celsius",
+                  "legendFormat": "Temperatur",
+                  "refId": "A"
+                }
+              ]
+            },
+            {
+              "type": "stat",
+              "title": "Datenquellen",
+              "description": "Nachts meldet sich der Logger regulär ab — ein Wert von 0 ist dann kein Fehler. Die beiden Exporter müssen dagegen durchgehend auf 1 stehen.",
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "gridPos": {"h": 5, "w": 24, "x": 0, "y": 45},
+              "id": 16,
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "short",
+                  "decimals": 0,
+                  "color": {"mode": "thresholds"},
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {"color": "red", "value": null},
+                      {"color": "green", "value": 1}
+                    ]
+                  },
+                  "mappings": [
+                    {"type": "value", "options": {"0": {"text": "offline", "index": 0}, "1": {"text": "online", "index": 1}}}
+                  ]
+                },
+                "overrides": []
+              },
+              "options": {
+                "colorMode": "background",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "textMode": "value_and_name",
+                "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}
+              },
+              "targets": [
+                {
+                  "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+                  "expr": "deye_logger_online",
+                  "legendFormat": "Logger-Stick",
+                  "refId": "A"
+                },
+                {
+                  "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+                  "expr": "up{job=\"mqtt2prometheus\"}",
+                  "legendFormat": "Solar-Exporter",
+                  "refId": "B"
+                },
+                {
+                  "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+                  "expr": "up{job=\"fritzbox-exporter\"}",
+                  "legendFormat": "FRITZ!Box-Exporter",
+                  "refId": "C"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "refresh": "30s",
+      "schemaVersion": 39,
+      "tags": ["energy", "solar", "fritzbox"],
+      "templating": {
+        "list": [
+          {
+            "current": {"selected": false, "text": "Prometheus", "value": "Prometheus"},
+            "hide": 0,
+            "includeAll": false,
+            "label": "Datasource",
+            "multi": false,
+            "name": "DS_PROMETHEUS",
+            "options": [],
+            "query": "prometheus",
+            "queryValue": "",
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "type": "datasource"
+          }
+        ]
+      },
+      "time": {"from": "now-24h", "to": "now"},
+      "timepicker": {},
+      "timezone": "browser",
+      "title": "Energie — Verbrauch & PV",
+      "uid": "energy",
+      "version": 1,
+      "weekStart": ""
+    }

@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fritzbox-exporter
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: fritzbox-exporter
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: fritzbox-exporter
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: fritzbox-exporter
+    spec:
+      containers:
+      - name: fritzbox-exporter
+        image: pdreker/fritz_exporter:3.3.2
+        env:
+          - name: FRITZ_NAME
+            value: "FRITZ!Box 7590"
+          - name: FRITZ_HOSTNAME
+            value: "192.168.1.1"
+          # Defaults to 127.0.0.1, which would make the exporter unreachable
+          # from the Service. Must be 0.0.0.0 inside a container.
+          - name: FRITZ_LISTEN_ADDRESS
+            value: "0.0.0.0"
+          - name: FRITZ_PORT
+            value: "9787"
+          # Per-device TR-064 connect timeout, kept below the scrape timeout so
+          # an unresponsive box fails the scrape rather than hanging it.
+          - name: FRITZ_CONNECTION_TIMEOUT
+            value: "10"
+          - name: FRITZ_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: fritzbox-exporter-credentials
+                key: username
+          - name: FRITZ_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: fritzbox-exporter-credentials
+                key: password
+        ports:
+          - containerPort: 9787
+            name: metrics
+            protocol: TCP
+        resources:
+          requests:
+            cpu: 10m
+            memory: 64Mi
+          limits:
+            memory: 256Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+        readinessProbe:
+          httpGet:
+            path: /
+            port: metrics
+          initialDelaySeconds: 10
+          periodSeconds: 30

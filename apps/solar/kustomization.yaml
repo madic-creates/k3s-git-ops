@@ -1,0 +1,16 @@
+---
+namespace: solar
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "66"
+
+generators:
+  - kustomize-secret-generator.yaml
+
+resources:
+  - k8s.namespace.yaml
+  - k8s.mosquitto.yaml
+  - k8s.deye-inverter-mqtt.yaml
+  - k8s.mqtt2prometheus.yaml
+  - k8s.np.solar-default-deny.yaml
+  - k8s.np.solar.yaml

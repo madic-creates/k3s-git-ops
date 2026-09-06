@@ -1,0 +1,46 @@
+---
+# Network policy for the FRITZ!Box exporter.
+# It reaches the router over TR-064 (49000) for device discovery and over plain
+# HTTP (80) for the AHA home automation interface, which is where the
+# FRITZ!Smart Energy power readings come from. Nothing else is permitted.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: fritzbox-exporter
+  namespace: monitoring
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: fritzbox-exporter
+  ingress:
+  # Allow Prometheus to scrape metrics
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: prometheus
+        k8s:io.kubernetes.pod.namespace: monitoring
+    toPorts:
+    - ports:
+      - port: "9787"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow TR-064 and the AHA home automation interface on the FRITZ!Box
+  - toCIDR:
+    - 192.168.1.1/32
+    toPorts:
+    - ports:
+      - port: "49000"
+        protocol: TCP
+      - port: "80"
+        protocol: TCP

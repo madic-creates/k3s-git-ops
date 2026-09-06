@@ -1,0 +1,75 @@
+---
+# Reads the Deye SUN-M160G4-EU-Q0 micro inverter over the Solarman V5 protocol
+# (Modbus RTU wrapped in Solarman framing) from its WiFi logger stick at
+# 192.168.1.136:8899 and republishes every sensor as its own MQTT topic.
+#
+# Metric group "micro" is the upstream group for the M130/M160/M180/M200/M220
+# micro inverters. It yields, per topic suffix:
+#   ac/active_power, ac/l1/{voltage,current,power}, ac/freq, operating_power,
+#   day_energy, total_energy, uptime, radiator_temp, dc/total_power and
+#   dc/pv{1..4}/{voltage,current,power,day_energy,total_energy}
+#
+# Poll interval is 30s rather than the upstream default of 60s. If the logger
+# stick becomes unresponsive under that rate, raise it back to 60.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deye-inverter-mqtt
+  namespace: solar
+  labels:
+    app.kubernetes.io/name: deye-inverter-mqtt
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  # The logger stick accepts only one Modbus session at a time, so a rolling
+  # update must fully stop the old pod before the new one connects.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: deye-inverter-mqtt
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: deye-inverter-mqtt
+    spec:
+      containers:
+        - name: deye-inverter-mqtt
+          image: ghcr.io/kbialek/deye-inverter-mqtt:2026.08.1
+          env:
+            - name: LOG_LEVEL
+              value: "INFO"
+            - name: DEYE_LOGGER_IP_ADDRESS
+              value: "192.168.1.136"
+            - name: DEYE_LOGGER_PORT
+              value: "8899"
+            - name: DEYE_LOGGER_PROTOCOL
+              value: "tcp"
+            - name: DEYE_LOGGER_SERIAL_NUMBER
+              valueFrom:
+                secretKeyRef:
+                  name: deye-logger
+                  key: serial_number
+            - name: DEYE_METRIC_GROUPS
+              value: "micro"
+            - name: DEYE_DATA_READ_INTERVAL
+              value: "30"
+            - name: MQTT_HOST
+              value: "mosquitto.solar.svc.cluster.local"
+            - name: MQTT_PORT
+              value: "1883"
+            # Consumed by mqtt2prometheus as the "deviceid" label, so this
+            # value ends up in every Prometheus series from this inverter.
+            - name: MQTT_TOPIC_PREFIX
+              value: "deye/sun-m160g4"
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              memory: 192Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL

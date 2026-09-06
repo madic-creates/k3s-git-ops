@@ -1,0 +1,85 @@
+# Derived series for the energy dashboard.
+#
+# Measurement topology: the FRITZ!Smart Energy plug reports power drawn from
+# the public grid, i.e. what is left after PV generation has already been
+# consumed. Total household load is therefore grid import PLUS generation, not
+# minus.
+#
+# Known limitation: the plug measures magnitude, not direction. When PV output
+# exceeds household load the surplus is exported but still reads as positive
+# draw, so total load and self-sufficiency are overstated during those periods.
+# This is deliberately not corrected here — the dashboard's "Plausibilitäts-
+# check" row makes such periods visible instead.
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: energy
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: energy.rules
+      rules:
+        # Pinned to the AIN of the FRITZ!Smart Energy 250 that measures grid
+        # import, so that a second smart plug paired later cannot be silently
+        # summed into household consumption. The regex tolerates both the
+        # device AIN and its "-1" sub-unit (only the latter carries the
+        # powermeter) as well as either spelling of the space in the AIN.
+        # If the plug is ever re-paired its AIN changes and this selector goes
+        # empty — EnergyGridImportMissing below catches exactly that.
+        - record: home:power_grid_import:watts
+          expr: sum(fritz_ha_multimeter_power_W{ain=~"16000.?0036823.*"})
+
+        # `or vector(0)` matters: the inverter powers down at night and its
+        # series disappear, which would otherwise make total load vanish too.
+        - record: home:power_generation:watts
+          expr: sum(deye_ac_active_power_watts) or vector(0)
+
+        - record: home:power_total:watts
+          expr: home:power_grid_import:watts + home:power_generation:watts
+
+        # clamp_min guards the division when the house draws nothing at all.
+        - record: home:autarky:ratio
+          expr: |
+            home:power_generation:watts
+              / clamp_min(home:power_total:watts, 1)
+
+    - name: energy.alerts
+      rules:
+        # Both exporters are alerted on `up`, not on metric absence: the
+        # inverter legitimately stops reporting every night, so absence of
+        # deye_* series is normal and would produce a nightly false alarm.
+        - alert: SolarExporterDown
+          expr: up{job="mqtt2prometheus"} == 0
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Solar metrics exporter is down"
+            description: "mqtt2prometheus in namespace solar has been unreachable for 10 minutes. PV generation is missing from the energy dashboard, which also makes household total load read low."
+
+        - alert: FritzboxExporterDown
+          expr: up{job="fritzbox-exporter"} == 0
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "FRITZ!Box exporter is down"
+            description: "fritzbox-exporter has been unreachable for 10 minutes. Grid import is missing, so household total load and self-sufficiency on the energy dashboard are wrong."
+
+        # Guard for the pinned AIN in home:power_grid_import:watts above. The
+        # exporter being up while the selector matches nothing means the plug
+        # was re-paired, renamed away, or removed — without this the dashboard
+        # would quietly show PV generation only and call it the whole house.
+        - alert: EnergyGridImportMissing
+          expr: |
+            absent(fritz_ha_multimeter_power_W{ain=~"16000.?0036823.*"})
+            and on() (up{job="fritzbox-exporter"} == 1)
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Grid import metric is missing while the FRITZ!Box exporter is up"
+            description: "No fritz_ha_multimeter_power_W series matches the AIN pinned in apps/monitoring/k8s.prometheusrule.energy.yaml, but the exporter is scraping fine. The smart plug was most likely re-paired and now has a different AIN. Until the selector is updated, household total load and self-sufficiency on the energy dashboard show generation only."

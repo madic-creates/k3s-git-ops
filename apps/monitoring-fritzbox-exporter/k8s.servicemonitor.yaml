@@ -1,0 +1,23 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: fritzbox-exporter
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: fritzbox-exporter
+spec:
+  endpoints:
+    # The exporter queries TR-064 synchronously on scrape, so the timeout is
+    # kept well under the interval. Raise the interval before the timeout if
+    # scrapes start failing.
+    - interval: 30s
+      scrapeTimeout: 20s
+      path: /metrics
+      port: metrics
+      scheme: http
+  namespaceSelector:
+    matchNames:
+      - monitoring
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: fritzbox-exporter

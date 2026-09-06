@@ -1,0 +1,111 @@
+---
+# Network policy for the Deye MQTT bridge.
+# It only ever talks to two things: the inverter's logger stick on the LAN and
+# the in-namespace MQTT broker. No internet access is required or granted.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: deye-inverter-mqtt
+  namespace: solar
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: deye-inverter-mqtt
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow Solarman V5 / Modbus to the inverter's WiFi logger stick
+  - toCIDR:
+    - 192.168.1.136/32
+    toPorts:
+    - ports:
+      - port: "8899"
+        protocol: TCP
+  # Allow publishing to the in-namespace MQTT broker
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: solar
+        k8s:app.kubernetes.io/name: mosquitto
+    toPorts:
+    - ports:
+      - port: "1883"
+        protocol: TCP
+---
+# Network policy for the MQTT broker.
+# The broker allows anonymous connections, so this policy is the only thing
+# restricting who may publish or subscribe. Keep it that way.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: mosquitto
+  namespace: solar
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: mosquitto
+  ingress:
+  # Allow the bridge (publisher) and the exporter (subscriber) to connect
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: solar
+        k8s:app.kubernetes.io/name: deye-inverter-mqtt
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: solar
+        k8s:app.kubernetes.io/name: mqtt2prometheus
+    toPorts:
+    - ports:
+      - port: "1883"
+        protocol: TCP
+---
+# Network policy for the MQTT-to-Prometheus exporter.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: mqtt2prometheus
+  namespace: solar
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: mqtt2prometheus
+  ingress:
+  # Allow Prometheus to scrape metrics
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: prometheus
+        k8s:io.kubernetes.pod.namespace: monitoring
+    toPorts:
+    - ports:
+      - port: "9641"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow subscribing to the in-namespace MQTT broker
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: solar
+        k8s:app.kubernetes.io/name: mosquitto
+    toPorts:
+    - ports:
+      - port: "1883"
+        protocol: TCP
