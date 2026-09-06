@@ -245,9 +245,9 @@ data:
           ]
         },
         {
-          "type": "barchart",
+          "type": "timeseries",
           "title": "Energie pro Tag",
-          "description": "Energie je 24-Stunden-Fenster über die letzten 14 Tage: selbst erzeugte gegen aus dem Netz bezogene. Eigener Zeitbereich, unabhängig vom Dashboard. Die Fenster enden zur aktuellen Uhrzeit statt um Mitternacht — Prometheus kennt keine Kalendertage, und ein auf Mitternacht gerundeter Bereich würde den laufenden Tag ganz auslassen.",
+          "description": "Energie je 24-Stunden-Fenster über die letzten 14 Tage: selbst erzeugte gegen aus dem Netz bezogene. Eigener Zeitbereich, unabhängig vom Dashboard. Die Fenster enden zur aktuellen Uhrzeit statt um Mitternacht — Prometheus kennt keine Kalendertage, und ein auf Mitternacht gerundeter Bereich würde den laufenden Tag ganz auslassen. Als Timeseries mit Balken gezeichnet, nicht als Barchart: das Barchart-Panel unterstützt nur einen Datensatz, hier sind es zwei.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "gridPos": {"h": 8, "w": 16, "x": 0, "y": 13},
           "id": 7,
@@ -258,9 +258,13 @@ data:
               "unit": "kwatth",
               "decimals": 1,
               "custom": {
+                "drawStyle": "bars",
+                "barAlignment": 0,
+                "barWidthFactor": 0.7,
                 "lineWidth": 0,
                 "fillOpacity": 90,
                 "gradientMode": "none",
+                "showPoints": "never",
                 "axisSoftMin": 0
               }
             },
@@ -276,13 +280,7 @@ data:
             ]
           },
           "options": {
-            "orientation": "auto",
-            "showValue": "auto",
-            "stacking": "none",
-            "groupWidth": 0.7,
-            "barWidth": 0.9,
-            "xTickLabelRotation": -45,
-            "legend": {"displayMode": "list", "placement": "bottom", "showLegend": true},
+            "legend": {"displayMode": "table", "placement": "bottom", "showLegend": true, "calcs": ["lastNotNull", "mean"]},
             "tooltip": {"mode": "multi", "sort": "desc"}
           },
           "targets": [
