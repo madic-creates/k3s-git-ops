@@ -21,7 +21,7 @@ spec:
         image: pdreker/fritz_exporter:3.3.2
         env:
           - name: FRITZ_NAME
-            value: "FRITZ!Box 7590"
+            value: "FRITZ!Box 6591 Cable"
           - name: FRITZ_HOSTNAME
             value: "192.168.1.1"
           # Defaults to 127.0.0.1, which would make the exporter unreachable
@@ -59,9 +59,14 @@ spec:
           capabilities:
             drop:
               - ALL
+        # Deliberately a TCP probe, not an HTTP one: every HTTP request makes
+        # the exporter run a full synchronous TR-064 scrape of the FRITZ!Box
+        # (~4.4 s measured). An HTTP readiness probe would both need a timeout
+        # far above the default and double the query load on the router for no
+        # extra signal — if the exporter stops answering, `up == 0` already
+        # alerts.
         readinessProbe:
-          httpGet:
-            path: /
+          tcpSocket:
             port: metrics
           initialDelaySeconds: 10
           periodSeconds: 30
