@@ -35,6 +35,15 @@ spec:
       labels:
         app.kubernetes.io/name: mosquitto
     spec:
+      # Start directly as the image's mosquitto user (uid/gid 1883, per the
+      # upstream Dockerfile). Started as root, the broker tries to drop
+      # privileges itself and dies with "Error setting groups whilst dropping
+      # privileges" because `capabilities: drop: ALL` takes CAP_SETGID away.
+      # Running as that user from the start means there is nothing to drop.
+      securityContext:
+        runAsUser: 1883
+        runAsGroup: 1883
+        runAsNonRoot: true
       containers:
         - name: mosquitto
           image: eclipse-mosquitto:2.0.22

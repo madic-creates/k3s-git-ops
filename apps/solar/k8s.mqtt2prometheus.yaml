@@ -81,12 +81,15 @@ data:
         mqtt_name: dc/total_power
         help: "Total DC power across all strings"
         type: gauge
+      # error_value belongs INSIDE string_value_mapping in v0.1.7; it only
+      # moved up to the metric level on upstream master, which is not what
+      # this image is built from.
       - prom_name: deye_logger_online
         mqtt_name: status
         help: "1 when the logger reports itself online"
         type: gauge
-        error_value: 0
         string_value_mapping:
+          error_value: 0
           map:
             online: 1
             offline: 0
