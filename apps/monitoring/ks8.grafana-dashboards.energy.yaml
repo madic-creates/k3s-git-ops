@@ -247,7 +247,7 @@ data:
         {
           "type": "timeseries",
           "title": "Energie pro Tag",
-          "description": "Energie je 24-Stunden-Fenster über die letzten 14 Tage: selbst erzeugte gegen aus dem Netz bezogene. Eigener Zeitbereich, unabhängig vom Dashboard. Die Fenster enden zur aktuellen Uhrzeit statt um Mitternacht — Prometheus kennt keine Kalendertage, und ein auf Mitternacht gerundeter Bereich würde den laufenden Tag ganz auslassen. Als Timeseries mit Balken gezeichnet, nicht als Barchart: das Barchart-Panel unterstützt nur einen Datensatz, hier sind es zwei.",
+          "description": "Ein Balken je Kalendertag der letzten 14 Tage: selbst erzeugte gegen aus dem Netz bezogene Energie. Zeigt naturgemäß erst ab dem ersten abgeschlossenen Tag etwas — Grafana richtet Range-Queries auf Vielfache des Schritts aus, bei Schritt 1d also auf Mitternacht, und der laufende Tag hat noch keinen solchen Auswertungspunkt. Der heutige Zwischenstand steht als Zahl im Panel \"Ertrag heute\".",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "gridPos": {"h": 8, "w": 16, "x": 0, "y": 13},
           "id": 7,
