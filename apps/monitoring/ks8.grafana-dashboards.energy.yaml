@@ -247,10 +247,12 @@ data:
         {
           "type": "barchart",
           "title": "Energie pro Tag",
-          "description": "Tageswerte: selbst erzeugte Energie gegen aus dem Netz bezogene Energie.",
+          "description": "Tageswerte der letzten 14 Tage: selbst erzeugte Energie gegen aus dem Netz bezogene. Eigener Zeitbereich, unabhängig vom Dashboard — der heutige Teilwert steht als Zahl im Panel \"Ertrag heute\".",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "gridPos": {"h": 8, "w": 16, "x": 0, "y": 13},
           "id": 7,
+          "interval": "1d",
+          "timeFrom": "14d/d",
           "fieldConfig": {
             "defaults": {
               "unit": "kwatth",
