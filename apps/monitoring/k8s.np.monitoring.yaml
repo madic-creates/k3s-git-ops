@@ -369,6 +369,20 @@ spec:
     - ports:
       - port: "9104"
         protocol: TCP
+  # Allow Prometheus to scrape the solar metrics exporter (Deye inverter).
+  # Needed in addition to the `toEndpoints: - {}` rule above: in a namespaced
+  # CiliumNetworkPolicy an empty endpoint selector only matches endpoints in
+  # the policy's own namespace, so every scrape target outside `monitoring`
+  # needs its own rule here — the mariadb rule above exists for the same
+  # reason. A ServiceMonitor alone gets the target discovered but not reached.
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: solar
+        k8s:app.kubernetes.io/name: mqtt2prometheus
+    toPorts:
+    - ports:
+      - port: "9641"
+        protocol: TCP
 ---
 # Prometheus Operator Network Policy
 apiVersion: cilium.io/v2
