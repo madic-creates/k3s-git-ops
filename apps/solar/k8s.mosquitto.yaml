@@ -1,22 +1,7 @@
 ---
-# MQTT broker used only as the transport between deye-inverter-mqtt (producer)
-# and mqtt2prometheus (consumer). It is never exposed outside the namespace,
-# so anonymous access is acceptable here: the CiliumNetworkPolicy in
-# k8s.np.solar.yaml is what restricts who may connect, not broker-level auth.
-# No persistence — every value is republished on the next poll cycle, so a
-# restart loses nothing that matters.
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: mosquitto-config
-  namespace: solar
-data:
-  mosquitto.conf: |
-    listener 1883
-    allow_anonymous true
-    persistence false
-    log_dest stdout
----
+# MQTT broker for the Deye data path. Its configuration lives in
+# mosquitto.conf and is turned into a hashed ConfigMap by the
+# configMapGenerator in kustomization.yaml, so editing it rolls this pod.
 apiVersion: apps/v1
 kind: Deployment
 metadata:

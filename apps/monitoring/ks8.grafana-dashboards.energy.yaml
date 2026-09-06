@@ -247,12 +247,12 @@ data:
         {
           "type": "barchart",
           "title": "Energie pro Tag",
-          "description": "Tageswerte der letzten 14 Tage: selbst erzeugte Energie gegen aus dem Netz bezogene. Eigener Zeitbereich, unabhängig vom Dashboard — der heutige Teilwert steht als Zahl im Panel \"Ertrag heute\".",
+          "description": "Energie je 24-Stunden-Fenster über die letzten 14 Tage: selbst erzeugte gegen aus dem Netz bezogene. Eigener Zeitbereich, unabhängig vom Dashboard. Die Fenster enden zur aktuellen Uhrzeit statt um Mitternacht — Prometheus kennt keine Kalendertage, und ein auf Mitternacht gerundeter Bereich würde den laufenden Tag ganz auslassen.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "gridPos": {"h": 8, "w": 16, "x": 0, "y": 13},
           "id": 7,
           "interval": "1d",
-          "timeFrom": "14d/d",
+          "timeFrom": "14d",
           "fieldConfig": {
             "defaults": {
               "unit": "kwatth",

@@ -7,6 +7,19 @@ commonAnnotations:
 generators:
   - kustomize-secret-generator.yaml
 
+# Generated rather than declared as plain ConfigMaps so that kustomize appends a
+# content hash to the name and rewrites the Deployment references. Neither
+# mosquitto nor mqtt2prometheus re-reads its config at runtime, so without the
+# hash a config change would update the projected volume on disk and leave both
+# processes running the configuration they read at startup.
+configMapGenerator:
+  - name: mosquitto-config
+    files:
+      - mosquitto.conf
+  - name: mqtt2prometheus-config
+    files:
+      - config.yaml=mqtt2prometheus.config.yaml
+
 resources:
   - k8s.namespace.yaml
   - k8s.mosquitto.yaml

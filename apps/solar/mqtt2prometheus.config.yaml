@@ -1,0 +1,198 @@
+# Bridges the per-topic MQTT values published by deye-inverter-mqtt into a
+# Prometheus /metrics endpoint.
+#
+# deye-inverter-mqtt publishes one scalar per topic (not a JSON object), so the
+# exporter runs in metric_per_topic mode: metric_name_regex extracts the topic
+# suffix, which is then matched against the `mqtt_name` entries below, and the
+# raw payload is the value.
+#
+# Topics look like: deye/sun-m160g4/ac/active_power
+#                   \__/ \________/ \____________/
+#                 prefix  deviceid    metricname
+#
+# cache.timeout is deliberately short (5m). The upstream default of 24h would
+# keep serving the last known value long after the bridge died, so a dead
+# inverter would look like a working one reporting stale numbers. With 5m the
+# series simply disappears, which is what the SolarInverterMetricsMissing alert
+# in apps/monitoring/k8s.prometheusrule.energy.yaml keys off.
+
+mqtt:
+  server: tcp://mosquitto.solar.svc.cluster.local:1883
+  topic_path: deye/#
+  device_id_regex: "deye/(?P<deviceid>[^/]+)/.*"
+  metric_per_topic_config:
+    metric_name_regex: "deye/[^/]+/(?P<metricname>.+)"
+  qos: 0
+cache:
+  timeout: 5m
+metrics:
+  # --- AC side ---------------------------------------------------------
+  - prom_name: deye_ac_active_power_watts
+    mqtt_name: ac/active_power
+    help: "AC active power fed into the grid"
+    type: gauge
+  - prom_name: deye_ac_voltage_volts
+    mqtt_name: ac/l1/voltage
+    help: "Grid voltage at the inverter output"
+    type: gauge
+  - prom_name: deye_ac_current_amperes
+    mqtt_name: ac/l1/current
+    help: "Grid current at the inverter output"
+    type: gauge
+  - prom_name: deye_ac_frequency_hertz
+    mqtt_name: ac/freq
+    help: "Grid frequency measured by the inverter"
+    type: gauge
+
+  # --- Energy counters -------------------------------------------------
+  # Monotonic readings exposed as gauges: increase() applies counter-reset
+  # handling regardless of the declared type, and day_energy resets to 0 at
+  # midnight by design, so counter semantics would be wrong for it anyway.
+  - prom_name: deye_production_today_kwh
+    mqtt_name: day_energy
+    help: "Energy produced since midnight"
+    type: gauge
+  - prom_name: deye_production_total_kwh
+    mqtt_name: total_energy
+    help: "Lifetime energy produced"
+    type: gauge
+
+  # --- Inverter health -------------------------------------------------
+  - prom_name: deye_radiator_temperature_celsius
+    mqtt_name: radiator_temp
+    help: "Inverter heatsink temperature"
+    type: gauge
+  - prom_name: deye_uptime_minutes
+    mqtt_name: uptime
+    help: "Minutes since the inverter last started"
+    type: gauge
+  - prom_name: deye_operating_power_watts
+    mqtt_name: operating_power
+    help: "Power consumed by the inverter itself"
+    type: gauge
+  - prom_name: deye_dc_total_power_watts
+    mqtt_name: dc/total_power
+    help: "Total DC power across all strings"
+    type: gauge
+  # Deliberately `logger_status`, not the `status` availability topic:
+  # `status` is the MQTT last-will, published once on connect and then only
+  # by the broker on an unclean disconnect. Against the 5m cache above that
+  # metric would appear for five minutes after every reconnect and then
+  # vanish. `logger_status` is republished on every poll cycle, so it stays
+  # fresh and actually reports whether the logger answered.
+  #
+  # error_value belongs INSIDE string_value_mapping in v0.1.7; it only
+  # moved up to the metric level on upstream master, which is not what
+  # this image is built from.
+  - prom_name: deye_logger_online
+    mqtt_name: logger_status
+    help: "1 when the logger answered the most recent poll"
+    type: gauge
+    string_value_mapping:
+      error_value: 0
+      map:
+        online: 1
+        offline: 0
+
+  # --- Per-string DC values --------------------------------------------
+  # Four MPPT inputs, distinguished by the `string` label rather than by
+  # four differently named metrics, so a single panel can graph them all.
+  - prom_name: deye_dc_voltage_volts
+    mqtt_name: dc/pv1/voltage
+    help: "DC voltage of one MPPT string"
+    type: gauge
+    const_labels:
+      string: pv1
+  - prom_name: deye_dc_voltage_volts
+    mqtt_name: dc/pv2/voltage
+    help: "DC voltage of one MPPT string"
+    type: gauge
+    const_labels:
+      string: pv2
+  - prom_name: deye_dc_voltage_volts
+    mqtt_name: dc/pv3/voltage
+    help: "DC voltage of one MPPT string"
+    type: gauge
+    const_labels:
+      string: pv3
+  - prom_name: deye_dc_voltage_volts
+    mqtt_name: dc/pv4/voltage
+    help: "DC voltage of one MPPT string"
+    type: gauge
+    const_labels:
+      string: pv4
+
+  - prom_name: deye_dc_current_amperes
+    mqtt_name: dc/pv1/current
+    help: "DC current of one MPPT string"
+    type: gauge
+    const_labels:
+      string: pv1
+  - prom_name: deye_dc_current_amperes
+    mqtt_name: dc/pv2/current
+    help: "DC current of one MPPT string"
+    type: gauge
+    const_labels:
+      string: pv2
+  - prom_name: deye_dc_current_amperes
+    mqtt_name: dc/pv3/current
+    help: "DC current of one MPPT string"
+    type: gauge
+    const_labels:
+      string: pv3
+  - prom_name: deye_dc_current_amperes
+    mqtt_name: dc/pv4/current
+    help: "DC current of one MPPT string"
+    type: gauge
+    const_labels:
+      string: pv4
+
+  - prom_name: deye_dc_power_watts
+    mqtt_name: dc/pv1/power
+    help: "DC power of one MPPT string"
+    type: gauge
+    const_labels:
+      string: pv1
+  - prom_name: deye_dc_power_watts
+    mqtt_name: dc/pv2/power
+    help: "DC power of one MPPT string"
+    type: gauge
+    const_labels:
+      string: pv2
+  - prom_name: deye_dc_power_watts
+    mqtt_name: dc/pv3/power
+    help: "DC power of one MPPT string"
+    type: gauge
+    const_labels:
+      string: pv3
+  - prom_name: deye_dc_power_watts
+    mqtt_name: dc/pv4/power
+    help: "DC power of one MPPT string"
+    type: gauge
+    const_labels:
+      string: pv4
+
+  - prom_name: deye_dc_production_today_kwh
+    mqtt_name: dc/pv1/day_energy
+    help: "Energy produced by one MPPT string since midnight"
+    type: gauge
+    const_labels:
+      string: pv1
+  - prom_name: deye_dc_production_today_kwh
+    mqtt_name: dc/pv2/day_energy
+    help: "Energy produced by one MPPT string since midnight"
+    type: gauge
+    const_labels:
+      string: pv2
+  - prom_name: deye_dc_production_today_kwh
+    mqtt_name: dc/pv3/day_energy
+    help: "Energy produced by one MPPT string since midnight"
+    type: gauge
+    const_labels:
+      string: pv3
+  - prom_name: deye_dc_production_today_kwh
+    mqtt_name: dc/pv4/day_energy
+    help: "Energy produced by one MPPT string since midnight"
+    type: gauge
+    const_labels:
+      string: pv4
