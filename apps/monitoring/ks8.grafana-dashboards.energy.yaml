@@ -6,10 +6,14 @@
 # Derived series come from apps/monitoring/k8s.prometheusrule.energy.yaml.
 #
 # Series colours are fixed rather than themed because a Grafana dashboard JSON
-# carries one palette for both light and dark. #CF7526 (generation) and #4C7EE0
-# (grid import) were validated to pass the lightness band, chroma floor, CVD
-# separation and contrast checks against both surfaces; the four-string palette
-# below likewise, with the yellow relying on the table legend for label relief.
+# carries one palette for both light and dark. #CF7526 (generation), #4C7EE0
+# (grid) and #199e70 (export) were validated together to pass the lightness
+# band, chroma floor, CVD separation and contrast checks against both surfaces;
+# the four-string palette below likewise, with the yellow relying on the table
+# legend for label relief.
+#
+# The grid series is SIGNED: positive while importing, negative while exporting.
+# Neither power panel may set `min: 0` or the export half is clipped away.
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -60,8 +64,8 @@ data:
         },
         {
           "type": "stat",
-          "title": "Netzbezug",
-          "description": "Aktuell aus dem öffentlichen Netz bezogene Leistung, gemessen von der FRITZ!Smart Energy.",
+          "title": "Netzleistung",
+          "description": "Leistung am Netzanschluss, gemessen von der FRITZ!Smart Energy 250. Positiv = Bezug aus dem Netz, negativ = Einspeisung des PV-Überschusses. Die Steckdose misst vorzeichenbehaftet.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "gridPos": {"h": 4, "w": 6, "x": 6, "y": 0},
           "id": 2,
@@ -85,7 +89,7 @@ data:
             {
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
               "expr": "home:power_grid_import:watts",
-              "legendFormat": "Netzbezug",
+              "legendFormat": "Netz",
               "refId": "A"
             }
           ]
@@ -93,7 +97,7 @@ data:
         {
           "type": "stat",
           "title": "Gesamtverbrauch",
-          "description": "Netzbezug plus Erzeugung. Bei Einspeisung ins Netz überschätzt dieser Wert den echten Verbrauch — siehe Plausibilitätscheck weiter unten.",
+          "description": "Netzleistung plus Erzeugung. Weil die Netzmessung vorzeichenbehaftet ist, stimmt das in beide Richtungen: bei Einspeisung ist der Netzwert negativ, sodass die Summe die tatsächliche Hauslast ergibt.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "gridPos": {"h": 4, "w": 6, "x": 12, "y": 0},
           "id": 3,
@@ -157,7 +161,7 @@ data:
         },
         {
           "type": "timeseries",
-          "title": "Leistung: Erzeugung und Netzbezug (gestapelt)",
+          "title": "Leistung: Erzeugung und Netz (gestapelt)",
           "description": "Die Stapelhöhe ist der Gesamtverbrauch, der gelbe Anteil die Eigendeckung.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "gridPos": {"h": 9, "w": 16, "x": 0, "y": 4},
@@ -166,7 +170,6 @@ data:
             "defaults": {
               "unit": "watt",
               "decimals": 0,
-              "min": 0,
               "custom": {
                 "drawStyle": "line",
                 "lineInterpolation": "smooth",
@@ -183,7 +186,7 @@ data:
                 "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#CF7526"}}]
               },
               {
-                "matcher": {"id": "byName", "options": "Netzbezug"},
+                "matcher": {"id": "byName", "options": "Netz"},
                 "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#4C7EE0"}}]
               }
             ]
@@ -202,7 +205,7 @@ data:
             {
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
               "expr": "home:power_grid_import:watts",
-              "legendFormat": "Netzbezug",
+              "legendFormat": "Netz",
               "refId": "B"
             }
           ]
@@ -249,7 +252,7 @@ data:
           "title": "Energie pro Tag",
           "description": "Ein Balken je Kalendertag der letzten 14 Tage. PV-Ertrag stammt aus der Tageszählung des Wechselrichters selbst (max_over_time), nicht aus dem rekonstruierten Zuwachs des Lebenszählers: nachts verschwinden die deye-Serien, weil der Logger abschaltet, und jede Messlücke am Tag würde den Zuwachs zu klein ausfallen lassen. Netzbezug muss den Zuwachs verwenden — die FRITZ-Steckdose führt keinen Tageszähler, läuft dafür aber durchgehend. Zeigt erst ab dem ersten abgeschlossenen Tag etwas, weil Grafana Range-Queries auf Vielfache des Schritts ausrichtet, bei Schritt 1d also auf Mitternacht.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-          "gridPos": {"h": 8, "w": 16, "x": 0, "y": 13},
+          "gridPos": {"h": 12, "w": 16, "x": 0, "y": 13},
           "id": 7,
           "interval": "1d",
           "timeFrom": "14d",
@@ -276,6 +279,10 @@ data:
               {
                 "matcher": {"id": "byName", "options": "Netzbezug"},
                 "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#4C7EE0"}}]
+              },
+              {
+                "matcher": {"id": "byName", "options": "Einspeisung"},
+                "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#199e70"}}]
               }
             ]
           },
@@ -299,6 +306,14 @@ data:
               "interval": "1d",
               "legendFormat": "Netzbezug",
               "refId": "B"
+            },
+            {
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "expr": "sum_over_time(home:power_export:watts[1d:1m]) / 60 / 1000",
+              "format": "time_series",
+              "interval": "1d",
+              "legendFormat": "Einspeisung",
+              "refId": "C"
             }
           ]
         },
@@ -335,9 +350,43 @@ data:
         },
         {
           "type": "stat",
-          "title": "Ertrag gesamt",
+          "title": "Überschuss heute",
+          "description": "Seit Mitternacht ins Netz eingespeiste Energie — minutenweise Integration der negativen Netzleistung. Eigener Zeitbereich \"now/d\", in Grafana dokumentiert als \"the day so far\", unabhängig vom Dashboard-Zeitraum.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "gridPos": {"h": 4, "w": 8, "x": 16, "y": 17},
+          "id": 17,
+          "timeFrom": "now/d",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "kwatth",
+              "decimals": 2,
+              "color": {"mode": "fixed", "fixedColor": "#199e70"},
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "textMode": "auto",
+            "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}
+          },
+          "targets": [
+            {
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "expr": "sum_over_time(home:power_export:watts[${__range_s}s:1m]) / 60 / 1000",
+              "instant": true,
+              "legendFormat": "Überschuss",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Ertrag gesamt",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "gridPos": {"h": 4, "w": 8, "x": 16, "y": 21},
           "id": 9,
           "fieldConfig": {
             "defaults": {
@@ -366,16 +415,15 @@ data:
         },
         {
           "type": "timeseries",
-          "title": "Plausibilitätscheck: Netzbezug gegen Erzeugung",
-          "description": "Nicht gestapelt. Die FRITZ-Steckdose misst nur Beträge, keine Richtung: steigt der Netzbezug gemeinsam mit der Erzeugung statt zu fallen, wird gerade ins Netz eingespeist und Gesamtverbrauch sowie Autarkie sind in dieser Phase zu hoch.",
+          "title": "Netzleistung gegen Erzeugung",
+          "description": "Nicht gestapelt, direkt übereinandergelegt. Fällt die Netzkurve unter null, speist die Anlage ein — die Fläche unterhalb der Achse ist der Überschuss. Ein früherer Text behauptete hier, Einspeisung sei nicht messbar; das war falsch, die Steckdose misst vorzeichenbehaftet.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-          "gridPos": {"h": 8, "w": 24, "x": 0, "y": 21},
+          "gridPos": {"h": 8, "w": 24, "x": 0, "y": 25},
           "id": 10,
           "fieldConfig": {
             "defaults": {
               "unit": "watt",
               "decimals": 0,
-              "min": 0,
               "custom": {
                 "drawStyle": "line",
                 "lineInterpolation": "smooth",
@@ -390,7 +438,7 @@ data:
                 "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#CF7526"}}]
               },
               {
-                "matcher": {"id": "byName", "options": "Netzbezug"},
+                "matcher": {"id": "byName", "options": "Netz"},
                 "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#4C7EE0"}}]
               }
             ]
@@ -409,7 +457,7 @@ data:
             {
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
               "expr": "home:power_grid_import:watts",
-              "legendFormat": "Netzbezug",
+              "legendFormat": "Netz",
               "refId": "B"
             }
           ]
@@ -418,7 +466,7 @@ data:
           "type": "row",
           "title": "Anlagengesundheit",
           "collapsed": true,
-          "gridPos": {"h": 1, "w": 24, "x": 0, "y": 29},
+          "gridPos": {"h": 1, "w": 24, "x": 0, "y": 33},
           "id": 100,
           "panels": [
             {
@@ -426,7 +474,7 @@ data:
               "title": "DC-Leistung je String",
               "description": "Ein dauerhaft abweichender String deutet auf Verschattung oder ein defektes Modul.",
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "gridPos": {"h": 8, "w": 12, "x": 0, "y": 30},
+              "gridPos": {"h": 8, "w": 12, "x": 0, "y": 34},
               "id": 11,
               "fieldConfig": {
                 "defaults": {
@@ -465,7 +513,7 @@ data:
               "type": "timeseries",
               "title": "DC-Spannung je String",
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "gridPos": {"h": 8, "w": 12, "x": 12, "y": 30},
+              "gridPos": {"h": 8, "w": 12, "x": 12, "y": 34},
               "id": 12,
               "fieldConfig": {
                 "defaults": {
@@ -504,7 +552,7 @@ data:
               "title": "Netzspannung am Wechselrichter",
               "description": "Bei zu hoher Netzspannung regelt der Wechselrichter ab — die häufigste Erklärung für unerwartet geringe Erzeugung.",
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "gridPos": {"h": 7, "w": 8, "x": 0, "y": 38},
+              "gridPos": {"h": 7, "w": 8, "x": 0, "y": 42},
               "id": 13,
               "fieldConfig": {
                 "defaults": {
@@ -538,7 +586,7 @@ data:
               "type": "timeseries",
               "title": "Netzfrequenz",
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "gridPos": {"h": 7, "w": 8, "x": 8, "y": 38},
+              "gridPos": {"h": 7, "w": 8, "x": 8, "y": 42},
               "id": 14,
               "fieldConfig": {
                 "defaults": {
@@ -572,7 +620,7 @@ data:
               "type": "timeseries",
               "title": "Wechselrichtertemperatur",
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "gridPos": {"h": 7, "w": 8, "x": 16, "y": 38},
+              "gridPos": {"h": 7, "w": 8, "x": 16, "y": 42},
               "id": 15,
               "fieldConfig": {
                 "defaults": {
@@ -607,7 +655,7 @@ data:
               "title": "Datenquellen",
               "description": "Nachts meldet sich der Logger regulär ab — ein Wert von 0 ist dann kein Fehler. Die beiden Exporter müssen dagegen durchgehend auf 1 stehen.",
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "gridPos": {"h": 5, "w": 24, "x": 0, "y": 45},
+              "gridPos": {"h": 5, "w": 24, "x": 0, "y": 49},
               "id": 16,
               "fieldConfig": {
                 "defaults": {

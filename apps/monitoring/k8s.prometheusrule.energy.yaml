@@ -1,15 +1,19 @@
 # Derived series for the energy dashboard.
 #
-# Measurement topology: the FRITZ!Smart Energy plug reports power drawn from
-# the public grid, i.e. what is left after PV generation has already been
-# consumed. Total household load is therefore grid import PLUS generation, not
-# minus.
+# Measurement topology: the FRITZ!Smart Energy 250 reports **signed** power —
+# positive while the house draws from the grid, negative while PV surplus is
+# exported into it. Measured, not assumed: over two days 122 of 1672 samples
+# were negative, minimum -202 W.
 #
-# Known limitation: the plug measures magnitude, not direction. When PV output
-# exceeds household load the surplus is exported but still reads as positive
-# draw, so total load and self-sufficiency are overstated during those periods.
-# This is deliberately not corrected here — the dashboard's "Plausibilitäts-
-# check" row makes such periods visible instead.
+# An earlier version of this file claimed the plug measured magnitude only and
+# that total load and self-sufficiency were overstated during export. That was
+# wrong and never verified. Because the grid value carries a sign,
+# grid + generation is the true household load in both directions and needs no
+# correction.
+#
+# `home:power_grid_import:watts` keeps its name for history continuity even
+# though it is signed; `home:power_export:watts` below isolates the exported
+# share as a positive number.
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
@@ -40,11 +44,24 @@ spec:
         - record: home:power_total:watts
           expr: home:power_grid_import:watts + home:power_generation:watts
 
+        # Exported surplus, as a positive number. Zero whenever the house is
+        # importing.
+        - record: home:power_export:watts
+          expr: clamp_min(-home:power_grid_import:watts, 0)
+
         # clamp_min guards the division when the house draws nothing at all.
+        # clamp_max caps the result at 1: you cannot cover more than 100% of
+        # your own consumption. Without the cap the ratio runs away as load
+        # approaches zero — 537% measured over two days, and 105% is already
+        # visible on an ordinary sunny afternoon. Whatever exceeds 100% is not
+        # self-sufficiency but surplus, and belongs in home:power_export:watts.
         - record: home:autarky:ratio
           expr: |
-            home:power_generation:watts
-              / clamp_min(home:power_total:watts, 1)
+            clamp_max(
+              home:power_generation:watts
+                / clamp_min(home:power_total:watts, 1),
+              1
+            )
 
     - name: energy.alerts
       rules:
