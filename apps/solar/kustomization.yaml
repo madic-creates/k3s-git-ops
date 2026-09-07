@@ -19,11 +19,17 @@ configMapGenerator:
   - name: mqtt2prometheus-config
     files:
       - config.yaml=mqtt2prometheus.config.yaml
+  # Same reasoning: the exporter reads its script once, at process start.
+  - name: openmeteo-exporter-script
+    files:
+      - openmeteo-exporter.py
 
 resources:
   - k8s.namespace.yaml
   - k8s.mosquitto.yaml
   - k8s.deye-inverter-mqtt.yaml
   - k8s.mqtt2prometheus.yaml
+  - k8s.openmeteo-exporter.yaml
   - k8s.np.solar-default-deny.yaml
   - k8s.np.solar.yaml
+  - k8s.np.openmeteo-exporter.yaml

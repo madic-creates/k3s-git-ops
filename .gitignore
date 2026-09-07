@@ -23,3 +23,18 @@ CLAUDE.local.md
 apps/argo-cd-apps/argocd.secret*.yaml
 !apps/argo-cd-apps/argocd.secret*.enc.yaml
 .todos/
+.sidecar/
+.sidecar-agent
+.sidecar-task
+.sidecar-pr
+.sidecar-start.sh
+.sidecar-base
+.td-root
+
+# Contains a live Grafana service-account token and is handed over directly.
+# The repository is public and no pre-commit hook recognises a Grafana token.
+docs/energy-metrics-api.md
+
+# Python bytecode from running exporter scripts locally.
+__pycache__/
+*.pyc

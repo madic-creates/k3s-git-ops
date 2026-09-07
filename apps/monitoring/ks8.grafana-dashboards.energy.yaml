@@ -1,8 +1,10 @@
 # Grafana dashboard for household electricity consumption and PV generation.
 # Discovered automatically by the Grafana sidecar via the grafana_dashboard label.
 #
-# Data sources: fritzbox-exporter (grid import, via the FRITZ!Smart Energy plug)
-# and mqtt2prometheus in the solar namespace (Deye SUN-M160G4 micro inverter).
+# Data sources: fritzbox-exporter (grid import, via the FRITZ!Smart Energy plug),
+# mqtt2prometheus in the solar namespace (Deye SUN-M160G4 micro inverter) and
+# openmeteo-exporter, also in solar, which supplies the irradiance reference the
+# expected-yield comparison is built on.
 # Derived series come from apps/monitoring/k8s.prometheusrule.energy.yaml.
 #
 # Series colours are fixed rather than themed because a Grafana dashboard JSON
@@ -463,10 +465,105 @@ data:
           ]
         },
         {
+          "type": "timeseries",
+          "title": "Erzeugung gegen Erwartung",
+          "description": "Die gestrichelte Linie ist die aus der Sonneneinstrahlung modellierte Erwartung, nicht eine zweite Messung. Da das Modell die Bewölkung bereits enthält, bedeutet ein trüber Tag niedrigere Erwartung UND niedrigere Erzeugung — die Kurven bleiben beieinander. Läuft die Erzeugung dauerhaft darunter, liegt es an der Anlage (Verschmutzung, Schnee, Verschattung, abgeschalteter String), nicht am Wetter.",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "gridPos": {"h": 9, "w": 18, "x": 0, "y": 33},
+          "id": 18,
+          "fieldConfig": {
+            "defaults": {
+              "unit": "watt",
+              "decimals": 0,
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 2,
+                "fillOpacity": 0,
+                "showPoints": "never"
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {"id": "byName", "options": "Erzeugung"},
+                "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#CF7526"}}]
+              },
+              {
+                "matcher": {"id": "byName", "options": "Erwartung"},
+                "properties": [
+                  {"id": "color", "value": {"mode": "fixed", "fixedColor": "#CF7526"}},
+                  {"id": "custom.lineWidth", "value": 1},
+                  {"id": "custom.lineStyle", "value": {"fill": "dash", "dash": [10, 10]}}
+                ]
+              }
+            ]
+          },
+          "options": {
+            "legend": {"displayMode": "list", "placement": "bottom", "showLegend": true},
+            "tooltip": {"mode": "multi", "sort": "desc"}
+          },
+          "targets": [
+            {
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "expr": "home:power_generation:watts",
+              "legendFormat": "Erzeugung",
+              "refId": "A"
+            },
+            {
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "expr": "solar:expected_power:watts",
+              "legendFormat": "Erwartung",
+              "refId": "B"
+            }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Anlagenleistung",
+          "description": "Erzeugung geteilt durch das physikalische Maximum aus der Einstrahlung. Der Referenzwert liegt bei rund 68 %; er ist aus einem einzigen Tag kalibriert und noch vorläufig. Nachts absichtlich ohne Wert statt 0 %, weil ein Quotient ohne Sonne nichts aussagt.",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "gridPos": {"h": 9, "w": 6, "x": 18, "y": 33},
+          "id": 19,
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "decimals": 0,
+              "min": 0,
+              "max": 100,
+              "color": {"mode": "thresholds"},
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {"color": "red", "value": null},
+                  {"color": "orange", "value": 40},
+                  {"color": "green", "value": 55}
+                ]
+              },
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "textMode": "auto",
+            "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}
+          },
+          "targets": [
+            {
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "expr": "(solar:performance_ratio * 100) and (solar:ideal_power:watts > 100)",
+              "legendFormat": "Leistung",
+              "refId": "A"
+            }
+          ]
+        },
+        {
           "type": "row",
           "title": "Anlagengesundheit",
           "collapsed": true,
-          "gridPos": {"h": 1, "w": 24, "x": 0, "y": 33},
+          "gridPos": {"h": 1, "w": 24, "x": 0, "y": 42},
           "id": 100,
           "panels": [
             {
@@ -474,7 +571,7 @@ data:
               "title": "DC-Leistung je String",
               "description": "Ein dauerhaft abweichender String deutet auf Verschattung oder ein defektes Modul.",
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "gridPos": {"h": 8, "w": 12, "x": 0, "y": 34},
+              "gridPos": {"h": 8, "w": 12, "x": 0, "y": 43},
               "id": 11,
               "fieldConfig": {
                 "defaults": {
@@ -513,7 +610,7 @@ data:
               "type": "timeseries",
               "title": "DC-Spannung je String",
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "gridPos": {"h": 8, "w": 12, "x": 12, "y": 34},
+              "gridPos": {"h": 8, "w": 12, "x": 12, "y": 43},
               "id": 12,
               "fieldConfig": {
                 "defaults": {
@@ -549,10 +646,44 @@ data:
             },
             {
               "type": "timeseries",
+              "title": "Einstrahlung je String",
+              "description": "Modellierte Einstrahlung auf die Ebene des jeweiligen Strings. pv1 zeigt nach Nordosten und liegt vormittags vorn, pv2 nach Südwesten und nachmittags — ein String weit unter dem anderen ist daher zur falschen Tageszeit normal. Diese Kurven sind die Referenz für die DC-Leistung darüber.",
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "gridPos": {"h": 8, "w": 24, "x": 0, "y": 51},
+              "id": 20,
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "radiationIrradiance",
+                  "decimals": 0,
+                  "custom": {
+                    "drawStyle": "line",
+                    "lineInterpolation": "smooth",
+                    "lineWidth": 2,
+                    "fillOpacity": 0,
+                    "showPoints": "never"
+                  }
+                },
+                "overrides": []
+              },
+              "options": {
+                "legend": {"displayMode": "list", "placement": "bottom", "showLegend": true},
+                "tooltip": {"mode": "multi", "sort": "desc"}
+              },
+              "targets": [
+                {
+                  "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+                  "expr": "max by (string) (solar_irradiance_tilted_wm2)",
+                  "legendFormat": "{{string}}",
+                  "refId": "A"
+                }
+              ]
+            },
+            {
+              "type": "timeseries",
               "title": "Netzspannung am Wechselrichter",
               "description": "Bei zu hoher Netzspannung regelt der Wechselrichter ab — die häufigste Erklärung für unerwartet geringe Erzeugung.",
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "gridPos": {"h": 7, "w": 8, "x": 0, "y": 42},
+              "gridPos": {"h": 7, "w": 8, "x": 0, "y": 59},
               "id": 13,
               "fieldConfig": {
                 "defaults": {
@@ -586,7 +717,7 @@ data:
               "type": "timeseries",
               "title": "Netzfrequenz",
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "gridPos": {"h": 7, "w": 8, "x": 8, "y": 42},
+              "gridPos": {"h": 7, "w": 8, "x": 8, "y": 59},
               "id": 14,
               "fieldConfig": {
                 "defaults": {
@@ -620,7 +751,7 @@ data:
               "type": "timeseries",
               "title": "Wechselrichtertemperatur",
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "gridPos": {"h": 7, "w": 8, "x": 16, "y": 42},
+              "gridPos": {"h": 7, "w": 8, "x": 16, "y": 59},
               "id": 15,
               "fieldConfig": {
                 "defaults": {
@@ -655,7 +786,7 @@ data:
               "title": "Datenquellen",
               "description": "Nachts meldet sich der Logger regulär ab — ein Wert von 0 ist dann kein Fehler. Die beiden Exporter müssen dagegen durchgehend auf 1 stehen.",
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "gridPos": {"h": 5, "w": 24, "x": 0, "y": 49},
+              "gridPos": {"h": 5, "w": 24, "x": 0, "y": 66},
               "id": 16,
               "fieldConfig": {
                 "defaults": {
@@ -703,6 +834,13 @@ data:
                   "instant": true,
                   "legendFormat": "FRITZ!Box-Exporter",
                   "refId": "C"
+                },
+                {
+                  "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+                  "expr": "max(up{job=\"openmeteo-exporter\"})",
+                  "instant": true,
+                  "legendFormat": "Einstrahlungs-Exporter",
+                  "refId": "D"
                 }
               ]
             }

@@ -1,0 +1,149 @@
+---
+# Open-Meteo irradiance exporter.
+#
+# Supplies the reference against which actual PV output is judged. It runs a
+# stock python image with the exporter script mounted from a ConfigMap rather
+# than a purpose-built image: the script is standard-library only, so there is
+# nothing to build, publish or keep updated for ~250 lines.
+#
+# An exporter Deployment rather than a CronJob pushing to the pushgateway,
+# because the pushgateway keeps serving its last value forever. A dead job
+# would show yesterday's irradiance as "expected now" and make a healthy array
+# look broken -- the same reason the pushgateway was rejected for the inverter,
+# and worse here, since judging health is this series' entire purpose.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openmeteo-exporter
+  namespace: solar
+  labels:
+    app.kubernetes.io/name: openmeteo-exporter
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: openmeteo-exporter
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: openmeteo-exporter
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: openmeteo-exporter
+          image: python:3.13-alpine
+          command:
+            - python3
+            - /app/openmeteo-exporter.py
+          env:
+            # The site coordinates identify the operator's home address and
+            # come from the SOPS-encrypted Secret. They must never be logged
+            # or turned into a Prometheus label.
+            - name: OPENMETEO_LATITUDE
+              valueFrom:
+                secretKeyRef:
+                  name: openmeteo-site
+                  key: latitude
+            - name: OPENMETEO_LONGITUDE
+              valueFrom:
+                secretKeyRef:
+                  name: openmeteo-site
+                  key: longitude
+            # The API's native granularity is 900 s; polling faster than the
+            # data changes would only add load without adding information.
+            - name: OPENMETEO_POLL_INTERVAL
+              value: "900"
+            - name: OPENMETEO_LISTEN_PORT
+              value: "9779"
+            # The script is mounted read-only from a ConfigMap and the root
+            # filesystem is read-only; keep Python from attempting bytecode
+            # writes, and keep its output unbuffered so logs are not lost.
+            - name: PYTHONDONTWRITEBYTECODE
+              value: "1"
+            - name: PYTHONUNBUFFERED
+              value: "1"
+          ports:
+            - containerPort: 9779
+              name: metrics
+              protocol: TCP
+          volumeMounts:
+            - name: script
+              mountPath: /app
+              readOnly: true
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          # An HTTP probe here, unlike fritzbox-exporter's deliberate TCP one:
+          # serving is a pure in-memory read and costs nothing, and /-/ready
+          # answers 503 until the first poll succeeds, so the pod does not go
+          # ready while it has no data to serve.
+          readinessProbe:
+            httpGet:
+              path: /-/ready
+              port: metrics
+            initialDelaySeconds: 5
+            periodSeconds: 30
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: metrics
+            initialDelaySeconds: 15
+            periodSeconds: 60
+      volumes:
+        - name: script
+          configMap:
+            name: openmeteo-exporter-script
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openmeteo-exporter
+  namespace: solar
+  labels:
+    app.kubernetes.io/name: openmeteo-exporter
+spec:
+  selector:
+    app.kubernetes.io/name: openmeteo-exporter
+  ports:
+    - name: metrics
+      port: 9779
+      targetPort: metrics
+      protocol: TCP
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: openmeteo-exporter
+  namespace: solar
+  labels:
+    app.kubernetes.io/name: openmeteo-exporter
+spec:
+  endpoints:
+    # Scraping never triggers an API call -- it reads the cached reading -- so
+    # the interval is deliberately unrelated to the 15-minute poll interval.
+    - interval: 60s
+      scrapeTimeout: 10s
+      path: /metrics
+      port: metrics
+      scheme: http
+  namespaceSelector:
+    matchNames:
+      - solar
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: openmeteo-exporter

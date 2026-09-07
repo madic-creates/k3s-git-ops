@@ -1,0 +1,63 @@
+---
+# Network policy for the Open-Meteo irradiance exporter.
+#
+# This is the FIRST internet-dependent source in the energy stack. Every other
+# one -- the inverter's logger stick, the FRITZ!Box -- is LAN-local and reached
+# via toCIDR. This pod needs egress to a public API instead.
+#
+# The policy selects only this exporter, so the DNS handling below cannot
+# affect deye-inverter-mqtt or mqtt2prometheus, which keep the plain port-53
+# rule they have in k8s.np.solar.yaml.
+#
+# NOTE ON toFQDNs: Cilium can only enforce a toFQDNs rule when the DNS request
+# passes through its DNS proxy, which requires the `rules.dns` block on the
+# port-53 egress below. No other policy in this repository has such a block --
+# the existing toFQDNs entries (cert-manager, CoreDNS, pihole) are backstopped
+# by toCIDRSet rules covering the same addresses, so they may never have been
+# load-bearing. If egress does not come up after deployment, verify with
+#   hubble observe --namespace solar
+# and fall back to `toEntities: [world]` on port 443, the pattern proven in
+# apps/epicgames-freegames.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: openmeteo-exporter
+  namespace: solar
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: openmeteo-exporter
+  ingress:
+  # Allow Prometheus to scrape metrics
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: prometheus
+        k8s:io.kubernetes.pod.namespace: monitoring
+    toPorts:
+    - ports:
+      - port: "9779"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS, through Cilium's DNS proxy so that the
+  # toFQDNs rule below can learn the resolved address.
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+      rules:
+        dns:
+          - matchName: api.open-meteo.com
+  # Allow HTTPS to the Open-Meteo API only
+  - toFQDNs:
+    - matchName: api.open-meteo.com
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP

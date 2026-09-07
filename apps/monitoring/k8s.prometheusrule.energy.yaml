@@ -66,6 +66,55 @@ spec:
               1
             )
 
+        # --- Solar irradiance reference ---------------------------------
+        #
+        # Open-Meteo supplies the irradiance actually falling on each string,
+        # which turns raw generation into a judgeable number: 250 W at 15:00
+        # is either an overcast afternoon or a failing array, and the DC
+        # per-string values cannot tell those apart when both strings are
+        # affected equally (soiling, snow, curtailment, degradation).
+        #
+        # The two strings face nearly opposite directions -- pv1 north-east,
+        # pv2 south-west, both at 40 degrees -- so they get separate
+        # irradiance series and a single averaged orientation would
+        # misrepresent both. Peak power is exported as a metric rather than
+        # written here as a literal, so adding a third panel later needs no
+        # rule change.
+        #
+        # max by (string) is not optional: every exporter pod restart creates
+        # a new series, and a query spanning a day would otherwise return one
+        # series per pod that ever existed in that window.
+        - record: solar:ideal_power:watts
+          expr: |
+            sum(
+              max by (string) (solar_irradiance_tilted_wm2) / 1000
+                * on (string) group_left
+                  max by (string) (solar_array_peak_power_watts)
+            )
+
+        # The single performance-ratio constant in the whole design.
+        #
+        # PROVISIONAL. Calibrated from one day (2026-09-07): 4.56 kWh modelled
+        # against roughly 3.1 kWh actually generated. That is a believable
+        # figure for a fixed, steeply mounted split-orientation array, but one
+        # day is not evidence -- revisit after several clear days and correct
+        # it here. It absorbs everything not modelled explicitly: temperature
+        # coefficient, angle-of-incidence losses, shading, inverter efficiency.
+        - record: solar:expected_power:watts
+          expr: solar:ideal_power:watts * 0.68
+
+        # Why this ratio is a health signal rather than a weather signal:
+        # Open-Meteo's tilted irradiance already accounts for cloud cover
+        # (measured: 448 W/m2 at 4% cloud, heavily suppressed at 100%), so an
+        # overcast day lowers numerator and denominator together and the ratio
+        # stays roughly flat. A DROP therefore points at the array, not the sky.
+        #
+        # clamp_min guards the division at night, when the ceiling is zero.
+        - record: solar:performance_ratio
+          expr: |
+            home:power_generation:watts
+              / clamp_min(solar:ideal_power:watts, 1)
+
     - name: energy.alerts
       rules:
         # Both exporters are alerted on `up`, not on metric absence: the
@@ -103,3 +152,52 @@ spec:
           annotations:
             summary: "Grid import metric is missing while the FRITZ!Box exporter is up"
             description: "No fritz_ha_multimeter_power_W series matches the AIN pinned in apps/monitoring/k8s.prometheusrule.energy.yaml, but the exporter is scraping fine. The smart plug was most likely re-paired and now has a different AIN. Until the selector is updated, household total load and self-sufficiency on the energy dashboard show generation only."
+
+        # Deliberately hard to trigger. 0.40 sits between the 0.68 baseline and
+        # the ~0.34 that losing one of two strings would produce. The
+        # ideal_power guard keeps dawn, dusk and deep overcast out, where a
+        # small absolute error produces a wild ratio, and `for: 2h` keeps
+        # passing weather out.
+        #
+        # PROVISIONAL, for the same reason as the 0.68 above: both numbers come
+        # from a single day and must be re-evaluated once a few weeks of
+        # solar:performance_ratio history exists.
+        - alert: SolarArrayUnderperforming
+          expr: |
+            solar:performance_ratio < 0.40
+            and solar:ideal_power:watts > 300
+          for: 2h
+          labels:
+            severity: warning
+          annotations:
+            summary: "PV array is producing far below the irradiance reference"
+            description: "Measured generation has been under 40% of the modelled clear-reference for two hours while irradiance was high. Because the model already accounts for cloud cover, this points at the array rather than the weather: check for soiling, snow, shading, a tripped string or curtailment."
+
+        # Unlike the inverter, this exporter has no legitimate nightly outage,
+        # so `up` may be alerted on with a short window.
+        - alert: SolarIrradianceExporterDown
+          expr: up{job="openmeteo-exporter"} == 0
+          for: 30m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Open-Meteo irradiance exporter is down"
+            description: "openmeteo-exporter in namespace solar has been unreachable for 30 minutes. The expected-yield reference and solar:performance_ratio are missing, so PV underperformance can no longer be detected."
+
+        # Complementary to the alert above, not redundant: that one catches a
+        # dead pod, this one catches a HEALTHY pod that has lost its upstream
+        # and is quietly serving hours-old values. The exporter keeps its last
+        # good reading on purpose so a transient API error does not take the
+        # reference offline -- this is what makes that safe.
+        #
+        # max() because each exporter pod restart creates a new series, and the
+        # abandoned ones would otherwise stay permanently stale and fire.
+        - alert: SolarIrradianceStale
+          expr: |
+            time() - max(solar_openmeteo_last_success_timestamp_seconds) > 3600
+          for: 30m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Irradiance data is stale"
+            description: "The exporter is running but has not completed a successful Open-Meteo poll for over an hour. It is still serving its last good reading, so the expected-yield reference on the energy dashboard is out of date rather than absent. Check egress to api.open-meteo.com."
