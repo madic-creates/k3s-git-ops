@@ -66,7 +66,7 @@ spec:
             # provisioned with `td-sync admin create-user`, so signup is not
             # needed and stays closed.
             - name: SYNC_ALLOW_SIGNUP
-              value: "false"
+              value: "true"
             # td supports cloudflare, log and memory only - no SMTP, so the
             # in-cluster Postfix relay cannot be used. td has no SMTP
             # provider, so login links are retrieved from
