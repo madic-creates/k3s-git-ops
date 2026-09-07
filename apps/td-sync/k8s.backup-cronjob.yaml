@@ -1,0 +1,180 @@
+---
+# Hourly td-sync backup via restic.
+#
+# Co-located with the td-sync pod via podAffinity because the underlying
+# Longhorn PVC is ReadWriteOnce - both pods must run on the same node.
+#
+# The PVC is mounted read-write, unlike the Grafana job: sqlite3 needs write
+# access to the -shm file when opening a WAL database, so a read-only mount
+# fails.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-td-sync
+  namespace: td-sync
+spec:
+  # :35 to stay clear of the Grafana job at :20.
+  schedule: "35 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
+  startingDeadlineSeconds: 3600
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 540
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: backup-td-sync
+            app.kubernetes.io/component: backup
+        spec:
+          automountServiceAccountToken: false
+          restartPolicy: Never
+          # Match td-sync's UID/GID so both the sqlite snapshot and restic can
+          # read the volume without privilege escalation.
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            runAsNonRoot: true
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: td-sync
+                  namespaces:
+                    - td-sync
+                  topologyKey: kubernetes.io/hostname
+          initContainers:
+            # Produce consistent copies of every SQLite database. Copying the
+            # live db/-wal/-shm triplet with restic is not atomic and can yield
+            # an unrestorable snapshot.
+            - name: sqlite-snapshot
+              image: forge.geekbundle.org/madic/td-sync:v0.65.0@sha256:2a06b74325630dcc2ddb63b4b724e8bddbd04a71107e7f2fdf9c740a9e7b2aaa
+              imagePullPolicy: IfNotPresent
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -eu
+                  mkdir -p /snapshot/projects
+                  echo "$(date) snapshotting server.db"
+                  sqlite3 /data/server.db ".backup '/snapshot/server.db'"
+                  for db in /data/projects/*.db; do
+                    [ -e "$db" ] || continue
+                    name=$(basename "$db")
+                    echo "$(date) snapshotting projects/$name"
+                    sqlite3 "$db" ".backup '/snapshot/projects/$name'"
+                  done
+                  echo "$(date) snapshot complete"
+                  ls -la /snapshot /snapshot/projects
+              volumeMounts:
+                - name: td-sync
+                  mountPath: /data
+                  subPath: data
+                - name: snapshot
+                  mountPath: /snapshot
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
+                privileged: false
+          containers:
+            - name: restic
+              image: ghcr.io/madic-creates/container-restic:latest@sha256:5882ed8d36b4381ee2e6a7dad1a0c99f0341653a262209d655c69cee89770e62
+              imagePullPolicy: IfNotPresent
+              command:
+                - /bin/sh
+                - /usr/local/bin/backup.sh
+              env:
+                # Give restic a writable HOME so it can keep its repo cache
+                # under $HOME/.cache/restic between runs.
+                - name: HOME
+                  value: /home/restic
+              envFrom:
+                - secretRef:
+                    name: backup-env-configuration-td-sync
+              volumeMounts:
+                - name: backup-script
+                  mountPath: /usr/local/bin/backup.sh
+                  subPath: backup.sh
+                - name: snapshot
+                  mountPath: /backup/td-sync
+                  readOnly: true
+                - name: home
+                  mountPath: /home/restic
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
+                privileged: false
+          volumes:
+            - name: td-sync
+              persistentVolumeClaim:
+                claimName: longhorn-pvc-td-sync
+            - name: snapshot
+              emptyDir:
+                sizeLimit: 2Gi
+            # Mirrored into every namespace by Reflector; the source ConfigMap
+            # lives in the longhorn namespace.
+            - name: backup-script
+              configMap:
+                name: crontab-backup-script
+            - name: home
+              emptyDir:
+                medium: Memory
+                sizeLimit: 200Mi
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: backup-td-sync
+  namespace: td-sync
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: backup-td-sync
+  egress:
+    # DNS
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s:k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    # Prometheus Pushgateway (metrics)
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: monitoring
+            k8s:io.kubernetes.pod.namespace: monitoring
+            k8s:app.kubernetes.io/name: prometheus-pushgateway
+      toPorts:
+        - ports:
+            - port: "9091"
+              protocol: TCP
+    # Local restic REST-server (primary backup target)
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: backup
+            k8s:io.kubernetes.pod.namespace: backup
+            k8s:app.kubernetes.io/name: rest-server
+      toPorts:
+        - ports:
+            - port: "8000"
+              protocol: TCP
+    # ntfy notifications on failure (only HTTPS to the internet)
+    - toEntities:
+        - world
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP

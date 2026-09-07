@@ -7,6 +7,7 @@ resources:
   - k8s.pvc.yaml
   - k8s.np.td-sync-default-deny.yaml
   - k8s.np.td-sync.yaml
+  - k8s.backup-cronjob.yaml
 
 generators:
   - kustomize-secret-generator.yaml

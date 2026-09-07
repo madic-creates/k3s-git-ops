@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: backup-env-configuration-td-sync
+    namespace: td-sync
+    annotations:
+        kustomize.config.k8s.io/needs-hash: "true"
+stringData:
+    RESTIC_SOURCE: ENC[AES256_GCM,data:U3KOd04NaRnQrJ+zhC9d,iv:MradPxqGrEFTD9sV0rmWOgCIOxm0j/8DNA5MmfOncoE=,tag:j1PK5lkomXwAlMRGDLtV+w==,type:str]
+    RESTIC_REPOSITORY: ENC[AES256_GCM,data:WkZLolfd+IwZAI6XvrIs/tc0gcTwqG9Ra+pMaLwGYPOM5h147w3guZxCR7nGZedF8u/7QUiIsYptRiguRy0r9w1jYkGUKEU2xl+L6qh/kEvGsuDtJKitHQLHyRev8Q==,iv:szCmSzr8NFt3Ft3CZD9ftKyV5W7zmXtASb1AKygZ7pE=,tag:ANGTg26tN5s92cyiSVM2QQ==,type:str]
+    RESTIC_PASSWORD: ENC[AES256_GCM,data:i5YNVZJ6gWp2BJnNI6zVKiF8qhBJSzuXOidaavEmRnuHEaravw4pvw1did3uV8KmLTLaTSH/ek94EDia6AF1vQ==,iv:szBFmjZZ9vJLShDwNTn3tRwVW8W1nYC8GggQ5wt0dCg=,tag:Dnb5yjKILWd4KhldzvGQ6g==,type:str]
+    RESTIC_HOSTNAME: ENC[AES256_GCM,data:1tmVr72DBw==,iv:Mb7/xEL8p2+Ias3z2mhv/r4QtzGxe6Yy8SfN1f3xynA=,tag:NAs9TwoH8IM0IEzc2cCNOg==,type:str]
+    RESTIC_ADDITIONAL_BACKUP_PARAMETERS: ENC[AES256_GCM,data:P77HMYl49BICg6khkg==,iv:XRmw8ktr38OToQbkQEPRSkhyDylvdxvb9qq8rKu5bBY=,tag:Dtg8iuwugXAiz3CHXIWHLw==,type:str]
+    RESTIC_RETENTION_POLICIES_ENABLED: ENC[AES256_GCM,data:RBuU95k=,iv:QFQx1/Wl+yZYab3xW1d+JsYTUtCsSbyqu92KuET8m9k=,tag:S/9ehiDNtpEg9DzdL1VzVg==,type:str]
+    NTFY_ENABLED: ENC[AES256_GCM,data:YKVqTA==,iv:jVhRZVw54GDo5Ejs5zExGxOXH1b40xtEnnVb1NkCL3Q=,tag:sUTGa+d2fQRCRO3NEUujZg==,type:str]
+    NTFY_CREDS: ENC[AES256_GCM,data:DKOOjHw9yFPyG5UeVH+zpQ0Ed7DO35RkvYNMsto094HpDRs34veyFlc1omqHN39+mj+3jNR7Qa0qSb2WZnJnoX2vUfN0k9+swZ5q,iv:7LgDxs/aHcx+3C7oSQURWy2TlMbTd+WkYirdN0yLhmg=,tag:g2y//cnE+/4SfLkCGyTGBg==,type:str]
+    NTFY_SERVER: ENC[AES256_GCM,data:cOOC8X4G/YFsA/5MA326UZpllGVKwBEdCtd9,iv:Pw+KiUXZco0aFagsJSEF0O4J5mb881ZxLySuVrFA6jU=,tag:NFGa/nDWLP03B7qxoGSROw==,type:str]
+    NTFY_TOPIC: ENC[AES256_GCM,data:yuNUCOLCucLxRCh1IBHOQbv4,iv:eyFiUUrmjnS6+t5tKqLt/7RAShdIRd/pqOsVgY4cAxc=,tag:eIKVyVDaQHP8xMAZq8ICJQ==,type:str]
+    PUSHGATEWAY_ENABLED: ENC[AES256_GCM,data:8hP5ow==,iv:I8oIYghUgW6BtkpLYQ8V88yD91XD4JGjUrvUltO6b7s=,tag:mNlo2ydfVbbt+oA3ZcerNA==,type:str]
+    PUSHGATEWAY_URL: ENC[AES256_GCM,data:7l2IikW+Yg/fVGAuwgM1ZjnSzHWDuvqQHT3iqRlAVTzYpttlADYVtKQAdyn5Sr8cAfNKOAp44MOfEnEXQA0H,iv:p7m428WqRcibyR1XOvgrKIYikfNIgBDQAgPM5FbjxFg=,tag:pg8Skyrfr9YxHdx8FLG9Wg==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBwOEtkbGoyNDlhL0thME9F
+            ZlFzc0RVQlJUaHRtVDZSMEV5Z1pEMDFPdVZzCnZhclJNek1mcGdSd1kvdkFaaE82
+            OXNodFE1N2VRdC9PQmkza0RvUmg2MjAKLS0tIGovZFpZUUlyTXJLSVVHTldxV05W
+            RzFxZjN6cmExY2RNUkVCR0hITGlWdVEKfzBaO3kF3h8TJ/J0VLBkDEtfjJnQ2V24
+            EW2kY4SJtPC+72JlkbLfeqKwXhW8BuWUsUEfJoemflGgUHmIE3YwTQ==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA3cGlJd1ZQNGRkKzc0M0hu
+            U0FBS0JjUnBOWkxWZEp5MHVrZFY3WkpCR1drCnpyRkd2dnJxaFhPUExzeXBlay85
+            S21PS2gwSE1xR0k0YjdVcUEzcmNsYncKLS0tIG5wQ2FKdGEzZm9rYjl2d0RNaHRV
+            NVlZcjNpNk5qR3RleE9CSzZaQWJIeW8K+Th0OhR3Q/AZK02eU0rIE4dqBM917+Sa
+            PrI5ukWpoBs+bnfuK7r7f7dUAuCYH2J4xxIiUTX1FGkFFM3SGpWrLA==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
+    lastmodified: "2026-09-07T11:53:38Z"
+    mac: ENC[AES256_GCM,data:M5AXYKbFxkyX3+6D4MrkVOLofOEe8cYgB9rLQ4YPzcWILAg1AAoizKqjUgylaVL5DPvq40/T1WJ/9ou2IWd+FTowRbeiJi7/aFMGcn2ysK/2+z2+4L6nK+lXVPPvYT33pvZwGldDKRXAEBei2RAXHCTubiD7RiOXtZ8cNbyzTCw=,iv:qweb5xQ1lwfCRS0miUop696bjjnCokaGDdH2/6oKvhU=,tag:V3RnE9uMWY49d6ZKcmwkJQ==,type:str]
+    version: 3.13.3
