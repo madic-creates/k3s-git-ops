@@ -12,8 +12,11 @@
 # correction.
 #
 # `home:power_grid_import:watts` keeps its name for history continuity even
-# though it is signed; `home:power_export:watts` below isolates the exported
-# share as a positive number.
+# though it is signed. The exported share is `clamp_min(-that, 0)`.
+#
+# Note that recording rules never rewrite the past: the samples this file
+# produced before the clamp_max below was added still exceed 100%, which is why
+# the dashboard caps at query time as well.
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
@@ -44,11 +47,11 @@ spec:
         - record: home:power_total:watts
           expr: home:power_grid_import:watts + home:power_generation:watts
 
-        # Exported surplus, as a positive number. Zero whenever the house is
-        # importing.
-        - record: home:power_export:watts
-          expr: clamp_min(-home:power_grid_import:watts, 0)
-
+        # Exported surplus is deliberately NOT recorded as its own rule. It is
+        # `clamp_min(-home:power_grid_import:watts, 0)` and the dashboard spells
+        # that out inline, because a rule added today would carry no history and
+        # the surplus panels have to render past days.
+        #
         # clamp_min guards the division when the house draws nothing at all.
         # clamp_max caps the result at 1: you cannot cover more than 100% of
         # your own consumption. Without the cap the ratio runs away as load

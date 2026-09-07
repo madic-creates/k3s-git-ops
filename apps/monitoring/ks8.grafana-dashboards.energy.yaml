@@ -129,7 +129,7 @@ data:
         {
           "type": "gauge",
           "title": "Autarkie",
-          "description": "Anteil des Gesamtverbrauchs, der gerade aus eigener Erzeugung gedeckt wird.",
+          "description": "Anteil des Gesamtverbrauchs, der gerade aus eigener Erzeugung gedeckt wird. Die Kappung auf 100% steht zusätzlich in der Query, damit auch Samples richtig dargestellt werden, die vor der Korrektur der Recording Rule aufgezeichnet wurden — Rules ändern die Vergangenheit nicht.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "gridPos": {"h": 4, "w": 6, "x": 18, "y": 0},
           "id": 4,
@@ -153,7 +153,7 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "expr": "home:autarky:ratio * 100",
+              "expr": "clamp_max(home:autarky:ratio, 1) * 100",
               "legendFormat": "Autarkie",
               "refId": "A"
             }
@@ -241,7 +241,7 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "expr": "home:autarky:ratio * 100",
+              "expr": "clamp_max(home:autarky:ratio, 1) * 100",
               "legendFormat": "Autarkie",
               "refId": "A"
             }
@@ -309,7 +309,7 @@ data:
             },
             {
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "expr": "sum_over_time(home:power_export:watts[1d:1m]) / 60 / 1000",
+              "expr": "sum_over_time(clamp_min(-home:power_grid_import:watts, 0)[1d:1m]) / 60 / 1000",
               "format": "time_series",
               "interval": "1d",
               "legendFormat": "Einspeisung",
@@ -351,7 +351,7 @@ data:
         {
           "type": "stat",
           "title": "Überschuss heute",
-          "description": "Seit Mitternacht ins Netz eingespeiste Energie — minutenweise Integration der negativen Netzleistung. Eigener Zeitbereich \"now/d\", in Grafana dokumentiert als \"the day so far\", unabhängig vom Dashboard-Zeitraum.",
+          "description": "Seit Mitternacht ins Netz eingespeiste Energie — minutenweise Integration der negativen Netzleistung. Eigener Zeitbereich \"now/d\", in Grafana dokumentiert als \"the day so far\". Abgeleitet aus home:power_grid_import:watts statt aus einer eigenen Export-Rule, weil diese Serie seit dem ersten Tag aufgezeichnet wird und der Wert damit auch rückwirkend stimmt.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "gridPos": {"h": 4, "w": 8, "x": 16, "y": 17},
           "id": 17,
@@ -375,7 +375,7 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "expr": "sum_over_time(home:power_export:watts[${__range_s}s:1m]) / 60 / 1000",
+              "expr": "sum_over_time(clamp_min(-home:power_grid_import:watts, 0)[${__range_s}s:1m]) / 60 / 1000",
               "instant": true,
               "legendFormat": "Überschuss",
               "refId": "A"
