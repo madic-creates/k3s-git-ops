@@ -250,7 +250,7 @@ data:
         {
           "type": "timeseries",
           "title": "Energie pro Tag",
-          "description": "Ein Balken je Kalendertag der letzten 14 Tage. PV-Ertrag stammt aus der Tageszählung des Wechselrichters selbst (max_over_time), nicht aus dem rekonstruierten Zuwachs des Lebenszählers: nachts verschwinden die deye-Serien, weil der Logger abschaltet, und jede Messlücke am Tag würde den Zuwachs zu klein ausfallen lassen. Netzbezug muss den Zuwachs verwenden — die FRITZ-Steckdose führt keinen Tageszähler, läuft dafür aber durchgehend. Zeigt erst ab dem ersten abgeschlossenen Tag etwas, weil Grafana Range-Queries auf Vielfache des Schritts ausrichtet, bei Schritt 1d also auf Mitternacht.",
+          "description": "Ein Balken je Kalendertag der letzten 14 Tage, nicht gestapelt. Die drei Werte überschneiden sich bewusst nicht: selbst genutzte PV plus Netzbezug ergibt den Verbrauch, selbst genutzte PV plus Einspeisung ergibt den PV-Ertrag. Deshalb steht hier \"selbst genutzt\" statt des vollen Ertrags — sonst wäre die Einspeisung darin doppelt enthalten. Der PV-Wert stammt aus der Tageszählung des Wechselrichters (max_over_time), nicht aus dem Zuwachs des Lebenszählers: nachts verschwinden die deye-Serien, und jede Messlücke würde den Zuwachs zu klein ausfallen lassen. Der Netzbezug muss den Zuwachs verwenden, weil die FRITZ-Steckdose keinen Tageszähler führt, dafür aber durchgehend läuft. Balken erscheinen erst ab dem ersten abgeschlossenen Tag, weil Grafana Range-Queries auf Vielfache des Schritts ausrichtet, bei Schritt 1d also auf Mitternacht.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "gridPos": {"h": 12, "w": 16, "x": 0, "y": 13},
           "id": 7,
@@ -273,7 +273,7 @@ data:
             },
             "overrides": [
               {
-                "matcher": {"id": "byName", "options": "PV-Ertrag"},
+                "matcher": {"id": "byName", "options": "PV selbst genutzt"},
                 "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#CF7526"}}]
               },
               {
@@ -293,10 +293,10 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "expr": "max(max_over_time(deye_production_today_kwh[1d]))",
+              "expr": "clamp_min(max(max_over_time(deye_production_today_kwh[1d])) - sum_over_time(clamp_min(-home:power_grid_import:watts, 0)[1d:1m]) / 60 / 1000, 0)",
               "format": "time_series",
               "interval": "1d",
-              "legendFormat": "PV-Ertrag",
+              "legendFormat": "PV selbst genutzt",
               "refId": "A"
             },
             {
