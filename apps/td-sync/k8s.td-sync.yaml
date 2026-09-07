@@ -104,7 +104,11 @@ spec:
               subPath: data
             # The entrypoint always starts Litestream. Giving /backups a real
             # mount means the file replica of server.db survives restarts and
-            # is picked up by the restic job.
+            # lands on persistent storage rather than a container layer.
+            # Deliberately NOT part of the restic backup: the backup-td-sync
+            # CronJob snapshots server.db directly via sqlite3 .backup, so this
+            # replica is redundant for restic purposes (the restic pod only
+            # mounts this PVC with subPath: data).
             - name: data
               mountPath: /backups
               subPath: backups
