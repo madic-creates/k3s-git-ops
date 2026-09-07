@@ -466,8 +466,8 @@ data:
         },
         {
           "type": "timeseries",
-          "title": "Erzeugung gegen Erwartung",
-          "description": "Die gestrichelte Linie ist die aus der Sonneneinstrahlung modellierte Erwartung, nicht eine zweite Messung. Da das Modell die Bewölkung bereits enthält, bedeutet ein trüber Tag niedrigere Erwartung UND niedrigere Erzeugung — die Kurven bleiben beieinander. Läuft die Erzeugung dauerhaft darunter, liegt es an der Anlage (Verschmutzung, Schnee, Verschattung, abgeschalteter String), nicht am Wetter.",
+          "title": "Erzeugung gegen Erwartung je String",
+          "description": "Jeder String gegen sein EIGENES Modell; gestrichelt ist die Erwartung, nicht eine zweite Messung. Da das Modell die Bewölkung enthält, senkt ein trüber Tag beide Kurven gemeinsam — sie bleiben beieinander. Bekannt und kein Fehler: pv2 (Südwest) wird ab dem frühen Nachmittag von einem Baum beschattet und fällt dann unter seine Erwartung, während pv1 weiterläuft. Verdächtig ist dagegen ein Abfall, der sich nicht an die Tageszeit hält oder beide Strings trifft — dann Verschmutzung, Schnee oder ein defekter String. Ist-Werte sind DC je String, die Erwartung daher ebenfalls vor Wechselrichterverlusten.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "gridPos": {"h": 9, "w": 18, "x": 0, "y": 33},
           "id": 18,
@@ -485,13 +485,25 @@ data:
             },
             "overrides": [
               {
-                "matcher": {"id": "byName", "options": "Erzeugung"},
-                "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#CF7526"}}]
+                "matcher": {"id": "byName", "options": "pv1 Ist"},
+                "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#2a78d6"}}]
               },
               {
-                "matcher": {"id": "byName", "options": "Erwartung"},
+                "matcher": {"id": "byName", "options": "pv2 Ist"},
+                "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#d95926"}}]
+              },
+              {
+                "matcher": {"id": "byName", "options": "pv1 erwartet"},
                 "properties": [
-                  {"id": "color", "value": {"mode": "fixed", "fixedColor": "#CF7526"}},
+                  {"id": "color", "value": {"mode": "fixed", "fixedColor": "#2a78d6"}},
+                  {"id": "custom.lineWidth", "value": 1},
+                  {"id": "custom.lineStyle", "value": {"fill": "dash", "dash": [10, 10]}}
+                ]
+              },
+              {
+                "matcher": {"id": "byName", "options": "pv2 erwartet"},
+                "properties": [
+                  {"id": "color", "value": {"mode": "fixed", "fixedColor": "#d95926"}},
                   {"id": "custom.lineWidth", "value": 1},
                   {"id": "custom.lineStyle", "value": {"fill": "dash", "dash": [10, 10]}}
                 ]
@@ -505,14 +517,14 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "expr": "home:power_generation:watts",
-              "legendFormat": "Erzeugung",
+              "expr": "max by (string) (deye_dc_power_watts{string=~\"pv1|pv2\"})",
+              "legendFormat": "{{string}} Ist",
               "refId": "A"
             },
             {
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "expr": "solar:expected_power:watts",
-              "legendFormat": "Erwartung",
+              "expr": "solar:expected_power_by_string:watts",
+              "legendFormat": "{{string}} erwartet",
               "refId": "B"
             }
           ]
@@ -520,7 +532,7 @@ data:
         {
           "type": "stat",
           "title": "Anlagenleistung",
-          "description": "Erzeugung geteilt durch das physikalische Maximum aus der Einstrahlung. Der Referenzwert liegt bei rund 68 %; er ist aus einem einzigen Tag kalibriert und noch vorläufig. Nachts absichtlich ohne Wert statt 0 %, weil ein Quotient ohne Sonne nichts aussagt.",
+          "description": "DC-Leistung je String geteilt durch das physikalische Maximum aus seiner Einstrahlung. Richtwert rund 68 %, aus wenigen Daten kalibriert und vorläufig. pv2 sackt nachmittags durch Baumschatten ab — das ist bekannt. Ohne nennenswerte Sonne absichtlich ohne Wert statt 0 %, weil ein Quotient dann nichts aussagt.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "gridPos": {"h": 9, "w": 6, "x": 18, "y": 33},
           "id": 19,
@@ -547,14 +559,14 @@ data:
             "colorMode": "value",
             "graphMode": "area",
             "justifyMode": "auto",
-            "textMode": "auto",
+            "textMode": "value_and_name",
             "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}
           },
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "expr": "(solar:performance_ratio * 100) and (solar:ideal_power:watts > 100)",
-              "legendFormat": "Leistung",
+              "expr": "(solar:performance_ratio_by_string * 100) and (solar:ideal_power_by_string:watts > 100)",
+              "legendFormat": "{{string}}",
               "refId": "A"
             }
           ]

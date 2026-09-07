@@ -115,6 +115,40 @@ spec:
             home:power_generation:watts
               / clamp_min(solar:ideal_power:watts, 1)
 
+        # --- Per-string reference ---------------------------------------
+        #
+        # The aggregate comparison above cannot be read on its own, because
+        # pv2 (south-west) is shaded by a tree every afternoon. That is a
+        # permanent, expected condition: the aggregate ratio dips daily
+        # without anything being wrong, which would train the reader to
+        # ignore the panel and would make an aggregate alert fire every day.
+        #
+        # Per string, the shading becomes both visible and attributable: pv1
+        # keeps tracking its own model while pv2 departs from its own, at a
+        # time of day that matches the tree. A fault looks different -- it
+        # does not respect the clock, and it usually affects both strings.
+        #
+        # NOTE ON BASIS: these use DC power per string, because there is no
+        # per-string AC value; the aggregate rules above use AC. A DC ratio
+        # excludes inverter conversion loss and the inverter's own draw, so it
+        # reads slightly HIGHER than the aggregate ratio for the same
+        # conditions. The 0.68 constant is reused for now and is provisional
+        # for the same reason it is above -- it deserves its own calibration
+        # once a few clear days of per-string data exist.
+        - record: solar:ideal_power_by_string:watts
+          expr: |
+            max by (string) (solar_irradiance_tilted_wm2) / 1000
+              * on (string) group_left
+                max by (string) (solar_array_peak_power_watts)
+
+        - record: solar:expected_power_by_string:watts
+          expr: solar:ideal_power_by_string:watts * 0.68
+
+        - record: solar:performance_ratio_by_string
+          expr: |
+            max by (string) (deye_dc_power_watts)
+              / clamp_min(solar:ideal_power_by_string:watts, 1)
+
     - name: energy.alerts
       rules:
         # Both exporters are alerted on `up`, not on metric absence: the
@@ -153,25 +187,37 @@ spec:
             summary: "Grid import metric is missing while the FRITZ!Box exporter is up"
             description: "No fritz_ha_multimeter_power_W series matches the AIN pinned in apps/monitoring/k8s.prometheusrule.energy.yaml, but the exporter is scraping fine. The smart plug was most likely re-paired and now has a different AIN. Until the selector is updated, household total load and self-sufficiency on the energy dashboard show generation only."
 
-        # Deliberately hard to trigger. 0.40 sits between the 0.68 baseline and
-        # the ~0.34 that losing one of two strings would produce. The
-        # ideal_power guard keeps dawn, dusk and deep overcast out, where a
-        # small absolute error produces a wild ratio, and `for: 2h` keeps
-        # passing weather out.
+        # Per string, and only in the window where NEITHER string is shaded.
         #
-        # PROVISIONAL, for the same reason as the 0.68 above: both numbers come
-        # from a single day and must be re-evaluated once a few weeks of
-        # solar:performance_ratio history exists.
-        - alert: SolarArrayUnderperforming
+        # pv2 is shaded by a tree from the early afternoon (confirmed by the
+        # operator, and visible in the data: pv1 and pv2 produce nearly the
+        # same power in the evening although the model expects several times
+        # more irradiance on pv2). An alert spanning the whole day would fire
+        # on that every single afternoon.
+        #
+        # `hour()` is UTC. The window 7..11 UTC is 09:00-13:59 local in summer
+        # and 08:00-12:59 in winter -- both safely before the shading starts.
+        # It drifts by an hour across the DST change on purpose: pinning it to
+        # local time is not possible in PromQL, and an hour of drift is
+        # harmless when the shading begins in the afternoon.
+        #
+        # The ideal_power guard keeps out dawn and deep overcast, where a small
+        # absolute error produces a wild ratio; `for: 2h` keeps out weather.
+        #
+        # PROVISIONAL: 0.40 is still derived from very little data and must be
+        # revisited once several clear days of solar:performance_ratio_by_string
+        # exist. Note it is compared against a DC-based ratio here.
+        - alert: SolarStringUnderperforming
           expr: |
-            solar:performance_ratio < 0.40
-            and solar:ideal_power:watts > 300
+            solar:performance_ratio_by_string < 0.40
+            and solar:ideal_power_by_string:watts > 150
+            and on () (hour() > 6 < 12)
           for: 2h
           labels:
             severity: warning
           annotations:
-            summary: "PV array is producing far below the irradiance reference"
-            description: "Measured generation has been under 40% of the modelled clear-reference for two hours while irradiance was high. Because the model already accounts for cloud cover, this points at the array rather than the weather: check for soiling, snow, shading, a tripped string or curtailment."
+            summary: "PV string {{ $labels.string }} is producing far below its irradiance reference"
+            description: "String {{ $labels.string }} has been under 40% of its modelled clear-reference for two hours during the unshaded part of the day, while irradiance on that string was high. Because the model already accounts for cloud cover and the known afternoon shading of pv2 is excluded by the time window, this points at the panel rather than the weather: check for soiling, bird droppings, snow, new vegetation growth or a failed string."
 
         # Unlike the inverter, this exporter has no legitimate nightly outage,
         # so `up` may be alerted on with a short window.
