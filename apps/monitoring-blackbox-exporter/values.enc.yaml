@@ -21,15 +21,17 @@ serviceMonitor:
         # probe_ssl_earliest_cert_expiry / probe_ssl_last_chain_expiry are
         # exported from the same scrape — no separate cert-only probe needed.
         - name: http-01
-          url: ENC[AES256_GCM,data:nVxqCMtOGpi800ItqLLbrecckbdlffKomQ==,iv:KoAXuRL+oGbirw3zldF2dvh2nh6X7Vt0ah2d5Tnk8vU=,tag:LILpW2+Z7QwNnNHASQFcYw==,type:str]
+          url: ENC[AES256_GCM,data:CEGthn7p6rlvazhklAgJOyFnHeaE3P664g==,iv:SC6p6gRsLAPyvgzkxkc/0/Oh1x745dqq0LZtkgbLjz0=,tag:oJo+dTVpEtVSJjXufrK/dQ==,type:str]
         - name: http-02
-          url: ENC[AES256_GCM,data:PPtXwhGP0rzvRqVV9y1aBYleZ+gf990htsB7,iv:rvVKZPQ0mwUEedgUdE88a+rg70dNnhLb4eIOX/7iCb0=,tag:Zlzc7AvKKB05hye1NZLbgw==,type:str]
+          url: ENC[AES256_GCM,data:mf0OOW4GPCTIWhuv0wh5BAXce0JxiqHuMGa4,iv:z32BfpkiYT1Rg62m1Ak/qjU7Orug72hNLnvq7Lkhmd8=,tag:NZ599jFEDEJ9oxDe/1IKDA==,type:str]
         - name: http-03
-          url: ENC[AES256_GCM,data:anAwdURFWN2XkMsTJ3Iw1lGv+Zb7c8a3,iv:K+L9WDaY+VrpVDhXOUAkTh+xuE3LGNbKcXLGntxD3W0=,tag:TSUC4KdjORuZUHqXLML/fQ==,type:str]
+          url: ENC[AES256_GCM,data:Ecew+K5Ib0L5+3nEQFV1kwI8HC/jinhP,iv:hyX4slqbXOJ6ie6hHF7xhuYNcFbJdJEY0MsmeNcLqOI=,tag:/sJo55P6a6dubYiFmxd8Pw==,type:str]
         - name: http-05
-          url: ENC[AES256_GCM,data:QJi+LtkZysiyXSpMyh2CTGg9btmPFWoOH5g=,iv:LS1XBPt5rszolpf9D7kTlrFlDIScu9x22lyoBkHUuQY=,tag:OXMA7gc5jG4JNixNfdpBGg==,type:str]
+          url: ENC[AES256_GCM,data:4pPg9UFxZfk/5szOfbRhLmtyVkkbLLRj6ck=,iv:Jbe0isUhamwKG7U2CxwoLHTgVEIwpiphfoImkA4vyXQ=,tag:tIwzJyi/EZGIu89zn5m42g==,type:str]
         - name: http-06
-          url: ENC[AES256_GCM,data:AD58kSj6+y3gooO4ujgWgYNPQMBYbybnTZ44,iv:m69yRrtV2psbD/DqPk4EOwC3ypn20534gUjea/zzvUY=,tag:G8Oq+qPYnzLhMoQTHaKWcg==,type:str]
+          url: ENC[AES256_GCM,data:hb/moSf5qozfYj0V3OzMIn8NCuMFAgojvh0R,iv:z3rbxLPbP6Y/ZbO5cbWC5+x6PCyi/VHPKgqdnL/zwqI=,tag:juvcwCw6DHz2Lp7iockVvg==,type:str]
+        - name: http-07
+          url: ENC[AES256_GCM,data:7HtfOILeFQJ5HoZlv0YkkmCOUIFk1Ih/LWlffdepefaCZmC22aVdsQ==,iv:4XKzNTy6rIrIAlXnKLsX2+qBUKEd2LfSx9wTHGceLuI=,tag:t2CdtwM97f8mzn4gkR+chw==,type:str]
         # ----- Special case: wildcard cert probed against a fixed IP. -----
         # The chart's target-level `hostname` parameter is forwarded to the
         # blackbox-exporter as a query string and tells the http prober which
@@ -38,8 +40,8 @@ serviceMonitor:
         # ingress at that hostname returns 2xx so the standard http_2xx
         # module applies and dashboards need no special handling.
         - name: cert-special-01
-          url: ENC[AES256_GCM,data:BIX6kYw5IN4y14SLEeNJ5njSYkRhVA==,iv:vHLlzHljAKivdgiXbI9/bg5vBIZvg80olBXOJ138O20=,tag:FzrWlg6yYpV0HdRee8sl6w==,type:str]
-          hostname: ENC[AES256_GCM,data:Ccj9TnQgDoeZQnf6zTK6pwB7HXRT,iv:P+0hZOMbW1RmuTcrXcP6wY8CaTw+ROHRkvSlkeytAHY=,tag:ft1qt/8Fw/TaxT0EJVGgEA==,type:str]
+          url: ENC[AES256_GCM,data:76L+sdVBEEm1OrS9QORTeD0jJilxKw==,iv:Wtvj54DLb7gKZE7yPXfY1L0W/6HUgtM0Kg4SCNGEReo=,tag:kMznzeL4SdcrqIMRl0eeRg==,type:str]
+          hostname: ENC[AES256_GCM,data:uR4UA8ic2gKpc5XMuVQKT32sAxUn,iv:FYKRXNaUMzczNzhjruIkLmnxt0iVyFVOuFMmDP4wgSs=,tag:lqd+hJGmDJDtRVKzHpdoYA==,type:str]
 # Probe modules.
 config:
     modules:
@@ -82,23 +84,23 @@ sops:
     age:
         - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBQd3l3d3QyRXlHekZJS2Ru
-            b3d6dnFTRXQ0MkxialMxd0FZSk5LRCt5OENRCnRmbFZONVFIenJmM3B5T1dCdDBk
-            MmVGL29RUzJGUkoyYk4zZ3p4WEE5eG8KLS0tIGc4OS9QMlNwbS9VRUI5bnRSYVdQ
-            ZXc3dTZ5aUE2Qmk2SUU5ZjdrMlhyUnMKZZasxMuxdcT6b2janVbT2+ICwih2uEfr
-            Yv58Z30uKxZH27AVrB/06gA7A4QrnDP/H2fKgZ+9I5/L1Iio2pMZ7w==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBETStuNjBGMzN6OEM0ajFt
+            aWdUaWszTjh3ZjY4ZjE1c1Nud1NRdktGN253ClFaNzBwZUgxcFk2d0tWcGxFdWVZ
+            YWpkelJxVHo2RVYrVThNb3BIRGF3OUkKLS0tIFRtVXlwUVFPcDZMeW5GK29yRDdS
+            QU1ZZ1BUS0lVa2pxblhPcU9EZVI0a0EKQDpTZ1Jp+MHWJa6oloReQ/hIbV5DcESW
+            kXj+4GTOIg9AzA6vSss6zPKxFZ1Fwd1SCWGUUJX3AcjkndFvSXlApA==
             -----END AGE ENCRYPTED FILE-----
           recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
         - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBLOW8yRUMvTXBJbnFRcTVl
-            YVkva0xSdWZldlNsdXdIMFFiV0E1SkFFc0JRCmxmMGd2eENzQjFSR0VPUnovblNC
-            Mkd2SjlJUXd6NzZJcU0rY2J4VCtKSjQKLS0tIERBUFNYYnF6UjRsakV5ZTQzMGx4
-            KzNUdmZiT05KU0toMm5ad1FqQktFTlEK/z94VE0tJp7i+MpGlhZbnCW8ESvQZXQc
-            eIAKda5nbZpvm/nMy5UNCKyj7AbC+H3jrRLM5XLQvKtgatgnLIvv8g==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBpczBvc3cwNVBWVkl5R1F1
+            WXh4T0E2RjJKRUNrV01OUXBaM2hQMFYvZ1R3CmZlOWxxWmE1bU5vczAxa3ZPTHd3
+            Y203ZDlCcmdSQlNPWWxUOW5YWGVWRGsKLS0tIE1icWg2dXJsdFJQekZZOS96SmlF
+            V3J5VEJRT2FONkNzRjJ4TUVFVkU1TVkKjANzurj+QpZXo3IxpTDaZjO3kiSpmx3N
+            B63YdRxFrcUeLqX2XU0dTUKRFCy5SusNqrZEG6odAiPrFeiXA5kebA==
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
-    lastmodified: "2026-05-10T21:35:41Z"
-    mac: ENC[AES256_GCM,data:frgOuCd2z0kylnUUUTIeuTdjVRy6Or3CpNB5/bD8Pu5YDWIrJ9snaZwrExH18cAE8v7TYWDYFByoh4prkYc1RhcYiOe9HBMq1RQ01iGTXur3zkLcgVLCHXrrH3SXxSrfJh+f5OewUj443hGq22mteLOyWRTs0mV1mh6gS/BKcAw=,iv:G7/6WA7AvEIqubFTJDvg3VWT6rfFalGCmC9T+VPyk4c=,tag:MELaEj+uky1CPgOulE6rKw==,type:str]
-    version: 3.13.0
+    lastmodified: "2026-09-07T11:44:59Z"
+    mac: ENC[AES256_GCM,data:DEz6hO3fz6VtezWlzJF/Qgt8GLhWsfZWoevvaeW2JOH/SZs+/YUW1EfpaEV6QvrAJFj/QNLUxg0symwZAv/EoDNmWqub3fxH+QtO7NuPW+sVIbWCfLp/hZdA3mGRt58SvVPWvQi26+8PUrbEQCwNlUIQX+kWEPeLKNFaTu4y4qg=,iv:fb9JEOjB+oP7o+TBtYsrc78o9zWfiJlcjFmtn8wWX0k=,tag:ushaJpX5+l34B3Iu3ROXaw==,type:str]
+    version: 3.13.3
