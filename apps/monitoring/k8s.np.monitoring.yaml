@@ -383,6 +383,19 @@ spec:
     - ports:
       - port: "9641"
         protocol: TCP
+  # Allow Prometheus to scrape the Open-Meteo irradiance exporter, for exactly
+  # the same reason as the rule above. Omitting this does not look like a
+  # policy problem from the target's side: the exporter's own ingress rule is
+  # never reached, so its BPF counters stay at zero and the scrape fails with
+  # "context deadline exceeded" rather than a refusal.
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: solar
+        k8s:app.kubernetes.io/name: openmeteo-exporter
+    toPorts:
+    - ports:
+      - port: "9779"
+        protocol: TCP
 ---
 # Prometheus Operator Network Policy
 apiVersion: cilium.io/v2
