@@ -195,8 +195,13 @@ spec:
         # more irradiance on pv2). An alert spanning the whole day would fire
         # on that every single afternoon.
         #
-        # `hour()` is UTC. The window 7..11 UTC is 09:00-13:59 local in summer
-        # and 08:00-12:59 in winter -- both safely before the shading starts.
+        # `hour()` is UTC. The window 7..10 UTC is 09:00-12:59 local in summer
+        # and 08:00-11:59 in winter. It was originally 7..11, ending at 14:00
+        # local, which sat uncomfortably close to the start of the afternoon
+        # shading -- the exact onset has not been measured yet, so the window
+        # was pulled back by an hour rather than risk overlapping it. Widen it
+        # again once a full day of solar:performance_ratio_by_string shows when
+        # pv2 actually departs from its model.
         # It drifts by an hour across the DST change on purpose: pinning it to
         # local time is not possible in PromQL, and an hour of drift is
         # harmless when the shading begins in the afternoon.
@@ -211,7 +216,7 @@ spec:
           expr: |
             solar:performance_ratio_by_string < 0.40
             and solar:ideal_power_by_string:watts > 150
-            and on () (hour() > 6 < 12)
+            and on () (hour() > 6 < 11)
           for: 2h
           labels:
             severity: warning

@@ -467,7 +467,7 @@ data:
         {
           "type": "timeseries",
           "title": "Erzeugung gegen Erwartung je String",
-          "description": "Jeder String gegen sein EIGENES Modell; gestrichelt ist die Erwartung, nicht eine zweite Messung. Da das Modell die Bewölkung enthält, senkt ein trüber Tag beide Kurven gemeinsam — sie bleiben beieinander. Bekannt und kein Fehler: pv2 (Südwest) wird ab dem frühen Nachmittag von einem Baum beschattet und fällt dann unter seine Erwartung, während pv1 weiterläuft. Verdächtig ist dagegen ein Abfall, der sich nicht an die Tageszeit hält oder beide Strings trifft — dann Verschmutzung, Schnee oder ein defekter String. Ist-Werte sind DC je String, die Erwartung daher ebenfalls vor Wechselrichterverlusten.",
+          "description": "Jeder String gegen sein EIGENES Modell; gestrichelt ist die Erwartung, nicht eine zweite Messung. Da das Modell die Bewölkung enthält, senkt ein trüber Tag beide Kurven gemeinsam — sie bleiben beieinander. Bekannt und kein Fehler: pv2 (Südwest) wird ab dem frühen Nachmittag von einem Baum beschattet und fällt dann unter seine Erwartung, während pv1 weiterläuft. Verdächtig ist dagegen ein Abfall, der sich nicht an die Tageszeit hält oder beide Strings trifft — dann Verschmutzung, Schnee oder ein defekter String. Ist-Werte sind DC je String, die Erwartung daher ebenfalls vor Wechselrichterverlusten. Rund um Sonnenauf- und -untergang ist der Vergleich nicht belastbar: die Einstrahlung wird alle 15 Minuten abgerufen und ist als Treppe bis zu 15 Minuten alt, während die echte Leistung dann schnell fällt — beide Kurven brechen dort gemeinsam ein, ohne dass etwas defekt wäre.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "gridPos": {"h": 9, "w": 18, "x": 0, "y": 33},
           "id": 18,
@@ -532,7 +532,7 @@ data:
         {
           "type": "stat",
           "title": "Anlagenleistung",
-          "description": "DC-Leistung je String geteilt durch das physikalische Maximum aus seiner Einstrahlung. Richtwert rund 68 %, aus wenigen Daten kalibriert und vorläufig. pv2 sackt nachmittags durch Baumschatten ab — das ist bekannt. Ohne nennenswerte Sonne absichtlich ohne Wert statt 0 %, weil ein Quotient dann nichts aussagt.",
+          "description": "DC-Leistung je String geteilt durch das physikalische Maximum aus seiner Einstrahlung. Richtwert rund 68 %, aus wenigen Daten kalibriert und vorläufig. pv2 sackt nachmittags durch Baumschatten ab — das ist bekannt und kein Defekt. Die Schwelle greift auf die GESAMTE Anlage, nicht je String: sonst verschwindet abends der Nordost-String einzeln aus dem Panel und der Vergleich, um den es hier geht, ist nicht mehr möglich. Am Tagesrand unzuverlässig — siehe Beschreibung des Vergleichspanels.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "gridPos": {"h": 9, "w": 6, "x": 18, "y": 33},
           "id": 19,
@@ -565,7 +565,7 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "expr": "(solar:performance_ratio_by_string * 100) and (solar:ideal_power_by_string:watts > 100)",
+              "expr": "(solar:performance_ratio_by_string * 100) and on() (solar:ideal_power:watts > 100)",
               "legendFormat": "{{string}}",
               "refId": "A"
             }
