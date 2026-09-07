@@ -59,17 +59,40 @@ spec:
                 - -c
                 - |
                   set -eu
+
+                  # server.db must exist. `sqlite3 <missing> ".backup"` creates an empty
+                  # database and exits 0, so an explicit check is the only way to notice.
+                  [ -f /data/server.db ] || { echo "FATAL: /data/server.db is missing"; exit 1; }
+
                   mkdir -p /snapshot/projects
                   echo "$(date) snapshotting server.db"
                   sqlite3 /data/server.db ".backup '/snapshot/server.db'"
-                  for db in /data/projects/*.db; do
-                    [ -e "$db" ] || continue
-                    name=$(basename "$db")
-                    echo "$(date) snapshotting projects/$name"
-                    sqlite3 "$db" ".backup '/snapshot/projects/$name'"
-                  done
-                  echo "$(date) snapshot complete"
-                  ls -la /snapshot /snapshot/projects
+
+                  # Upstream stores each project as /data/projects/<projectID>/events.db plus
+                  # project.db, so this must recurse - a *.db glob at the top level matches
+                  # nothing and would silently ship a backup with no issue data in it.
+                  count_file=$(mktemp)
+                  echo 0 > "$count_file"
+                  if [ -d /data/projects ]; then
+                    find /data/projects -type f -name '*.db' | while IFS= read -r db; do
+                      rel=${db#/data/projects/}
+                      mkdir -p "/snapshot/projects/$(dirname "$rel")"
+                      sqlite3 "$db" ".backup '/snapshot/projects/$rel'"
+                      echo "$(date) snapshotted projects/$rel"
+                      echo $(( $(cat "$count_file") + 1 )) > "$count_file"
+                    done
+                  fi
+                  n=$(cat "$count_file")
+                  echo "$(date) snapshotted $n project database(s)"
+
+                  # Projects exist on disk but nothing was captured: fail rather than ship an
+                  # empty snapshot that looks like a successful backup.
+                  if [ "$n" -eq 0 ] && [ -n "$(find /data/projects -mindepth 1 -maxdepth 1 -type d 2>/dev/null)" ]; then
+                    echo "FATAL: project directories exist but no database was captured"
+                    exit 1
+                  fi
+
+                  ls -laR /snapshot
               volumeMounts:
                 - name: td-sync
                   mountPath: /data
