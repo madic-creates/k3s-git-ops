@@ -247,7 +247,7 @@ data:
         {
           "type": "timeseries",
           "title": "Energie pro Tag",
-          "description": "Ein Balken je Kalendertag der letzten 14 Tage: selbst erzeugte gegen aus dem Netz bezogene Energie. Zeigt naturgemäß erst ab dem ersten abgeschlossenen Tag etwas — Grafana richtet Range-Queries auf Vielfache des Schritts aus, bei Schritt 1d also auf Mitternacht, und der laufende Tag hat noch keinen solchen Auswertungspunkt. Der heutige Zwischenstand steht als Zahl im Panel \"Ertrag heute\".",
+          "description": "Ein Balken je Kalendertag der letzten 14 Tage. PV-Ertrag stammt aus der Tageszählung des Wechselrichters selbst (max_over_time), nicht aus dem rekonstruierten Zuwachs des Lebenszählers: nachts verschwinden die deye-Serien, weil der Logger abschaltet, und jede Messlücke am Tag würde den Zuwachs zu klein ausfallen lassen. Netzbezug muss den Zuwachs verwenden — die FRITZ-Steckdose führt keinen Tageszähler, läuft dafür aber durchgehend. Zeigt erst ab dem ersten abgeschlossenen Tag etwas, weil Grafana Range-Queries auf Vielfache des Schritts ausrichtet, bei Schritt 1d also auf Mitternacht.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "gridPos": {"h": 8, "w": 16, "x": 0, "y": 13},
           "id": 7,
@@ -286,7 +286,7 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "expr": "max(increase(deye_production_total_kwh[1d]))",
+              "expr": "max(max_over_time(deye_production_today_kwh[1d]))",
               "format": "time_series",
               "interval": "1d",
               "legendFormat": "PV-Ertrag",
