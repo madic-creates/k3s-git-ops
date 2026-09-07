@@ -1,0 +1,130 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: td-sync
+  labels:
+    goldilocks.fairwinds.com/enabled: "true"
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: td-sync
+  namespace: td-sync
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: td-sync
+  namespace: td-sync
+spec:
+  revisionHistoryLimit: 3
+  replicas: 1
+  # SQLite tolerates exactly one writer and the Longhorn PVC is ReadWriteOnce.
+  # A RollingUpdate would briefly run two pods; Recreate keeps it at one.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: td-sync
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: td-sync
+    spec:
+      serviceAccount: td-sync
+      # The upstream image sets no USER and would run as root. fsGroup makes
+      # the Longhorn volume writable for UID 1000 instead.
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        runAsNonRoot: true
+      containers:
+        - name: td-sync
+          # https://github.com/marcus/td
+          # Built by forge.geekbundle.org/madic/docker-td
+          # Tag AND digest: a digest-only reference gives Renovate no
+          # currentValue and the image stops being tracked.
+          image: forge.geekbundle.org/madic/td-sync:v0.65.0@sha256:2a06b74325630dcc2ddb63b4b724e8bddbd04a71107e7f2fdf9c740a9e7b2aaa
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: SYNC_LISTEN_ADDR
+              value: ":8080"
+            # Must match the ingress host: it is embedded in the login
+            # verification links.
+            - name: SYNC_BASE_URL
+              value: "https://td.internal.neese-web.de"
+            - name: SYNC_SERVER_DB_PATH
+              value: "/data/server.db"
+            - name: SYNC_PROJECT_DATA_DIR
+              value: "/data/projects"
+            # Flipped to "false" in Task 5 once the first account exists.
+            - name: SYNC_ALLOW_SIGNUP
+              value: "true"
+            # td supports cloudflare, log and memory only - no SMTP, so the
+            # in-cluster Postfix relay cannot be used. The verification link
+            # is read from this pod's log.
+            - name: SYNC_EMAIL_PROVIDER
+              value: "log"
+            - name: SYNC_LOG_FORMAT
+              value: "json"
+            - name: SYNC_LOG_LEVEL
+              value: "info"
+            - name: SYNC_SHUTDOWN_TIMEOUT
+              value: "60s"
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+          volumeMounts:
+            - name: data
+              mountPath: /data
+              subPath: data
+            # The entrypoint always starts Litestream. Giving /backups a real
+            # mount means the file replica of server.db survives restarts and
+            # is picked up by the restic job.
+            - name: data
+              mountPath: /backups
+              subPath: backups
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: longhorn-pvc-td-sync
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: td-sync
+  namespace: td-sync
+  labels:
+    app.kubernetes.io/name: td-sync
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      name: http
+      targetPort: http
+  selector:
+    app.kubernetes.io/name: td-sync

@@ -1,0 +1,53 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name: td-sync
+    namespace: td-sync
+    annotations:
+        traefik.ingress.kubernetes.io/router.entrypoints: web239,websecure239
+        traefik.ingress.kubernetes.io/router.tls: "true"
+        # Deliberately no authelia-forwardauth middleware: the td CLI
+        # authenticates with a bearer token against /v1/... and cannot follow an
+        # SSO redirect. td brings its own auth (device flow + API keys).
+        traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect@kubernetescrd
+spec:
+    ingressClassName: traefik
+    tls:
+        - hosts:
+            - ENC[AES256_GCM,data:+BhwSHRqV5GXs+4k6f53BFGnChUcm+Xf,iv:6DpgcjhnaYtXfkVsu58Bskll8aquVG36ErlDf+2Wt8A=,tag:TuMoj3dZSxfRhEBEqc5gRw==,type:str]
+          secretName: wildcard-cloudflare-production-02
+    rules:
+        - host: ENC[AES256_GCM,data:ne7PMUd48wjBhGzdnpcOand9Yf2BY/Pb,iv:Tb0oFhGtmjy8GSyLZ2OIttNzhGtYcsviG0LIp//csok=,tag:9rx+3sAokEorI6rvqaHc2g==,type:str]
+          http:
+            paths:
+                - path: /
+                  pathType: Prefix
+                  backend:
+                    service:
+                        name: td-sync
+                        port:
+                            number: 8080
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBacmpKM0l4akI0eDlWVUY4
+            YXN3UkNLUkp5TzE3WlNpTnNXM1ZDOVJEYjIwCjlRcVhldlJLZ0JrZ3hHUGYxandh
+            R3BVa1I2N2wvSmJxS0Nodmo1dTVsRVUKLS0tIHlSc0NHK3Myd21wWXUzYXlvVXR2
+            MXV5U2Q4TDQ3NnJMckNmV0I4bDV1MUUKSAmcgDuAx70KuPzD3AtvLPxm10/vei/y
+            7iec7LGk68t4Ex9YiQZkhG513KjmXSijHjkfgyK9I3ZTKwym0/RRjA==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBQbXNESXAxSUJKbWNpcVlM
+            eHllWVJRcEFINTFNRkxkeWVLS2dPdzROK0MwCkN1SklEdjJZL2UvNVVvMkxwMGZo
+            UzA2L3FQd1BXanRVUXdBT0dIT25oS1EKLS0tIHVvYndxcUFRaFE3K3U3VmlHbjdy
+            ZDlqVUtFdWwzcC9JbFlGaENEa2E2RDgKK3GY85b5PdYnt4YGKJkTlH/49nnSlQMR
+            X3z6qWx0FOGLumCjQFBqvXRV53iVC3npHeP6yr3oyxK1ASBWVp+XJg==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
+    lastmodified: "2026-09-07T11:48:59Z"
+    mac: ENC[AES256_GCM,data:EvZZ6MLnhXC8ZmQCcSiOHC/20ZEnHYfnXEot+Opsa3/LmKztfPRRUcbaOQCmlUER9EzzfMXowwIkAjKYlbRVfN5Y0fOgnWOm/Zc+5jTAIyw2IjaOUTF3OePLtmFbUL30Wbjef8NGDfyOYDYuE+G8XnB99sbDCaxtC9Usg7qB2Fg=,iv:0/JaDAvTPYaKvpto6SrWJg7JlhZBIOO0LERNqyXOH0s=,tag:2UcJG30TnUApwMuKG1VINg==,type:str]
+    version: 3.13.3

@@ -51,6 +51,7 @@ resources:
   - 55-claude-alert-checkmk-analyzer.yaml
   - 55-claude-alert-kubernetes-analyzer.yaml
   - 60-semaphore.yaml
+  - 62-td-sync.yaml
   - 64-downloader-lidarr.yaml
   #- 65-prox01-blackbox-exporter.yaml
   #- 65-prox01-docker-registry.yaml

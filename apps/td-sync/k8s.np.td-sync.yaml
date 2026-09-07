@@ -1,0 +1,39 @@
+---
+# td-sync Network Policy
+#
+# td-sync talks to nobody: the `log` email provider sends no mail, Litestream
+# replicates to the local filesystem only, and there are no outbound calls.
+# DNS egress is all it needs.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: td-sync
+  namespace: td-sync
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: td-sync
+  ingress:
+  # Allow ingress from Traefik. The blackbox probe added in Task 8 also
+  # arrives through Traefik, so it needs no separate rule.
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/instance: traefik-kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+    toPorts:
+    - ports:
+      - port: "8080"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP

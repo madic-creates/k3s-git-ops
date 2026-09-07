@@ -1,0 +1,12 @@
+---
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "62"
+
+resources:
+  - k8s.td-sync.yaml
+  - k8s.pvc.yaml
+  - k8s.np.td-sync-default-deny.yaml
+  - k8s.np.td-sync.yaml
+
+generators:
+  - kustomize-secret-generator.yaml
