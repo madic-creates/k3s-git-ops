@@ -17,16 +17,50 @@ account: unknown emails are silently accepted and suppressed for enumeration
 protection, so nothing actually gets created. `SYNC_ALLOW_SIGNUP` is not
 consulted by that endpoint at all, and stays `"false"` in this deployment.
 
-The only way to provision an account is the admin CLI, run inside the running
-pod:
+### The admin CLI does not work in this deployment
 
-```bash
-kubectl exec -n td-sync deploy/td-sync -- td-sync admin create-user --email <address>
+`td-sync admin create-user` is upstream's provisioning command, but it cannot
+run here:
+
+```console
+$ kubectl exec -n td-sync deploy/td-sync -- td-sync admin create-user --email <address>
+error: open database: open database: set journal mode: database is locked (5) (SQLITE_BUSY)
 ```
 
-Upstream recommends running this while the server is not holding the database
-open. Here it runs against the live pod instead; SQLite's WAL locking makes
-that acceptable for an idempotent one-shot provisioning command.
+The command opens the database and sets `journal_mode`, which needs an
+exclusive lock. Litestream — which the entrypoint wraps the server in — holds a
+long-running read transaction to stop WAL checkpoints, so that lock never
+becomes free. Upstream's note that the command should run "while the server is
+NOT holding the DB open" is therefore not advisory here but absolute: it would
+require stopping the deployment, and ArgoCD's `selfHeal` reverts a manual scale
+to zero.
+
+### Provisioning an account instead
+
+`POST /v1/auth/web/start` creates a user through the application's own code
+path when signup is open. Flip `SYNC_ALLOW_SIGNUP` to `"true"` in
+`apps/td-sync/k8s.td-sync.yaml`, push, wait for the rollout, then:
+
+```bash
+curl -sS -X POST https://td.internal.neese-web.de/v1/auth/web/start \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"<address>","redirect_uri":"https://td.internal.neese-web.de/","state":"bootstrap"}'
+```
+
+The response is always `{"status":"email_sent_if_allowed",...}` — it reveals
+nothing either way, so verify the result directly:
+
+```bash
+kubectl exec -n td-sync deploy/td-sync -- \
+  sqlite3 /data/server.db "SELECT id, email, is_admin FROM users;"
+```
+
+Then set `SYNC_ALLOW_SIGNUP` back to `"false"` and push. The first user created
+becomes an admin automatically.
+
+Do not hand-write the row with `sqlite3`: `CreateUser` generates a prefixed id,
+decides admin status from the current user count, and writes timestamps in the
+driver's format.
 
 ## Logging in
 

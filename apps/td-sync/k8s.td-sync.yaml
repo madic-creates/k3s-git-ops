@@ -62,11 +62,12 @@ spec:
               value: "/data/server.db"
             - name: SYNC_PROJECT_DATA_DIR
               value: "/data/projects"
-            # The device-login flow never creates users - the first account is
-            # provisioned with `td-sync admin create-user`, so signup is not
-            # needed and stays closed.
+            # The device-login flow never creates users and never consults
+            # this setting. The first account was provisioned by briefly
+            # opening signup and calling POST /v1/auth/web/start; see
+            # docs/td-sync.md. It stays closed otherwise.
             - name: SYNC_ALLOW_SIGNUP
-              value: "true"
+              value: "false"
             # td supports cloudflare, log and memory only - no SMTP, so the
             # in-cluster Postfix relay cannot be used. td has no SMTP
             # provider, so login links are retrieved from
