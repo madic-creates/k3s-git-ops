@@ -46,6 +46,18 @@ STRINGS = (
 
 # The API's native granularity is 900 s, so polling faster gains nothing.
 POLL_INTERVAL_SECONDS = int(os.environ.get("OPENMETEO_POLL_INTERVAL", "900"))
+
+# After a FAILED poll, retry much sooner than the normal cadence. Sleeping the
+# full interval on failure means a single transient error costs 15 minutes of
+# stale data, and at startup it leaves the pod unready for that long -- which
+# is exactly what happened on first deployment.
+#
+# Back off exponentially rather than retrying at a fixed short interval: a
+# prolonged outage should not hammer a free public API. The backoff is capped
+# at POLL_INTERVAL_SECONDS too, so retrying can never end up slower than
+# ordinary polling however the values are configured.
+POLL_RETRY_MIN_SECONDS = int(os.environ.get("OPENMETEO_RETRY_MIN", "30"))
+POLL_RETRY_MAX_SECONDS = int(os.environ.get("OPENMETEO_RETRY_MAX", "300"))
 HTTP_TIMEOUT_SECONDS = int(os.environ.get("OPENMETEO_HTTP_TIMEOUT", "15"))
 LISTEN_PORT = int(os.environ.get("OPENMETEO_LISTEN_PORT", "9779"))
 
@@ -146,14 +158,22 @@ def poll_once(latitude, longitude):
 
 
 def poll_loop(latitude, longitude):
+    backoff = POLL_RETRY_MIN_SECONDS
     while True:
         try:
             poll_once(latitude, longitude)
+            delay = POLL_INTERVAL_SECONDS
+            backoff = POLL_RETRY_MIN_SECONDS
         except (urllib.error.URLError, RuntimeError, ValueError, KeyError) as error:
             # Never log the query string: it carries the coordinates.
             STATE.record_failure()
-            log("poll failed: %s: %s" % (type(error).__name__, error))
-        time.sleep(POLL_INTERVAL_SECONDS)
+            delay = backoff
+            backoff = min(backoff * 2, POLL_RETRY_MAX_SECONDS, POLL_INTERVAL_SECONDS)
+            log(
+                "poll failed, retrying in %ds: %s: %s"
+                % (delay, type(error).__name__, error)
+            )
+        time.sleep(delay)
 
 
 def render():
