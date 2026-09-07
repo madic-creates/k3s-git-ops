@@ -62,14 +62,28 @@ spec:
               value: "/data/server.db"
             - name: SYNC_PROJECT_DATA_DIR
               value: "/data/projects"
-            # Flipped to "false" in Task 5 once the first account exists.
+            # The device-login flow never creates users - the first account is
+            # provisioned with `td-sync admin create-user`, so signup is not
+            # needed and stays closed.
             - name: SYNC_ALLOW_SIGNUP
-              value: "true"
+              value: "false"
             # td supports cloudflare, log and memory only - no SMTP, so the
-            # in-cluster Postfix relay cannot be used. The verification link
-            # is read from this pod's log.
+            # in-cluster Postfix relay cannot be used. td has no SMTP
+            # provider, so login links are retrieved from
+            # GET /internal/dev/last-email, which requires both this and
+            # SYNC_DEV_EMAIL_INSPECT below. That endpoint returns the most
+            # recent login email, including its magic link in plaintext, to
+            # anyone who can reach the ingress. This is a deliberate
+            # trade-off for a single-user deployment.
             - name: SYNC_EMAIL_PROVIDER
-              value: "log"
+              value: "memory"
+            # Must be td-sync's own URL: /auth/device/approve is served by
+            # td-sync itself, and this is the base for generated approval
+            # links.
+            - name: SYNC_EMAIL_BASE_URL
+              value: "https://td.internal.neese-web.de"
+            - name: SYNC_DEV_EMAIL_INSPECT
+              value: "true"
             - name: SYNC_LOG_FORMAT
               value: "json"
             - name: SYNC_LOG_LEVEL

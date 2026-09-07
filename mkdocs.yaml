@@ -118,6 +118,7 @@ nav:
       - Reflector: reflector.md
       - Secret Management: secretmanagement.md
       - Storage: storage.md
+      - td-sync: td-sync.md
       - Updates: updates.md
   - Operations:
       - Longhorn Maintenance: operations/longhorn-maintenance.md
