@@ -11,13 +11,8 @@
 #
 # NOTE ON toFQDNs: Cilium can only enforce a toFQDNs rule when the DNS request
 # passes through its DNS proxy, which requires the `rules.dns` block on the
-# port-53 egress below. No other policy in this repository has such a block --
-# the existing toFQDNs entries (cert-manager, CoreDNS, pihole) are backstopped
-# by toCIDRSet rules covering the same addresses, so they may never have been
-# load-bearing. If egress does not come up after deployment, verify with
-#   hubble observe --namespace solar
-# and fall back to `toEntities: [world]` on port 443, the pattern proven in
-# apps/epicgames-freegames.
+# port-53 egress below. This cluster has `enable-l7-proxy: true`, so that
+# works -- verified in the pod, the name resolves and egress succeeds.
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
@@ -53,7 +48,27 @@ spec:
         protocol: TCP
       rules:
         dns:
-          - matchName: api.open-meteo.com
+          # Deliberately "*" and not `matchName: api.open-meteo.com`.
+          #
+          # The pod's resolv.conf carries `ndots:5` and three search domains.
+          # A name with fewer than five dots is tried against every search
+          # domain FIRST, so resolving api.open-meteo.com actually asks for
+          #   api.open-meteo.com.solar.svc.cluster.local
+          #   api.open-meteo.com.svc.cluster.local
+          #   api.open-meteo.com.cluster.local
+          # before the real name. With a narrow matchName those three are
+          # answered REFUSED by the DNS proxy (see
+          # tofqdns-dns-reject-response-code in cilium-config), and musl -- the
+          # resolver in the Alpine image -- treats REFUSED as fatal and returns
+          # EAI_AGAIN instead of moving on to the next candidate. The exporter
+          # then never resolved anything: "[Errno -3] Try again".
+          #
+          # Permitting the proxy to answer any query is not the same as
+          # permitting egress: resolution is not connectivity. Which addresses
+          # this pod may actually reach is still decided by the toFQDNs rule
+          # below plus the namespace default-deny, so egress stays limited to
+          # api.open-meteo.com on 443.
+          - matchPattern: "*"
   # Allow HTTPS to the Open-Meteo API only
   - toFQDNs:
     - matchName: api.open-meteo.com
