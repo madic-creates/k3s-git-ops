@@ -96,6 +96,7 @@ or roll the deployment).
 | NextPVR | `media` | `:40` hourly | `nextpvr` | `nextpvr` | PVC `longhorn-pvc-nextpvr-config` |
 | Downloader (*arr-stack) | `downloader` | `:50` hourly | `downloader` | `downloader` | hostPath, ZFS node |
 | Paperless-ngx | `paper` | `:00` hourly | `paperless` | `paperless` | 3 SMB PVCs (data, media, export) |
+| td-sync | `td-sync` | `35` hourly | `td-sync` | `td-sync` | PVC `longhorn-pvc-td-sync`, `sqlite3 .backup` snapshot of server.db + per-project databases |
 | Retention | `longhorn` | `03:05` daily | n/a | `restic-retentionpolicies` | (forget + prune + integrity check) |
 | Restore-test | `longhorn` | `04:00` Sun | n/a | `backup-restore-test` | restore every tag from local repo, verify |
 | Wasabi mirror | `backup` | `05:00` daily | n/a | `backup-mirror-wasabi` | rclone copy local → Wasabi |
@@ -316,6 +317,22 @@ sqlite3 /tmp/grafana-restore/backup/grafana/grafana.db "PRAGMA integrity_check;"
 `lost+found` at the PVC root is excluded by the backup; everything else (plugin
 data, dashboards from sidecar provisioning that have local edits, etc.) is in
 the snapshot.
+
+### td-sync
+
+The live `server.db` and every per-project database are copied through a
+`sqlite-snapshot` initContainer using `sqlite3 .backup` before restic runs, so
+the snapshot is always a consistent copy rather than a raw copy of a live WAL
+database. Upstream v0.65.0 stores each project as
+`/data/projects/<projectID>/{events.db,project.db}`, and that structure is
+preserved in the backup.
+
+```bash
+restic restore latest --tag td-sync --target /tmp/td-sync-restore
+sqlite3 /tmp/td-sync-restore/backup/td-sync/server.db "PRAGMA integrity_check;"
+ls /tmp/td-sync-restore/backup/td-sync/projects/
+# Each subdirectory is a projectID containing events.db and project.db.
+```
 
 ## Notifications
 
