@@ -7,10 +7,11 @@
 # to a schema 0.63.2 cannot read. It therefore uses its own data folder holding a
 # point-in-time copy of the production database.
 #
-# The branch does not compile as published -- it calls validateURL() without
-# defining it. The image is built with navidrome-pr5949-validateurl.patch in this
-# directory applied on top; see that file for the reasoning. What runs here is
-# therefore PR + patch, not the PR verbatim.
+# The branch has two defects: it does not compile (calls validateURL() without
+# defining it), and its podcast migrations are backdated relative to master, so
+# goose refuses to apply them to an existing database. The image is built with
+# navidrome-pr5949.patch in this directory applied on top; see that file for the
+# reasoning. What runs here is therefore PR + patch, not the PR verbatim.
 #
 # The label value MUST stay "navidrome-test". The production Service selects
 # app.kubernetes.io/name=navidrome; reusing that value here would make Traefik
