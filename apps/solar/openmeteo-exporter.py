@@ -34,14 +34,30 @@ API_URL = "https://api.open-meteo.com/v1/forecast"
 # Panel geometry is not location-identifying and stays in plain text.
 # Azimuth follows the Open-Meteo convention: 0 = south, negative = east,
 # positive = west. The operator's compass bearings (0 = north) convert as
-# bearing - 180, so 45 deg NE -> -135 and 225 deg SW -> +45.
+# bearing - 180, so 225 deg SW -> +45 and 45 deg NE -> -135.
 #
 # The two strings face nearly opposite directions, which is why each needs its
 # own request: the API accepts only one tilt/azimuth pair per call. Passing
 # comma-separated values returns HTTP 400.
+#
+# THE MAPPING IS NOT ALPHABETICAL. The inverter's pv1 is the SOUTH-WEST panel
+# and pv2 the NORTH-EAST one. The first deployment had it the other way round,
+# on the assumption that the operator listed the panels in string order. That
+# assignment was physically impossible and the measurements proved it: over a
+# full day pv1 produced more power than a north-east model allows at any tilt
+# (peak ratio 1.08 at 10 deg rising to 2.48 at 40 deg, where 1.0 is the ceiling).
+# pv1 also collapses in the late afternoon while pv2 holds up, which is the
+# tree that shades the south-west panel.
+#
+# The tilt is 16 deg, measured by the operator, not the 40 deg first assumed.
+# It matters more than it looks: at this angle both panels sit close to
+# horizontal, so azimuth barely separates them, they peak together in the early
+# afternoon and deliver nearly the same daily energy (1.46 vs 1.40 kWh measured
+# on 2026-09-08). At 40 deg no assignment of the two orientations could
+# reproduce that.
 STRINGS = (
-    {"name": "pv1", "tilt": 40.0, "azimuth": -135.0, "peak_watts": 560.0},
-    {"name": "pv2", "tilt": 40.0, "azimuth": 45.0, "peak_watts": 560.0},
+    {"name": "pv1", "tilt": 16.0, "azimuth": 45.0, "peak_watts": 560.0},
+    {"name": "pv2", "tilt": 16.0, "azimuth": -135.0, "peak_watts": 560.0},
 )
 
 # The API's native granularity is 900 s, so polling faster gains nothing.

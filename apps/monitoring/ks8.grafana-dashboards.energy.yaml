@@ -1202,7 +1202,7 @@ data:
         {
           "type": "timeseries",
           "title": "Erzeugung gegen Erwartung je String",
-          "description": "Jeder String gegen sein EIGENES Modell; gestrichelt ist die Erwartung, nicht eine zweite Messung. Da das Modell die Bewölkung enthält, senkt ein trüber Tag beide Kurven gemeinsam — sie bleiben beieinander. Bekannt und kein Fehler: pv2 (Südwest) wird ab dem frühen Nachmittag von einem Baum beschattet und fällt dann unter seine Erwartung, während pv1 weiterläuft. Verdächtig ist dagegen ein Abfall, der sich nicht an die Tageszeit hält oder beide Strings trifft — dann Verschmutzung, Schnee oder ein defekter String. Ist-Werte sind DC je String, die Erwartung daher ebenfalls vor Wechselrichterverlusten. Rund um Sonnenauf- und -untergang ist der Vergleich nicht belastbar: die Einstrahlung wird alle 15 Minuten abgerufen und ist als Treppe bis zu 15 Minuten alt, während die echte Leistung dann schnell fällt — beide Kurven brechen dort gemeinsam ein, ohne dass etwas defekt wäre.",
+          "description": "Jeder String gegen sein EIGENES Modell; gestrichelt ist die Erwartung, nicht eine zweite Messung. Da das Modell die Bewölkung enthält, senkt ein trüber Tag beide Kurven gemeinsam — sie bleiben beieinander. Bekannt und kein Fehler: pv1 (Südwest) wird am späten Nachmittag von einem Baum beschattet und fällt dann unter seine Erwartung, während pv2 weiterläuft. Verdächtig ist dagegen ein Abfall, der sich nicht an die Tageszeit hält oder beide Strings trifft — dann Verschmutzung, Schnee oder ein defekter String. Ist-Werte sind DC je String, die Erwartung daher ebenfalls vor Wechselrichterverlusten. Rund um Sonnenauf- und -untergang ist der Vergleich nicht belastbar: die Einstrahlung wird alle 15 Minuten abgerufen und ist als Treppe bis zu 15 Minuten alt, während die echte Leistung dann schnell fällt — beide Kurven brechen dort gemeinsam ein, ohne dass etwas defekt wäre.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "gridPos": {"h": 9, "w": 18, "x": 0, "y": 61},
           "id": 18,
@@ -1267,7 +1267,7 @@ data:
         {
           "type": "stat",
           "title": "Anlagenleistung",
-          "description": "DC-Leistung je String geteilt durch das physikalische Maximum aus seiner Einstrahlung. Richtwert rund 68 %, aus wenigen Daten kalibriert und vorläufig. pv2 sackt nachmittags durch Baumschatten ab — das ist bekannt und kein Defekt. Die Schwelle greift auf die GESAMTE Anlage, nicht je String: sonst verschwindet abends der Nordost-String einzeln aus dem Panel und der Vergleich, um den es hier geht, ist nicht mehr möglich. Am Tagesrand unzuverlässig — siehe Beschreibung des Vergleichspanels.",
+          "description": "DC-Leistung je String geteilt durch das physikalische Maximum aus seiner Einstrahlung. Richtwert rund 75 %, am 2026-09-08 aus den Mittagsstunden bestimmt (pv1 0,69 / pv2 0,79) und weiterhin vorläufig. pv1 sackt am späten Nachmittag durch Baumschatten ab — das ist bekannt und kein Defekt. Die Schwelle greift auf die GESAMTE Anlage, nicht je String: sonst verschwindet abends der Nordost-String einzeln aus dem Panel und der Vergleich, um den es hier geht, ist nicht mehr möglich. Am Tagesrand unzuverlässig — siehe Beschreibung des Vergleichspanels.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "gridPos": {"h": 9, "w": 6, "x": 18, "y": 61},
           "id": 19,
@@ -1394,7 +1394,7 @@ data:
             {
               "type": "timeseries",
               "title": "Einstrahlung je String",
-              "description": "Modellierte Einstrahlung auf die Ebene des jeweiligen Strings. pv1 zeigt nach Nordosten und liegt vormittags vorn, pv2 nach Südwesten und nachmittags — ein String weit unter dem anderen ist daher zur falschen Tageszeit normal. Diese Kurven sind die Referenz für die DC-Leistung darüber.",
+              "description": "Modellierte Einstrahlung auf die Ebene des jeweiligen Strings. pv1 zeigt nach Südwesten, pv2 nach Nordosten. Bei nur 16° Neigung liegen beide fast waagerecht, die Ausrichtung trennt sie also kaum: sie erreichen ihr Maximum gemeinsam am frühen Nachmittag und liefern nahezu gleiche Tagesenergie. Erst am späten Nachmittag trennen sie sich, wenn der Baum pv1 verschattet. Diese Kurven sind die Referenz für die DC-Leistung darüber.",
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
               "gridPos": {"h": 8, "w": 24, "x": 0, "y": 79},
               "id": 20,

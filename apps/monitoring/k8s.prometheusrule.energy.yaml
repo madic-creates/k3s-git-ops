@@ -94,14 +94,17 @@ spec:
 
         # The single performance-ratio constant in the whole design.
         #
-        # PROVISIONAL. Calibrated from one day (2026-09-07): 4.56 kWh modelled
-        # against roughly 3.1 kWh actually generated. That is a believable
-        # figure for a fixed, steeply mounted split-orientation array, but one
-        # day is not evidence -- revisit after several clear days and correct
-        # it here. It absorbs everything not modelled explicitly: temperature
-        # coefficient, angle-of-incidence losses, shading, inverter efficiency.
+        # 0.75 is the median of the per-string ratios between 10:00 and 16:00
+        # local on 2026-09-08 (pv1 0.69, pv2 0.79), the first full day measured
+        # against the CORRECTED geometry. The earlier 0.68 was fitted to a
+        # geometry that turned out to be wrong in two ways at once and carried
+        # no meaning.
+        #
+        # Still provisional: one partly cloudy day. It absorbs everything not
+        # modelled explicitly -- temperature coefficient, angle-of-incidence
+        # loss, soiling, inverter efficiency.
         - record: solar:expected_power:watts
-          expr: solar:ideal_power:watts * 0.68
+          expr: solar:ideal_power:watts * 0.75
 
         # Why this ratio is a health signal rather than a weather signal:
         # Open-Meteo's tilted irradiance already accounts for cloud cover
@@ -118,23 +121,24 @@ spec:
         # --- Per-string reference ---------------------------------------
         #
         # The aggregate comparison above cannot be read on its own, because
-        # pv2 (south-west) is shaded by a tree every afternoon. That is a
-        # permanent, expected condition: the aggregate ratio dips daily
+        # pv1 (south-west) is shaded by a tree from the late afternoon. That
+        # is a permanent, expected condition: the aggregate ratio dips daily
         # without anything being wrong, which would train the reader to
         # ignore the panel and would make an aggregate alert fire every day.
         #
-        # Per string, the shading becomes both visible and attributable: pv1
-        # keeps tracking its own model while pv2 departs from its own, at a
-        # time of day that matches the tree. A fault looks different -- it
-        # does not respect the clock, and it usually affects both strings.
+        # Per string, the shading becomes both visible and attributable: pv2
+        # keeps tracking its own model while pv1 departs from its own, at a
+        # time of day that matches the tree. Measured 2026-09-08: pv1 runs
+        # 0.85 at 15:00, 0.71 at 16:00, then 0.42 and 0.15, while pv2 is still
+        # at 0.76 at 17:00. A fault looks different -- it does not respect the
+        # clock, and it usually affects both strings.
         #
         # NOTE ON BASIS: these use DC power per string, because there is no
         # per-string AC value; the aggregate rules above use AC. A DC ratio
         # excludes inverter conversion loss and the inverter's own draw, so it
         # reads slightly HIGHER than the aggregate ratio for the same
-        # conditions. The 0.68 constant is reused for now and is provisional
-        # for the same reason it is above -- it deserves its own calibration
-        # once a few clear days of per-string data exist.
+        # conditions. 0.75 was in fact derived from these DC ratios, so it fits
+        # here best and is marginally generous for the AC aggregate above.
         - record: solar:ideal_power_by_string:watts
           expr: |
             max by (string) (solar_irradiance_tilted_wm2) / 1000
@@ -142,7 +146,7 @@ spec:
                 max by (string) (solar_array_peak_power_watts)
 
         - record: solar:expected_power_by_string:watts
-          expr: solar:ideal_power_by_string:watts * 0.68
+          expr: solar:ideal_power_by_string:watts * 0.75
 
         - record: solar:performance_ratio_by_string
           expr: |
@@ -189,19 +193,17 @@ spec:
 
         # Per string, and only in the window where NEITHER string is shaded.
         #
-        # pv2 is shaded by a tree from the early afternoon (confirmed by the
-        # operator, and visible in the data: pv1 and pv2 produce nearly the
-        # same power in the evening although the model expects several times
-        # more irradiance on pv2). An alert spanning the whole day would fire
-        # on that every single afternoon.
+        # pv1 (south-west) is shaded by a tree in the late afternoon, so an
+        # alert spanning the whole day would fire on the tree every day.
         #
-        # `hour()` is UTC. The window 7..10 UTC is 09:00-12:59 local in summer
-        # and 08:00-11:59 in winter. It was originally 7..11, ending at 14:00
-        # local, which sat uncomfortably close to the start of the afternoon
-        # shading -- the exact onset has not been measured yet, so the window
-        # was pulled back by an hour rather than risk overlapping it. Widen it
-        # again once a full day of solar:performance_ratio_by_string shows when
-        # pv2 actually departs from its model.
+        # `hour()` is UTC. The window 7..12 UTC is 09:00-14:59 local in summer
+        # and 08:00-13:59 in winter. It is now set from measurement rather than
+        # caution: on 2026-09-08 pv1 still held 0.85 at 15:00 and 0.71 at 16:00
+        # local, and only fell away from 17:00 (0.42). Ending at 15:00 local
+        # leaves two hours of margin before the shading bites.
+        #
+        # Earlier revisions used 7..11 and then 7..10 while the onset was
+        # unknown and the geometry was still wrong; both were guesses.
         # It drifts by an hour across the DST change on purpose: pinning it to
         # local time is not possible in PromQL, and an hour of drift is
         # harmless when the shading begins in the afternoon.
@@ -216,13 +218,13 @@ spec:
           expr: |
             solar:performance_ratio_by_string < 0.40
             and solar:ideal_power_by_string:watts > 150
-            and on () (hour() > 6 < 11)
+            and on () (hour() > 6 < 13)
           for: 2h
           labels:
             severity: warning
           annotations:
             summary: "PV string {{ $labels.string }} is producing far below its irradiance reference"
-            description: "String {{ $labels.string }} has been under 40% of its modelled clear-reference for two hours during the unshaded part of the day, while irradiance on that string was high. Because the model already accounts for cloud cover and the known afternoon shading of pv2 is excluded by the time window, this points at the panel rather than the weather: check for soiling, bird droppings, snow, new vegetation growth or a failed string."
+            description: "String {{ $labels.string }} has been under 40% of its modelled clear-reference for two hours during the unshaded part of the day, while irradiance on that string was high. Because the model already accounts for cloud cover and the known late-afternoon shading of pv1 is excluded by the time window, this points at the panel rather than the weather: check for soiling, bird droppings, snow, new vegetation growth or a failed string. Measured baseline on 2026-09-08: 0.69 for pv1, 0.79 for pv2."
 
         # Unlike the inverter, this exporter has no legitimate nightly outage,
         # so `up` may be alerted on with a short window.
