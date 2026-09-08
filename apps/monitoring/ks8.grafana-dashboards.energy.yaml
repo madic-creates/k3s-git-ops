@@ -555,7 +555,7 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "expr": "clamp_min(max(deye_production_today_kwh) - sum_over_time(clamp_min(-home:power_grid_import:watts, 0)[${__range_s}s:1m]) / 60 / 1000, 0) * $price",
+              "expr": "clamp_min((max(max_over_time(deye_production_today_kwh[${__range_s}s])) or vector(0)) - sum_over_time(clamp_min(-home:power_grid_import:watts, 0)[${__range_s}s:1m]) / 60 / 1000, 0) * $price",
               "instant": true,
               "legendFormat": "Gespart",
               "refId": "A"
@@ -623,7 +623,7 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "expr": "(sum(increase(fritz_ha_multimeter_energy_Wh{ain=~\"16000.?0036823.*\"}[${__range_s}s])) / 1000 + clamp_min(max(deye_production_today_kwh) - sum_over_time(clamp_min(-home:power_grid_import:watts, 0)[${__range_s}s:1m]) / 60 / 1000, 0)) * $price",
+              "expr": "(sum(increase(fritz_ha_multimeter_energy_Wh{ain=~\"16000.?0036823.*\"}[${__range_s}s])) / 1000 + clamp_min((max(max_over_time(deye_production_today_kwh[${__range_s}s])) or vector(0)) - sum_over_time(clamp_min(-home:power_grid_import:watts, 0)[${__range_s}s:1m]) / 60 / 1000, 0)) * $price",
               "instant": true,
               "legendFormat": "Ohne PV",
               "refId": "A"
@@ -697,7 +697,7 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "expr": "clamp_max(clamp_min(max(deye_production_today_kwh) - sum_over_time(clamp_min(-home:power_grid_import:watts, 0)[${__range_s}s:1m]) / 60 / 1000, 0) / clamp_min(max(deye_production_today_kwh), 0.01), 1) * 100",
+              "expr": "clamp_max(clamp_min((max(max_over_time(deye_production_today_kwh[${__range_s}s])) or vector(0)) - sum_over_time(clamp_min(-home:power_grid_import:watts, 0)[${__range_s}s:1m]) / 60 / 1000, 0) / clamp_min((max(max_over_time(deye_production_today_kwh[${__range_s}s])) or vector(0)), 0.01), 1) * 100",
               "instant": true,
               "legendFormat": "Eigenverbrauch",
               "refId": "A"
@@ -866,7 +866,7 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "expr": "clamp_min($invest - max(deye_production_total_kwh) * clamp_max(clamp_min(sum_over_time((max(max_over_time(deye_production_today_kwh[1d])))[30d:1d]) - sum_over_time((sum_over_time(clamp_min(-home:power_grid_import:watts, 0)[1d:5m]) / 12 / 1000)[30d:1d]), 0) / clamp_min(sum_over_time((max(max_over_time(deye_production_today_kwh[1d])))[30d:1d]), 0.01), 1) * $price, 0) / clamp_min(max(deye_production_total_kwh) * clamp_max(clamp_min(sum_over_time((max(max_over_time(deye_production_today_kwh[1d])))[30d:1d]) - sum_over_time((sum_over_time(clamp_min(-home:power_grid_import:watts, 0)[1d:5m]) / 12 / 1000)[30d:1d]), 0) / clamp_min(sum_over_time((max(max_over_time(deye_production_today_kwh[1d])))[30d:1d]), 0.01), 1) * $price / ((time() - $start) / 86400) * 365, 1)",
+              "expr": "clamp_min($invest - max(max_over_time(deye_production_total_kwh[24h])) * clamp_max(clamp_min(sum_over_time((max(max_over_time(deye_production_today_kwh[1d])))[30d:1d]) - sum_over_time((sum_over_time(clamp_min(-home:power_grid_import:watts, 0)[1d:5m]) / 12 / 1000)[30d:1d]), 0) / clamp_min(sum_over_time((max(max_over_time(deye_production_today_kwh[1d])))[30d:1d]), 0.01), 1) * $price, 0) / clamp_min(max(max_over_time(deye_production_total_kwh[24h])) * clamp_max(clamp_min(sum_over_time((max(max_over_time(deye_production_today_kwh[1d])))[30d:1d]) - sum_over_time((sum_over_time(clamp_min(-home:power_grid_import:watts, 0)[1d:5m]) / 12 / 1000)[30d:1d]), 0) / clamp_min(sum_over_time((max(max_over_time(deye_production_today_kwh[1d])))[30d:1d]), 0.01), 1) * $price / ((time() - $start) / 86400) * 365, 1)",
               "instant": true,
               "legendFormat": "Restlaufzeit",
               "refId": "A"
@@ -932,7 +932,7 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "expr": "max(deye_production_total_kwh) * clamp_max(clamp_min(sum_over_time((max(max_over_time(deye_production_today_kwh[1d])))[30d:1d]) - sum_over_time((sum_over_time(clamp_min(-home:power_grid_import:watts, 0)[1d:5m]) / 12 / 1000)[30d:1d]), 0) / clamp_min(sum_over_time((max(max_over_time(deye_production_today_kwh[1d])))[30d:1d]), 0.01), 1) * $price",
+              "expr": "max(max_over_time(deye_production_total_kwh[24h])) * clamp_max(clamp_min(sum_over_time((max(max_over_time(deye_production_today_kwh[1d])))[30d:1d]) - sum_over_time((sum_over_time(clamp_min(-home:power_grid_import:watts, 0)[1d:5m]) / 12 / 1000)[30d:1d]), 0) / clamp_min(sum_over_time((max(max_over_time(deye_production_today_kwh[1d])))[30d:1d]), 0.01), 1) * $price",
               "instant": true,
               "legendFormat": "Eingespielt",
               "refId": "A"
@@ -966,7 +966,7 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "expr": "clamp_max(max(deye_production_total_kwh) * clamp_max(clamp_min(sum_over_time((max(max_over_time(deye_production_today_kwh[1d])))[30d:1d]) - sum_over_time((sum_over_time(clamp_min(-home:power_grid_import:watts, 0)[1d:5m]) / 12 / 1000)[30d:1d]), 0) / clamp_min(sum_over_time((max(max_over_time(deye_production_today_kwh[1d])))[30d:1d]), 0.01), 1) * $price / clamp_min(vector($invest), 1), 1) * 100",
+              "expr": "clamp_max(max(max_over_time(deye_production_total_kwh[24h])) * clamp_max(clamp_min(sum_over_time((max(max_over_time(deye_production_today_kwh[1d])))[30d:1d]) - sum_over_time((sum_over_time(clamp_min(-home:power_grid_import:watts, 0)[1d:5m]) / 12 / 1000)[30d:1d]), 0) / clamp_min(sum_over_time((max(max_over_time(deye_production_today_kwh[1d])))[30d:1d]), 0.01), 1) * $price / clamp_min(vector($invest), 1), 1) * 100",
               "instant": true,
               "legendFormat": "Amortisiert",
               "refId": "A"
