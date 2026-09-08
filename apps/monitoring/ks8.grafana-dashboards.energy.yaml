@@ -49,6 +49,12 @@
 # against recording the export as its own series, because a rule created
 # today carries no history; a recorded cost would fail the same way — it
 # could not render yesterday.
+#
+# On rows: a Grafana row owns every panel below it until the next row, so
+# inserting one adopts whatever follows. The cost row did exactly that to the
+# three generation panels on its first commit. Anything added between rows
+# from now on needs its own row header, or it silently joins the section
+# above it.
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -1005,11 +1011,19 @@ data:
           ]
         },
         {
+          "type": "row",
+          "title": "Erzeugung im Detail",
+          "collapsed": false,
+          "gridPos": {"h": 1, "w": 24, "x": 0, "y": 48},
+          "id": 102,
+          "panels": []
+        },
+        {
           "type": "timeseries",
           "title": "Netzleistung gegen Erzeugung",
           "description": "Nicht gestapelt, direkt übereinandergelegt. Fällt die Netzkurve unter null, speist die Anlage ein — die Fläche unterhalb der Achse ist der Überschuss. Ein früherer Text behauptete hier, Einspeisung sei nicht messbar; das war falsch, die Steckdose misst vorzeichenbehaftet.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-          "gridPos": {"h": 8, "w": 24, "x": 0, "y": 48},
+          "gridPos": {"h": 8, "w": 24, "x": 0, "y": 49},
           "id": 10,
           "fieldConfig": {
             "defaults": {
@@ -1058,7 +1072,7 @@ data:
           "title": "Erzeugung gegen Erwartung je String",
           "description": "Jeder String gegen sein EIGENES Modell; gestrichelt ist die Erwartung, nicht eine zweite Messung. Da das Modell die Bewölkung enthält, senkt ein trüber Tag beide Kurven gemeinsam — sie bleiben beieinander. Bekannt und kein Fehler: pv2 (Südwest) wird ab dem frühen Nachmittag von einem Baum beschattet und fällt dann unter seine Erwartung, während pv1 weiterläuft. Verdächtig ist dagegen ein Abfall, der sich nicht an die Tageszeit hält oder beide Strings trifft — dann Verschmutzung, Schnee oder ein defekter String. Ist-Werte sind DC je String, die Erwartung daher ebenfalls vor Wechselrichterverlusten. Rund um Sonnenauf- und -untergang ist der Vergleich nicht belastbar: die Einstrahlung wird alle 15 Minuten abgerufen und ist als Treppe bis zu 15 Minuten alt, während die echte Leistung dann schnell fällt — beide Kurven brechen dort gemeinsam ein, ohne dass etwas defekt wäre.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-          "gridPos": {"h": 9, "w": 18, "x": 0, "y": 56},
+          "gridPos": {"h": 9, "w": 18, "x": 0, "y": 57},
           "id": 18,
           "fieldConfig": {
             "defaults": {
@@ -1123,7 +1137,7 @@ data:
           "title": "Anlagenleistung",
           "description": "DC-Leistung je String geteilt durch das physikalische Maximum aus seiner Einstrahlung. Richtwert rund 68 %, aus wenigen Daten kalibriert und vorläufig. pv2 sackt nachmittags durch Baumschatten ab — das ist bekannt und kein Defekt. Die Schwelle greift auf die GESAMTE Anlage, nicht je String: sonst verschwindet abends der Nordost-String einzeln aus dem Panel und der Vergleich, um den es hier geht, ist nicht mehr möglich. Am Tagesrand unzuverlässig — siehe Beschreibung des Vergleichspanels.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-          "gridPos": {"h": 9, "w": 6, "x": 18, "y": 56},
+          "gridPos": {"h": 9, "w": 6, "x": 18, "y": 57},
           "id": 19,
           "fieldConfig": {
             "defaults": {
@@ -1164,7 +1178,7 @@ data:
           "type": "row",
           "title": "Anlagengesundheit",
           "collapsed": true,
-          "gridPos": {"h": 1, "w": 24, "x": 0, "y": 65},
+          "gridPos": {"h": 1, "w": 24, "x": 0, "y": 66},
           "id": 100,
           "panels": [
             {
@@ -1172,7 +1186,7 @@ data:
               "title": "DC-Leistung je String",
               "description": "Ein dauerhaft abweichender String deutet auf Verschattung oder ein defektes Modul.",
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "gridPos": {"h": 8, "w": 12, "x": 0, "y": 66},
+              "gridPos": {"h": 8, "w": 12, "x": 0, "y": 67},
               "id": 11,
               "fieldConfig": {
                 "defaults": {
@@ -1211,7 +1225,7 @@ data:
               "type": "timeseries",
               "title": "DC-Spannung je String",
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "gridPos": {"h": 8, "w": 12, "x": 12, "y": 66},
+              "gridPos": {"h": 8, "w": 12, "x": 12, "y": 67},
               "id": 12,
               "fieldConfig": {
                 "defaults": {
@@ -1250,7 +1264,7 @@ data:
               "title": "Einstrahlung je String",
               "description": "Modellierte Einstrahlung auf die Ebene des jeweiligen Strings. pv1 zeigt nach Nordosten und liegt vormittags vorn, pv2 nach Südwesten und nachmittags — ein String weit unter dem anderen ist daher zur falschen Tageszeit normal. Diese Kurven sind die Referenz für die DC-Leistung darüber.",
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "gridPos": {"h": 8, "w": 24, "x": 0, "y": 74},
+              "gridPos": {"h": 8, "w": 24, "x": 0, "y": 75},
               "id": 20,
               "fieldConfig": {
                 "defaults": {
@@ -1284,7 +1298,7 @@ data:
               "title": "Netzspannung am Wechselrichter",
               "description": "Bei zu hoher Netzspannung regelt der Wechselrichter ab — die häufigste Erklärung für unerwartet geringe Erzeugung.",
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "gridPos": {"h": 7, "w": 8, "x": 0, "y": 82},
+              "gridPos": {"h": 7, "w": 8, "x": 0, "y": 83},
               "id": 13,
               "fieldConfig": {
                 "defaults": {
@@ -1318,7 +1332,7 @@ data:
               "type": "timeseries",
               "title": "Netzfrequenz",
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "gridPos": {"h": 7, "w": 8, "x": 8, "y": 82},
+              "gridPos": {"h": 7, "w": 8, "x": 8, "y": 83},
               "id": 14,
               "fieldConfig": {
                 "defaults": {
@@ -1352,7 +1366,7 @@ data:
               "type": "timeseries",
               "title": "Wechselrichtertemperatur",
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "gridPos": {"h": 7, "w": 8, "x": 16, "y": 82},
+              "gridPos": {"h": 7, "w": 8, "x": 16, "y": 83},
               "id": 15,
               "fieldConfig": {
                 "defaults": {
@@ -1387,7 +1401,7 @@ data:
               "title": "Datenquellen",
               "description": "Nachts meldet sich der Logger regulär ab — ein Wert von 0 ist dann kein Fehler. Die beiden Exporter müssen dagegen durchgehend auf 1 stehen.",
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "gridPos": {"h": 5, "w": 24, "x": 0, "y": 89},
+              "gridPos": {"h": 5, "w": 24, "x": 0, "y": 90},
               "id": 16,
               "fieldConfig": {
                 "defaults": {
