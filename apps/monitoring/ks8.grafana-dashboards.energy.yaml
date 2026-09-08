@@ -77,6 +77,16 @@
 # because recording rules read them and rules can only read metrics; the date
 # is read by panels in this file alone. The inverter cannot supply it either:
 # deye_uptime_minutes resets every night.
+#
+# Which of the four inputs is a textbox is a deliberate split, made after the
+# comma bit twice. price and feedin stay editable because "what if it goes to
+# 35 ct" is a question worth asking in the browser. base, invest and the
+# commissioning date are facts, set once, and are hidden constants with
+# skipUrlSync -- so a stale var- parameter in a bookmarked URL can no longer
+# override them. Grafana keeps variable values in the URL and the URL wins
+# over the default in this file, which is how a German-formatted "17,90"
+# typed in the browser kept reaching PromQL and blanking both monthly panels
+# with a parse error long after the file said 17.90.
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -1628,14 +1638,13 @@ data:
           },
           {
             "current": {"selected": false, "text": "17.90", "value": "17.90"},
-            "hide": 0,
+            "description": "Fakt ueber Haushalt bzw. Anlage, nicht als Regler gedacht: der Wert steht in dieser Datei und ist im UI absichtlich nicht editierbar. skipUrlSync verhindert, dass ein alter var-Parameter in einer gemerkten URL den Wert ueberschreibt -- genau das hat die Monats-Panels mit einem Komma in 17,90 zerlegt. Aendern heisst committen.",
+            "hide": 2,
             "label": "Grundpreis €/Monat",
-            "description": "Dezimaltrennzeichen ist der PUNKT. Der Wert geht unveraendert in die PromQL-Abfrage, ein Komma erzeugt dort einen Parse-Fehler und die betroffenen Panels zeigen \"No data\" mit Warndreieck.",
             "name": "base",
-            "options": [{"selected": true, "text": "17.90", "value": "17.90"}],
             "query": "17.90",
-            "skipUrlSync": false,
-            "type": "textbox"
+            "skipUrlSync": true,
+            "type": "constant"
           },
           {
             "current": {"selected": false, "text": "1788559200", "value": "1788559200"},
@@ -1644,19 +1653,18 @@ data:
             "label": "Inbetriebnahme (Unix-Zeit)",
             "name": "start",
             "query": "1788559200",
-            "skipUrlSync": false,
+            "skipUrlSync": true,
             "type": "constant"
           },
           {
             "current": {"selected": false, "text": "500", "value": "500"},
-            "hide": 0,
+            "description": "Fakt ueber Haushalt bzw. Anlage, nicht als Regler gedacht: der Wert steht in dieser Datei und ist im UI absichtlich nicht editierbar. skipUrlSync verhindert, dass ein alter var-Parameter in einer gemerkten URL den Wert ueberschreibt -- genau das hat die Monats-Panels mit einem Komma in 17,90 zerlegt. Aendern heisst committen.",
+            "hide": 2,
             "label": "Anschaffung €",
-            "description": "Dezimaltrennzeichen ist der PUNKT. Der Wert geht unveraendert in die PromQL-Abfrage, ein Komma erzeugt dort einen Parse-Fehler und die betroffenen Panels zeigen \"No data\" mit Warndreieck.",
             "name": "invest",
-            "options": [{"selected": true, "text": "500", "value": "500"}],
             "query": "500",
-            "skipUrlSync": false,
-            "type": "textbox"
+            "skipUrlSync": true,
+            "type": "constant"
           }
         ]
       },
