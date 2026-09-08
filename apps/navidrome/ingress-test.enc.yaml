@@ -1,0 +1,138 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+    name: navidrome-test
+    namespace: media
+spec:
+    entryPoints:
+        - websecure
+    routes:
+        - match: ENC[AES256_GCM,data:LH3XwT+dweqzrnnp4CDfffTowSTVjUFhSuS6k0WgMkKDkmi17zPHdRPMgyAcvGYDJLkKsZH8,iv:2dCW+Tt/cUMQTtALFv512wObWrrklF7dpz/3GfJL6F4=,tag:LEb9Yl+lASWajhyEfKzAKg==,type:str]
+          kind: Rule
+          middlewares:
+            - name: redirect
+              namespace: traefik
+            - name: forwardauth-authelia
+              namespace: authelia
+          services:
+            - name: navidrome-test
+              port: 4533
+          observability:
+            accessLogs: true
+    tls: {}
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBwdUV1cVVmQURMSVVnbnYr
+            cDhkOGdzVTVjWG5QS0NqVktXUU9vWWtMc2hBCk9iUVRyYzkwdFVLM3drVGxhMm0x
+            d3VFemZTSks2ZXFIZkltdEF1eVN1clEKLS0tIFg3L3pvejBrUmhaYkVPYVVEN0t6
+            OGNBYzBPYmtnOWh2alVvTzdGcTVFSVEKmiX9/HWyPKUk+HvdQtGARQHgNf6yOHUT
+            xnoZm9O5S6YNn63E2BetlUju5fIN4ENMvmu33ZjBODX5AKIF+6iszw==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBYZ1JsS0haVU9WdFY3UjdO
+            ZzVFMFIvalo0bFdjaEp3cFZueHlHaUZHdlZRCk1MMkdqYWpIQzhGbWVWQWt6VDkx
+            K1NNVHNVT2grdFFKWGtQNEx5WHorWncKLS0tIEtMSVRzS2lmUDNKZUo4Y3VaSXcr
+            UkVFZEROd0E1Vmh3RkFrbXpiOUN1VWcKnRXX4SW+98p8VvYBsx0fUFBK+lNPNNPr
+            tVR1K/KvdjMKz6qvG51TL2iE1qOX3vx4h9z0XY5fQ9+V1FPr/jJ2tA==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
+    lastmodified: "2026-09-08T18:53:49Z"
+    mac: ENC[AES256_GCM,data:4eB/lZ7hgmyOZkrL63hct3azDyzAbyfBz7rc/D2KaYCD89Ltrn9MIK775UBgUjHWT0WDwkvn52pdh1X7uwhtoyg4dvWOYad/gF9oYXjSG6D/Ft1rKw8FaGIgt+CO6SIuRJMw7/1RVSikHYmF1Hf/sZIZEQbyacVYePS8ZWyyH2M=,iv:rw+03sx6dv9pUb7/zoWxtVwlyXxx5UB6DTB2ruvrogY=,tag:wh3AQE//ucfFM0RJ0mqx2w==,type:str]
+    version: 3.13.3
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+    name: navidrome-test-subsonic
+    namespace: media
+spec:
+    entryPoints:
+        - websecure
+    routes:
+        - match: ENC[AES256_GCM,data:HIeyQHYSafVMAlCq9zUKk98ruJYz6hnqQufNK2hz3UaaGVZs4fgleELGJDU4mgwOGiYyWFEIE6DRNe26K1kQxnXwiwsAwQ7VZxDQFCdhWKntzHiYtrqzLg==,iv:Z3lDAzLcuozabQWUHtRzIrki5PrOnSLCkcz8ZzSBBBQ=,tag:L47tI0uDMwGpr7V3dMTadA==,type:str]
+          kind: Rule
+          middlewares:
+            - name: redirect
+              namespace: traefik
+            - name: forwardauth-authelia-basic-forward-auth
+              namespace: authelia
+          services:
+            - name: navidrome-test
+              port: 4533
+          observability:
+            accessLogs: true
+    tls: {}
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBwdUV1cVVmQURMSVVnbnYr
+            cDhkOGdzVTVjWG5QS0NqVktXUU9vWWtMc2hBCk9iUVRyYzkwdFVLM3drVGxhMm0x
+            d3VFemZTSks2ZXFIZkltdEF1eVN1clEKLS0tIFg3L3pvejBrUmhaYkVPYVVEN0t6
+            OGNBYzBPYmtnOWh2alVvTzdGcTVFSVEKmiX9/HWyPKUk+HvdQtGARQHgNf6yOHUT
+            xnoZm9O5S6YNn63E2BetlUju5fIN4ENMvmu33ZjBODX5AKIF+6iszw==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBYZ1JsS0haVU9WdFY3UjdO
+            ZzVFMFIvalo0bFdjaEp3cFZueHlHaUZHdlZRCk1MMkdqYWpIQzhGbWVWQWt6VDkx
+            K1NNVHNVT2grdFFKWGtQNEx5WHorWncKLS0tIEtMSVRzS2lmUDNKZUo4Y3VaSXcr
+            UkVFZEROd0E1Vmh3RkFrbXpiOUN1VWcKnRXX4SW+98p8VvYBsx0fUFBK+lNPNNPr
+            tVR1K/KvdjMKz6qvG51TL2iE1qOX3vx4h9z0XY5fQ9+V1FPr/jJ2tA==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
+    lastmodified: "2026-09-08T18:53:49Z"
+    mac: ENC[AES256_GCM,data:4eB/lZ7hgmyOZkrL63hct3azDyzAbyfBz7rc/D2KaYCD89Ltrn9MIK775UBgUjHWT0WDwkvn52pdh1X7uwhtoyg4dvWOYad/gF9oYXjSG6D/Ft1rKw8FaGIgt+CO6SIuRJMw7/1RVSikHYmF1Hf/sZIZEQbyacVYePS8ZWyyH2M=,iv:rw+03sx6dv9pUb7/zoWxtVwlyXxx5UB6DTB2ruvrogY=,tag:wh3AQE//ucfFM0RJ0mqx2w==,type:str]
+    version: 3.13.3
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+    name: navidrome-test-share
+    namespace: media
+spec:
+    entryPoints:
+        - websecure
+    routes:
+        - match: ENC[AES256_GCM,data:DDuLr9BdLMkj60oVhx57C639ngt9LGhpbfXCi2pW0he7P2e5nLQpS5KhgSl1yYUaTf6rLtTgNdcFxvFc,iv:ji+6Nmr3lgBJOlGeTzwdGOV+AseIodAV6hjM09xiYi0=,tag:sAt0vjQjN740gAgEIFsoPQ==,type:str]
+          kind: Rule
+          middlewares:
+            - name: redirect
+              namespace: traefik
+          services:
+            - name: navidrome-test
+              port: 4533
+          observability:
+            accessLogs: true
+    tls: {}
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBwdUV1cVVmQURMSVVnbnYr
+            cDhkOGdzVTVjWG5QS0NqVktXUU9vWWtMc2hBCk9iUVRyYzkwdFVLM3drVGxhMm0x
+            d3VFemZTSks2ZXFIZkltdEF1eVN1clEKLS0tIFg3L3pvejBrUmhaYkVPYVVEN0t6
+            OGNBYzBPYmtnOWh2alVvTzdGcTVFSVEKmiX9/HWyPKUk+HvdQtGARQHgNf6yOHUT
+            xnoZm9O5S6YNn63E2BetlUju5fIN4ENMvmu33ZjBODX5AKIF+6iszw==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBYZ1JsS0haVU9WdFY3UjdO
+            ZzVFMFIvalo0bFdjaEp3cFZueHlHaUZHdlZRCk1MMkdqYWpIQzhGbWVWQWt6VDkx
+            K1NNVHNVT2grdFFKWGtQNEx5WHorWncKLS0tIEtMSVRzS2lmUDNKZUo4Y3VaSXcr
+            UkVFZEROd0E1Vmh3RkFrbXpiOUN1VWcKnRXX4SW+98p8VvYBsx0fUFBK+lNPNNPr
+            tVR1K/KvdjMKz6qvG51TL2iE1qOX3vx4h9z0XY5fQ9+V1FPr/jJ2tA==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
+    lastmodified: "2026-09-08T18:53:49Z"
+    mac: ENC[AES256_GCM,data:4eB/lZ7hgmyOZkrL63hct3azDyzAbyfBz7rc/D2KaYCD89Ltrn9MIK775UBgUjHWT0WDwkvn52pdh1X7uwhtoyg4dvWOYad/gF9oYXjSG6D/Ft1rKw8FaGIgt+CO6SIuRJMw7/1RVSikHYmF1Hf/sZIZEQbyacVYePS8ZWyyH2M=,iv:rw+03sx6dv9pUb7/zoWxtVwlyXxx5UB6DTB2ruvrogY=,tag:wh3AQE//ucfFM0RJ0mqx2w==,type:str]
+    version: 3.13.3

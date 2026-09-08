@@ -5,6 +5,9 @@ repos:
     hooks:
       # Trims trailing whitespace.
       - id: trailing-whitespace
+        # *.patch is unified diff: a blank context line is a single space, and
+        # trimming it corrupts the patch.
+        exclude: \.patch$
       # Makes sure files end in a newline and only a newline.
       - id: end-of-file-fixer
       # Replaces or checks mixed line ending.
@@ -25,7 +28,7 @@ repos:
       # Replace tabs by whitespaces before committing
       - id: remove-tabs
         args: [--whitespaces-count, "2"]
-        exclude: (go\.mod|go\.sum)$
+        exclude: (go\.mod|go\.sum|\.patch)$
   - repo: https://github.com/sirosen/fix-smartquotes
     rev: 0.2.0
     hooks:

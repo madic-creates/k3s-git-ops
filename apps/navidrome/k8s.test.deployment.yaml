@@ -1,0 +1,111 @@
+---
+# Test instance running the search5/navidrome fork branch
+# feat-podcast-ux-improvements/5420 (upstream PR navidrome/navidrome#5949, for issue #5420).
+#
+# Isolated from the production Navidrome on purpose: the branch is rebased on
+# navidrome master and carries five podcast migrations that upgrade navidrome.db
+# to a schema 0.63.2 cannot read. It therefore uses its own data folder holding a
+# point-in-time copy of the production database.
+#
+# The branch does not compile as published -- it calls validateURL() without
+# defining it. The image is built with navidrome-pr5949-validateurl.patch in this
+# directory applied on top; see that file for the reasoning. What runs here is
+# therefore PR + patch, not the PR verbatim.
+#
+# The label value MUST stay "navidrome-test". The production Service selects
+# app.kubernetes.io/name=navidrome; reusing that value here would make Traefik
+# load-balance production traffic onto this unvetted build.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: navidrome-test
+  namespace: media
+  labels:
+    app.kubernetes.io/name: navidrome-test
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: navidrome-test
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: navidrome-test
+    spec:
+      securityContext:
+        fsGroup: 1002
+        runAsUser: 1001
+        runAsGroup: 1002
+        fsGroupChangePolicy: OnRootMismatch
+      containers:
+        - name: navidrome
+          image: forge.geekbundle.org/madic/navidrome-test:5420-07cf48cb@sha256:269834d8a7447309f5dc93c2f9a141b76f7b3d0ddcd6018060ba87ec3e5a45fd
+          imagePullPolicy: IfNotPresent
+          env:
+            # No automatic scan: the copied database already holds the scanned library.
+            - name: ND_SCANSCHEDULE
+              value: "0"
+            - name: ND_LOGLEVEL
+              value: info
+            - name: ND_MUSICFOLDER
+              value: "/vol_raidz1/music/My Music"
+            - name: ND_DATAFOLDER
+              value: /data
+            - name: ND_REVERSEPROXYWHITELIST
+              value: "10.42.0.0/16"
+            - name: ND_ENABLEUSEREDITING
+              value: "false"
+            - name: ND_ENABLESHARING
+              value: "true"
+            - name: TZ
+              value: Europe/Berlin
+            # Reuses the production Secret deliberately: ND_PASSWORDENCRYPTIONKEY
+            # must match the key that encrypted the passwords in the copied
+            # database, otherwise no user can log in.
+            - name: ND_LASTFM_APIKEY
+              valueFrom:
+                secretKeyRef:
+                  name: navidrome-secrets
+                  key: ND_LASTFM_APIKEY
+            - name: ND_LASTFM_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: navidrome-secrets
+                  key: ND_LASTFM_SECRET
+            - name: ND_PASSWORDENCRYPTIONKEY
+              valueFrom:
+                secretKeyRef:
+                  name: navidrome-secrets
+                  key: ND_PASSWORDENCRYPTIONKEY
+          resources:
+            requests:
+              cpu: 50m
+              memory: 192Mi
+          ports:
+            - containerPort: 4533
+              name: http
+          volumeMounts:
+            - name: config-vol
+              mountPath: /data
+            - name: music-vol
+              mountPath: /vol_raidz1/music
+              readOnly: true
+      nodeSelector:
+        node-role/workload: zfs
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
+      restartPolicy: Always
+      volumes:
+        - name: config-vol
+          hostPath:
+            path: /vol_raidz1/container-scheduler/navidrome-test
+            type: DirectoryOrCreate
+        - name: music-vol
+          hostPath:
+            path: /vol_raidz1/music
+            type: Directory

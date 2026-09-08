@@ -6,6 +6,12 @@ resources:
   - k8s.deployment.yaml
   - k8s.np.navidrome.yaml
   - k8s.service.yaml
+  # Test instance for the search5/navidrome fork branch
+  # feat-podcast-ux-improvements/5420. Remove these three lines together with
+  # ingress-test.enc.yaml in the ksops generator to tear it down.
+  - k8s.test.deployment.yaml
+  - k8s.np.navidrome-test.yaml
+  - k8s.test.service.yaml
 
 generators:
   - kustomize-secret-generator.yaml

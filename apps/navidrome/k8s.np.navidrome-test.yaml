@@ -1,0 +1,65 @@
+---
+# Navidrome test-instance Network Policy
+#
+# Identical in rules to k8s.np.navidrome.yaml; it exists separately because the
+# test pod carries app.kubernetes.io/name=navidrome-test and is therefore not
+# matched by the production policy's endpointSelector. Without it the pod is
+# unreachable and cannot resolve DNS.
+#
+# The existing world:80/443 egress already covers podcast RSS feeds and episode
+# downloads, so the podcast feature under test needs no additional rule.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: navidrome-test
+  namespace: media
+  annotations:
+    argocd.argoproj.io/sync-wave: "31"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: navidrome-test
+  ingress:
+  # Allow Traefik to reach Navidrome via Ingress
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/instance: traefik-kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+    toPorts:
+    - ports:
+      - port: "4533"
+        protocol: TCP
+  # Allow Authelia to reach Navidrome for forward auth validation
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: authelia
+        k8s:io.kubernetes.pod.namespace: authelia
+    toPorts:
+    - ports:
+      - port: "4533"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow HTTPS/HTTP connections to external services
+  # - Last.fm API for scrobbling and metadata
+  # - Podcast RSS feeds and episode downloads
+  # - Cover art providers and music metadata services
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+      - port: "80"
+        protocol: TCP
