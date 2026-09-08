@@ -55,6 +55,28 @@
 # three generation panels on its first commit. Anything added between rows
 # from now on needs its own row header, or it silently joins the section
 # above it.
+#
+# On the payback figures: cumulative savings are anchored on the inverter's
+# lifetime counter, not on integrating Prometheus history, because retention
+# is 45 days. A Prometheus-only "since commissioning" sum is correct today and
+# silently stops being a total on 2026-10-20, when the first operating days
+# age out -- it would keep rendering and simply be wrong. The self-consumption
+# share cannot be sourced that way and does come from the rolling 30-day
+# window, applied to the whole operating period; that is the one assumption in
+# "Eingespielt", and it holds only while the base load absorbs nearly all
+# generation, as it currently does at 99%.
+#
+# The remaining-time panel divides by the average since commissioning rather
+# than extrapolating a 30-day window. A window never improves -- it stays
+# seasonally biased forever -- while the average covers more seasons every
+# month and corrects itself. Until roughly 365 operating days it reads
+# optimistic, which the panel says.
+#
+# The commissioning date (2026-09-05) is a constant variable in this file, not
+# a metric. Tilt, azimuth and peak power live in the openmeteo exporter
+# because recording rules read them and rules can only read metrics; the date
+# is read by panels in this file alone. The inverter cannot supply it either:
+# deye_uptime_minutes resets every night.
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -745,7 +767,7 @@ data:
           "title": "Ersparnis 30 Tage",
           "description": "Selbst genutzte PV der letzten 30 abgeschlossenen Tage mal Preis. Gezaehlt wird in Tagesschritten, und Tage ohne Daten liefern keinen Summanden — der Wert waechst also hinein, solange weniger als 30 Tage Historie existieren. Die Aufbewahrung liegt bei 45 Tagen, das Fenster ist langfristig also gedeckt. Der laufende Tag fehlt: Prometheus richtet Subquery-Schritte an UTC-Mitternacht aus, der letzte vollstaendige Schritt liegt damit in der Vergangenheit. Ertrag und Einspeisung werden beide ueber dasselbe 24-Stunden-Fenster gezaehlt, damit ihre Differenz stimmt.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-          "gridPos": {"h": 4, "w": 6, "x": 0, "y": 34},
+          "gridPos": {"h": 4, "w": 8, "x": 0, "y": 34},
           "id": 29,
           "fieldConfig": {
             "defaults": {
@@ -778,7 +800,7 @@ data:
           "title": "Entgangen 30 Tage",
           "description": "Wert der Einspeisung der letzten 30 abgeschlossenen Tage zum Einkaufspreis. Diese Zahl beantwortet, ob sich ein Akku oder eine Verbrauchssteuerung lohnt: sie ist die Obergrenze dessen, was beides ueberhaupt einsparen koennte, denn mehr als den verschenkten Ueberschuss kann man nicht zurueckholen.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-          "gridPos": {"h": 4, "w": 6, "x": 6, "y": 34},
+          "gridPos": {"h": 4, "w": 8, "x": 8, "y": 34},
           "id": 35,
           "fieldConfig": {
             "defaults": {
@@ -808,10 +830,10 @@ data:
         },
         {
           "type": "stat",
-          "title": "Amortisation",
-          "description": "Anschaffungskosten geteilt durch die Ersparnis pro Tag, gerechnet aus den vorhandenen Tagen der letzten 30 und auf ein Jahr hochgerechnet. Solange die Variable Anschaffung oben auf 0 steht, zeigt das Panel einen Hinweis statt einer erfundenen Zahl. Die Hochrechnung ist jahreszeitlich verzerrt: aus Sommerwochen gerechnet zu optimistisch, aus Winterwochen zu pessimistisch. Belastbar wird sie erst ueber ein vollstaendiges Jahr. Verguetete Einspeisung ist NICHT enthalten, weil es hier keine gibt.",
+          "title": "Restlaufzeit",
+          "description": "Was von den Anschaffungskosten offen ist, geteilt durch die Ersparnis pro Jahr — und diese Jahresersparnis ist der GEMESSENE Durchschnitt seit Inbetriebnahme, nicht mehr eine Hochrechnung aus 30 Tagen. Darin liegt der ganze Unterschied: ein 30-Tage-Fenster bleibt fuer immer saisonal verzerrt, dieser Durchschnitt deckt mit jedem Monat mehr Jahreszeiten ab und wird von selbst ehrlich. Solange nur Sommerwochen darin liegen, faellt die Zahl zu optimistisch aus. Der Grundpreis bleibt aussen vor, er fiele ohne Anlage genauso an und verschiebt keine Amortisation.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-          "gridPos": {"h": 4, "w": 6, "x": 12, "y": 34},
+          "gridPos": {"h": 4, "w": 6, "x": 18, "y": 38},
           "id": 30,
           "fieldConfig": {
             "defaults": {
@@ -819,7 +841,7 @@ data:
               "decimals": 1,
               "color": {"mode": "fixed", "fixedColor": "text"},
               "mappings": [
-                {"type": "value", "options": {"0": {"text": "Anschaffung oben eintragen", "index": 0}}}
+                {"type": "value", "options": {"0": {"text": "amortisiert", "index": 0}}}
               ]
             },
             "overrides": []
@@ -834,9 +856,9 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "expr": "$invest / clamp_min(clamp_min(sum_over_time((max(max_over_time(deye_production_today_kwh[1d])))[30d:1d]) - sum_over_time((sum_over_time(clamp_min(-home:power_grid_import:watts, 0)[1d:5m]) / 12 / 1000)[30d:1d]), 0) * $price / clamp_min(count_over_time((max(max_over_time(deye_production_today_kwh[1d])))[30d:1d]), 1) * 365, 1)",
+              "expr": "clamp_min($invest - max(deye_production_total_kwh) * clamp_max(clamp_min(sum_over_time((max(max_over_time(deye_production_today_kwh[1d])))[30d:1d]) - sum_over_time((sum_over_time(clamp_min(-home:power_grid_import:watts, 0)[1d:5m]) / 12 / 1000)[30d:1d]), 0) / clamp_min(sum_over_time((max(max_over_time(deye_production_today_kwh[1d])))[30d:1d]), 0.01), 1) * $price, 0) / clamp_min(max(deye_production_total_kwh) * clamp_max(clamp_min(sum_over_time((max(max_over_time(deye_production_today_kwh[1d])))[30d:1d]) - sum_over_time((sum_over_time(clamp_min(-home:power_grid_import:watts, 0)[1d:5m]) / 12 / 1000)[30d:1d]), 0) / clamp_min(sum_over_time((max(max_over_time(deye_production_today_kwh[1d])))[30d:1d]), 0.01), 1) * $price / ((time() - $start) / 86400) * 365, 1)",
               "instant": true,
-              "legendFormat": "Amortisation",
+              "legendFormat": "Restlaufzeit",
               "refId": "A"
             }
           ]
@@ -846,7 +868,7 @@ data:
           "title": "CO2 vermieden 30 Tage",
           "description": "Ertrag der letzten 30 abgeschlossenen Tage mal 380 g/kWh, dem mittleren deutschen Strommix. Gerechnet wird der VOLLE Ertrag, nicht nur der selbst genutzte: auch eingespeister Strom verdraengt Erzeugung im Netz. Der Faktor ist ein Jahresmittel und sinkt mit dem Netzausbau — als Groessenordnung gedacht, nicht als Bilanz.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-          "gridPos": {"h": 4, "w": 6, "x": 18, "y": 34},
+          "gridPos": {"h": 4, "w": 8, "x": 16, "y": 34},
           "id": 34,
           "fieldConfig": {
             "defaults": {
@@ -875,11 +897,111 @@ data:
           ]
         },
         {
+          "type": "stat",
+          "title": "Eingespielt",
+          "description": "Was die Anlage seit Inbetriebnahme an Stromkosten erspart hat. Der Lebensertrag stammt aus dem Zaehler des Wechselrichters und ist damit unabhaengig von der Prometheus-Aufbewahrung — er kennt den Gesamtwert auch noch in fuenf Jahren, waehrend eine aus Prometheus integrierte Summe ab dem 20.10.2026 still aufhoert, eine Gesamtsumme zu sein, weil die ersten Betriebstage aus den 45 Tagen Aufbewahrung fallen. Die Eigenverbrauchsquote laesst sich so nicht bestimmen und kommt aus dem rollierenden 30-Tage-Fenster; sie wird auf den gesamten Betrieb angewendet. Das ist die eine Annahme in dieser Zahl, und sie ist harmlos, solange die Grundlast wie derzeit fast die gesamte Erzeugung aufnimmt. Der Grundpreis ist nicht enthalten.",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "gridPos": {"h": 4, "w": 6, "x": 0, "y": 38},
+          "id": 36,
+          "fieldConfig": {
+            "defaults": {
+              "unit": "currencyEUR",
+              "decimals": 2,
+              "color": {"mode": "fixed", "fixedColor": "#CF7526"},
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "textMode": "auto",
+            "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}
+          },
+          "targets": [
+            {
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "expr": "max(deye_production_total_kwh) * clamp_max(clamp_min(sum_over_time((max(max_over_time(deye_production_today_kwh[1d])))[30d:1d]) - sum_over_time((sum_over_time(clamp_min(-home:power_grid_import:watts, 0)[1d:5m]) / 12 / 1000)[30d:1d]), 0) / clamp_min(sum_over_time((max(max_over_time(deye_production_today_kwh[1d])))[30d:1d]), 0.01), 1) * $price",
+              "instant": true,
+              "legendFormat": "Eingespielt",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "type": "gauge",
+          "title": "Amortisiert",
+          "description": "Das Eingespielte gemessen an den Anschaffungskosten. 100 % heisst, die Anlage hat sich bezahlt. Anders als die Restlaufzeit daneben enthaelt diese Zahl keine Hochrechnung — sie vergleicht nur Gemessenes mit einem festen Betrag und ist damit die belastbarste Aussage zur Amortisation auf diesem Dashboard.",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "gridPos": {"h": 4, "w": 6, "x": 6, "y": 38},
+          "id": 37,
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "decimals": 0,
+              "min": 0,
+              "max": 100,
+              "color": {"mode": "fixed", "fixedColor": "#CF7526"},
+              "thresholds": {"mode": "absolute", "steps": [{"color": "#CF7526", "value": null}]},
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "options": {
+            "showThresholdLabels": false,
+            "showThresholdMarkers": false,
+            "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}
+          },
+          "targets": [
+            {
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "expr": "clamp_max(max(deye_production_total_kwh) * clamp_max(clamp_min(sum_over_time((max(max_over_time(deye_production_today_kwh[1d])))[30d:1d]) - sum_over_time((sum_over_time(clamp_min(-home:power_grid_import:watts, 0)[1d:5m]) / 12 / 1000)[30d:1d]), 0) / clamp_min(sum_over_time((max(max_over_time(deye_production_today_kwh[1d])))[30d:1d]), 0.01), 1) * $price / clamp_min(vector($invest), 1), 1) * 100",
+              "instant": true,
+              "legendFormat": "Amortisiert",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Betriebstage",
+          "description": "Tage seit der Inbetriebnahme am 5.9.2026. Das Datum steht als konstante Variable in dieser Datei, weil es in keiner Metrik vorkommt: der Wechselrichter kennt es nicht, deye_uptime_minutes zaehlt nur die Zeit seit dem letzten Start und faellt jede Nacht auf null. Diese Zahl ist der Nenner der Restlaufzeit — solange sie klein ist und nur Sommertage umfasst, ist die Restlaufzeit zu optimistisch. Ab etwa 365 wird sie belastbar.",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "gridPos": {"h": 4, "w": 6, "x": 12, "y": 38},
+          "id": 38,
+          "fieldConfig": {
+            "defaults": {
+              "unit": "suffix: Tage",
+              "decimals": 1,
+              "color": {"mode": "fixed", "fixedColor": "text"},
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "textMode": "auto",
+            "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}
+          },
+          "targets": [
+            {
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "expr": "vector((time() - $start) / 86400)",
+              "instant": true,
+              "legendFormat": "Betriebstage",
+              "refId": "A"
+            }
+          ]
+        },
+        {
           "type": "timeseries",
           "title": "Kosten und Ersparnis pro Tag",
           "description": "Ein Balken je Kalendertag, dieselbe Aufteilung wie im Energie-Panel oben, nur in Euro. Bezahlt plus Gespart ergibt die Kosten ohne Anlage; Gespart plus Entgangen ist der Ertrag zum Einkaufspreis. Nicht gestapelt, weil die drei Werte zu zwei verschiedenen Summen gehoeren und ein Stapel eine dritte, sinnlose behaupten wuerde. Balken erscheinen erst ab dem ersten abgeschlossenen Tag — Grafana richtet Range-Queries auf Vielfache des Schritts aus, bei Schritt 1d also auf Mitternacht.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-          "gridPos": {"h": 10, "w": 16, "x": 0, "y": 38},
+          "gridPos": {"h": 10, "w": 16, "x": 0, "y": 42},
           "id": 33,
           "interval": "1d",
           "timeFrom": "14d",
@@ -949,7 +1071,7 @@ data:
           "title": "Grundlast",
           "description": "Niedrigster Gesamtverbrauch der letzten 24 Stunden — was das Haus dauerhaft zieht, wenn niemand etwas einschaltet. Gerechnet wird auf dem Gesamtverbrauch und nicht auf dem Netzbezug, damit die PV die Zahl nicht nach unten faelscht.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-          "gridPos": {"h": 5, "w": 8, "x": 16, "y": 38},
+          "gridPos": {"h": 5, "w": 8, "x": 16, "y": 42},
           "id": 31,
           "fieldConfig": {
             "defaults": {
@@ -982,7 +1104,7 @@ data:
           "title": "Grundlast pro Jahr",
           "description": "Die Grundlast darueber, auf 8760 Stunden gerechnet und mit dem Strompreis bewertet: was Dauerverbrauch und Standby im Jahr kosten. Das ist eine Obergrenze fuer das Sparpotenzial, kein Ist-Wert — sie unterstellt, dass das Minimum der letzten 24 Stunden rund um die Uhr anliegt. Der Wert reagiert entsprechend empfindlich darauf, ob in den letzten 24 Stunden ueberhaupt eine ruhige Stunde vorkam.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-          "gridPos": {"h": 5, "w": 8, "x": 16, "y": 43},
+          "gridPos": {"h": 5, "w": 8, "x": 16, "y": 47},
           "id": 32,
           "fieldConfig": {
             "defaults": {
@@ -1014,7 +1136,7 @@ data:
           "type": "row",
           "title": "Erzeugung im Detail",
           "collapsed": false,
-          "gridPos": {"h": 1, "w": 24, "x": 0, "y": 48},
+          "gridPos": {"h": 1, "w": 24, "x": 0, "y": 52},
           "id": 102,
           "panels": []
         },
@@ -1023,7 +1145,7 @@ data:
           "title": "Netzleistung gegen Erzeugung",
           "description": "Nicht gestapelt, direkt übereinandergelegt. Fällt die Netzkurve unter null, speist die Anlage ein — die Fläche unterhalb der Achse ist der Überschuss. Ein früherer Text behauptete hier, Einspeisung sei nicht messbar; das war falsch, die Steckdose misst vorzeichenbehaftet.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-          "gridPos": {"h": 8, "w": 24, "x": 0, "y": 49},
+          "gridPos": {"h": 8, "w": 24, "x": 0, "y": 53},
           "id": 10,
           "fieldConfig": {
             "defaults": {
@@ -1072,7 +1194,7 @@ data:
           "title": "Erzeugung gegen Erwartung je String",
           "description": "Jeder String gegen sein EIGENES Modell; gestrichelt ist die Erwartung, nicht eine zweite Messung. Da das Modell die Bewölkung enthält, senkt ein trüber Tag beide Kurven gemeinsam — sie bleiben beieinander. Bekannt und kein Fehler: pv2 (Südwest) wird ab dem frühen Nachmittag von einem Baum beschattet und fällt dann unter seine Erwartung, während pv1 weiterläuft. Verdächtig ist dagegen ein Abfall, der sich nicht an die Tageszeit hält oder beide Strings trifft — dann Verschmutzung, Schnee oder ein defekter String. Ist-Werte sind DC je String, die Erwartung daher ebenfalls vor Wechselrichterverlusten. Rund um Sonnenauf- und -untergang ist der Vergleich nicht belastbar: die Einstrahlung wird alle 15 Minuten abgerufen und ist als Treppe bis zu 15 Minuten alt, während die echte Leistung dann schnell fällt — beide Kurven brechen dort gemeinsam ein, ohne dass etwas defekt wäre.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-          "gridPos": {"h": 9, "w": 18, "x": 0, "y": 57},
+          "gridPos": {"h": 9, "w": 18, "x": 0, "y": 61},
           "id": 18,
           "fieldConfig": {
             "defaults": {
@@ -1137,7 +1259,7 @@ data:
           "title": "Anlagenleistung",
           "description": "DC-Leistung je String geteilt durch das physikalische Maximum aus seiner Einstrahlung. Richtwert rund 68 %, aus wenigen Daten kalibriert und vorläufig. pv2 sackt nachmittags durch Baumschatten ab — das ist bekannt und kein Defekt. Die Schwelle greift auf die GESAMTE Anlage, nicht je String: sonst verschwindet abends der Nordost-String einzeln aus dem Panel und der Vergleich, um den es hier geht, ist nicht mehr möglich. Am Tagesrand unzuverlässig — siehe Beschreibung des Vergleichspanels.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-          "gridPos": {"h": 9, "w": 6, "x": 18, "y": 57},
+          "gridPos": {"h": 9, "w": 6, "x": 18, "y": 61},
           "id": 19,
           "fieldConfig": {
             "defaults": {
@@ -1178,7 +1300,7 @@ data:
           "type": "row",
           "title": "Anlagengesundheit",
           "collapsed": true,
-          "gridPos": {"h": 1, "w": 24, "x": 0, "y": 66},
+          "gridPos": {"h": 1, "w": 24, "x": 0, "y": 70},
           "id": 100,
           "panels": [
             {
@@ -1186,7 +1308,7 @@ data:
               "title": "DC-Leistung je String",
               "description": "Ein dauerhaft abweichender String deutet auf Verschattung oder ein defektes Modul.",
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "gridPos": {"h": 8, "w": 12, "x": 0, "y": 67},
+              "gridPos": {"h": 8, "w": 12, "x": 0, "y": 71},
               "id": 11,
               "fieldConfig": {
                 "defaults": {
@@ -1225,7 +1347,7 @@ data:
               "type": "timeseries",
               "title": "DC-Spannung je String",
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "gridPos": {"h": 8, "w": 12, "x": 12, "y": 67},
+              "gridPos": {"h": 8, "w": 12, "x": 12, "y": 71},
               "id": 12,
               "fieldConfig": {
                 "defaults": {
@@ -1264,7 +1386,7 @@ data:
               "title": "Einstrahlung je String",
               "description": "Modellierte Einstrahlung auf die Ebene des jeweiligen Strings. pv1 zeigt nach Nordosten und liegt vormittags vorn, pv2 nach Südwesten und nachmittags — ein String weit unter dem anderen ist daher zur falschen Tageszeit normal. Diese Kurven sind die Referenz für die DC-Leistung darüber.",
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "gridPos": {"h": 8, "w": 24, "x": 0, "y": 75},
+              "gridPos": {"h": 8, "w": 24, "x": 0, "y": 79},
               "id": 20,
               "fieldConfig": {
                 "defaults": {
@@ -1298,7 +1420,7 @@ data:
               "title": "Netzspannung am Wechselrichter",
               "description": "Bei zu hoher Netzspannung regelt der Wechselrichter ab — die häufigste Erklärung für unerwartet geringe Erzeugung.",
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "gridPos": {"h": 7, "w": 8, "x": 0, "y": 83},
+              "gridPos": {"h": 7, "w": 8, "x": 0, "y": 87},
               "id": 13,
               "fieldConfig": {
                 "defaults": {
@@ -1332,7 +1454,7 @@ data:
               "type": "timeseries",
               "title": "Netzfrequenz",
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "gridPos": {"h": 7, "w": 8, "x": 8, "y": 83},
+              "gridPos": {"h": 7, "w": 8, "x": 8, "y": 87},
               "id": 14,
               "fieldConfig": {
                 "defaults": {
@@ -1366,7 +1488,7 @@ data:
               "type": "timeseries",
               "title": "Wechselrichtertemperatur",
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "gridPos": {"h": 7, "w": 8, "x": 16, "y": 83},
+              "gridPos": {"h": 7, "w": 8, "x": 16, "y": 87},
               "id": 15,
               "fieldConfig": {
                 "defaults": {
@@ -1401,7 +1523,7 @@ data:
               "title": "Datenquellen",
               "description": "Nachts meldet sich der Logger regulär ab — ein Wert von 0 ist dann kein Fehler. Die beiden Exporter müssen dagegen durchgehend auf 1 stehen.",
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "gridPos": {"h": 5, "w": 24, "x": 0, "y": 90},
+              "gridPos": {"h": 5, "w": 24, "x": 0, "y": 94},
               "id": 16,
               "fieldConfig": {
                 "defaults": {
@@ -1486,6 +1608,7 @@ data:
             "current": {"selected": false, "text": "0.2995", "value": "0.2995"},
             "hide": 0,
             "label": "Strompreis €/kWh",
+            "description": "Dezimaltrennzeichen ist der PUNKT. Der Wert geht unveraendert in die PromQL-Abfrage, ein Komma erzeugt dort einen Parse-Fehler und die betroffenen Panels zeigen \"No data\" mit Warndreieck.",
             "name": "price",
             "options": [{"selected": true, "text": "0.2995", "value": "0.2995"}],
             "query": "0.2995",
@@ -1496,6 +1619,7 @@ data:
             "current": {"selected": false, "text": "0", "value": "0"},
             "hide": 0,
             "label": "Einspeisevergütung €/kWh",
+            "description": "Dezimaltrennzeichen ist der PUNKT. Der Wert geht unveraendert in die PromQL-Abfrage, ein Komma erzeugt dort einen Parse-Fehler und die betroffenen Panels zeigen \"No data\" mit Warndreieck.",
             "name": "feedin",
             "options": [{"selected": true, "text": "0", "value": "0"}],
             "query": "0",
@@ -1503,22 +1627,34 @@ data:
             "type": "textbox"
           },
           {
-            "current": {"selected": false, "text": "0", "value": "0"},
+            "current": {"selected": false, "text": "17.90", "value": "17.90"},
             "hide": 0,
             "label": "Grundpreis €/Monat",
+            "description": "Dezimaltrennzeichen ist der PUNKT. Der Wert geht unveraendert in die PromQL-Abfrage, ein Komma erzeugt dort einen Parse-Fehler und die betroffenen Panels zeigen \"No data\" mit Warndreieck.",
             "name": "base",
-            "options": [{"selected": true, "text": "0", "value": "0"}],
-            "query": "0",
+            "options": [{"selected": true, "text": "17.90", "value": "17.90"}],
+            "query": "17.90",
             "skipUrlSync": false,
             "type": "textbox"
           },
           {
-            "current": {"selected": false, "text": "0", "value": "0"},
+            "current": {"selected": false, "text": "1788559200", "value": "1788559200"},
+            "description": "Inbetriebnahme als Unix-Zeit, hier 2026-09-05 00:00 Europe/Berlin. Neu berechnen mit: date -d 2026-09-05 +%s",
+            "hide": 2,
+            "label": "Inbetriebnahme (Unix-Zeit)",
+            "name": "start",
+            "query": "1788559200",
+            "skipUrlSync": false,
+            "type": "constant"
+          },
+          {
+            "current": {"selected": false, "text": "500", "value": "500"},
             "hide": 0,
             "label": "Anschaffung €",
+            "description": "Dezimaltrennzeichen ist der PUNKT. Der Wert geht unveraendert in die PromQL-Abfrage, ein Komma erzeugt dort einen Parse-Fehler und die betroffenen Panels zeigen \"No data\" mit Warndreieck.",
             "name": "invest",
-            "options": [{"selected": true, "text": "0", "value": "0"}],
-            "query": "0",
+            "options": [{"selected": true, "text": "500", "value": "500"}],
+            "query": "500",
             "skipUrlSync": false,
             "type": "textbox"
           }
