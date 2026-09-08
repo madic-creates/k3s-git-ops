@@ -43,7 +43,7 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
       containers:
         - name: navidrome
-          image: forge.geekbundle.org/madic/navidrome-test:5420-07cf48cb@sha256:269834d8a7447309f5dc93c2f9a141b76f7b3d0ddcd6018060ba87ec3e5a45fd
+          image: forge.geekbundle.org/madic/navidrome-test:5420-07cf48cb-p2@sha256:f823ba87b0c47a672cc8a8f444437c85b966f68b11b1db888425c6742ab6891a
           imagePullPolicy: IfNotPresent
           env:
             # No automatic scan: the copied database already holds the scanned library.
