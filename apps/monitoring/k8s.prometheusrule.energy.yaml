@@ -66,6 +66,44 @@ spec:
               1
             )
 
+        # --- Per-appliance measurement ----------------------------------
+        #
+        # Shelly Plug M Gen3 smart plugs meter individual appliances. These two
+        # rules turn them into a share-of-total view: what is actually measured,
+        # and what is left over.
+        #
+        # `max by (name)` is not optional, and the reason is the same one that
+        # cost a debugging round on the PV panels: every label the exporter
+        # attaches -- address, mac, firmwareVersion, type -- rides on each
+        # series. A firmware update or a changed IP therefore forks one
+        # appliance into two series, and a plain sum() would count that
+        # appliance twice for the length of the overlap. Aggregating to `name`
+        # ("Trockner", "Waschmaschine") collapses that back to one per plug.
+        #
+        # `or vector(0)` keeps the remainder honest while no plug reports at
+        # all: without it the subtraction below returns empty rather than the
+        # full household load.
+        - record: home:power_measured:watts
+          expr: |
+            sum(max by (name) (shelly_meter_power_current_watts)) or vector(0)
+
+        # The share of household load NOT explained by a metered appliance.
+        #
+        # clamp_min is load-bearing: the plugs and the FRITZ meter are sampled
+        # independently, so timing offsets alone produce briefly negative
+        # differences. It is not masking a modelling error -- the grid value is
+        # signed, so home:power_total:watts is the true load in both directions
+        # (see the header of this file).
+        #
+        # Expect this to be large while only some appliances are metered. That
+        # is the panel doing its job, not a fault.
+        - record: home:power_unaccounted:watts
+          expr: |
+            clamp_min(
+              home:power_total:watts - home:power_measured:watts,
+              0
+            )
+
         # --- Solar irradiance reference ---------------------------------
         #
         # Open-Meteo supplies the irradiance actually falling on each string,
@@ -228,6 +266,52 @@ spec:
 
         # Unlike the inverter, this exporter has no legitimate nightly outage,
         # so `up` may be alerted on with a short window.
+        - alert: ShellyExporterDown
+          expr: up{job="shelly-exporter"} == 0
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Shelly plug exporter is down"
+            description: "shelly-exporter has been unreachable for 10 minutes. Per-appliance consumption is missing from the energy dashboard, which makes the unaccounted remainder read as the entire household load."
+
+        # Complementary to the alert above, and not redundant: that one catches
+        # a dead pod, this one catches a HEALTHY pod that reports no appliances.
+        # Two real failure modes produce exactly that, and neither shows up as a
+        # failed scrape:
+        #
+        #  - Wrong or missing device password. Only Shelly.GetDeviceInfo is
+        #    public on these plugs; every data endpoint answers 401. Measured:
+        #    the exporter then serves 2 info series instead of 54, and the
+        #    scrape still succeeds.
+        #  - A plug that moved to a different IP. The CiliumNetworkPolicy
+        #    matches /32 CIDRs, so a lost DHCP reservation silently blocks
+        #    egress to that one plug while the others keep reporting.
+        #
+        # The threshold is the number of plugs in SHELLY_GEN2DEVICES_HOSTS in
+        # apps/monitoring-shelly-exporter/k8s.deployment.yaml. Raise it in the
+        # same commit that adds a plug, or the new plug is not actually
+        # supervised -- this is the same pin-and-guard pattern as the AIN in
+        # home:power_grid_import:watts above.
+        #
+        # `or vector(0)` is required, not defensive: count() over an empty
+        # vector returns EMPTY, not 0, so without it the total-failure case
+        # (nothing reporting at all) would never fire. The `up == 1` guard
+        # keeps this quiet while ShellyExporterDown already covers a dead pod.
+        - alert: ShellyExporterDeviceMissing
+          expr: |
+            (
+              count(count by (name) (shelly_meter_power_current_watts))
+              or vector(0)
+            ) < 2
+            and on() (up{job="shelly-exporter"} == 1)
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Fewer Shelly plugs are reporting than are configured"
+            description: "The Shelly exporter is scraping fine but fewer appliances report power than are configured in SHELLY_GEN2DEVICES_HOSTS. Most likely the device password is wrong (every Shelly data endpoint returns 401 while the public device-info endpoint keeps working, so the scrape still looks healthy), or a plug lost its DHCP reservation and is now blocked by the /32 egress rule in apps/monitoring-shelly-exporter/k8s.np.shelly-exporter.yaml. Until it is fixed, the affected appliance silently moves into the unaccounted remainder on the energy dashboard."
+
         - alert: SolarIrradianceExporterDown
           expr: up{job="openmeteo-exporter"} == 0
           for: 30m

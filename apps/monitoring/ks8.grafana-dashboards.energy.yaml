@@ -2,9 +2,10 @@
 # Discovered automatically by the Grafana sidecar via the grafana_dashboard label.
 #
 # Data sources: fritzbox-exporter (grid import, via the FRITZ!Smart Energy plug),
-# mqtt2prometheus in the solar namespace (Deye SUN-M160G4 micro inverter) and
+# mqtt2prometheus in the solar namespace (Deye SUN-M160G4 micro inverter),
 # openmeteo-exporter, also in solar, which supplies the irradiance reference the
-# expected-yield comparison is built on.
+# expected-yield comparison is built on, and shelly-exporter (per-appliance
+# power, via Shelly Plug M Gen3 smart plugs).
 # Derived series come from apps/monitoring/k8s.prometheusrule.energy.yaml.
 #
 # Series colours are fixed rather than themed because a Grafana dashboard JSON
@@ -13,6 +14,30 @@
 # band, chroma floor, CVD separation and contrast checks against both surfaces;
 # the four-string palette below likewise, with the yellow relying on the table
 # legend for label relief.
+#
+# The "Geraete" row takes the next free slots of that same categorical order
+# rather than inventing hues: slots 1-3 (blue, orange, aqua) already carry fixed
+# meanings here -- grid, generation, export -- and slot 4 (yellow #c98500) is
+# pv4. So appliances get slots 5-8: #d55181 magenta, #008300 green, #9085e9
+# violet, #e66767 red. Validated as a set against BOTH a light (#f4f5f5) and a
+# dark (#181b1f) surface, since one dashboard JSON has to serve both themes:
+# all checks pass in both, worst adjacent CVD dE 13.0 (deutan), worst
+# normal-vision dE 22.5. On the light surface violet and red fall just under
+# 3:1 contrast, which obliges the relief rule -- hence the table legend and the
+# named stat tiles, both of which label the series rather than relying on
+# colour alone.
+#
+# Colours were NOT chosen by eye. Two earlier candidate sets were rejected by
+# the validator and are recorded here so they are not retried: red next to
+# green fails protanopia separation (dE 7.2), and red next to magenta fails
+# even normal vision (dE 7.8). That is why the stack order is magenta, green,
+# violet, red and not the order the appliances happen to be listed in.
+#
+# "Rest (nicht gemessen)" is deliberately the one non-categorical colour: a
+# neutral grey #8A8D93. It fails the chroma floor on purpose -- it is not a
+# category beside the appliances but the absence of measurement, and a grey
+# band reads that way without competing with them. It sits at the top of the
+# stack, adjacent only to a validated hue.
 #
 # The grid series is SIGNED: positive while importing, negative while exporting.
 # Neither power panel may set `min: 0` or the export half is clipped away.
@@ -1590,6 +1615,206 @@ data:
                   "refId": "D"
                 }
               ]
+            }
+          ]
+        },
+        {
+          "type": "row",
+          "title": "Geräte",
+          "collapsed": false,
+          "gridPos": {"h": 1, "w": 24, "x": 0, "y": 95},
+          "id": 110,
+          "panels": []
+        },
+        {
+          "type": "stat",
+          "title": "Aktuelle Leistung je Gerät",
+          "description": "Je gemessenem Gerät eine Kachel. Die Abfrage nennt kein Gerät beim Namen, sondern gruppiert nach dem Label `name`, das der Exporter aus dem im Plug gesetzten Gerätenamen bildet — eine weitere Steckdose taucht hier also von selbst auf, sobald sie in SHELLY_GEN2DEVICES_HOSTS steht. Erscheint ein Gerät nicht, ist entweder der Gerätename im Plug leer oder der Egress zu seiner IP blockiert; ShellyExporterDeviceMissing schlägt in dem Fall Alarm.",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "gridPos": {"h": 4, "w": 12, "x": 0, "y": 96},
+          "id": 111,
+          "fieldConfig": {
+            "defaults": {"unit": "watt", "decimals": 0},
+            "overrides": [
+              {"matcher": {"id": "byName", "options": "Trockner"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#d55181"}}]},
+              {"matcher": {"id": "byName", "options": "Waschmaschine"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#008300"}}]},
+              {"matcher": {"id": "byName", "options": "Kühlschrank"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#9085e9"}}]},
+              {"matcher": {"id": "byName", "options": "Mini-Server"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#e66767"}}]}
+            ]
+          },
+          "options": {
+            "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+            "textMode": "value_and_name",
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto"
+          },
+          "targets": [
+            {
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "expr": "max by (name) (shelly_meter_power_current_watts)",
+              "legendFormat": "{{name}}",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Gemessen gesamt",
+          "description": "Summe aller Steckdosen. Gegen den Gesamtverbrauch oben gelesen zeigt der Wert, welchen Anteil des Haushalts die Steckdosen überhaupt erklären.",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "gridPos": {"h": 4, "w": 6, "x": 12, "y": 96},
+          "id": 112,
+          "fieldConfig": {
+            "defaults": {
+              "unit": "watt",
+              "decimals": 0,
+              "color": {"mode": "fixed", "fixedColor": "text"}
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+            "textMode": "auto",
+            "colorMode": "none",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto"
+          },
+          "targets": [
+            {
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "expr": "home:power_measured:watts",
+              "legendFormat": "Gemessen",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Rest (nicht gemessen)",
+          "description": "Gesamtverbrauch minus Summe der Steckdosen. Solange nur ein Teil der Geräte eine Steckdose hat, ist dieser Wert erwartungsgemäß groß — er ist die offene Frage, nicht ein Fehler. Er kann nicht negativ werden (clamp_min in der Recording Rule), weil Steckdosen und FRITZ-Zähler unabhängig voneinander abgetastet werden und allein der Zeitversatz sonst kurzzeitig negative Differenzen erzeugt.",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "gridPos": {"h": 4, "w": 6, "x": 18, "y": 96},
+          "id": 113,
+          "fieldConfig": {
+            "defaults": {
+              "unit": "watt",
+              "decimals": 0,
+              "color": {"mode": "fixed", "fixedColor": "#8A8D93"}
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+            "textMode": "auto",
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto"
+          },
+          "targets": [
+            {
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "expr": "home:power_unaccounted:watts",
+              "legendFormat": "Rest",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "Leistung je Gerät (gestapelt)",
+          "description": "Die Stapelhöhe ist der Gesamtverbrauch des Haushalts: gemessene Geräte plus der graue Rest. Dadurch ist ohne Kopfrechnen ablesbar, welchen Anteil die Steckdosen erklären. Der Rest ist bewusst grau und nicht bunt — er ist keine Kategorie neben den Geräten, sondern das, was noch nicht gemessen wird.",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "gridPos": {"h": 9, "w": 24, "x": 0, "y": 100},
+          "id": 114,
+          "fieldConfig": {
+            "defaults": {
+              "unit": "watt",
+              "decimals": 0,
+              "min": 0,
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 2,
+                "fillOpacity": 35,
+                "gradientMode": "none",
+                "showPoints": "never",
+                "stacking": {"mode": "normal", "group": "A"}
+              }
+            },
+            "overrides": [
+              {"matcher": {"id": "byName", "options": "Trockner"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#d55181"}}]},
+              {"matcher": {"id": "byName", "options": "Waschmaschine"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#008300"}}]},
+              {"matcher": {"id": "byName", "options": "Kühlschrank"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#9085e9"}}]},
+              {"matcher": {"id": "byName", "options": "Mini-Server"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#e66767"}}]},
+              {"matcher": {"id": "byName", "options": "Rest (nicht gemessen)"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#8A8D93"}}]}
+            ]
+          },
+          "options": {
+            "legend": {"displayMode": "table", "placement": "bottom", "showLegend": true, "calcs": ["lastNotNull", "mean", "max"]},
+            "tooltip": {"mode": "multi", "sort": "desc"}
+          },
+          "targets": [
+            {
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "expr": "max by (name) (shelly_meter_power_current_watts)",
+              "legendFormat": "{{name}}",
+              "refId": "A"
+            },
+            {
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "expr": "home:power_unaccounted:watts",
+              "legendFormat": "Rest (nicht gemessen)",
+              "refId": "B"
+            }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "Energie je Gerät pro Tag",
+          "description": "Ein Balken je Gerät und Kalendertag der letzten 14 Tage, aus dem Zuwachs des Lebenszählers der Steckdose. Zwei Eigenheiten, beide vom PV-Panel oben übernommen: Balken erscheinen erst ab dem ersten abgeschlossenen Tag, weil Grafana Range-Queries auf Vielfache des Schritts ausrichtet und bei Schritt 1d jeder Auswertungspunkt Mitternacht ist. Und dies ist bewusst ein Zeitreihen-Panel mit drawStyle bars statt des Balkendiagramm-Panels: letzteres verarbeitet nur einen Datensatz, mehrere Geräte ergeben mehrere Frames und damit ein leeres Panel.",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+          "gridPos": {"h": 8, "w": 24, "x": 0, "y": 109},
+          "id": 115,
+          "interval": "1d",
+          "timeFrom": "14d",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "kwatth",
+              "decimals": 2,
+              "custom": {
+                "drawStyle": "bars",
+                "barAlignment": 0,
+                "barWidthFactor": 0.7,
+                "lineWidth": 0,
+                "fillOpacity": 90,
+                "gradientMode": "none",
+                "showPoints": "never",
+                "axisSoftMin": 0
+              }
+            },
+            "overrides": [
+              {"matcher": {"id": "byName", "options": "Trockner"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#d55181"}}]},
+              {"matcher": {"id": "byName", "options": "Waschmaschine"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#008300"}}]},
+              {"matcher": {"id": "byName", "options": "Kühlschrank"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#9085e9"}}]},
+              {"matcher": {"id": "byName", "options": "Mini-Server"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#e66767"}}]}
+            ]
+          },
+          "options": {
+            "legend": {"displayMode": "table", "placement": "bottom", "showLegend": true, "calcs": ["lastNotNull", "sum"]},
+            "tooltip": {"mode": "multi", "sort": "desc"}
+          },
+          "targets": [
+            {
+              "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+              "expr": "max by (name) (increase(shelly_meter_power_watthours_total[1d])) / 1000",
+              "format": "time_series",
+              "interval": "1d",
+              "legendFormat": "{{name}}",
+              "refId": "A"
             }
           ]
         }
