@@ -32,6 +32,7 @@ resources:
   #- 17-monitoring-kubernetes-event-exporter.yaml
   #- 17-monitoring-loki.yaml
   - 17-monitoring-pushgateway.yaml
+  - 17-monitoring-shelly-exporter.yaml
   - 18-monitoring-checkmk.yaml
   - 20-csi-smb.yaml
   - 20-docker-registry-cache.yaml

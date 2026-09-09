@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shelly-exporter
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: shelly-exporter
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: shelly-exporter
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: shelly-exporter
+    spec:
+      containers:
+      - name: shelly-exporter
+        # easimon rather than the more obvious webdevops/shelly-plug-exporter,
+        # which cannot read these plugs at all: its prober switches on device
+        # generation 1/2 and a Gen3 falls into the default branch, logging
+        # "unsupported Shelly generation" and emitting zero series. Measured on
+        # a real device, not inferred. Three other exporters were tested and
+        # rejected too (Gen1-only parsing, or Basic auth, which Gen3 refuses).
+        #
+        # This one works precisely because it has NO generation auto-detection:
+        # hosts are assigned to a generation by env var, so there is no switch
+        # for Gen3 to fall through.
+        image: ghcr.io/easimon/shelly-exporter:3.0.0
+        env:
+          # Gen3 speaks the Gen2 RPC API, so the plugs belong in the GEN2 list.
+          # Adding a plug is one entry here plus one CIDR in the network policy.
+          - name: SHELLY_GEN2DEVICES_HOSTS
+            value: "192.168.1.113,192.168.1.101"
+          # Set explicitly for readability only. Shelly Gen2+ hardcodes the
+          # account name to "admin" and it cannot be changed on the device.
+          - name: SHELLY_GEN2AUTH_USERNAME
+            value: "admin"
+          # Gen2+ requires HTTP DIGEST auth; Basic is rejected with 401. Every
+          # data endpoint (Shelly.GetStatus, Shelly.GetConfig) needs it -- only
+          # Shelly.GetDeviceInfo stays public. Without this the exporter still
+          # starts and still scrapes green, but emits two info series instead
+          # of the full set, which is exactly the kind of silent half-failure
+          # the ServiceMonitor cannot see. ShellyExporterNoDevices alerts on it.
+          - name: SHELLY_GEN2AUTH_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: shelly-exporter-credentials
+                key: password
+          # The Gen1 list stays unset on purpose: there are no Gen1 devices,
+          # and a Gen1 host here would be probed with the wrong API.
+        ports:
+          - containerPort: 8080
+            name: metrics
+            protocol: TCP
+        resources:
+          requests:
+            cpu: 50m
+            # A JVM (Spring Boot) service, not a Go binary -- it needs
+            # noticeably more headroom than the sibling exporters here.
+            memory: 256Mi
+          limits:
+            memory: 512Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+        # A TCP probe, for the same reason as fritzbox-exporter: the only HTTP
+        # endpoint this image serves is /prometheus, and hitting it runs a real
+        # scrape against every plug. There is no /health or /actuator/health --
+        # both return 404 on this image (verified). Probing /prometheus would
+        # add device load for no extra signal, since `up == 0` already alerts.
+        readinessProbe:
+          tcpSocket:
+            port: metrics
+          initialDelaySeconds: 20
+          periodSeconds: 30

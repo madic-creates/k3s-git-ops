@@ -1,0 +1,55 @@
+---
+# Network policy for the Shelly plug exporter.
+#
+# It reaches each plug over plain HTTP (80) and calls only three RPC methods:
+# Shelly.GetStatus, Shelly.GetDeviceInfo and Shelly.GetConfig. Nothing else is
+# permitted, in either direction.
+#
+# The egress rules match CIDRs, so every plug IP MUST be a DHCP reservation in
+# the FRITZ!Box. A changed lease does not produce an error here -- the plug
+# simply disappears from the metrics while the exporter keeps scraping green.
+# ShellyExporterNoDevices in the energy PrometheusRule is what catches that.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: shelly-exporter
+  namespace: monitoring
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: shelly-exporter
+  ingress:
+  # Allow Prometheus to scrape metrics
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: prometheus
+        k8s:io.kubernetes.pod.namespace: monitoring
+    toPorts:
+    - ports:
+      - port: "8080"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow the local RPC API on each Shelly plug.
+  # One /32 per plug -- keep this list in step with SHELLY_GEN2DEVICES_HOSTS
+  # in k8s.deployment.yaml.
+  - toCIDR:
+    # Trockner
+    - 192.168.1.113/32
+    # Waschmaschine
+    - 192.168.1.101/32
+    toPorts:
+    - ports:
+      - port: "80"
+        protocol: TCP

@@ -1,0 +1,27 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: shelly-exporter
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: shelly-exporter
+spec:
+  endpoints:
+    # The path is NOT /metrics. This image serves the Shelly series on
+    # /prometheus; /metrics returns 404 (verified against 3.0.0). Leaving the
+    # ServiceMonitor on its default would produce a permanently failing scrape.
+    #
+    # The exporter queries every plug synchronously on scrape behind a 10s
+    # internal cache, so the timeout is kept well under the interval, as with
+    # fritzbox-exporter. Going below a 10s interval only re-reads that cache.
+    - interval: 30s
+      scrapeTimeout: 20s
+      path: /prometheus
+      port: metrics
+      scheme: http
+  namespaceSelector:
+    matchNames:
+      - monitoring
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: shelly-exporter
