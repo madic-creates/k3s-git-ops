@@ -49,6 +49,8 @@ spec:
     - 192.168.1.113/32
     # Waschmaschine
     - 192.168.1.101/32
+    # Server
+    - 192.168.1.146/32
     toPorts:
     - ports:
       - port: "80"

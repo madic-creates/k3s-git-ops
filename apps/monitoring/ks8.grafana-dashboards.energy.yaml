@@ -1639,7 +1639,7 @@ data:
               {"matcher": {"id": "byName", "options": "Trockner"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#d55181"}}]},
               {"matcher": {"id": "byName", "options": "Waschmaschine"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#008300"}}]},
               {"matcher": {"id": "byName", "options": "Kühlschrank"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#9085e9"}}]},
-              {"matcher": {"id": "byName", "options": "Mini-Server"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#e66767"}}]}
+              {"matcher": {"id": "byName", "options": "Server"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#e66767"}}]}
             ]
           },
           "options": {
@@ -1749,7 +1749,7 @@ data:
               {"matcher": {"id": "byName", "options": "Trockner"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#d55181"}}]},
               {"matcher": {"id": "byName", "options": "Waschmaschine"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#008300"}}]},
               {"matcher": {"id": "byName", "options": "Kühlschrank"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#9085e9"}}]},
-              {"matcher": {"id": "byName", "options": "Mini-Server"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#e66767"}}]},
+              {"matcher": {"id": "byName", "options": "Server"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#e66767"}}]},
               {"matcher": {"id": "byName", "options": "Rest (nicht gemessen)"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#8A8D93"}}]}
             ]
           },
@@ -1800,7 +1800,7 @@ data:
               {"matcher": {"id": "byName", "options": "Trockner"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#d55181"}}]},
               {"matcher": {"id": "byName", "options": "Waschmaschine"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#008300"}}]},
               {"matcher": {"id": "byName", "options": "Kühlschrank"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#9085e9"}}]},
-              {"matcher": {"id": "byName", "options": "Mini-Server"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#e66767"}}]}
+              {"matcher": {"id": "byName", "options": "Server"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#e66767"}}]}
             ]
           },
           "options": {

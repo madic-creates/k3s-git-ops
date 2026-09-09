@@ -303,7 +303,7 @@ spec:
             (
               count(count by (name) (shelly_meter_power_current_watts))
               or vector(0)
-            ) < 2
+            ) < 3
             and on() (up{job="shelly-exporter"} == 1)
           for: 15m
           labels:
