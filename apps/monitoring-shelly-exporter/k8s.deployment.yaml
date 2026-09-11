@@ -33,7 +33,7 @@ spec:
           # Gen3 speaks the Gen2 RPC API, so the plugs belong in the GEN2 list.
           # Adding a plug is one entry here plus one CIDR in the network policy.
           - name: SHELLY_GEN2DEVICES_HOSTS
-            value: "192.168.1.113,192.168.1.101,192.168.1.146"
+            value: "192.168.1.113,192.168.1.101,192.168.1.146,192.168.1.109"
           # Set explicitly for readability only. Shelly Gen2+ hardcodes the
           # account name to "admin" and it cannot be changed on the device.
           - name: SHELLY_GEN2AUTH_USERNAME
