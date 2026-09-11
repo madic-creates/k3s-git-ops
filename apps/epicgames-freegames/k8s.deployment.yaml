@@ -24,7 +24,7 @@ spec:
         node-role/workload: zfs
       containers:
       - name: epicgames-freegames
-        image: ghcr.io/claabs/epicgames-freegames-node@sha256:60a9781dd8a5615e873524f0d9db6e713999a0935ba49652f18069a064a051a4
+        image: ghcr.io/claabs/epicgames-freegames-node@sha256:93b00340d5e45ee2c230cc4daca5237ca7863c0cb651bb60efa43fe0cdb20afa
         resources:
           requests:
             cpu: 50m
