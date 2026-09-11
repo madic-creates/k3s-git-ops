@@ -53,6 +53,20 @@ spec:
     - 192.168.1.146/32
     # Tiefkühlschrank
     - 192.168.1.109/32
+    # Spülmaschine
+    - 192.168.1.91/32
+    # Kühlschrank
+    - 192.168.1.89/32
+    # Router
+    - 192.168.1.189/32
+    # Arbeitsplatz 1 (named neutrally in Git; the on-device name is personal)
+    - 192.168.1.66/32
+    # Arbeitsplatz 2 (named neutrally in Git; the on-device name is personal)
+    - 192.168.1.173/32
+    # Wohn Fernseher
+    - 192.168.1.108/32
+    # Wohn Verstärker
+    - 192.168.1.150/32
     toPorts:
     - ports:
       - port: "80"

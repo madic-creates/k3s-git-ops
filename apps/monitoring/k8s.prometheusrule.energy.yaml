@@ -72,20 +72,29 @@ spec:
         # rules turn them into a share-of-total view: what is actually measured,
         # and what is left over.
         #
-        # `max by (name)` is not optional, and the reason is the same one that
+        # `max by (mac)` is not optional, and the reason is the same one that
         # cost a debugging round on the PV panels: every label the exporter
-        # attaches -- address, mac, firmwareVersion, type -- rides on each
-        # series. A firmware update or a changed IP therefore forks one
-        # appliance into two series, and a plain sum() would count that
-        # appliance twice for the length of the overlap. Aggregating to `name`
-        # ("Trockner", "Waschmaschine") collapses that back to one per plug.
+        # attaches -- address, mac, name, firmwareVersion, type -- rides on each
+        # series, and an exporter pod restart adds a new `pod`/`instance` pair.
+        # Any of those events forks one appliance into two series, and a plain
+        # sum() would count that appliance twice for the length of the overlap.
+        #
+        # The MAC is the only label that no event changes. `name` was used
+        # before and is wrong: it comes from the device and changes whenever
+        # someone renames the plug in the Shelly app. That happened on
+        # 2026-09-11 -- the fourth plug went from "Kuehlschrank" to
+        # "Tiefkuehlschrank" -- and the very next plug to arrive was a real
+        # fridge named "Kuehlschrank", so by name the freezer's first hours and
+        # the new fridge collapse into one series. Two plugs that happen to
+        # share a name would merge the same way. `address` survives renames
+        # but not a new DHCP lease. The MAC survives all three.
         #
         # `or vector(0)` keeps the remainder honest while no plug reports at
         # all: without it the subtraction below returns empty rather than the
         # full household load.
         - record: home:power_measured:watts
           expr: |
-            sum(max by (name) (shelly_meter_power_current_watts)) or vector(0)
+            sum(max by (mac) (shelly_meter_power_current_watts)) or vector(0)
 
         # The share of household load NOT explained by a metered appliance.
         #
@@ -294,6 +303,10 @@ spec:
         # supervised -- this is the same pin-and-guard pattern as the AIN in
         # home:power_grid_import:watts above.
         #
+        # Counted per MAC, not per name, for the reason given at
+        # home:power_measured:watts: by name, a rename or two plugs sharing a
+        # name would count one device twice or two devices once.
+        #
         # `or vector(0)` is required, not defensive: count() over an empty
         # vector returns EMPTY, not 0, so without it the total-failure case
         # (nothing reporting at all) would never fire. The `up == 1` guard
@@ -301,9 +314,9 @@ spec:
         - alert: ShellyExporterDeviceMissing
           expr: |
             (
-              count(count by (name) (shelly_meter_power_current_watts))
+              count(count by (mac) (shelly_meter_power_current_watts))
               or vector(0)
-            ) < 4
+            ) < 11
             and on() (up{job="shelly-exporter"} == 1)
           for: 15m
           labels:
