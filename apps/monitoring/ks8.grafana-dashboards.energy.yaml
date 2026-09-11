@@ -1104,7 +1104,7 @@ data:
         {
           "type": "stat",
           "title": "Grundlast",
-          "description": "Niedrigster Gesamtverbrauch der letzten 24 Stunden — was das Haus dauerhaft zieht, wenn niemand etwas einschaltet. Gerechnet wird auf dem Gesamtverbrauch und nicht auf dem Netzbezug, damit die PV die Zahl nicht nach unten faelscht.",
+          "description": "Niedrigster Gesamtverbrauch der letzten 24 Stunden — was das Haus dauerhaft zieht, wenn niemand etwas einschaltet. Gewertet werden nur Zeiten OHNE PV-Erzeugung, praktisch also die Nacht. Grund: der Gesamtverbrauch ist Netz plus Erzeugung, und die beiden Quellen aktualisieren unterschiedlich schnell — der Wechselrichter nur etwa alle 5 Minuten, der FRITZ-Zaehler etwa alle 2. Kommt mittags die Sonne hinter einer Wolke hervor, sieht der Zaehler die Einspeisung sofort, der Wechselrichter meldet noch den alten Wert, und die Summe wird fuer ein paar Minuten zu niedrig, sogar negativ. Ein Minimum greift genau diese Ausreisser heraus. Ohne PV gibt es nur eine Quelle und keinen Versatz.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "gridPos": {"h": 5, "w": 8, "x": 16, "y": 42},
           "id": 31,
@@ -1127,7 +1127,7 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "expr": "min_over_time(home:power_total:watts[24h])",
+              "expr": "min_over_time((home:power_total:watts unless on() (home:power_generation:watts > 0))[24h:1m])",
               "instant": true,
               "legendFormat": "Grundlast",
               "refId": "A"
@@ -1137,7 +1137,7 @@ data:
         {
           "type": "stat",
           "title": "Grundlast pro Jahr",
-          "description": "Die Grundlast darueber, auf 8760 Stunden gerechnet und mit dem Strompreis bewertet: was Dauerverbrauch und Standby im Jahr kosten. Das ist eine Obergrenze fuer das Sparpotenzial, kein Ist-Wert — sie unterstellt, dass das Minimum der letzten 24 Stunden rund um die Uhr anliegt. Der Wert reagiert entsprechend empfindlich darauf, ob in den letzten 24 Stunden ueberhaupt eine ruhige Stunde vorkam.",
+          "description": "Die Grundlast darueber, auf 8760 Stunden gerechnet und mit dem Strompreis bewertet: was Dauerverbrauch und Standby im Jahr kosten. Das ist eine Obergrenze fuer das Sparpotenzial, kein Ist-Wert — sie unterstellt, dass das naechtliche Minimum der letzten 24 Stunden rund um die Uhr anliegt. Warum nur Zeiten ohne PV zaehlen, steht beim Panel Grundlast.",
           "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "gridPos": {"h": 5, "w": 8, "x": 16, "y": 47},
           "id": 32,
@@ -1160,7 +1160,7 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
-              "expr": "min_over_time(home:power_total:watts[24h]) / 1000 * 8760 * $price",
+              "expr": "min_over_time((home:power_total:watts unless on() (home:power_generation:watts > 0))[24h:1m]) / 1000 * 8760 * $price",
               "instant": true,
               "legendFormat": "Grundlast pro Jahr",
               "refId": "A"
