@@ -81,6 +81,13 @@ spec:
         # BPF host routing bypasses iptables for pod traffic - lower latency
         bpf:
           hostLegacyRouting: false
+          # Allow per-service override of the load balancing mode (SNAT or DSR)
+          # via the service.cilium.io/forwarding-mode annotation.
+          # Needed for services reached through the vps08 WireGuard tunnel: with
+          # DSR, a remote backend answers from its own tunnel interface using the
+          # original service address as source, which WireGuard drops because that
+          # address is not in that peer's AllowedIPs.
+          lbModeAnnotation: true
         # Socket-level LB intercepts at syscall level, bypassing network stack
         socketLB:
           enabled: true

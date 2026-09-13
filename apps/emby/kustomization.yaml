@@ -54,6 +54,16 @@ helmCharts:
           type: LoadBalancer
           annotations:
             lbipam.cilium.io/ips: 192.168.1.233
+            # Force SNAT instead of the cluster-wide DSR (loadBalancer.mode: hybrid).
+            # Emby runs a single replica, so requests arriving on any other node are
+            # forwarded to that one backend. Under DSR the backend node replies
+            # directly out of its own wg-overlay interface using the original service
+            # address as source (e.g. 192.168.2.2:31961 leaving node03), which the
+            # vps08 WireGuard peer drops because that address is not in node03's
+            # AllowedIPs. SNAT keeps the reply on the ingress node, so it leaves
+            # through the matching tunnel. Trade-off: the pod sees the node IP
+            # instead of the client IP.
+            service.cilium.io/forwarding-mode: snat
           #externalTrafficPolicy: Local
           #ports:
           #  http:
