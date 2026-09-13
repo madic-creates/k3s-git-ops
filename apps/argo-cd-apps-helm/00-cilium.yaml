@@ -83,10 +83,8 @@ spec:
           hostLegacyRouting: false
           # Allow per-service override of the load balancing mode (SNAT or DSR)
           # via the service.cilium.io/forwarding-mode annotation.
-          # Needed for services reached through the vps08 WireGuard tunnel: with
-          # DSR, a remote backend answers from its own tunnel interface using the
-          # original service address as source, which WireGuard drops because that
-          # address is not in that peer's AllowedIPs.
+          # Note: the agent refuses to start with bpf-lb-mode: hybrid while this
+          # is enabled - the cluster default must be either snat or dsr.
           lbModeAnnotation: true
         # Socket-level LB intercepts at syscall level, bypassing network stack
         socketLB:
@@ -96,7 +94,17 @@ spec:
           enabled: true
           bbr: true
         loadBalancer:
-          mode: hybrid
+          # snat, not dsr. Under DSR a remote backend answers the client directly
+          # out of its own interface using the original service address as source.
+          # For clients arriving over the vps08 WireGuard tunnel those replies are
+          # dropped by cryptokey routing, because the source address belongs to a
+          # different peer's AllowedIPs. SNAT keeps the reply on the ingress node,
+          # so it leaves through the tunnel the request came in on.
+          # This was hybrid before, which is DSR for TCP and SNAT for UDP, so UDP
+          # behaviour is unchanged (pihole DNS/DHCP, minecraft bedrock).
+          # Client source IP is still preserved for local backends, so the Traefik
+          # DaemonSet - the main ingress path - is unaffected.
+          mode: snat
   destination:
     server: "https://kubernetes.default.svc"
     namespace: kube-system
