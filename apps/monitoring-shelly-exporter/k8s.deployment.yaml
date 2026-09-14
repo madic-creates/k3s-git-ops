@@ -28,7 +28,7 @@ spec:
         # This one works precisely because it has NO generation auto-detection:
         # hosts are assigned to a generation by env var, so there is no switch
         # for Gen3 to fall through.
-        image: ghcr.io/easimon/shelly-exporter:3.0.0
+        image: ghcr.io/easimon/shelly-exporter:3.0.1
         env:
           # Gen3 speaks the Gen2 RPC API, so the plugs belong in the GEN2 list.
           # Adding a plug is one entry here plus one CIDR in the network policy.
