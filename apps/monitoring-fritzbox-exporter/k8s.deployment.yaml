@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: fritzbox-exporter
-        image: pdreker/fritz_exporter:3.5.0
+        image: pdreker/fritz_exporter:3.5.1
         env:
           - name: FRITZ_NAME
             value: "FRITZ!Box 6591 Cable"
