@@ -5,7 +5,7 @@
 
 image:
   repository: ghcr.io/madic-creates/code-server-toolbox
-  tag: 'latest@sha256:bda0fe34892a3177e5cc31ea5e432150b1e9c6aadcc5f0ecd746eed5b3957465'
+  tag: 'latest@sha256:4346c739136b2fe9748f7c207d7f870b65922b2646ed7c1766970c9c50b1c79f'
   pullPolicy: IfNotPresent
 
 # Auth disabled — code-server is fronted by Authelia via the Ingress.
