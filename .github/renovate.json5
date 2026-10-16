@@ -49,6 +49,17 @@
       automerge: false,
     },
     {
+      // llama.cpp server-cuda is a rolling tag pinned by digest; auto-merge
+      // digest bumps, keep tag changes manual. Must come after the rule above.
+      matchFileNames: [
+        'apps/llama-cpp/**',
+      ],
+      matchUpdateTypes: [
+        'digest',
+      ],
+      automerge: true,
+    },
+    {
       matchDatasources: [
         'helm',
       ],
