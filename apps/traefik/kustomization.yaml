@@ -33,7 +33,9 @@ helmCharts:
     includeCRDs: true
     valuesInline:
       core:
-        defaultRuleSyntax: v2
+        # defaultRuleSyntax is left unset so Traefik uses its v3 default. All
+        # IngressRoute matchers (Host, PathPrefix, HostSNI, Query(key, value))
+        # are written in v3 syntax.
         # Disable routers with conflicting TLS options instead of silently
         # falling back to the default TLS options (GHSA-g55h-rg46-x9c5).
         strictTLSOptions: true
