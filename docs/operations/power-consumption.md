@@ -22,7 +22,40 @@ Findings of a power audit of the four cluster nodes (October 2026, td-08070d). N
 
 About 75 % of the draw is a base load that does not depend on CPU load. The 5-95 % band is only 22 W wide.
 
-A regression of the Shelly power against the CPU load of all four nodes has R² = 0.021, with some coefficients negative. That is no signal at all. The total cannot be split per node from correlation alone. It needs a controlled experiment (load or power off one node at a time).
+A regression of the Shelly power against the CPU load of all four nodes has R² = 0.021, with some coefficients negative. That is no signal at all. The total cannot be split per node from correlation alone. It needs a controlled experiment, see below.
+
+## Per-node load experiment
+
+td-866186 put one node at a time under full CPU load and read the change on the `Server` plug. Each node got 6 minutes of load: one niced shell busy loop per hardware thread, stopped by `timeout`. Every load window had a 6-minute idle window before and after it. The first 60 s of each window were dropped, which leaves 10 samples per window at the 30 s scrape interval.
+
+| Window | Mean (W) | Min (W) | Max (W) |
+|---|---|---|---|
+| idle | 191.7 | 185.3 | 199.2 |
+| load node01 | 240.6 | 229.8 | 277.0 |
+| idle | 201.7 | 186.8 | 223.2 |
+| load node02 | 240.6 | 232.1 | 253.1 |
+| idle | 193.6 | 185.0 | 209.3 |
+| load node03 | 229.5 | 225.7 | 234.7 |
+| idle | 196.5 | 187.8 | 209.5 |
+| load node04 | 232.8 | 226.8 | 241.2 |
+| idle | 202.0 | 191.2 | 232.7 |
+
+The delta is the load window minus the mean of the idle windows on either side:
+
+| Node | CPU | Delta under full load |
+|---|---|---|
+| node01 | i5-10210U, 4C/8T | +44 W |
+| node02 | i5-10210U, 4C/8T | +43 W |
+| node03 | i5-10210U, 4C/8T | +34 W |
+| node04 | Ryzen 5 3600, 6C/12T | +34 W |
+
+What this means:
+
+- The NUC BIOS raises the RAPL limits far above the 15 W TDP of the i5-10210U: PL1 (long term) is 30 W, PL2 (short term) is 64 W. A loaded NUC therefore draws 35-45 W more at the wall. That is the PL1 package limit plus voltage regulator and power supply losses.
+- At idle, the three NUCs together are only a small part of the ~195 W total. Under load, each of them can add as much as node04.
+- node04 adds the least relative to its size. A scalar shell loop does not reach the Ryzen package power limit; AVX-heavy work would draw more.
+- The idle windows vary by 10 W (191.7-202.0 W). Treat the deltas as ±5 W.
+- This measures how much each node adds under load, not how the idle draw is split. Splitting the idle draw needs one node at a time powered off, or a separate plug on the NUC rail (td-8da11b).
 
 ## node04 (AMD, storage and GPU node)
 
@@ -84,4 +117,4 @@ The node02 display finding still matters: a monitor left on a node keeps the dis
 | td-709827 | Test runtime PM for the RTX 3060 Ti on node04 (done: not supported, no D3cold) |
 | td-8da11b | Add a 4th Shelly plug to meter the NUC rail |
 | td-74ae82 | Unblock package C-states on the NUCs (done: blocked by the k3s timer wakeup rate, no fix) |
-| td-866186 | Controlled per-node power experiment |
+| td-866186 | Controlled per-node power experiment (done: load deltas above, idle split still open) |
