@@ -39,13 +39,11 @@ A regression of the Shelly power against the CPU load of all four nodes has R² 
 
 Scaling all llama-cpp Deployments to 0 replicas did **not** lower the GPU draw: it stayed at 13.83 W in P8 with 1 MiB VRAM in use and no process on the card. The nvidia driver stays loaded and PCIe runtime PM for the card (`07:00.0`) is `on`, so the card never drops below P8.
 
-Scaling llama-cpp down therefore saves no power. The intended state is the one in Git: `llama-cpp-qwen2.5-coder` at 1 replica, `llama-cpp-andy-4` at 0. ArgoCD ignores `replicas` for these Deployments (see `apps/argo-cd-apps/65-llama-cpp.yaml`), so if the live cluster still runs qwen2.5-coder at 0 after the test, restore it by hand:
+Scaling llama-cpp down therefore saves no power. The llama-cpp Deployments are scaled by hand on demand, so 0 live replicas is a normal state. ArgoCD ignores `replicas` for these Deployments (see `apps/argo-cd-apps/65-llama-cpp.yaml`).
 
-```bash
-kubectl -n llama-cpp scale deploy/llama-cpp-qwen2.5-coder --replicas=1
-```
+The driver's runtime D3 power management cannot help on this board (td-709827). Powering the card off at idle needs D3cold, which requires ACPI `_PR3` power resources on the PCIe root port. The root port of the card (`00:03.1`, `\_SB_.PCI0.GPP8`) has none. The driver (`nvidia-open-lts` 595.71.05) already runs with `DynamicPowerManagement=3` (auto) and reports `Runtime D3 status: Disabled by default` in `/proc/driver/nvidia/gpus/0000:07:00.0/power`. Forcing `NVreg_DynamicPowerManagement=0x02` would not change that.
 
-The next step is to test the driver's runtime power management (`NVreg_DynamicPowerManagement=0x02` plus `power/control=auto`), or to remove the card if it is not needed.
+The card stays installed, so about 14 W in P8 is the idle floor of the GPU on node04.
 
 ## node01-03 (Intel NUC10i5FNH, i5-10210U)
 
@@ -65,7 +63,7 @@ The next step is to test the driver's runtime power management (`NVreg_DynamicPo
 | td issue | Topic |
 |---|---|
 | td-d17e4e | Fix the recurring Longhorn `backup ls` poll on node01 |
-| td-709827 | Test runtime PM for the RTX 3060 Ti on node04 |
+| td-709827 | Test runtime PM for the RTX 3060 Ti on node04 (done: not supported, no D3cold) |
 | td-8da11b | Add a 4th Shelly plug to meter the NUC rail |
 | td-74ae82 | Unblock package C-states on the NUCs (depends on td-8da11b) |
 | td-866186 | Controlled per-node power experiment |
