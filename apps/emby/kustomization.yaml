@@ -63,7 +63,9 @@ helmCharts:
             # vps08 WireGuard peer drops because that address is not in node03's
             # AllowedIPs. SNAT keeps the reply on the ingress node, so it leaves
             # through the matching tunnel. Trade-off: the pod sees the node IP
-            # instead of the client IP.
+            # instead of the client IP. externalTrafficPolicy: Local would keep the
+            # client IP, but the NodePorts used by tunnel clients would then answer
+            # only on the node hosting the pod. See docs/loadbalancer.md.
             service.cilium.io/forwarding-mode: snat
           #externalTrafficPolicy: Local
           #ports:
