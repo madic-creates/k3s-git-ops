@@ -1,5 +1,8 @@
 creation_rules:
-  # authelia specific helm values file
+  # authelia specific helm values file. Keep encrypted_regex identical to the one
+  # stored in the file's sops metadata: `value` covers the OIDC JWKS private key.
+  # This rule only matches a temp copy whose path ends in apps/authelia/values.enc.yaml;
+  # any other name falls through to the generic rule and leaks that key (see CLAUDE.md).
   - path_regex: apps/authelia/values.enc.yaml
     encrypted_regex: "^(value|domain|subdomain|default_redirection_url|base_dn|user|secret|sender|redirect_uris|client_secret|authelia_url)$"
     age: "age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8,age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27"

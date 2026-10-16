@@ -110,26 +110,34 @@ EDITOR='sed -i "1i\\# my comment line"' \
 Use this for: prepending/appending lines, single-line `s/.../.../` replacements,
 deleting a line, toggling `needs-hash: "true|false"`. Verify with `sops -d <file>`.
 
-**Workflow B — decrypt to `/tmp/*.enc.yaml`, edit with the `Edit` tool, re-encrypt
-(preferred for multi-line or structural changes):**
+**Workflow B — decrypt to a mirrored path under `/tmp`, edit with the `Edit` tool,
+re-encrypt (preferred for multi-line or structural changes):**
 ```bash
-# 1. Decrypt to /tmp with a name matching the .sops.yaml path_regex (.*.enc.yaml)
-sops --config .sops.yaml -d apps/myapp/secrets.enc.yaml > /tmp/myapp.enc.yaml
+# 1. Decrypt to /tmp, keeping the repo-relative path. `sops -e` picks its
+#    encrypted_regex from the FIRST .sops.yaml rule whose path_regex matches the
+#    temp file's path, not from the original file's metadata. A flat name like
+#    /tmp/authelia.enc.yaml only matches the generic `.*.enc.yaml` rule, which
+#    does not cover authelia's `value` keys and leaves the OIDC JWKS private key
+#    in plaintext. The mirrored path still matches path-specific rules.
+mkdir -p /tmp/sops-edit/apps/myapp
+sops --config .sops.yaml -d apps/myapp/secrets.enc.yaml > /tmp/sops-edit/apps/myapp/secrets.enc.yaml
 
-# 2. Edit /tmp/myapp.enc.yaml with the Read+Edit tools (Read is allowed under /tmp/**)
+# 2. Edit the temp file with the Read+Edit tools (Read is allowed under /tmp/**)
 
 # 3. Re-encrypt back over the original
-sops --config .sops.yaml -e /tmp/myapp.enc.yaml > apps/myapp/secrets.enc.yaml
+sops --config .sops.yaml -e /tmp/sops-edit/apps/myapp/secrets.enc.yaml > apps/myapp/secrets.enc.yaml
 
 # 4. Wipe the plaintext temp file (rm is not allowlisted; truncate instead)
-: > /tmp/myapp.enc.yaml
+: > /tmp/sops-edit/apps/myapp/secrets.enc.yaml
 ```
 Always verify with `sops --config .sops.yaml -d apps/myapp/secrets.enc.yaml` and
-`git diff --stat` before committing. Note: each `sops -e` round produces a new
-MAC/IV, so the ciphertext will differ even when the plaintext is unchanged — that
-is normal.
+`git diff` before committing: the `encrypted_regex` line in the `sops:` metadata
+must be unchanged, every changed value must be `ENC[...]`, and
+`grep -n "PRIVATE KEY" apps/myapp/secrets.enc.yaml` must print nothing. Note: each
+`sops -e` round produces a new MAC/IV, so the ciphertext will differ even when the
+plaintext is unchanged — that is normal.
 
-**Do not** commit a `*_decrypted.yaml` or `/tmp/*.enc.yaml` plaintext copy back
+**Do not** commit a `*_decrypted.yaml` or `/tmp/**/*.enc.yaml` plaintext copy back
 into the repo, and never paste decrypted secret values into chat or commit
 messages.
 
