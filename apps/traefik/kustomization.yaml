@@ -34,6 +34,9 @@ helmCharts:
     valuesInline:
       core:
         defaultRuleSyntax: v2
+        # Disable routers with conflicting TLS options instead of silently
+        # falling back to the default TLS options (GHSA-g55h-rg46-x9c5).
+        strictTLSOptions: true
       deployment:
         kind: DaemonSet
       # Since chart v40, type/ipFamilyPolicy etc. must be set under service.spec
@@ -60,6 +63,10 @@ helmCharts:
             default: true
           exposedPort: 80
           nodePort: 30080
+          http:
+            # Drop headers whose name aliases another one (e.g. Remote_User for
+            # Remote-User) so clients cannot spoof Authelia ForwardAuth headers.
+            aliasHeadersStrategy: delete
         websecure:
           port: 8443
           expose:
@@ -67,6 +74,7 @@ helmCharts:
           exposedPort: 443
           nodePort: 30443
           http:
+            aliasHeadersStrategy: delete
             tls:
               enabled: true
         web239:
@@ -75,6 +83,8 @@ helmCharts:
             default: false
             vip239: true
           exposedPort: 80
+          http:
+            aliasHeadersStrategy: delete
         websecure239:
           port: 8444
           expose:
@@ -82,6 +92,7 @@ helmCharts:
             vip239: true
           exposedPort: 443
           http:
+            aliasHeadersStrategy: delete
             tls:
               enabled: true
         # Dedicated entrypoint for the CheckMK agent-receiver (TLS passthrough).

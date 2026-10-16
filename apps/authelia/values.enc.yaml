@@ -17,6 +17,10 @@ ingress:
     traefikCRD:
         enabled: true
         disableIngressRoute: true
+        middlewares:
+            auth:
+                # Caps the ForwardAuth response body at 2 MiB (Traefik >= v3.6.9 option).
+                enableMaxResponseBodySize: true
     tls:
         enabled: true
         secret: ENC[AES256_GCM,data:/omu4nOfCaY3pghv9NBMwer1HyKLU5CW7rT92SB5lUpT,iv:2TwLd8vnH4emLbmCEc1k4qaKCqm9dOTcapK0kmlXPvA=,tag:oiyEnTdkpzRewWcuvJus7w==,type:str]
@@ -80,7 +84,7 @@ configMap:
               policy: one_factor
               resources:
                 - ^/rest/.*$
-            - domain: ENC[AES256_GCM,data:U+8hmOb9yYbVZl/aBo2r/KmQ,iv:yUZrevjLMmPaLWC3QFVD8GhyRdSCjFv61KofsjdkHHg=,tag:g9pXw3ikQ3sOWSAyO7wKhQ==,type:str]
+            - domain: ENC[AES256_GCM,data:no423rmGgnXglhQ96Ix9X/98,iv:KhEvO5qf+7PWxoTkPrHO17xGq5rdyTAdhp1RMuuf7U4=,tag:xM7K2D9M86AopFrTJx+4Pw==,type:str]
               policy: bypass
               resources:
                 - ^/favicon.*$
@@ -266,6 +270,6 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(value|domain|subdomain|default_redirection_url|base_dn|user|secret|sender|redirect_uris|client_secret|authelia_url)$
-    lastmodified: "2026-05-20T14:20:21Z"
-    mac: ENC[AES256_GCM,data:0iZUyo0S4jOlEr6Ol10jfKUNWuoyzNxN4RSjNGaExAWQAZMJr0DwnFUrvjIruBB2pgNZTU4bXtUv0qbYhq9xG1JQQK/h+5IAmxrWNjRsaPzM8LHjR48264NdTHOnP4Pz0aXQypQzhZyylLMt2EfmmPOxMUlfdE93kSPi7dLGjGM=,iv:gcQhH15t/kolkMHVO4xTkjXDlU486GQ9UU6oNzMhF9k=,tag:7O6zJlOuut/A7HGH67PrNg==,type:str]
-    version: 3.13.0
+    lastmodified: "2026-10-16T10:27:31Z"
+    mac: ENC[AES256_GCM,data:p8JCIPWHWkt7CeJ539ULadrnIFW1L+W2PCkhXCl5snqwcBavHxgK1Y7c2GVCJ/fRR8csSONgaVswihce8wUDGUAig840sTc2QZNx5SQ3zvnrjYcLCyh6XorSwWVIrml+egF8E4mUh0zoPOEKqAUwnXwBh/37/kyBs2YzfpknedQ=,iv:C4GDeFQrCmdxuVDib8aRPUMvxIfcHIi3FQ9CX5BZLfg=,tag:MA0otybxKHDJp+9bjz1tiA==,type:str]
+    version: 3.13.3
