@@ -1,0 +1,569 @@
+---
+# Network Policy for Longhorn UI
+# The Longhorn UI provides the web interface for managing Longhorn storage.
+# It needs to receive traffic from Traefik ingress controller.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: longhorn-ui
+  namespace: longhorn
+  annotations:
+    argocd.argoproj.io/sync-wave: "15"
+spec:
+  endpointSelector:
+    matchLabels:
+      app: longhorn-ui
+  ingress:
+  # Allow Traefik to reach Longhorn UI
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/instance: traefik-kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+    toPorts:
+    - ports:
+      - port: "8000"
+        protocol: TCP
+  # Allow internal communication from longhorn-manager
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: longhorn
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to longhorn-frontend service
+  - toEndpoints:
+    - matchLabels:
+        k8s:app: longhorn-manager
+        k8s:io.kubernetes.pod.namespace: longhorn
+    toPorts:
+    - ports:
+      - port: "9500"
+        protocol: TCP
+  # Allow communication with other longhorn components
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: longhorn
+---
+# Network Policy for Longhorn Manager
+# The Longhorn Manager is a DaemonSet that runs on each node and manages
+# the Longhorn storage system. It needs extensive access to:
+# - Kubernetes API server
+# - Other longhorn-manager instances
+# - Instance managers, engine images, CSI components
+# - External S3/Wasabi for backups
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: longhorn-manager
+  namespace: longhorn
+  annotations:
+    argocd.argoproj.io/sync-wave: "15"
+spec:
+  endpointSelector:
+    matchLabels:
+      app: longhorn-manager
+  ingress:
+  # Allow access from other longhorn components
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: longhorn
+  # Allow access from kube-system (kubelet, kube-apiserver)
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: kube-system
+  # Allow access from host networking (kubelet health checks)
+  - fromEntities:
+    - host
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to Kubernetes API server
+  - toEntities:
+    - kube-apiserver
+  # Allow communication with all longhorn components in the same namespace
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: longhorn
+  # Allow external access for S3/Wasabi backups
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+      - port: "80"
+        protocol: TCP
+---
+# Network Policy for Longhorn CSI Plugin
+# The CSI plugin runs as a DaemonSet on each node and handles
+# volume operations. It needs to communicate with:
+# - Instance managers
+# - Longhorn manager
+# - Kubernetes API
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: longhorn-csi-plugin
+  namespace: longhorn
+  annotations:
+    argocd.argoproj.io/sync-wave: "15"
+spec:
+  endpointSelector:
+    matchLabels:
+      app: longhorn-csi-plugin
+  ingress:
+  # Allow access from kube-system (kubelet)
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: kube-system
+  # Allow access from longhorn components
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: longhorn
+  # Allow access from host networking (kubelet, metrics scraping)
+  - fromEntities:
+    - host
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to Kubernetes API server
+  - toEntities:
+    - kube-apiserver
+  # Allow communication with longhorn components
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: longhorn
+---
+# Network Policy for CSI Attacher
+# The CSI Attacher watches VolumeAttachment objects and attaches/detaches volumes.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: csi-attacher
+  namespace: longhorn
+  annotations:
+    argocd.argoproj.io/sync-wave: "15"
+spec:
+  endpointSelector:
+    matchLabels:
+      app: csi-attacher
+  ingress:
+  # Allow access from kube-system
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: kube-system
+  # Allow access from host for metrics
+  - fromEntities:
+    - host
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to Kubernetes API server
+  - toEntities:
+    - kube-apiserver
+  # Allow communication with longhorn CSI plugin
+  - toEndpoints:
+    - matchLabels:
+        k8s:app: longhorn-csi-plugin
+        k8s:io.kubernetes.pod.namespace: longhorn
+---
+# Network Policy for CSI Provisioner
+# The CSI Provisioner watches PersistentVolumeClaim objects and provisions volumes.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: csi-provisioner
+  namespace: longhorn
+  annotations:
+    argocd.argoproj.io/sync-wave: "15"
+spec:
+  endpointSelector:
+    matchLabels:
+      app: csi-provisioner
+  ingress:
+  # Allow access from kube-system
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: kube-system
+  # Allow access from host for metrics
+  - fromEntities:
+    - host
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to Kubernetes API server
+  - toEntities:
+    - kube-apiserver
+  # Allow communication with longhorn CSI plugin
+  - toEndpoints:
+    - matchLabels:
+        k8s:app: longhorn-csi-plugin
+        k8s:io.kubernetes.pod.namespace: longhorn
+---
+# Network Policy for CSI Resizer
+# The CSI Resizer watches PersistentVolumeClaim objects and resizes volumes.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: csi-resizer
+  namespace: longhorn
+  annotations:
+    argocd.argoproj.io/sync-wave: "15"
+spec:
+  endpointSelector:
+    matchLabels:
+      app: csi-resizer
+  ingress:
+  # Allow access from kube-system
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: kube-system
+  # Allow access from host for metrics
+  - fromEntities:
+    - host
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to Kubernetes API server
+  - toEntities:
+    - kube-apiserver
+  # Allow communication with longhorn CSI plugin
+  - toEndpoints:
+    - matchLabels:
+        k8s:app: longhorn-csi-plugin
+        k8s:io.kubernetes.pod.namespace: longhorn
+---
+# Network Policy for CSI Snapshotter
+# The CSI Snapshotter watches VolumeSnapshot objects and creates snapshots.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: csi-snapshotter
+  namespace: longhorn
+  annotations:
+    argocd.argoproj.io/sync-wave: "15"
+spec:
+  endpointSelector:
+    matchLabels:
+      app: csi-snapshotter
+  ingress:
+  # Allow access from kube-system
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: kube-system
+  # Allow access from host for metrics
+  - fromEntities:
+    - host
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to Kubernetes API server
+  - toEntities:
+    - kube-apiserver
+  # Allow communication with longhorn CSI plugin
+  - toEndpoints:
+    - matchLabels:
+        k8s:app: longhorn-csi-plugin
+        k8s:io.kubernetes.pod.namespace: longhorn
+---
+# Network Policy for Instance Managers
+# Instance managers run on each node and manage volume engine and replica processes.
+# They need to communicate with each other for replication and with longhorn-manager.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: instance-manager
+  namespace: longhorn
+  annotations:
+    argocd.argoproj.io/sync-wave: "15"
+spec:
+  endpointSelector:
+    matchLabels:
+      longhorn.io/component: instance-manager
+  ingress:
+  # Allow access from other instance managers for volume replication
+  - fromEndpoints:
+    - matchLabels:
+        k8s:longhorn.io/component: instance-manager
+        k8s:io.kubernetes.pod.namespace: longhorn
+  # Allow access from longhorn-manager and CSI components
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: longhorn
+  # Allow access from host networking (iSCSI, metrics)
+  - fromEntities:
+    - host
+  # Allow access from all pods that may mount volumes
+  - fromEndpoints:
+    - {}
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to Kubernetes API server
+  - toEntities:
+    - kube-apiserver
+  # Allow communication with other instance managers
+  - toEndpoints:
+    - matchLabels:
+        k8s:longhorn.io/component: instance-manager
+        k8s:io.kubernetes.pod.namespace: longhorn
+  # Allow communication with longhorn-manager
+  - toEndpoints:
+    - matchLabels:
+        k8s:app: longhorn-manager
+        k8s:io.kubernetes.pod.namespace: longhorn
+---
+# Network Policy for Engine Images
+# Engine images are DaemonSets that provide the Longhorn engine container image.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: engine-image
+  namespace: longhorn
+  annotations:
+    argocd.argoproj.io/sync-wave: "15"
+spec:
+  endpointSelector:
+    matchLabels:
+      longhorn.io/component: engine-image
+  ingress:
+  # Allow access from longhorn-manager
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app: longhorn-manager
+        k8s:io.kubernetes.pod.namespace: longhorn
+  # Allow access from instance managers
+  - fromEndpoints:
+    - matchLabels:
+        k8s:longhorn.io/component: instance-manager
+        k8s:io.kubernetes.pod.namespace: longhorn
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+---
+# Network Policy for Longhorn Driver Deployer
+# The driver deployer installs the CSI driver on the nodes.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: longhorn-driver-deployer
+  namespace: longhorn
+  annotations:
+    argocd.argoproj.io/sync-wave: "15"
+spec:
+  endpointSelector:
+    matchLabels:
+      app: longhorn-driver-deployer
+  ingress:
+  # Allow access from kube-system
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: kube-system
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to Kubernetes API server
+  - toEntities:
+    - kube-apiserver
+  # Allow communication with CSI plugin
+  - toEndpoints:
+    - matchLabels:
+        k8s:app: longhorn-csi-plugin
+        k8s:io.kubernetes.pod.namespace: longhorn
+---
+# Network Policy for Share Manager
+# Share managers provide NFS access to Longhorn volumes.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: share-manager
+  namespace: longhorn
+  annotations:
+    argocd.argoproj.io/sync-wave: "15"
+spec:
+  endpointSelector:
+    matchExpressions:
+    - key: app
+      operator: In
+      values:
+      - share-manager
+  ingress:
+  # Allow NFS access from any pod that needs to mount the volume
+  - fromEndpoints:
+    - {}
+  # Allow access from longhorn-manager
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app: longhorn-manager
+        k8s:io.kubernetes.pod.namespace: longhorn
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow communication with instance managers
+  - toEndpoints:
+    - matchLabels:
+        k8s:longhorn.io/component: instance-manager
+        k8s:io.kubernetes.pod.namespace: longhorn
+---
+# Network Policy for VersityGW (S3 Gateway)
+# VersityGW provides S3-compatible API access to Longhorn volumes.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: versitygw
+  namespace: longhorn
+  annotations:
+    argocd.argoproj.io/sync-wave: "16"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: versitygw
+  ingress:
+  # Allow Traefik to reach VersityGW
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/instance: traefik-kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+    toPorts:
+    - ports:
+      - port: "7070"
+        protocol: TCP
+  # Allow access from any pod that needs S3 access
+  - fromEndpoints:
+    - {}
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow access to instance managers for volume data
+  - toEndpoints:
+    - matchLabels:
+        k8s:longhorn.io/component: instance-manager
+        k8s:io.kubernetes.pod.namespace: longhorn
+  # Allow access to share managers
+  - toEndpoints:
+    - matchExpressions:
+      - key: k8s:app
+        operator: In
+        values:
+        - share-manager
+      k8s:io.kubernetes.pod.namespace: longhorn
