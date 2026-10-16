@@ -6,9 +6,21 @@ helmCharts:
     releaseName: longhorn
     namespace: longhorn
     valuesInline:
+      # Longhorn's own backup target is disabled: volume backups are done by the
+      # restic backup fleet (apps/backup-script), the Longhorn "backup"
+      # RecurringJob is commented out, and the old Wasabi credentials were
+      # revoked. With a dead S3 target, longhorn-manager 1.9 re-ran
+      # `longhorn backup ls` in a tight loop (each failure writes a fresh error
+      # message into the BackupTarget status, which re-triggers the reconcile),
+      # burning 100-200% CPU on node01.
+      # Since chart 1.8 the target is set via defaultBackupStore, not
+      # defaultSettings. Empty strings (not null) are required: the chart only
+      # renders keys that are set, and longhorn-manager only clears fields
+      # whose key is present in the longhorn-default-resource ConfigMap.
+      defaultBackupStore:
+        backupTarget: ""
+        backupTargetCredentialSecret: ""
       defaultSettings:
-        backupTarget: s3://k3s-at-home-01@eu-central-2/
-        backupTargetCredentialSecret: wasabi-secret
         orphanAutoDeletion: true
         removeSnapshotsDuringFilesystemTrim: true
         nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod

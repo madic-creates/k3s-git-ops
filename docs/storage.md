@@ -34,8 +34,9 @@
 
 ### Backups, Snapshots, and Automation
 
-- Longhorn stores backups in Wasabi (`s3://k3s-at-home-01@eu-central-2/`); credentials live in the `longhorn/wasabi-secret` and are managed with `sops`.
-- CSI snapshots use the `VolumeSnapshotClass` named `longhorn-vsc-backup`. Create `VolumeSnapshot` objects against that class to trigger Longhorn backups that Velero can consume.
+- Longhorn's own backup target is disabled (`defaultBackupStore.backupTarget: ""` in `apps/longhorn/kustomization.yaml`). Volume data is backed up by the restic backup fleet instead (see [Backup](backup.md)). The former Wasabi target's credentials were revoked, and with a dead S3 target longhorn-manager re-ran `longhorn backup ls` in a tight loop at 100-200% CPU.
+- To re-enable it, set `defaultBackupStore.backupTarget` and `backupTargetCredentialSecret` to a reachable target and a valid secret. Since chart 1.8 these keys live under `defaultBackupStore`; `defaultSettings.backupTarget` is ignored.
+- The CSI `VolumeSnapshotClass` `longhorn-vsc-backup` creates Longhorn backups, so it does not work while the backup target is disabled.
 - A recurring job named `trim-filesystem` runs daily at 06:00 to perform filesystem trim on all volumes assigned to the `default` group. Adjust or add jobs through Git in `apps/longhorn/longhorn-config.enc.yaml`.
 
 ### Operational Guidance
@@ -47,4 +48,4 @@
 
 - **Volume still attached to a node:** Longhorn enforces exclusive attachment. If a pod restart reports `Volume is already exclusively attached to one node`, wait for the detachment timeout or force detach the volume (UI → Volume → `Detach`), ensuring the old workload is fully terminated first.
 - **Replica rebuild loops:** Check node disk usage and engine replica logs in the UI; if disk capacity is low, cordon the node, migrate workloads, and expand storage.
-- **Backup failures:** Verify Wasabi connectivity (`Settings → General → Test backup target`) and confirm the `wasabi-secret` matches the remote credentials.
+- **Backup target errors / high longhorn-manager CPU:** Check `kubectl get backuptargets.longhorn.io -n longhorn default -o yaml`. An unreachable or unauthorized target makes longhorn-manager retry `longhorn backup ls` several times per second; fix the credentials or clear the target.
