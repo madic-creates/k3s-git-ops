@@ -7,7 +7,7 @@ resources:
   - k8s.serverstransport.yaml
   # Gateway API CRDs are no longer shipped with the Traefik chart since v40.
   # Traefik v3.7 requires at least v1.5 (TLSRoute v1).
-  - https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.6.1/standard-install.yaml
+  - https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.6.3/standard-install.yaml
 
 patches:
   # httproutes alone is ~240 KB; server-side apply avoids hitting the 256 KB
