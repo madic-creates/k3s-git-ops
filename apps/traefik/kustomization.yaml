@@ -21,20 +21,21 @@ helmCharts:
         defaultRuleSyntax: v2
       deployment:
         kind: DaemonSet
+      # Since chart v40, type/ipFamilyPolicy etc. must be set under service.spec
       service:
-        type: LoadBalancer
         annotations:
           kube-vip.io/loadbalancerIPs: "192.168.1.231"
-        ipFamilyPolicy: PreferDualStack
         spec:
+          type: LoadBalancer
+          ipFamilyPolicy: PreferDualStack
           loadBalancerIP: "192.168.1.231"
           externalTrafficPolicy: Local
         additionalServices:
           vip239:
-            type: LoadBalancer
             annotations:
               kube-vip.io/loadbalancerIPs: "192.168.1.239"
             spec:
+              type: LoadBalancer
               loadBalancerIP: "192.168.1.239"
               externalTrafficPolicy: Local
       ports:
