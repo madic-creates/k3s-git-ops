@@ -17,7 +17,7 @@ spec:
         spec:
             containers:
                 - name: ntfy-alertmanager
-                  image: xenrox/ntfy-alertmanager:0.3.0
+                  image: xenrox/ntfy-alertmanager:1.0.1
                   imagePullPolicy: IfNotPresent
                   ports:
                     - containerPort: 8080
@@ -37,13 +37,8 @@ spec:
                   configMap:
                     name: ntfy-alertmanager-config
 sops:
-    kms: []
-    gcp_kms: []
-    azure_kv: []
-    hc_vault: []
     age:
-        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
-          enc: |
+        - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
             YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAyMjJPM1NBdVc2SGtSNlZU
             RVUwcEFkY3hjZExGQk1vUFdXSHJuZmZIblRNCllCSklRcklkeWI3aVdsbEZpYzdQ
@@ -51,8 +46,8 @@ sops:
             RDZrTENEWXVON0grMTdjc2xTSjRlUmMKUDSW6eb2EKz2zZtDzYdN8XaHhg9ytYyk
             jX/zc7aSsEASSsPORMLgUN88ximiqzVHGY0tNOozfRYcy2B4nIutsw==
             -----END AGE ENCRYPTED FILE-----
-        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
-          enc: |
+          recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+        - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
             YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBxL2RsK1k5Z2QvcEwxQ3JL
             Q1pNNVlseHpZVW1jRERURGtLbXZJRjd6VkdJCmJZTE1HekY5ZU12NVc0R2lGdVhP
@@ -60,11 +55,11 @@ sops:
             c0pCVzRSZXZDbEQ4UDdMNHlLTVJQSlkKm3qD2e1MhZ2Fxp0JNN7dLXqZuS4xmSjZ
             /PgLIzSYIzAhniWtvnaEjRtBA9X8tgp+kKqsdPTF5Q0DfQfqUqLTPQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-10-25T06:04:29Z"
-    mac: ENC[AES256_GCM,data:SD2/Qr+UpPwcDReX2xQ3UtioIfKjF/EIT9W80LMbE0tOy5lsyDFgKE5nahZOxEyTLjeHia29oM68NauwtfZshBWrA9EKTddQ8yF0e1zqa5SJF6m7mxatptdgQfLLe4cEs3fgC78vm/a1mSv/Vphy54Eo6nt0FtknyN1u5UPegKo=,iv:o+LdYqpPdPUirtev4LAeU+s16fj7fOf1UfFe0eW+oiU=,tag:3ENN+r3nBy7bvGtM8p+N2A==,type:str]
-    pgp: []
+          recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url)$
-    version: 3.9.0
+    lastmodified: "2026-10-16T08:54:35Z"
+    mac: ENC[AES256_GCM,data:s8x7G6Cc7Mfobp2B9adi9eZvxv14o4isv7ZKi5WY9XYmEn53Co3eEwKh2JSfRVIWzAtohkTdvYg1Tz7DEx/QD2kSuEzCuibKha2psv8U4+1+3T9oKhyUdYhdcejYR9LL0g7+Fow1GsXZL/0W44vnImwHYMDqMWGiZje5ZBjgsSk=,iv:vsk+Cw9hf5V1aFQUFd6bw/Uv3bGEyZCGJaqU8DCI6ss=,tag:UAf3UnE7MDGUtsnk8uJ5yA==,type:str]
+    version: 3.13.3
 ---
 apiVersion: v1
 kind: Service
@@ -79,13 +74,8 @@ spec:
     selector:
         app: ntfy-alertmanager
 sops:
-    kms: []
-    gcp_kms: []
-    azure_kv: []
-    hc_vault: []
     age:
-        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
-          enc: |
+        - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
             YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAyMjJPM1NBdVc2SGtSNlZU
             RVUwcEFkY3hjZExGQk1vUFdXSHJuZmZIblRNCllCSklRcklkeWI3aVdsbEZpYzdQ
@@ -93,8 +83,8 @@ sops:
             RDZrTENEWXVON0grMTdjc2xTSjRlUmMKUDSW6eb2EKz2zZtDzYdN8XaHhg9ytYyk
             jX/zc7aSsEASSsPORMLgUN88ximiqzVHGY0tNOozfRYcy2B4nIutsw==
             -----END AGE ENCRYPTED FILE-----
-        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
-          enc: |
+          recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+        - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
             YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBxL2RsK1k5Z2QvcEwxQ3JL
             Q1pNNVlseHpZVW1jRERURGtLbXZJRjd6VkdJCmJZTE1HekY5ZU12NVc0R2lGdVhP
@@ -102,11 +92,11 @@ sops:
             c0pCVzRSZXZDbEQ4UDdMNHlLTVJQSlkKm3qD2e1MhZ2Fxp0JNN7dLXqZuS4xmSjZ
             /PgLIzSYIzAhniWtvnaEjRtBA9X8tgp+kKqsdPTF5Q0DfQfqUqLTPQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-10-25T06:04:29Z"
-    mac: ENC[AES256_GCM,data:SD2/Qr+UpPwcDReX2xQ3UtioIfKjF/EIT9W80LMbE0tOy5lsyDFgKE5nahZOxEyTLjeHia29oM68NauwtfZshBWrA9EKTddQ8yF0e1zqa5SJF6m7mxatptdgQfLLe4cEs3fgC78vm/a1mSv/Vphy54Eo6nt0FtknyN1u5UPegKo=,iv:o+LdYqpPdPUirtev4LAeU+s16fj7fOf1UfFe0eW+oiU=,tag:3ENN+r3nBy7bvGtM8p+N2A==,type:str]
-    pgp: []
+          recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url)$
-    version: 3.9.0
+    lastmodified: "2026-10-16T08:54:35Z"
+    mac: ENC[AES256_GCM,data:s8x7G6Cc7Mfobp2B9adi9eZvxv14o4isv7ZKi5WY9XYmEn53Co3eEwKh2JSfRVIWzAtohkTdvYg1Tz7DEx/QD2kSuEzCuibKha2psv8U4+1+3T9oKhyUdYhdcejYR9LL0g7+Fow1GsXZL/0W44vnImwHYMDqMWGiZje5ZBjgsSk=,iv:vsk+Cw9hf5V1aFQUFd6bw/Uv3bGEyZCGJaqU8DCI6ss=,tag:UAf3UnE7MDGUtsnk8uJ5yA==,type:str]
+    version: 3.13.3
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -134,13 +124,8 @@ spec:
                         port:
                             number: 8080
 sops:
-    kms: []
-    gcp_kms: []
-    azure_kv: []
-    hc_vault: []
     age:
-        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
-          enc: |
+        - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
             YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAyMjJPM1NBdVc2SGtSNlZU
             RVUwcEFkY3hjZExGQk1vUFdXSHJuZmZIblRNCllCSklRcklkeWI3aVdsbEZpYzdQ
@@ -148,8 +133,8 @@ sops:
             RDZrTENEWXVON0grMTdjc2xTSjRlUmMKUDSW6eb2EKz2zZtDzYdN8XaHhg9ytYyk
             jX/zc7aSsEASSsPORMLgUN88ximiqzVHGY0tNOozfRYcy2B4nIutsw==
             -----END AGE ENCRYPTED FILE-----
-        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
-          enc: |
+          recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+        - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
             YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBxL2RsK1k5Z2QvcEwxQ3JL
             Q1pNNVlseHpZVW1jRERURGtLbXZJRjd6VkdJCmJZTE1HekY5ZU12NVc0R2lGdVhP
@@ -157,8 +142,8 @@ sops:
             c0pCVzRSZXZDbEQ4UDdMNHlLTVJQSlkKm3qD2e1MhZ2Fxp0JNN7dLXqZuS4xmSjZ
             /PgLIzSYIzAhniWtvnaEjRtBA9X8tgp+kKqsdPTF5Q0DfQfqUqLTPQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-10-25T06:04:29Z"
-    mac: ENC[AES256_GCM,data:SD2/Qr+UpPwcDReX2xQ3UtioIfKjF/EIT9W80LMbE0tOy5lsyDFgKE5nahZOxEyTLjeHia29oM68NauwtfZshBWrA9EKTddQ8yF0e1zqa5SJF6m7mxatptdgQfLLe4cEs3fgC78vm/a1mSv/Vphy54Eo6nt0FtknyN1u5UPegKo=,iv:o+LdYqpPdPUirtev4LAeU+s16fj7fOf1UfFe0eW+oiU=,tag:3ENN+r3nBy7bvGtM8p+N2A==,type:str]
-    pgp: []
+          recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url)$
-    version: 3.9.0
+    lastmodified: "2026-10-16T08:54:35Z"
+    mac: ENC[AES256_GCM,data:s8x7G6Cc7Mfobp2B9adi9eZvxv14o4isv7ZKi5WY9XYmEn53Co3eEwKh2JSfRVIWzAtohkTdvYg1Tz7DEx/QD2kSuEzCuibKha2psv8U4+1+3T9oKhyUdYhdcejYR9LL0g7+Fow1GsXZL/0W44vnImwHYMDqMWGiZje5ZBjgsSk=,iv:vsk+Cw9hf5V1aFQUFd6bw/Uv3bGEyZCGJaqU8DCI6ss=,tag:UAf3UnE7MDGUtsnk8uJ5yA==,type:str]
+    version: 3.13.3
