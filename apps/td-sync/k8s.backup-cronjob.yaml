@@ -33,10 +33,14 @@ spec:
           restartPolicy: Never
           # Match td-sync's UID/GID so both the sqlite snapshot and restic can
           # read the volume without privilege escalation.
+          # OnRootMismatch: the default recursive chown on mount races
+          # litestream deleting .ltx files in the live td-sync pod (lstat
+          # ENOENT -> FailedMount until activeDeadlineSeconds kills the job).
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
             fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
             runAsNonRoot: true
           affinity:
             podAffinity:

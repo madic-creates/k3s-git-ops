@@ -34,11 +34,14 @@ spec:
     spec:
       serviceAccount: td-sync
       # The upstream image sets no USER and would run as root. fsGroup makes
-      # the Longhorn volume writable for UID 1000 instead.
+      # the Longhorn volume writable for UID 1000 instead. OnRootMismatch skips
+      # the recursive chown on every mount, which can race a still-running
+      # pod's litestream .ltx churn during a rollout.
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
         runAsNonRoot: true
       containers:
         - name: td-sync
