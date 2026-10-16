@@ -96,6 +96,7 @@ or roll the deployment).
 | NextPVR | `media` | `:40` hourly | `nextpvr` | `nextpvr` | PVC `longhorn-pvc-nextpvr-config` |
 | Downloader (*arr-stack) | `downloader` | `:50` hourly | `downloader` | `downloader` | hostPath, ZFS node |
 | Paperless-ngx | `paper` | `:00` hourly | `paperless` | `paperless` | 3 SMB PVCs (data, media, export) |
+| Minecraft | `minecraft` | `:15` hourly | `minecraft` | `minecraft` | PVC `minecraft-crossplay-datadir`, RCON save-flush wrapper |
 | td-sync | `td-sync` | `35` hourly | `td-sync` | `td-sync` | PVC `longhorn-pvc-td-sync`, `sqlite3 .backup` snapshot of server.db + per-project databases |
 | Retention | `longhorn` | `03:05` daily | n/a | `restic-retentionpolicies` | (forget + prune + integrity check) |
 | Restore-test | `longhorn` | `04:00` Sun | n/a | `backup-restore-test` | restore every tag from local repo, verify |
@@ -104,7 +105,9 @@ or roll the deployment).
 Hourly slots are 10 minutes apart and the workload backups are capped at
 `activeDeadlineSeconds: 540` (paperless gets 7200 for the cold-start upload),
 so they cannot overlap with each other or with the daily 03:05 / 04:00 / 05:00
-maintenance passes.
+maintenance passes. Minecraft uses the off-grid `:15` slot to fit in next to
+mariadb (`:10`) and grafana (`:20`); its world is small and finishes in well
+under a minute, so the tightened gap is comfortable.
 
 The pod `app.kubernetes.io/name` label is always `backup-<target>` (e.g.
 `backup-grafana`) and pods carry `app.kubernetes.io/component: backup` so the
@@ -317,6 +320,32 @@ sqlite3 /tmp/grafana-restore/backup/grafana/grafana.db "PRAGMA integrity_check;"
 `lost+found` at the PVC root is excluded by the backup; everything else (plugin
 data, dashboards from sidecar provisioning that have local edits, etc.) is in
 the snapshot.
+
+### Minecraft
+
+The minecraft snapshot contains the entire `/data` PVC of the
+[itzg/minecraft-server](https://github.com/itzg/docker-minecraft-server){target=_blank}
+pod, minus `*.jar` files, `cache/`, `logs/`, and `lost+found`. The world
+directory name is whatever `minecraftServer.worldSaveName` is set to in the
+helm values (currently `SmallServerHub`).
+
+Before each backup the CronJob uses RCON to run `save-off` and
+`save-all flush` so the on-disk region files are consistent, and an `EXIT`
+trap re-enables `save-on` even if the backup fails — there is no way the
+server can be left stuck in save-off mode.
+
+```bash
+restic restore latest --tag minecraft --target /tmp/minecraft-restore
+ls /tmp/minecraft-restore/backup/minecraft/
+ls /tmp/minecraft-restore/backup/minecraft/SmallServerHub/
+# Look for level.dat, the regional `region/` directory, playerdata/,
+# and the plugin config trees under plugins/.
+```
+
+To restore back into the cluster, scale the minecraft Deployment to 0,
+copy the restored tree onto the live PVC (e.g. via a debug pod that mounts
+both the restore volume and `minecraft-crossplay-datadir`), then scale
+back up.
 
 ### td-sync
 
