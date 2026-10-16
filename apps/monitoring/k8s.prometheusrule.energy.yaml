@@ -121,8 +121,8 @@ spec:
         # per-string values cannot tell those apart when both strings are
         # affected equally (soiling, snow, curtailment, degradation).
         #
-        # The two strings face nearly opposite directions -- pv1 north-east,
-        # pv2 south-west, both at 40 degrees -- so they get separate
+        # The two strings face nearly opposite directions -- pv1 south-west,
+        # pv2 north-east, both at 16 degrees -- so they get separate
         # irradiance series and a single averaged orientation would
         # misrepresent both. Peak power is exported as a metric rather than
         # written here as a literal, so adding a third panel later needs no
@@ -138,20 +138,6 @@ spec:
                 * on (string) group_left
                   max by (string) (solar_array_peak_power_watts)
             )
-
-        # The single performance-ratio constant in the whole design.
-        #
-        # 0.75 is the median of the per-string ratios between 10:00 and 16:00
-        # local on 2026-09-08 (pv1 0.69, pv2 0.79), the first full day measured
-        # against the CORRECTED geometry. The earlier 0.68 was fitted to a
-        # geometry that turned out to be wrong in two ways at once and carried
-        # no meaning.
-        #
-        # Still provisional: one partly cloudy day. It absorbs everything not
-        # modelled explicitly -- temperature coefficient, angle-of-incidence
-        # loss, soiling, inverter efficiency.
-        - record: solar:expected_power:watts
-          expr: solar:ideal_power:watts * 0.75
 
         # Why this ratio is a health signal rather than a weather signal:
         # Open-Meteo's tilted irradiance already accounts for cloud cover
@@ -184,16 +170,54 @@ spec:
         # per-string AC value; the aggregate rules above use AC. A DC ratio
         # excludes inverter conversion loss and the inverter's own draw, so it
         # reads slightly HIGHER than the aggregate ratio for the same
-        # conditions. 0.75 was in fact derived from these DC ratios, so it fits
-        # here best and is marginally generous for the AC aggregate above.
+        # conditions -- by the inverter's 0.96, measured below.
         - record: solar:ideal_power_by_string:watts
           expr: |
             max by (string) (solar_irradiance_tilted_wm2) / 1000
               * on (string) group_left
                 max by (string) (solar_array_peak_power_watts)
 
+        # One performance-ratio constant PER STRING, measured on clear days.
+        # Each absorbs everything not modelled explicitly -- temperature
+        # coefficient, angle-of-incidence loss, soiling, wiring.
+        #
+        # Measured in the unshaded window 10:00-12:59 UTC, 5-minute samples
+        # with forecast cloud cover <= 15 %:
+        #
+        #   2026-10-06 (clear all day)  pv1 0.94  pv2 0.71
+        #   2026-10-07 (clear morning)  pv1 0.94  pv2 0.81
+        #   2026-09-08 (partly cloudy)  pv1 0.85 at its unshaded peak, pv2 0.79
+        #
+        # pv1 is stable; pv2 is not a flat ratio but slides from ~0.81 at
+        # 10 UTC to ~0.66 at 12:45 UTC as the sun moves away from its
+        # north-east face, so its constant is a midday average, not a fit.
+        # The two differ by far more than the noise, which is why the single
+        # 0.75 of the previous revision is gone: it drew pv1's expected line
+        # about 20 % too low on every clear day.
+        #
+        # The values are cold-season DC ratios. Panels lose roughly 0.35 %
+        # per kelvin, so summer reads a few percent lower -- pv1 0.90 is set
+        # between the October 0.94 and the September 0.85 for that reason,
+        # and pv2 0.76 between its October midday range and September 0.79.
+        #
+        # Ratios ABOVE 1.0 do occur, but only in hours the forecast calls
+        # overcast while the sun is actually out (2026-10-12 and 10-15:
+        # pv1 1.1-1.4 at 80-99 % forecast cloud). That is forecast error in the
+        # denominator, not a geometry fault: no clear-sky hour exceeds 1.0.
+        #
+        # Strings not listed here (pv3/pv4 exist on the inverter but are
+        # unused) get no expected value, deliberately.
         - record: solar:expected_power_by_string:watts
-          expr: solar:ideal_power_by_string:watts * 0.75
+          expr: |
+            solar:ideal_power_by_string:watts{string="pv1"} * 0.90
+            or solar:ideal_power_by_string:watts{string="pv2"} * 0.76
+
+        # The aggregate is compared with AC generation, so the DC per-string
+        # expectation is converted with the measured inverter efficiency:
+        # AC / (pv1 + pv2 DC) had a median of 0.96 between 10:00 and 12:59 UTC
+        # on both 2026-10-06 and 2026-10-07.
+        - record: solar:expected_power:watts
+          expr: sum(solar:expected_power_by_string:watts) * 0.96
 
         - record: solar:performance_ratio_by_string
           expr: |
@@ -240,38 +264,52 @@ spec:
 
         # Per string, and only in the window where NEITHER string is shaded.
         #
-        # pv1 (south-west) is shaded by a tree in the late afternoon, so an
-        # alert spanning the whole day would fire on the tree every day.
+        # pv1 (south-west) is shaded by a tree in the afternoon, and with the
+        # low autumn sun BOTH strings are shaded in the morning too, so an
+        # alert spanning the whole day would fire on shadows every day.
         #
-        # `hour()` is UTC. The window 7..12 UTC is 09:00-14:59 local in summer
-        # and 08:00-13:59 in winter. It is now set from measurement rather than
-        # caution: on 2026-09-08 pv1 still held 0.85 at 15:00 and 0.71 at 16:00
-        # local, and only fell away from 17:00 (0.42). Ending at 15:00 local
-        # leaves two hours of margin before the shading bites.
+        # `hour()` is UTC. The window 10..12 UTC is 12:00-14:59 local in summer
+        # and 11:00-13:59 in winter. It is the shade-free window measured on
+        # the clear day 2026-10-06 (5-minute samples, 0 % forecast cloud):
         #
-        # Earlier revisions used 7..11 and then 7..10 while the onset was
-        # unknown and the geometry was still wrong; both were guesses.
-        # It drifts by an hour across the DST change on purpose: pinning it to
-        # local time is not possible in PromQL, and an hour of drift is
-        # harmless when the shading begins in the afternoon.
+        #   08:00-09:15 UTC  pv1 0.30-0.41, pv2 0.27-0.40   morning shade
+        #   09:30-09:45 UTC  0.46-0.57, still climbing
+        #   10:00-12:45 UTC  pv1 ~0.93, pv2 0.84 -> 0.61    unshaded
+        #   13:00-13:45 UTC  both fall 0.80 -> 0.39         afternoon shade
         #
-        # The ideal_power guard keeps out dawn and deep overcast, where a small
-        # absolute error produces a wild ratio; `for: 2h` keeps out weather.
+        # 2026-10-12 shows the same edges (pv1 0.94 at 12:45, 0.58 at 13:00).
+        # The previous 7..12 window came from September, when the sun stood
+        # higher; replayed over 2026-10-05..10-15 it let clear-sky morning
+        # shade hold pv2 under 0.40 for 50 consecutive minutes -- under the
+        # `for: 2h`, but with winter shadows growing longer every week. In
+        # winter the shade-free span narrows from both ends, so if this alert
+        # ever fires on a healthy string, look at the edge hours first.
         #
-        # PROVISIONAL: 0.40 is still derived from very little data and must be
-        # revisited once several clear days of solar:performance_ratio_by_string
-        # exist. Note it is compared against a DC-based ratio here.
+        # THRESHOLD 0.40, now checked rather than provisional: replaying this
+        # exact expression over 2026-10-05..10-15 (eleven days, three mostly
+        # clear, three fully overcast), the longest unbroken run of a healthy
+        # string under 0.40 is 15 minutes, against the 2 hours `for` demands.
+        # Even 0.60 never stays under for more than 25 minutes, so there is
+        # room to tighten later. It is kept at 0.40 because pv2's ratio
+        # slides to ~0.6 by 12:45 UTC on a clear day and the winter sun will
+        # push that lower.
+        # Clear-day medians in the window are pv1 0.94 and pv2 0.74, so 0.40
+        # is under half of normal on either string. It is compared against the
+        # raw DC-based ratio, not the per-string calibrated expectation.
+        #
+        # The ideal_power guard keeps out deep overcast, where a small absolute
+        # error produces a wild ratio; `for: 2h` keeps out passing weather.
         - alert: SolarStringUnderperforming
           expr: |
             solar:performance_ratio_by_string < 0.40
             and solar:ideal_power_by_string:watts > 150
-            and on () (hour() > 6 < 13)
+            and on () (hour() > 9 < 13)
           for: 2h
           labels:
             severity: warning
           annotations:
             summary: "PV string {{ $labels.string }} is producing far below its irradiance reference"
-            description: "String {{ $labels.string }} has been under 40% of its modelled clear-reference for two hours during the unshaded part of the day, while irradiance on that string was high. Because the model already accounts for cloud cover and the known late-afternoon shading of pv1 is excluded by the time window, this points at the panel rather than the weather: check for soiling, bird droppings, snow, new vegetation growth or a failed string. Measured baseline on 2026-09-08: 0.69 for pv1, 0.79 for pv2."
+            description: "String {{ $labels.string }} has been under 40% of its modelled clear-reference for two hours during the unshaded midday window (10-12 UTC), while irradiance on that string was high. Because the model already accounts for cloud cover and the known morning and afternoon shading is excluded by the time window, this points at the panel rather than the weather: check for soiling, bird droppings, snow, new vegetation growth or a failed string. Measured clear-day baseline (October 2026): about 0.94 for pv1, 0.74 for pv2."
 
         # The plugs stay powered around the clock, so this exporter has no
         # legitimate outage window and `up` may be alerted on directly.
