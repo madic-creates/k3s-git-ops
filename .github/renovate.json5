@@ -127,6 +127,18 @@
       ],
       datasourceTemplate: 'docker',
     },
+    // Gateway API release manifests referenced as remote kustomize resources.
+    // Example match: https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.6.1/standard-install.yaml
+    {
+      customType: 'regex',
+      managerFilePatterns: [
+        '/apps/.+/kustomization\\.yaml$/',
+      ],
+      matchStrings: [
+        'https://github\\.com/(?<depName>[^/\\s]+/[^/\\s]+)/releases/download/(?<currentValue>v[^/\\s]+)/',
+      ],
+      datasourceTemplate: 'github-releases',
+    },
   ],
   'pre-commit': {
     enabled: true,
