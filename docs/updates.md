@@ -56,6 +56,17 @@ image:
 
 Renovate is able to update [pre-commit](pre-commit-hooks.md) hooks. [But it's still in beta and can lead to problems](https://docs.renovatebot.com/modules/manager/pre-commit/#additional-information){target=_blank}. Because of this automerge for pre-commit is disabled and every update requires approval through a pull request.
 
+### Dependency Dashboard
+
+Renovate keeps its state in the "Dependency Dashboard" issue. The dashboard can lag behind `main` by several hours, for example still listing an old chart version under "Detected Dependencies" or showing a PR as open after it has been merged. That is how Renovate works, not a sign that the workflow is broken.
+
+Renovate only rewrites the dashboard when a repository run finishes **without** an automerge. When a branch automerges, Renovate restarts the run once on the new `main`. If the restarted run automerges again, it stops without touching the dashboard ("Automerged but already retried once", see `lib/workers/repository/index.ts` in Renovate 44). With many minor/patch automerges queued, several scheduled runs in a row can end like this, and the dashboard stays at the last run that had nothing left to automerge.
+
+To check whether the dashboard is just behind:
+
+- Compare the issue's last update time with the latest workflow runs. Each run logs `"result": "automerged"` or `"result": "done"` under "Repository finished". Only `done` runs update the dashboard.
+- The dashboard catches up on its own once a run has nothing left to automerge. To force that sooner, trigger the workflow manually (repeat if that run also automerges).
+
 ## System Upgrade Controller
 
 The System Upgrade Controller is a Kubernetes controller that manages the upgrade of a Kubernetes cluster. There are only plans configured to automatically upgrade the cluster to the latest k3s version.
