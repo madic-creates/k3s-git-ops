@@ -106,6 +106,16 @@ helmCharts:
           expose:
             default: true
           exposedPort: 8000
+        # Chart-default internal entrypoints (dashboard/API/ping and Prometheus
+        # metrics). Nothing here sits behind ForwardAuth, so header aliasing
+        # cannot spoof anything today; set it anyway so every HTTP entrypoint
+        # behaves the same and a future router on them is covered.
+        traefik:
+          http:
+            aliasHeadersStrategy: delete
+        metrics:
+          http:
+            aliasHeadersStrategy: delete
       image:
         pullPolicy: IfNotPresent
       resources:
