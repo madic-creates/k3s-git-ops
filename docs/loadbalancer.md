@@ -85,6 +85,8 @@ Tunnel requests reach the Emby pod with a node IP (`192.168.1.21`-`.24`) or vps0
 
 What the split fixes is the LAN side: before it, LAN clients reaching the VIP on a node without the pod showed up as a node IP in Emby's logs and sessions.
 
+**Changing `externalTrafficPolicy` on an existing Service needs a kube-vip restart.** kube-vip (v0.9.2) decides per Service whether a node may join the VIP election, based on whether it has a local endpoint, only when its watcher for that Service starts. After Emby was switched from `Cluster` to `Local` (2026-10-16), the VIP stayed on node04 and later went to node02 although the pod ran on node01, and LAN access to `.233` was refused. Only `kubectl -n kube-system rollout restart ds kube-vip-svc` made node01 take the lease `media/kubevip-emby`. This restart briefly moves every kube-vip VIP.
+
 When adding a new single-replica `LoadBalancer` Service that needs the client IP, use `externalTrafficPolicy: Local` unless it must be reachable through NodePorts on every node.
 
 ## Updating the Cloud Controller
