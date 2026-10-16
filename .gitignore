@@ -10,6 +10,7 @@ values.yaml
 .vscode/*
 CLAUDE.local.md
 .claude/scheduled_tasks.lock
+/.claude/orchestrator.local.md
 .codegraph/
 
 ## Ansible
