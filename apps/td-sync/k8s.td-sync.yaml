@@ -46,7 +46,7 @@ spec:
           # Built by forge.geekbundle.org/madic/docker-td
           # Tag AND digest: a digest-only reference gives Renovate no
           # currentValue and the image stops being tracked.
-          image: forge.geekbundle.org/madic/td-sync:v0.65.0@sha256:2a06b74325630dcc2ddb63b4b724e8bddbd04a71107e7f2fdf9c740a9e7b2aaa
+          image: forge.geekbundle.org/madic/td-sync:v0.65.0@sha256:27be8bfb7ce91b7acde0edde01a6372e685318c2989ad459e22ff38ca27180f0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
