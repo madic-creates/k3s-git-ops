@@ -1,0 +1,816 @@
+<!doctype html><html lang=en class=no-js> <head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="A mono repository for my home Kubernetes cluster which tries to adhere to Infrastructure as Code (IaC) and GitOps practices"><meta name=author content="Michael Neese"><link href="https://madic-creates.github.io/git-ops/superpowers/plans/2026-05-20-open-webui/" rel="canonical"><link rel=icon href=../../../assets/images/favicon.png><meta name=generator content="mkdocs-1.6.1, mkdocs-material-9.7.7"><title>Open WebUI Implementation Plan - Madic | Home GitOps</title><link rel=stylesheet href=../../../assets/stylesheets/main.ec1eaa64.min.css><link rel="stylesheet" href="../../../assets/external/fonts.googleapis.com/css.49ea35f2.css"><style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style><link rel=stylesheet href=../../../extra.css><script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script><meta property=og:type content=website><meta property=og:title content="Open WebUI Implementation Plan - Madic | Home GitOps"><meta property=og:description content="A mono repository for my home Kubernetes cluster which tries to adhere to Infrastructure as Code (IaC) and GitOps practices"><meta property=og:image content=https://madic-creates.github.io/git-ops/assets/images/social/superpowers/plans/2026-05-20-open-webui.png><meta property=og:image:type content=image/png><meta property=og:image:width content=1200><meta property=og:image:height content=630><meta content=https://madic-creates.github.io/git-ops/superpowers/plans/2026-05-20-open-webui/ property=og:url><meta property=twitter:card content=summary_large_image><meta property=twitter:title content="Open WebUI Implementation Plan - Madic | Home GitOps"><meta property=twitter:description content="A mono repository for my home Kubernetes cluster which tries to adhere to Infrastructure as Code (IaC) and GitOps practices"><meta property=twitter:image content=https://madic-creates.github.io/git-ops/assets/images/social/superpowers/plans/2026-05-20-open-webui.png></head> <body dir=ltr> <input class=md-toggle data-md-toggle=drawer type=checkbox id=__drawer autocomplete=off> <input class=md-toggle data-md-toggle=search type=checkbox id=__search autocomplete=off> <label class=md-overlay for=__drawer></label> <div data-md-component=skip> <a href=#open-webui-implementation-plan class=md-skip> Skip to content </a> </div> <div data-md-component=announce> </div> <header class="md-header md-header--shadow" data-md-component=header> <nav class="md-header__inner md-grid" aria-label=Header> <a href=../../.. title="Madic | Home GitOps" class="md-header__button md-logo" aria-label="Madic | Home GitOps" data-md-component=logo> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg> </a> <label class="md-header__button md-icon" for=__drawer> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg> </label> <div class=md-header__title data-md-component=header-title> <div class=md-header__ellipsis> <div class=md-header__topic> <span class=md-ellipsis> Madic | Home GitOps </span> </div> <div class=md-header__topic data-md-component=header-topic> <span class=md-ellipsis> Open WebUI Implementation Plan </span> </div> </div> </div> <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script> <label class="md-header__button md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg> </label> <div class=md-search data-md-component=search role=dialog> <label class=md-search__overlay for=__search></label> <div class=md-search__inner role=search> <form class=md-search__form name=search> <input type=text class=md-search__input name=query aria-label=Search placeholder=Search autocapitalize=off autocorrect=off autocomplete=off spellcheck=false data-md-component=search-query required> <label class="md-search__icon md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg> </label> <nav class=md-search__options aria-label=Search> <a href=javascript:void(0) class="md-search__icon md-icon" title=Share aria-label=Share data-clipboard data-clipboard-text data-md-component=search-share tabindex=-1> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg> </a> <button type=reset class="md-search__icon md-icon" title=Clear aria-label=Clear tabindex=-1> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg> </button> </nav> <div class=md-search__suggest data-md-component=search-suggest></div> </form> <div class=md-search__output> <div class=md-search__scrollwrap tabindex=0 data-md-scrollfix> <div class=md-search-result data-md-component=search-result> <div class=md-search-result__meta> Initializing search </div> <ol class=md-search-result__list role=presentation></ol> </div> </div> </div> </div> </div> <div class=md-header__source> <a href="https://github.com/madic-creates/k3s-git-ops" title="Go to repository" class="md-source" data-md-component="source"> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 512 512"><!-- Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M202.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M496 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"/></svg> </div> <div class=md-source__repository> madic-creates/k3s-git-ops </div> </a> </div> </nav> </header> <div class=md-container data-md-component=container> <main class=md-main data-md-component=main> <div class="md-main__inner md-grid"> <div class="md-sidebar md-sidebar--primary" data-md-component=sidebar data-md-type=navigation> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--primary" aria-label=Navigation data-md-level=0> <label class=md-nav__title for=__drawer> <a href=../../.. title="Madic | Home GitOps" class="md-nav__button md-logo" aria-label="Madic | Home GitOps" data-md-component=logo> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg> </a> Madic | Home GitOps </label> <div class=md-nav__source> <a href="https://github.com/madic-creates/k3s-git-ops" title="Go to repository" class="md-source" data-md-component="source"> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 512 512"><!-- Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M202.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M496 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"/></svg> </div> <div class=md-source__repository> madic-creates/k3s-git-ops </div> </a> </div> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../.. class=md-nav__link> <span class=md-ellipsis> Introduction </span> </a> </li> <li class=md-nav__item> <a href=../../../install/ class=md-nav__link> <span class=md-ellipsis> Installation </span> </a> </li> <li class="md-nav__item md-nav__item--section md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_3> <label class=md-nav__link for=__nav_3 id=__nav_3_label tabindex> <span class=md-ellipsis> Applications </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_3_label aria-expanded=false> <label class=md-nav__title for=__nav_3> <span class="md-nav__icon md-icon"></span> Applications </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../argocd/ class=md-nav__link> <span class=md-ellipsis> Argo-CD </span> </a> </li> <li class=md-nav__item> <a href=../../../auth/ class=md-nav__link> <span class=md-ellipsis> Authentication </span> </a> </li> <li class=md-nav__item> <a href=../../../backup/ class=md-nav__link> <span class=md-ellipsis> Backup </span> </a> </li> <li class=md-nav__item> <a href=../../../certmanager/ class=md-nav__link> <span class=md-ellipsis> Cert-Manager </span> </a> </li> <li class=md-nav__item> <a href=../../../claude-alert-analyzer/ class=md-nav__link> <span class=md-ellipsis> Claude Alert Analyzer </span> </a> </li> <li class=md-nav__item> <a href=../../../databases/ class=md-nav__link> <span class=md-ellipsis> Databases </span> </a> </li> <li class=md-nav__item> <a href=../../../kubedoom/ class=md-nav__link> <span class=md-ellipsis> Kube DOOM </span> </a> </li> <li class=md-nav__item> <a href=../../../network/ class=md-nav__link> <span class=md-ellipsis> Network </span> </a> </li> <li class=md-nav__item> <a href=../../../loadbalancer/ class=md-nav__link> <span class=md-ellipsis> LoadBalancer </span> </a> </li> <li class=md-nav__item> <a href=../../../monitoring/ class=md-nav__link> <span class=md-ellipsis> Monitoring </span> </a> </li> <li class=md-nav__item> <a href=../../../reflector/ class=md-nav__link> <span class=md-ellipsis> Reflector </span> </a> </li> <li class=md-nav__item> <a href=../../../secretmanagement/ class=md-nav__link> <span class=md-ellipsis> Secret Management </span> </a> </li> <li class=md-nav__item> <a href=../../../storage/ class=md-nav__link> <span class=md-ellipsis> Storage </span> </a> </li> <li class=md-nav__item> <a href=../../../td-sync/ class=md-nav__link> <span class=md-ellipsis> td-sync </span> </a> </li> <li class=md-nav__item> <a href=../../../updates/ class=md-nav__link> <span class=md-ellipsis> Updates </span> </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--section md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_4> <label class=md-nav__link for=__nav_4 id=__nav_4_label tabindex> <span class=md-ellipsis> Operations </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_4_label aria-expanded=false> <label class=md-nav__title for=__nav_4> <span class="md-nav__icon md-icon"></span> Operations </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../operations/longhorn-maintenance/ class=md-nav__link> <span class=md-ellipsis> Longhorn Maintenance </span> </a> </li> <li class=md-nav__item> <a href=../../../operations/cilium-migration/ class=md-nav__link> <span class=md-ellipsis> Migration to Cilium </span> </a> </li> <li class=md-nav__item> <a href=../../../operations/power-consumption/ class=md-nav__link> <span class=md-ellipsis> Power Consumption </span> </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--section md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_5> <label class=md-nav__link for=__nav_5 id=__nav_5_label tabindex> <span class=md-ellipsis> Tools </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_5_label aria-expanded=false> <label class=md-nav__title for=__nav_5> <span class="md-nav__icon md-icon"></span> Tools </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../helm/ class=md-nav__link> <span class=md-ellipsis> Helm </span> </a> </li> <li class=md-nav__item> <a href=../../../secrets/ class=md-nav__link> <span class=md-ellipsis> Secrets </span> </a> </li> <li class=md-nav__item> <a href=../../../mkdocs/ class=md-nav__link> <span class=md-ellipsis> MKDocs </span> </a> </li> <li class=md-nav__item> <a href=../../../pre-commit-hooks/ class=md-nav__link> <span class=md-ellipsis> Pre-Commit-Hooks </span> </a> </li> <li class=md-nav__item> <a href=../../../testenv/ class=md-nav__link> <span class=md-ellipsis> Test Environment </span> </a> </li> </ul> </nav> </li> </ul> </nav> </div> </div> </div> <div class="md-sidebar md-sidebar--secondary" data-md-component=sidebar data-md-type=toc> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--secondary" aria-label="Table of contents"> <label class=md-nav__title for=__toc> <span class="md-nav__icon md-icon"></span> Table of contents </label> <ul class=md-nav__list data-md-component=toc data-md-scrollfix> <li class=md-nav__item> <a href=#task-1-generate-secrets-and-gather-inputs class=md-nav__link> <span class=md-ellipsis> Task 1: Generate secrets and gather inputs </span> </a> </li> <li class=md-nav__item> <a href=#task-2-create-namespace-and-default-deny-network-policy class=md-nav__link> <span class=md-ellipsis> Task 2: Create namespace and default-deny network policy </span> </a> </li> <li class=md-nav__item> <a href=#task-3-create-the-application-specific-network-policy class=md-nav__link> <span class=md-ellipsis> Task 3: Create the application-specific network policy </span> </a> </li> <li class=md-nav__item> <a href=#task-4-create-the-sops-encrypted-env-secret class=md-nav__link> <span class=md-ellipsis> Task 4: Create the SOPS-encrypted env secret </span> </a> </li> <li class=md-nav__item> <a href=#task-5-create-the-encrypted-ingress class=md-nav__link> <span class=md-ellipsis> Task 5: Create the encrypted Ingress </span> </a> </li> <li class=md-nav__item> <a href=#task-6-create-the-ksops-generator-and-kustomize-helm-chart class=md-nav__link> <span class=md-ellipsis> Task 6: Create the ksops generator and Kustomize Helm chart </span> </a> </li> <li class=md-nav__item> <a href=#task-7-verify-the-kustomization-builds-and-validates class=md-nav__link> <span class=md-ellipsis> Task 7: Verify the kustomization builds and validates </span> </a> </li> <li class=md-nav__item> <a href=#task-8-register-the-oidc-client-in-authelia class=md-nav__link> <span class=md-ellipsis> Task 8: Register the OIDC client in Authelia </span> </a> </li> <li class=md-nav__item> <a href=#task-9-write-the-websearchmd-runbook class=md-nav__link> <span class=md-ellipsis> Task 9: Write the WEBSEARCH.md runbook </span> </a> </li> <li class=md-nav__item> <a href=#task-10-commit-the-app-folder-authelia-update class=md-nav__link> <span class=md-ellipsis> Task 10: Commit the app folder + Authelia update </span> </a> </li> <li class=md-nav__item> <a href=#task-11-create-the-argocd-application-manifest class=md-nav__link> <span class=md-ellipsis> Task 11: Create the ArgoCD Application manifest </span> </a> </li> <li class=md-nav__item> <a href=#task-12-register-the-application-in-the-argo-cd-apps-kustomization class=md-nav__link> <span class=md-ellipsis> Task 12: Register the Application in the argo-cd-apps kustomization </span> </a> </li> <li class=md-nav__item> <a href=#task-13-commit-the-argocd-application-registration class=md-nav__link> <span class=md-ellipsis> Task 13: Commit the ArgoCD Application registration </span> </a> </li> <li class=md-nav__item> <a href=#task-14-update-renovate-to-disable-auto-merge-for-open-webui class=md-nav__link> <span class=md-ellipsis> Task 14: Update Renovate to disable auto-merge for Open WebUI </span> </a> </li> <li class=md-nav__item> <a href=#task-15-push-and-watch-argocd-sync class=md-nav__link> <span class=md-ellipsis> Task 15: Push and watch ArgoCD sync </span> </a> </li> <li class=md-nav__item> <a href=#task-16-first-login-admin-bootstrap class=md-nav__link> <span class=md-ellipsis> Task 16: First-login admin bootstrap </span> </a> </li> <li class=md-nav__item> <a href=#task-17-create-the-virtual-model-qwen25-coder-websearch class=md-nav__link> <span class=md-ellipsis> Task 17: Create the virtual model qwen2.5-coder-websearch </span> </a> </li> <li class=md-nav__item> <a href=#task-18-generate-an-api-key-and-configure-continuedev class=md-nav__link> <span class=md-ellipsis> Task 18: Generate an API key and configure Continue.dev </span> </a> </li> <li class=md-nav__item> <a href=#self-review-already-applied class=md-nav__link> <span class=md-ellipsis> Self-Review (already applied) </span> </a> </li> </ul> </nav> </div> </div> </div> <div class=md-content data-md-component=content> <article class="md-content__inner md-typeset"> <h1 id=open-webui-implementation-plan>Open WebUI Implementation Plan<a class=headerlink href=#open-webui-implementation-plan title="Permanent link">#</a></h1> <blockquote> <p><strong>For agentic workers:</strong> REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (<code>- [ ]</code>) syntax for tracking.</p> </blockquote> <p><strong>Goal:</strong> Deploy a multi-user Open WebUI in front of the existing llama-cpp deployment, authenticated via Authelia OIDC, with transparent Tavily web search for IDE clients.</p> <p><strong>Architecture:</strong> New ArgoCD application at sync wave 66 using the official open-webui Helm chart consumed via Kustomize <code>helmCharts</code> (Paperless pattern). SQLite on a Longhorn PVC, single replica, <code>strategy: Recreate</code>. Standard Ingress on <code>chat.internal.neese-web.de</code> with the hostname encrypted via SOPS. CiliumNetworkPolicy with default-deny plus targeted allows to llama-cpp and <code>world:443</code>.</p> <p><strong>Tech Stack:</strong> k3s 1.31.4, ArgoCD, Kustomize + Helm, Cilium, Longhorn, Traefik, Authelia OIDC, SOPS + age, ksops, Open WebUI Helm chart 14.6.0 (app 0.9.5).</p> <p><strong>Spec:</strong> <code>docs/superpowers/specs/2026-05-20-open-webui-design.md</code></p> <blockquote> <p><strong>Note on TDD:</strong> This is infrastructure-as-code; there are no unit tests in the traditional sense. The "test" equivalent for each meaningful unit of work is <code>kustomize build --enable-helm --enable-alpha-plugins --enable-exec</code> plus <code>scripts/kubeconform-validate.sh</code> and <code>pre-commit run</code>. Verification steps are folded into the tasks accordingly.</p> </blockquote> <hr> <h2 id=task-1-generate-secrets-and-gather-inputs>Task 1: Generate secrets and gather inputs<a class=headerlink href=#task-1-generate-secrets-and-gather-inputs title="Permanent link">#</a></h2> <p><strong>Files:</strong> none (interactive prep; values are consumed by Tasks 4 and 8)</p> <p>This task is not committable. Gather everything up front so secrets never get pasted into chat or commit messages.</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 1: Obtain Tavily API key</strong></li> </ul> <p>Sign in to https://app.tavily.com → API Keys → copy a key (starts with <code>tvly-</code>). Store privately for Task 4.</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 2: Generate the Authelia OIDC client secret</strong></li> </ul> <p>Run: <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-0-1>1</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-0-1 name=__codelineno-0-1></a>authelia<span class=w> </span>crypto<span class=w> </span><span class=nb>hash</span><span class=w> </span>generate<span class=w> </span>pbkdf2<span class=w> </span>--variant<span class=w> </span>sha512<span class=w> </span>--iterations<span class=w> </span><span class=m>310000</span><span class=w> </span>--random
+</code></pre></div></td></tr></table></div> Capture both lines from the output: - <code>Password: &lt;plaintext&gt;</code> — used in Task 4 (<code>OAUTH_CLIENT_SECRET</code>) - <code>Digest: $pbkdf2-sha512$310000$...</code> — used in Task 8 (Authelia values)</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 3: Generate <code>WEBUI_SECRET_KEY</code></strong></li> </ul> <p>Run: <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-1-1>1</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-1-1 name=__codelineno-1-1></a>openssl<span class=w> </span>rand<span class=w> </span>-hex<span class=w> </span><span class=m>32</span>
+</code></pre></div></td></tr></table></div> Store privately for Task 4. Rotating this value later logs every user out.</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 4: Copy the existing llama-cpp API key</strong></li> </ul> <p><div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-2-1>1</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-2-1 name=__codelineno-2-1></a>sops<span class=w> </span>--config<span class=w> </span>.sops.yaml<span class=w> </span>-d<span class=w> </span>apps/llama-cpp/secrets.enc.yaml
+</code></pre></div></td></tr></table></div> Copy the <code>API_KEY:</code> value. Open WebUI calls llama-cpp with this same key. Store privately for Task 4.</p> <hr> <h2 id=task-2-create-namespace-and-default-deny-network-policy>Task 2: Create namespace and default-deny network policy<a class=headerlink href=#task-2-create-namespace-and-default-deny-network-policy title="Permanent link">#</a></h2> <p><strong>Files:</strong> - Create: <code>apps/open-webui/namespace.yaml</code> - Create: <code>apps/open-webui/k8s.np.open-webui-default-deny.yaml</code></p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 1: Create the namespace</strong></li> </ul> <p>Write <code>apps/open-webui/namespace.yaml</code>: <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-3-1>1</a></span>
+<span class=normal><a href=#__codelineno-3-2>2</a></span>
+<span class=normal><a href=#__codelineno-3-3>3</a></span>
+<span class=normal><a href=#__codelineno-3-4>4</a></span>
+<span class=normal><a href=#__codelineno-3-5>5</a></span>
+<span class=normal><a href=#__codelineno-3-6>6</a></span>
+<span class=normal><a href=#__codelineno-3-7>7</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-3-1 name=__codelineno-3-1></a><span class=nn>---</span>
+<a id=__codelineno-3-2 name=__codelineno-3-2></a><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
+<a id=__codelineno-3-3 name=__codelineno-3-3></a><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">Namespace</span>
+<a id=__codelineno-3-4 name=__codelineno-3-4></a><span class=nt>metadata</span><span class=p>:</span>
+<a id=__codelineno-3-5 name=__codelineno-3-5></a><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">open-webui</span>
+<a id=__codelineno-3-6 name=__codelineno-3-6></a><span class=w>  </span><span class=nt>labels</span><span class=p>:</span>
+<a id=__codelineno-3-7 name=__codelineno-3-7></a><span class=w>    </span><span class=nt>goldilocks.fairwinds.com/enabled</span><span class=p>:</span><span class=w> </span><span class=s>"true"</span>
+</code></pre></div></td></tr></table></div></p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 2: Create the default-deny CiliumNetworkPolicy</strong></li> </ul> <p>Write <code>apps/open-webui/k8s.np.open-webui-default-deny.yaml</code>: <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-4-1> 1</a></span>
+<span class=normal><a href=#__codelineno-4-2> 2</a></span>
+<span class=normal><a href=#__codelineno-4-3> 3</a></span>
+<span class=normal><a href=#__codelineno-4-4> 4</a></span>
+<span class=normal><a href=#__codelineno-4-5> 5</a></span>
+<span class=normal><a href=#__codelineno-4-6> 6</a></span>
+<span class=normal><a href=#__codelineno-4-7> 7</a></span>
+<span class=normal><a href=#__codelineno-4-8> 8</a></span>
+<span class=normal><a href=#__codelineno-4-9> 9</a></span>
+<span class=normal><a href=#__codelineno-4-10>10</a></span>
+<span class=normal><a href=#__codelineno-4-11>11</a></span>
+<span class=normal><a href=#__codelineno-4-12>12</a></span>
+<span class=normal><a href=#__codelineno-4-13>13</a></span>
+<span class=normal><a href=#__codelineno-4-14>14</a></span>
+<span class=normal><a href=#__codelineno-4-15>15</a></span>
+<span class=normal><a href=#__codelineno-4-16>16</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-4-1 name=__codelineno-4-1></a><span class=nn>---</span>
+<a id=__codelineno-4-2 name=__codelineno-4-2></a><span class=c1># Default Deny Network Policy for namespace.</span>
+<a id=__codelineno-4-3 name=__codelineno-4-3></a><span class=c1># Selecting all pods (empty endpointSelector) puts them under Cilium's</span>
+<a id=__codelineno-4-4 name=__codelineno-4-4></a><span class=c1># default-deny semantics; the targeted policy in k8s.np.open-webui.yaml</span>
+<a id=__codelineno-4-5 name=__codelineno-4-5></a><span class=c1># adds the specific allows we need.</span>
+<a id=__codelineno-4-6 name=__codelineno-4-6></a><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">cilium.io/v2</span>
+<a id=__codelineno-4-7 name=__codelineno-4-7></a><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">CiliumNetworkPolicy</span>
+<a id=__codelineno-4-8 name=__codelineno-4-8></a><span class=nt>metadata</span><span class=p>:</span>
+<a id=__codelineno-4-9 name=__codelineno-4-9></a><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">open-webui-default-deny</span>
+<a id=__codelineno-4-10 name=__codelineno-4-10></a><span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">open-webui</span>
+<a id=__codelineno-4-11 name=__codelineno-4-11></a><span class=nt>spec</span><span class=p>:</span>
+<a id=__codelineno-4-12 name=__codelineno-4-12></a><span class=w>  </span><span class=nt>endpointSelector</span><span class=p>:</span><span class=w> </span><span class="p p-Indicator">{}</span>
+<a id=__codelineno-4-13 name=__codelineno-4-13></a><span class=w>  </span><span class=nt>ingress</span><span class=p>:</span>
+<a id=__codelineno-4-14 name=__codelineno-4-14></a><span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class="p p-Indicator">{}</span>
+<a id=__codelineno-4-15 name=__codelineno-4-15></a><span class=w>  </span><span class=nt>egress</span><span class=p>:</span>
+<a id=__codelineno-4-16 name=__codelineno-4-16></a><span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class="p p-Indicator">{}</span>
+</code></pre></div></td></tr></table></div></p> <hr> <h2 id=task-3-create-the-application-specific-network-policy>Task 3: Create the application-specific network policy<a class=headerlink href=#task-3-create-the-application-specific-network-policy title="Permanent link">#</a></h2> <p><strong>Files:</strong> - Create: <code>apps/open-webui/k8s.np.open-webui.yaml</code></p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 1: Write the network policy</strong></li> </ul> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-5-1> 1</a></span>
+<span class=normal><a href=#__codelineno-5-2> 2</a></span>
+<span class=normal><a href=#__codelineno-5-3> 3</a></span>
+<span class=normal><a href=#__codelineno-5-4> 4</a></span>
+<span class=normal><a href=#__codelineno-5-5> 5</a></span>
+<span class=normal><a href=#__codelineno-5-6> 6</a></span>
+<span class=normal><a href=#__codelineno-5-7> 7</a></span>
+<span class=normal><a href=#__codelineno-5-8> 8</a></span>
+<span class=normal><a href=#__codelineno-5-9> 9</a></span>
+<span class=normal><a href=#__codelineno-5-10>10</a></span>
+<span class=normal><a href=#__codelineno-5-11>11</a></span>
+<span class=normal><a href=#__codelineno-5-12>12</a></span>
+<span class=normal><a href=#__codelineno-5-13>13</a></span>
+<span class=normal><a href=#__codelineno-5-14>14</a></span>
+<span class=normal><a href=#__codelineno-5-15>15</a></span>
+<span class=normal><a href=#__codelineno-5-16>16</a></span>
+<span class=normal><a href=#__codelineno-5-17>17</a></span>
+<span class=normal><a href=#__codelineno-5-18>18</a></span>
+<span class=normal><a href=#__codelineno-5-19>19</a></span>
+<span class=normal><a href=#__codelineno-5-20>20</a></span>
+<span class=normal><a href=#__codelineno-5-21>21</a></span>
+<span class=normal><a href=#__codelineno-5-22>22</a></span>
+<span class=normal><a href=#__codelineno-5-23>23</a></span>
+<span class=normal><a href=#__codelineno-5-24>24</a></span>
+<span class=normal><a href=#__codelineno-5-25>25</a></span>
+<span class=normal><a href=#__codelineno-5-26>26</a></span>
+<span class=normal><a href=#__codelineno-5-27>27</a></span>
+<span class=normal><a href=#__codelineno-5-28>28</a></span>
+<span class=normal><a href=#__codelineno-5-29>29</a></span>
+<span class=normal><a href=#__codelineno-5-30>30</a></span>
+<span class=normal><a href=#__codelineno-5-31>31</a></span>
+<span class=normal><a href=#__codelineno-5-32>32</a></span>
+<span class=normal><a href=#__codelineno-5-33>33</a></span>
+<span class=normal><a href=#__codelineno-5-34>34</a></span>
+<span class=normal><a href=#__codelineno-5-35>35</a></span>
+<span class=normal><a href=#__codelineno-5-36>36</a></span>
+<span class=normal><a href=#__codelineno-5-37>37</a></span>
+<span class=normal><a href=#__codelineno-5-38>38</a></span>
+<span class=normal><a href=#__codelineno-5-39>39</a></span>
+<span class=normal><a href=#__codelineno-5-40>40</a></span>
+<span class=normal><a href=#__codelineno-5-41>41</a></span>
+<span class=normal><a href=#__codelineno-5-42>42</a></span>
+<span class=normal><a href=#__codelineno-5-43>43</a></span>
+<span class=normal><a href=#__codelineno-5-44>44</a></span>
+<span class=normal><a href=#__codelineno-5-45>45</a></span>
+<span class=normal><a href=#__codelineno-5-46>46</a></span>
+<span class=normal><a href=#__codelineno-5-47>47</a></span>
+<span class=normal><a href=#__codelineno-5-48>48</a></span>
+<span class=normal><a href=#__codelineno-5-49>49</a></span>
+<span class=normal><a href=#__codelineno-5-50>50</a></span>
+<span class=normal><a href=#__codelineno-5-51>51</a></span>
+<span class=normal><a href=#__codelineno-5-52>52</a></span>
+<span class=normal><a href=#__codelineno-5-53>53</a></span>
+<span class=normal><a href=#__codelineno-5-54>54</a></span>
+<span class=normal><a href=#__codelineno-5-55>55</a></span>
+<span class=normal><a href=#__codelineno-5-56>56</a></span>
+<span class=normal><a href=#__codelineno-5-57>57</a></span>
+<span class=normal><a href=#__codelineno-5-58>58</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-5-1 name=__codelineno-5-1></a><span class=nn>---</span>
+<a id=__codelineno-5-2 name=__codelineno-5-2></a><span class=c1># Open WebUI application-specific network policy.</span>
+<a id=__codelineno-5-3 name=__codelineno-5-3></a><span class=c1># Selecting the pod via endpointSelector puts it under Cilium default-deny;</span>
+<a id=__codelineno-5-4 name=__codelineno-5-4></a><span class=c1># only explicitly allowed traffic passes.</span>
+<a id=__codelineno-5-5 name=__codelineno-5-5></a><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">cilium.io/v2</span>
+<a id=__codelineno-5-6 name=__codelineno-5-6></a><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">CiliumNetworkPolicy</span>
+<a id=__codelineno-5-7 name=__codelineno-5-7></a><span class=nt>metadata</span><span class=p>:</span>
+<a id=__codelineno-5-8 name=__codelineno-5-8></a><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">open-webui</span>
+<a id=__codelineno-5-9 name=__codelineno-5-9></a><span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">open-webui</span>
+<a id=__codelineno-5-10 name=__codelineno-5-10></a><span class=nt>spec</span><span class=p>:</span>
+<a id=__codelineno-5-11 name=__codelineno-5-11></a><span class=w>  </span><span class=nt>endpointSelector</span><span class=p>:</span>
+<a id=__codelineno-5-12 name=__codelineno-5-12></a><span class=w>    </span><span class=nt>matchLabels</span><span class=p>:</span>
+<a id=__codelineno-5-13 name=__codelineno-5-13></a><span class=w>      </span><span class=nt>app.kubernetes.io/name</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">open-webui</span>
+<a id=__codelineno-5-14 name=__codelineno-5-14></a><span class=w>  </span><span class=nt>ingress</span><span class=p>:</span>
+<a id=__codelineno-5-15 name=__codelineno-5-15></a><span class=w>    </span><span class=c1># Traefik forwards browser + IDE-API traffic.</span>
+<a id=__codelineno-5-16 name=__codelineno-5-16></a><span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>fromEndpoints</span><span class=p>:</span>
+<a id=__codelineno-5-17 name=__codelineno-5-17></a><span class=w>        </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>matchLabels</span><span class=p>:</span>
+<a id=__codelineno-5-18 name=__codelineno-5-18></a><span class=w>            </span><span class=nt>k8s:app.kubernetes.io/instance</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">traefik-kube-system</span>
+<a id=__codelineno-5-19 name=__codelineno-5-19></a><span class=w>            </span><span class=nt>k8s:io.kubernetes.pod.namespace</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">kube-system</span>
+<a id=__codelineno-5-20 name=__codelineno-5-20></a><span class=w>      </span><span class=nt>toPorts</span><span class=p>:</span>
+<a id=__codelineno-5-21 name=__codelineno-5-21></a><span class=w>        </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>ports</span><span class=p>:</span>
+<a id=__codelineno-5-22 name=__codelineno-5-22></a><span class=w>            </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>port</span><span class=p>:</span><span class=w> </span><span class=s>"8080"</span>
+<a id=__codelineno-5-23 name=__codelineno-5-23></a><span class=w>              </span><span class=nt>protocol</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">TCP</span>
+<a id=__codelineno-5-24 name=__codelineno-5-24></a><span class=w>    </span><span class=c1># Same-namespace traffic (probes, helm post-install hooks).</span>
+<a id=__codelineno-5-25 name=__codelineno-5-25></a><span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>fromEndpoints</span><span class=p>:</span>
+<a id=__codelineno-5-26 name=__codelineno-5-26></a><span class=w>        </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>matchLabels</span><span class=p>:</span>
+<a id=__codelineno-5-27 name=__codelineno-5-27></a><span class=w>            </span><span class=nt>k8s:io.kubernetes.pod.namespace</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">open-webui</span>
+<a id=__codelineno-5-28 name=__codelineno-5-28></a><span class=w>  </span><span class=nt>egress</span><span class=p>:</span>
+<a id=__codelineno-5-29 name=__codelineno-5-29></a><span class=w>    </span><span class=c1># DNS via CoreDNS.</span>
+<a id=__codelineno-5-30 name=__codelineno-5-30></a><span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>toEndpoints</span><span class=p>:</span>
+<a id=__codelineno-5-31 name=__codelineno-5-31></a><span class=w>        </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>matchLabels</span><span class=p>:</span>
+<a id=__codelineno-5-32 name=__codelineno-5-32></a><span class=w>            </span><span class=nt>k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">kube-system</span>
+<a id=__codelineno-5-33 name=__codelineno-5-33></a><span class=w>            </span><span class=nt>k8s:io.kubernetes.pod.namespace</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">kube-system</span>
+<a id=__codelineno-5-34 name=__codelineno-5-34></a><span class=w>            </span><span class=nt>k8s:k8s-app</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">kube-dns</span>
+<a id=__codelineno-5-35 name=__codelineno-5-35></a><span class=w>      </span><span class=nt>toPorts</span><span class=p>:</span>
+<a id=__codelineno-5-36 name=__codelineno-5-36></a><span class=w>        </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>ports</span><span class=p>:</span>
+<a id=__codelineno-5-37 name=__codelineno-5-37></a><span class=w>            </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>port</span><span class=p>:</span><span class=w> </span><span class=s>"53"</span>
+<a id=__codelineno-5-38 name=__codelineno-5-38></a><span class=w>              </span><span class=nt>protocol</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">UDP</span>
+<a id=__codelineno-5-39 name=__codelineno-5-39></a><span class=w>            </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>port</span><span class=p>:</span><span class=w> </span><span class=s>"53"</span>
+<a id=__codelineno-5-40 name=__codelineno-5-40></a><span class=w>              </span><span class=nt>protocol</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">TCP</span>
+<a id=__codelineno-5-41 name=__codelineno-5-41></a><span class=w>    </span><span class=c1># llama-cpp backend (in-cluster).</span>
+<a id=__codelineno-5-42 name=__codelineno-5-42></a><span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>toEndpoints</span><span class=p>:</span>
+<a id=__codelineno-5-43 name=__codelineno-5-43></a><span class=w>        </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>matchLabels</span><span class=p>:</span>
+<a id=__codelineno-5-44 name=__codelineno-5-44></a><span class=w>            </span><span class=nt>k8s:app</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">llama-cpp</span>
+<a id=__codelineno-5-45 name=__codelineno-5-45></a><span class=w>            </span><span class=nt>k8s:io.kubernetes.pod.namespace</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">llama-cpp</span>
+<a id=__codelineno-5-46 name=__codelineno-5-46></a><span class=w>      </span><span class=nt>toPorts</span><span class=p>:</span>
+<a id=__codelineno-5-47 name=__codelineno-5-47></a><span class=w>        </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>ports</span><span class=p>:</span>
+<a id=__codelineno-5-48 name=__codelineno-5-48></a><span class=w>            </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>port</span><span class=p>:</span><span class=w> </span><span class=s>"8080"</span>
+<a id=__codelineno-5-49 name=__codelineno-5-49></a><span class=w>              </span><span class=nt>protocol</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">TCP</span>
+<a id=__codelineno-5-50 name=__codelineno-5-50></a><span class=w>    </span><span class=c1># External HTTPS: Tavily API + Authelia OIDC discovery (the issuer URL</span>
+<a id=__codelineno-5-51 name=__codelineno-5-51></a><span class=w>    </span><span class=c1># is the public hostname and must resolve via the external route, same</span>
+<a id=__codelineno-5-52 name=__codelineno-5-52></a><span class=w>    </span><span class=c1># pattern Argo CD uses for its OIDC integration).</span>
+<a id=__codelineno-5-53 name=__codelineno-5-53></a><span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>toEntities</span><span class=p>:</span>
+<a id=__codelineno-5-54 name=__codelineno-5-54></a><span class=w>        </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">world</span>
+<a id=__codelineno-5-55 name=__codelineno-5-55></a><span class=w>      </span><span class=nt>toPorts</span><span class=p>:</span>
+<a id=__codelineno-5-56 name=__codelineno-5-56></a><span class=w>        </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>ports</span><span class=p>:</span>
+<a id=__codelineno-5-57 name=__codelineno-5-57></a><span class=w>            </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>port</span><span class=p>:</span><span class=w> </span><span class=s>"443"</span>
+<a id=__codelineno-5-58 name=__codelineno-5-58></a><span class=w>              </span><span class=nt>protocol</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">TCP</span>
+</code></pre></div></td></tr></table></div> <hr> <h2 id=task-4-create-the-sops-encrypted-env-secret>Task 4: Create the SOPS-encrypted env secret<a class=headerlink href=#task-4-create-the-sops-encrypted-env-secret title="Permanent link">#</a></h2> <p><strong>Files:</strong> - Create: <code>apps/open-webui/secrets.enc.yaml</code> (encrypted)</p> <p>The Read tool is blocked on <code>*.enc.yaml</code> paths inside the repo. Use the <code>/tmp</code> workflow from CLAUDE.md to author the plaintext, then encrypt into the repo.</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 1: Write the plaintext secret to <code>/tmp</code></strong></li> </ul> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-6-1> 1</a></span>
+<span class=normal><a href=#__codelineno-6-2> 2</a></span>
+<span class=normal><a href=#__codelineno-6-3> 3</a></span>
+<span class=normal><a href=#__codelineno-6-4> 4</a></span>
+<span class=normal><a href=#__codelineno-6-5> 5</a></span>
+<span class=normal><a href=#__codelineno-6-6> 6</a></span>
+<span class=normal><a href=#__codelineno-6-7> 7</a></span>
+<span class=normal><a href=#__codelineno-6-8> 8</a></span>
+<span class=normal><a href=#__codelineno-6-9> 9</a></span>
+<span class=normal><a href=#__codelineno-6-10>10</a></span>
+<span class=normal><a href=#__codelineno-6-11>11</a></span>
+<span class=normal><a href=#__codelineno-6-12>12</a></span>
+<span class=normal><a href=#__codelineno-6-13>13</a></span>
+<span class=normal><a href=#__codelineno-6-14>14</a></span>
+<span class=normal><a href=#__codelineno-6-15>15</a></span>
+<span class=normal><a href=#__codelineno-6-16>16</a></span>
+<span class=normal><a href=#__codelineno-6-17>17</a></span>
+<span class=normal><a href=#__codelineno-6-18>18</a></span>
+<span class=normal><a href=#__codelineno-6-19>19</a></span>
+<span class=normal><a href=#__codelineno-6-20>20</a></span>
+<span class=normal><a href=#__codelineno-6-21>21</a></span>
+<span class=normal><a href=#__codelineno-6-22>22</a></span>
+<span class=normal><a href=#__codelineno-6-23>23</a></span>
+<span class=normal><a href=#__codelineno-6-24>24</a></span>
+<span class=normal><a href=#__codelineno-6-25>25</a></span>
+<span class=normal><a href=#__codelineno-6-26>26</a></span>
+<span class=normal><a href=#__codelineno-6-27>27</a></span>
+<span class=normal><a href=#__codelineno-6-28>28</a></span>
+<span class=normal><a href=#__codelineno-6-29>29</a></span>
+<span class=normal><a href=#__codelineno-6-30>30</a></span>
+<span class=normal><a href=#__codelineno-6-31>31</a></span>
+<span class=normal><a href=#__codelineno-6-32>32</a></span>
+<span class=normal><a href=#__codelineno-6-33>33</a></span>
+<span class=normal><a href=#__codelineno-6-34>34</a></span>
+<span class=normal><a href=#__codelineno-6-35>35</a></span>
+<span class=normal><a href=#__codelineno-6-36>36</a></span>
+<span class=normal><a href=#__codelineno-6-37>37</a></span>
+<span class=normal><a href=#__codelineno-6-38>38</a></span>
+<span class=normal><a href=#__codelineno-6-39>39</a></span>
+<span class=normal><a href=#__codelineno-6-40>40</a></span>
+<span class=normal><a href=#__codelineno-6-41>41</a></span>
+<span class=normal><a href=#__codelineno-6-42>42</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-6-1 name=__codelineno-6-1></a>cat<span class=w> </span>&gt;<span class=w> </span>/tmp/open-webui-secrets.enc.yaml<span class=w> </span><span class=s>&lt;&lt;'EOF'</span>
+<a id=__codelineno-6-2 name=__codelineno-6-2></a><span class=s>---</span>
+<a id=__codelineno-6-3 name=__codelineno-6-3></a><span class=s>apiVersion: v1</span>
+<a id=__codelineno-6-4 name=__codelineno-6-4></a><span class=s>kind: Secret</span>
+<a id=__codelineno-6-5 name=__codelineno-6-5></a><span class=s>metadata:</span>
+<a id=__codelineno-6-6 name=__codelineno-6-6></a><span class=s>  name: open-webui-env</span>
+<a id=__codelineno-6-7 name=__codelineno-6-7></a><span class=s>  namespace: open-webui</span>
+<a id=__codelineno-6-8 name=__codelineno-6-8></a><span class=s>type: Opaque</span>
+<a id=__codelineno-6-9 name=__codelineno-6-9></a><span class=s>stringData:</span>
+<a id=__codelineno-6-10 name=__codelineno-6-10></a><span class=s>  # Auth / OIDC</span>
+<a id=__codelineno-6-11 name=__codelineno-6-11></a><span class=s>  WEBUI_AUTH: "true"</span>
+<a id=__codelineno-6-12 name=__codelineno-6-12></a><span class=s>  ENABLE_SIGNUP: "false"</span>
+<a id=__codelineno-6-13 name=__codelineno-6-13></a><span class=s>  ENABLE_OAUTH_SIGNUP: "true"</span>
+<a id=__codelineno-6-14 name=__codelineno-6-14></a><span class=s>  OAUTH_PROVIDER_NAME: "Authelia"</span>
+<a id=__codelineno-6-15 name=__codelineno-6-15></a><span class=s>  OAUTH_CLIENT_ID: "openwebui"</span>
+<a id=__codelineno-6-16 name=__codelineno-6-16></a><span class=s>  OAUTH_CLIENT_SECRET: "&lt;PASTE_AUTHELIA_CLIENT_SECRET_PLAIN_FROM_TASK_1_STEP_2&gt;"</span>
+<a id=__codelineno-6-17 name=__codelineno-6-17></a><span class=s>  OPENID_PROVIDER_URL: "https://auth.k8s.neese-web.de/.well-known/openid-configuration"</span>
+<a id=__codelineno-6-18 name=__codelineno-6-18></a><span class=s>  OPENID_REDIRECT_URI: "https://chat.internal.neese-web.de/oauth/oidc/callback"</span>
+<a id=__codelineno-6-19 name=__codelineno-6-19></a><span class=s>  OAUTH_SCOPES: "openid email profile groups"</span>
+<a id=__codelineno-6-20 name=__codelineno-6-20></a><span class=s>  OAUTH_MERGE_ACCOUNTS_BY_EMAIL: "true"</span>
+<a id=__codelineno-6-21 name=__codelineno-6-21></a><span class=s>  OAUTH_UPDATE_PICTURE_ON_LOGIN: "true"</span>
+<a id=__codelineno-6-22 name=__codelineno-6-22></a><span class=s>  DEFAULT_USER_ROLE: "pending"</span>
+<a id=__codelineno-6-23 name=__codelineno-6-23></a>
+<a id=__codelineno-6-24 name=__codelineno-6-24></a><span class=s>  # Session signing</span>
+<a id=__codelineno-6-25 name=__codelineno-6-25></a><span class=s>  WEBUI_SECRET_KEY: "&lt;PASTE_OPENSSL_RAND_HEX_32_FROM_TASK_1_STEP_3&gt;"</span>
+<a id=__codelineno-6-26 name=__codelineno-6-26></a>
+<a id=__codelineno-6-27 name=__codelineno-6-27></a><span class=s>  # llama-cpp backend</span>
+<a id=__codelineno-6-28 name=__codelineno-6-28></a><span class=s>  ENABLE_OLLAMA_API: "false"</span>
+<a id=__codelineno-6-29 name=__codelineno-6-29></a><span class=s>  OPENAI_API_BASE_URLS: "http://llama-cpp.llama-cpp.svc.cluster.local:8080/v1"</span>
+<a id=__codelineno-6-30 name=__codelineno-6-30></a><span class=s>  OPENAI_API_KEYS: "&lt;PASTE_LLAMA_CPP_API_KEY_FROM_TASK_1_STEP_4&gt;"</span>
+<a id=__codelineno-6-31 name=__codelineno-6-31></a>
+<a id=__codelineno-6-32 name=__codelineno-6-32></a><span class=s>  # Web search via Tavily</span>
+<a id=__codelineno-6-33 name=__codelineno-6-33></a><span class=s>  ENABLE_RAG_WEB_SEARCH: "true"</span>
+<a id=__codelineno-6-34 name=__codelineno-6-34></a><span class=s>  RAG_WEB_SEARCH_ENGINE: "tavily"</span>
+<a id=__codelineno-6-35 name=__codelineno-6-35></a><span class=s>  TAVILY_API_KEY: "&lt;PASTE_TAVILY_API_KEY_FROM_TASK_1_STEP_1&gt;"</span>
+<a id=__codelineno-6-36 name=__codelineno-6-36></a><span class=s>  RAG_WEB_SEARCH_RESULT_COUNT: "5"</span>
+<a id=__codelineno-6-37 name=__codelineno-6-37></a><span class=s>  RAG_WEB_SEARCH_CONCURRENT_REQUESTS: "10"</span>
+<a id=__codelineno-6-38 name=__codelineno-6-38></a><span class=s>  RAG_WEB_SEARCH_TRUST_ENV: "false"</span>
+<a id=__codelineno-6-39 name=__codelineno-6-39></a>
+<a id=__codelineno-6-40 name=__codelineno-6-40></a><span class=s>  # Skip embedding/retrieval — Tavily snippets go directly into context</span>
+<a id=__codelineno-6-41 name=__codelineno-6-41></a><span class=s>  BYPASS_EMBEDDING_AND_RETRIEVAL: "true"</span>
+<a id=__codelineno-6-42 name=__codelineno-6-42></a><span class=s>EOF</span>
+</code></pre></div></td></tr></table></div> <p>Then open <code>/tmp/open-webui-secrets.enc.yaml</code> in an editor and replace the four <code>&lt;PASTE_*&gt;</code> placeholders with the actual values gathered in Task 1.</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 2: Encrypt to the repo path</strong></li> </ul> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-7-1>1</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-7-1 name=__codelineno-7-1></a>sops<span class=w> </span>--config<span class=w> </span>.sops.yaml<span class=w> </span>-e<span class=w> </span>/tmp/open-webui-secrets.enc.yaml<span class=w> </span>&gt;<span class=w> </span>apps/open-webui/secrets.enc.yaml
+</code></pre></div></td></tr></table></div> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 3: Verify round-trip</strong></li> </ul> <p><div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-8-1>1</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-8-1 name=__codelineno-8-1></a>sops<span class=w> </span>--config<span class=w> </span>.sops.yaml<span class=w> </span>-d<span class=w> </span>apps/open-webui/secrets.enc.yaml<span class=w> </span><span class=p>|</span><span class=w> </span>diff<span class=w> </span>-<span class=w> </span>/tmp/open-webui-secrets.enc.yaml
+</code></pre></div></td></tr></table></div> Expected: no output (files identical).</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 4: Wipe the plaintext temp file</strong></li> </ul> <p><div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-9-1>1</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-9-1 name=__codelineno-9-1></a>:<span class=w> </span>&gt;<span class=w> </span>/tmp/open-webui-secrets.enc.yaml
+</code></pre></div></td></tr></table></div> <code>rm</code> is not allowlisted; truncate-in-place is sufficient.</p> <hr> <h2 id=task-5-create-the-encrypted-ingress>Task 5: Create the encrypted Ingress<a class=headerlink href=#task-5-create-the-encrypted-ingress title="Permanent link">#</a></h2> <p><strong>Files:</strong> - Create: <code>apps/open-webui/ingress.enc.yaml</code> (encrypted)</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 1: Write the plaintext ingress to <code>/tmp</code></strong></li> </ul> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-10-1> 1</a></span>
+<span class=normal><a href=#__codelineno-10-2> 2</a></span>
+<span class=normal><a href=#__codelineno-10-3> 3</a></span>
+<span class=normal><a href=#__codelineno-10-4> 4</a></span>
+<span class=normal><a href=#__codelineno-10-5> 5</a></span>
+<span class=normal><a href=#__codelineno-10-6> 6</a></span>
+<span class=normal><a href=#__codelineno-10-7> 7</a></span>
+<span class=normal><a href=#__codelineno-10-8> 8</a></span>
+<span class=normal><a href=#__codelineno-10-9> 9</a></span>
+<span class=normal><a href=#__codelineno-10-10>10</a></span>
+<span class=normal><a href=#__codelineno-10-11>11</a></span>
+<span class=normal><a href=#__codelineno-10-12>12</a></span>
+<span class=normal><a href=#__codelineno-10-13>13</a></span>
+<span class=normal><a href=#__codelineno-10-14>14</a></span>
+<span class=normal><a href=#__codelineno-10-15>15</a></span>
+<span class=normal><a href=#__codelineno-10-16>16</a></span>
+<span class=normal><a href=#__codelineno-10-17>17</a></span>
+<span class=normal><a href=#__codelineno-10-18>18</a></span>
+<span class=normal><a href=#__codelineno-10-19>19</a></span>
+<span class=normal><a href=#__codelineno-10-20>20</a></span>
+<span class=normal><a href=#__codelineno-10-21>21</a></span>
+<span class=normal><a href=#__codelineno-10-22>22</a></span>
+<span class=normal><a href=#__codelineno-10-23>23</a></span>
+<span class=normal><a href=#__codelineno-10-24>24</a></span>
+<span class=normal><a href=#__codelineno-10-25>25</a></span>
+<span class=normal><a href=#__codelineno-10-26>26</a></span>
+<span class=normal><a href=#__codelineno-10-27>27</a></span>
+<span class=normal><a href=#__codelineno-10-28>28</a></span>
+<span class=normal><a href=#__codelineno-10-29>29</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-10-1 name=__codelineno-10-1></a>cat<span class=w> </span>&gt;<span class=w> </span>/tmp/open-webui-ingress.enc.yaml<span class=w> </span><span class=s>&lt;&lt;'EOF'</span>
+<a id=__codelineno-10-2 name=__codelineno-10-2></a><span class=s>---</span>
+<a id=__codelineno-10-3 name=__codelineno-10-3></a><span class=s>apiVersion: networking.k8s.io/v1</span>
+<a id=__codelineno-10-4 name=__codelineno-10-4></a><span class=s>kind: Ingress</span>
+<a id=__codelineno-10-5 name=__codelineno-10-5></a><span class=s>metadata:</span>
+<a id=__codelineno-10-6 name=__codelineno-10-6></a><span class=s>  name: open-webui</span>
+<a id=__codelineno-10-7 name=__codelineno-10-7></a><span class=s>  namespace: open-webui</span>
+<a id=__codelineno-10-8 name=__codelineno-10-8></a><span class=s>  annotations:</span>
+<a id=__codelineno-10-9 name=__codelineno-10-9></a><span class=s>    traefik.ingress.kubernetes.io/router.entrypoints: web239,websecure239</span>
+<a id=__codelineno-10-10 name=__codelineno-10-10></a><span class=s>    traefik.ingress.kubernetes.io/router.tls: "true"</span>
+<a id=__codelineno-10-11 name=__codelineno-10-11></a><span class=s>    traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect@kubernetescrd</span>
+<a id=__codelineno-10-12 name=__codelineno-10-12></a><span class=s>spec:</span>
+<a id=__codelineno-10-13 name=__codelineno-10-13></a><span class=s>  ingressClassName: traefik</span>
+<a id=__codelineno-10-14 name=__codelineno-10-14></a><span class=s>  tls:</span>
+<a id=__codelineno-10-15 name=__codelineno-10-15></a><span class=s>    - hosts:</span>
+<a id=__codelineno-10-16 name=__codelineno-10-16></a><span class=s>        - chat.internal.neese-web.de</span>
+<a id=__codelineno-10-17 name=__codelineno-10-17></a><span class=s>      secretName: wildcard-cloudflare-production-02</span>
+<a id=__codelineno-10-18 name=__codelineno-10-18></a><span class=s>  rules:</span>
+<a id=__codelineno-10-19 name=__codelineno-10-19></a><span class=s>    - host: chat.internal.neese-web.de</span>
+<a id=__codelineno-10-20 name=__codelineno-10-20></a><span class=s>      http:</span>
+<a id=__codelineno-10-21 name=__codelineno-10-21></a><span class=s>        paths:</span>
+<a id=__codelineno-10-22 name=__codelineno-10-22></a><span class=s>          - path: /</span>
+<a id=__codelineno-10-23 name=__codelineno-10-23></a><span class=s>            pathType: Prefix</span>
+<a id=__codelineno-10-24 name=__codelineno-10-24></a><span class=s>            backend:</span>
+<a id=__codelineno-10-25 name=__codelineno-10-25></a><span class=s>              service:</span>
+<a id=__codelineno-10-26 name=__codelineno-10-26></a><span class=s>                name: open-webui</span>
+<a id=__codelineno-10-27 name=__codelineno-10-27></a><span class=s>                port:</span>
+<a id=__codelineno-10-28 name=__codelineno-10-28></a><span class=s>                  number: 80</span>
+<a id=__codelineno-10-29 name=__codelineno-10-29></a><span class=s>EOF</span>
+</code></pre></div></td></tr></table></div> <p>The service port <code>80</code> matches the chart default (Service port 80 → containerPort 8080).</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 2: Encrypt and verify</strong></li> </ul> <p><div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-11-1>1</a></span>
+<span class=normal><a href=#__codelineno-11-2>2</a></span>
+<span class=normal><a href=#__codelineno-11-3>3</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-11-1 name=__codelineno-11-1></a>sops<span class=w> </span>--config<span class=w> </span>.sops.yaml<span class=w> </span>-e<span class=w> </span>/tmp/open-webui-ingress.enc.yaml<span class=w> </span>&gt;<span class=w> </span>apps/open-webui/ingress.enc.yaml
+<a id=__codelineno-11-2 name=__codelineno-11-2></a>sops<span class=w> </span>--config<span class=w> </span>.sops.yaml<span class=w> </span>-d<span class=w> </span>apps/open-webui/ingress.enc.yaml<span class=w> </span><span class=p>|</span><span class=w> </span>diff<span class=w> </span>-<span class=w> </span>/tmp/open-webui-ingress.enc.yaml
+<a id=__codelineno-11-3 name=__codelineno-11-3></a>:<span class=w> </span>&gt;<span class=w> </span>/tmp/open-webui-ingress.enc.yaml
+</code></pre></div></td></tr></table></div> Expected: diff produces no output.</p> <hr> <h2 id=task-6-create-the-ksops-generator-and-kustomize-helm-chart>Task 6: Create the ksops generator and Kustomize Helm chart<a class=headerlink href=#task-6-create-the-ksops-generator-and-kustomize-helm-chart title="Permanent link">#</a></h2> <p><strong>Files:</strong> - Create: <code>apps/open-webui/kustomize-secret-generator.yaml</code> - Create: <code>apps/open-webui/kustomization.yaml</code></p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 1: Write the ksops generator</strong></li> </ul> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-12-1> 1</a></span>
+<span class=normal><a href=#__codelineno-12-2> 2</a></span>
+<span class=normal><a href=#__codelineno-12-3> 3</a></span>
+<span class=normal><a href=#__codelineno-12-4> 4</a></span>
+<span class=normal><a href=#__codelineno-12-5> 5</a></span>
+<span class=normal><a href=#__codelineno-12-6> 6</a></span>
+<span class=normal><a href=#__codelineno-12-7> 7</a></span>
+<span class=normal><a href=#__codelineno-12-8> 8</a></span>
+<span class=normal><a href=#__codelineno-12-9> 9</a></span>
+<span class=normal><a href=#__codelineno-12-10>10</a></span>
+<span class=normal><a href=#__codelineno-12-11>11</a></span>
+<span class=normal><a href=#__codelineno-12-12>12</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-12-1 name=__codelineno-12-1></a><span class=nn>---</span>
+<a id=__codelineno-12-2 name=__codelineno-12-2></a><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">viaduct.ai/v1</span>
+<a id=__codelineno-12-3 name=__codelineno-12-3></a><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">ksops</span>
+<a id=__codelineno-12-4 name=__codelineno-12-4></a><span class=nt>metadata</span><span class=p>:</span>
+<a id=__codelineno-12-5 name=__codelineno-12-5></a><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">open-webui-secret-generator</span>
+<a id=__codelineno-12-6 name=__codelineno-12-6></a><span class=w>  </span><span class=nt>annotations</span><span class=p>:</span>
+<a id=__codelineno-12-7 name=__codelineno-12-7></a><span class=w>    </span><span class=nt>config.kubernetes.io/function</span><span class=p>:</span><span class=w> </span><span class="p p-Indicator">|</span>
+<a id=__codelineno-12-8 name=__codelineno-12-8></a><span class=w>      </span><span class=no>exec:</span>
+<a id=__codelineno-12-9 name=__codelineno-12-9></a><span class=w>        </span><span class=no>path: ksops</span>
+<a id=__codelineno-12-10 name=__codelineno-12-10></a><span class=nt>files</span><span class=p>:</span>
+<a id=__codelineno-12-11 name=__codelineno-12-11></a><span class=w>  </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">secrets.enc.yaml</span>
+<a id=__codelineno-12-12 name=__codelineno-12-12></a><span class=w>  </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">ingress.enc.yaml</span>
+</code></pre></div></td></tr></table></div> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 2: Write the kustomization</strong></li> </ul> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-13-1> 1</a></span>
+<span class=normal><a href=#__codelineno-13-2> 2</a></span>
+<span class=normal><a href=#__codelineno-13-3> 3</a></span>
+<span class=normal><a href=#__codelineno-13-4> 4</a></span>
+<span class=normal><a href=#__codelineno-13-5> 5</a></span>
+<span class=normal><a href=#__codelineno-13-6> 6</a></span>
+<span class=normal><a href=#__codelineno-13-7> 7</a></span>
+<span class=normal><a href=#__codelineno-13-8> 8</a></span>
+<span class=normal><a href=#__codelineno-13-9> 9</a></span>
+<span class=normal><a href=#__codelineno-13-10>10</a></span>
+<span class=normal><a href=#__codelineno-13-11>11</a></span>
+<span class=normal><a href=#__codelineno-13-12>12</a></span>
+<span class=normal><a href=#__codelineno-13-13>13</a></span>
+<span class=normal><a href=#__codelineno-13-14>14</a></span>
+<span class=normal><a href=#__codelineno-13-15>15</a></span>
+<span class=normal><a href=#__codelineno-13-16>16</a></span>
+<span class=normal><a href=#__codelineno-13-17>17</a></span>
+<span class=normal><a href=#__codelineno-13-18>18</a></span>
+<span class=normal><a href=#__codelineno-13-19>19</a></span>
+<span class=normal><a href=#__codelineno-13-20>20</a></span>
+<span class=normal><a href=#__codelineno-13-21>21</a></span>
+<span class=normal><a href=#__codelineno-13-22>22</a></span>
+<span class=normal><a href=#__codelineno-13-23>23</a></span>
+<span class=normal><a href=#__codelineno-13-24>24</a></span>
+<span class=normal><a href=#__codelineno-13-25>25</a></span>
+<span class=normal><a href=#__codelineno-13-26>26</a></span>
+<span class=normal><a href=#__codelineno-13-27>27</a></span>
+<span class=normal><a href=#__codelineno-13-28>28</a></span>
+<span class=normal><a href=#__codelineno-13-29>29</a></span>
+<span class=normal><a href=#__codelineno-13-30>30</a></span>
+<span class=normal><a href=#__codelineno-13-31>31</a></span>
+<span class=normal><a href=#__codelineno-13-32>32</a></span>
+<span class=normal><a href=#__codelineno-13-33>33</a></span>
+<span class=normal><a href=#__codelineno-13-34>34</a></span>
+<span class=normal><a href=#__codelineno-13-35>35</a></span>
+<span class=normal><a href=#__codelineno-13-36>36</a></span>
+<span class=normal><a href=#__codelineno-13-37>37</a></span>
+<span class=normal><a href=#__codelineno-13-38>38</a></span>
+<span class=normal><a href=#__codelineno-13-39>39</a></span>
+<span class=normal><a href=#__codelineno-13-40>40</a></span>
+<span class=normal><a href=#__codelineno-13-41>41</a></span>
+<span class=normal><a href=#__codelineno-13-42>42</a></span>
+<span class=normal><a href=#__codelineno-13-43>43</a></span>
+<span class=normal><a href=#__codelineno-13-44>44</a></span>
+<span class=normal><a href=#__codelineno-13-45>45</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-13-1 name=__codelineno-13-1></a><span class=nn>---</span>
+<a id=__codelineno-13-2 name=__codelineno-13-2></a><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">open-webui</span>
+<a id=__codelineno-13-3 name=__codelineno-13-3></a>
+<a id=__codelineno-13-4 name=__codelineno-13-4></a><span class=nt>resources</span><span class=p>:</span>
+<a id=__codelineno-13-5 name=__codelineno-13-5></a><span class=w>  </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">namespace.yaml</span>
+<a id=__codelineno-13-6 name=__codelineno-13-6></a><span class=w>  </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">k8s.np.open-webui-default-deny.yaml</span>
+<a id=__codelineno-13-7 name=__codelineno-13-7></a><span class=w>  </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">k8s.np.open-webui.yaml</span>
+<a id=__codelineno-13-8 name=__codelineno-13-8></a>
+<a id=__codelineno-13-9 name=__codelineno-13-9></a><span class=c1># ksops decrypts secrets.enc.yaml and ingress.enc.yaml at build time and</span>
+<a id=__codelineno-13-10 name=__codelineno-13-10></a><span class=c1># injects the resources as if they were regular resources. The encrypted</span>
+<a id=__codelineno-13-11 name=__codelineno-13-11></a><span class=c1># files are intentionally NOT in `resources:`.</span>
+<a id=__codelineno-13-12 name=__codelineno-13-12></a><span class=nt>generators</span><span class=p>:</span>
+<a id=__codelineno-13-13 name=__codelineno-13-13></a><span class=w>  </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">kustomize-secret-generator.yaml</span>
+<a id=__codelineno-13-14 name=__codelineno-13-14></a>
+<a id=__codelineno-13-15 name=__codelineno-13-15></a><span class=nt>commonAnnotations</span><span class=p>:</span>
+<a id=__codelineno-13-16 name=__codelineno-13-16></a><span class=w>  </span><span class=nt>argocd.argoproj.io/sync-wave</span><span class=p>:</span><span class=w> </span><span class=s>"66"</span>
+<a id=__codelineno-13-17 name=__codelineno-13-17></a>
+<a id=__codelineno-13-18 name=__codelineno-13-18></a><span class=nt>helmCharts</span><span class=p>:</span>
+<a id=__codelineno-13-19 name=__codelineno-13-19></a><span class=w>  </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">open-webui</span>
+<a id=__codelineno-13-20 name=__codelineno-13-20></a><span class=w>    </span><span class=nt>repo</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">https://helm.openwebui.com/</span>
+<a id=__codelineno-13-21 name=__codelineno-13-21></a><span class=w>    </span><span class=nt>version</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">14.6.0</span>
+<a id=__codelineno-13-22 name=__codelineno-13-22></a><span class=w>    </span><span class=nt>releaseName</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">open-webui</span>
+<a id=__codelineno-13-23 name=__codelineno-13-23></a><span class=w>    </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">open-webui</span>
+<a id=__codelineno-13-24 name=__codelineno-13-24></a><span class=w>    </span><span class=nt>includeCRDs</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id=__codelineno-13-25 name=__codelineno-13-25></a><span class=w>    </span><span class=nt>valuesInline</span><span class=p>:</span>
+<a id=__codelineno-13-26 name=__codelineno-13-26></a><span class=w>      </span><span class=nt>ollama</span><span class=p>:</span>
+<a id=__codelineno-13-27 name=__codelineno-13-27></a><span class=w>        </span><span class=nt>enabled</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id=__codelineno-13-28 name=__codelineno-13-28></a><span class=w>      </span><span class=nt>enableOpenaiApi</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id=__codelineno-13-29 name=__codelineno-13-29></a><span class=w>      </span><span class=nt>ingress</span><span class=p>:</span>
+<a id=__codelineno-13-30 name=__codelineno-13-30></a><span class=w>        </span><span class=nt>enabled</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id=__codelineno-13-31 name=__codelineno-13-31></a><span class=w>      </span><span class=nt>persistence</span><span class=p>:</span>
+<a id=__codelineno-13-32 name=__codelineno-13-32></a><span class=w>        </span><span class=nt>enabled</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id=__codelineno-13-33 name=__codelineno-13-33></a><span class=w>        </span><span class=nt>size</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">10Gi</span>
+<a id=__codelineno-13-34 name=__codelineno-13-34></a><span class=w>        </span><span class=nt>storageClass</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">longhorn</span>
+<a id=__codelineno-13-35 name=__codelineno-13-35></a><span class=w>        </span><span class=nt>accessModes</span><span class=p>:</span>
+<a id=__codelineno-13-36 name=__codelineno-13-36></a><span class=w>          </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">ReadWriteOnce</span>
+<a id=__codelineno-13-37 name=__codelineno-13-37></a><span class=w>      </span><span class=nt>replicaCount</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<a id=__codelineno-13-38 name=__codelineno-13-38></a><span class=w>      </span><span class=nt>strategy</span><span class=p>:</span>
+<a id=__codelineno-13-39 name=__codelineno-13-39></a><span class=w>        </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">Recreate</span>
+<a id=__codelineno-13-40 name=__codelineno-13-40></a><span class=w>      </span><span class=nt>service</span><span class=p>:</span>
+<a id=__codelineno-13-41 name=__codelineno-13-41></a><span class=w>        </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">ClusterIP</span>
+<a id=__codelineno-13-42 name=__codelineno-13-42></a><span class=w>        </span><span class=nt>port</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
+<a id=__codelineno-13-43 name=__codelineno-13-43></a><span class=w>      </span><span class=nt>extraEnvFrom</span><span class=p>:</span>
+<a id=__codelineno-13-44 name=__codelineno-13-44></a><span class=w>        </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>secretRef</span><span class=p>:</span>
+<a id=__codelineno-13-45 name=__codelineno-13-45></a><span class=w>            </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">open-webui-env</span>
+</code></pre></div></td></tr></table></div> <hr> <h2 id=task-7-verify-the-kustomization-builds-and-validates>Task 7: Verify the kustomization builds and validates<a class=headerlink href=#task-7-verify-the-kustomization-builds-and-validates title="Permanent link">#</a></h2> <p><strong>Files:</strong> none (verification only)</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 1: Build the kustomization</strong></li> </ul> <p><div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-14-1>1</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-14-1 name=__codelineno-14-1></a>kustomize<span class=w> </span>build<span class=w> </span>apps/open-webui<span class=w> </span>--enable-helm<span class=w> </span>--enable-alpha-plugins<span class=w> </span>--enable-exec<span class=w> </span>&gt;<span class=w> </span>/tmp/open-webui-rendered.yaml
+</code></pre></div></td></tr></table></div> Expected: zero errors.</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 2: Spot-check the rendered manifests</strong></li> </ul> <p><div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-15-1>1</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-15-1 name=__codelineno-15-1></a>grep<span class=w> </span>-E<span class=w> </span><span class=s1>'^(apiVersion|kind|  name):'</span><span class=w> </span>/tmp/open-webui-rendered.yaml<span class=w> </span><span class=p>|</span><span class=w> </span>head<span class=w> </span>-40
+</code></pre></div></td></tr></table></div> Expected to see at minimum: Namespace <code>open-webui</code>, two CiliumNetworkPolicy (<code>open-webui-default-deny</code>, <code>open-webui</code>), Secret <code>open-webui-env</code>, Ingress <code>open-webui</code>, Deployment <code>open-webui</code>, Service <code>open-webui</code>, PersistentVolumeClaim.</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 3: Confirm the Deployment label matches the NetworkPolicy selector</strong></li> </ul> <p><div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-16-1>1</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-16-1 name=__codelineno-16-1></a>yq<span class=w> </span><span class=s1>'select(.kind == "Deployment") | .spec.template.metadata.labels'</span><span class=w> </span>/tmp/open-webui-rendered.yaml
+</code></pre></div></td></tr></table></div> Expected: includes <code>app.kubernetes.io/name: open-webui</code>. If the chart uses a different label, update <code>k8s.np.open-webui.yaml</code>'s <code>endpointSelector.matchLabels</code> to match the actual label, then re-run Step 1 and Step 3.</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 4: Schema validation</strong></li> </ul> <p><div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-17-1>1</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-17-1 name=__codelineno-17-1></a>scripts/kubeconform-validate.sh<span class=w> </span>apps/open-webui
+</code></pre></div></td></tr></table></div> Expected: zero errors.</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 5: Confirm the Secret was substituted from SOPS</strong></li> </ul> <p><div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-18-1>1</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-18-1 name=__codelineno-18-1></a>yq<span class=w> </span><span class=s1>'select(.kind == "Secret" and .metadata.name == "open-webui-env") | .data | keys'</span><span class=w> </span>/tmp/open-webui-rendered.yaml
+</code></pre></div></td></tr></table></div> Expected: the list of env var names (base64-encoded values, not the <code>&lt;PASTE_*&gt;</code> placeholders).</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 6: Clean up</strong></li> </ul> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-19-1>1</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-19-1 name=__codelineno-19-1></a>:<span class=w> </span>&gt;<span class=w> </span>/tmp/open-webui-rendered.yaml
+</code></pre></div></td></tr></table></div> <hr> <h2 id=task-8-register-the-oidc-client-in-authelia>Task 8: Register the OIDC client in Authelia<a class=headerlink href=#task-8-register-the-oidc-client-in-authelia title="Permanent link">#</a></h2> <p><strong>Files:</strong> - Modify: <code>apps/authelia/values.enc.yaml</code> (encrypted)</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 1: Decrypt Authelia values to <code>/tmp</code></strong></li> </ul> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-20-1>1</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-20-1 name=__codelineno-20-1></a>sops<span class=w> </span>--config<span class=w> </span>.sops.yaml<span class=w> </span>-d<span class=w> </span>apps/authelia/values.enc.yaml<span class=w> </span>&gt;<span class=w> </span>/tmp/authelia-values.enc.yaml
+</code></pre></div></td></tr></table></div> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 2: Append the openwebui client block</strong></li> </ul> <p>Open <code>/tmp/authelia-values.enc.yaml</code>. Locate the existing list <code>identity_providers.oidc.clients:</code> (existing entries include <code>argocd</code>, <code>grafana</code>, <code>semaphore</code>). Append the following as a new list item, matching the surrounding indentation <strong>exactly</strong> (the existing entries are indented 16 spaces; the YAML below assumes that — adjust if the file uses different indentation):</p> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-21-1> 1</a></span>
+<span class=normal><a href=#__codelineno-21-2> 2</a></span>
+<span class=normal><a href=#__codelineno-21-3> 3</a></span>
+<span class=normal><a href=#__codelineno-21-4> 4</a></span>
+<span class=normal><a href=#__codelineno-21-5> 5</a></span>
+<span class=normal><a href=#__codelineno-21-6> 6</a></span>
+<span class=normal><a href=#__codelineno-21-7> 7</a></span>
+<span class=normal><a href=#__codelineno-21-8> 8</a></span>
+<span class=normal><a href=#__codelineno-21-9> 9</a></span>
+<span class=normal><a href=#__codelineno-21-10>10</a></span>
+<span class=normal><a href=#__codelineno-21-11>11</a></span>
+<span class=normal><a href=#__codelineno-21-12>12</a></span>
+<span class=normal><a href=#__codelineno-21-13>13</a></span>
+<span class=normal><a href=#__codelineno-21-14>14</a></span>
+<span class=normal><a href=#__codelineno-21-15>15</a></span>
+<span class=normal><a href=#__codelineno-21-16>16</a></span>
+<span class=normal><a href=#__codelineno-21-17>17</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-21-1 name=__codelineno-21-1></a><span class=w>            </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>client_id</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">openwebui</span>
+<a id=__codelineno-21-2 name=__codelineno-21-2></a><span class=w>              </span><span class=nt>client_name</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">Open WebUI</span>
+<a id=__codelineno-21-3 name=__codelineno-21-3></a><span class=w>              </span><span class=nt>client_secret</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">&lt;PASTE_PBKDF2_DIGEST_FROM_TASK_1_STEP_2&gt;</span>
+<a id=__codelineno-21-4 name=__codelineno-21-4></a><span class=w>              </span><span class=nt>claims_policy</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">default_claims_policy</span>
+<a id=__codelineno-21-5 name=__codelineno-21-5></a><span class=w>              </span><span class=nt>redirect_uris</span><span class=p>:</span>
+<a id=__codelineno-21-6 name=__codelineno-21-6></a><span class=w>                </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">https://chat.internal.neese-web.de/oauth/oidc/callback</span>
+<a id=__codelineno-21-7 name=__codelineno-21-7></a><span class=w>              </span><span class=nt>scopes</span><span class=p>:</span>
+<a id=__codelineno-21-8 name=__codelineno-21-8></a><span class=w>                </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">openid</span>
+<a id=__codelineno-21-9 name=__codelineno-21-9></a><span class=w>                </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">profile</span>
+<a id=__codelineno-21-10 name=__codelineno-21-10></a><span class=w>                </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">email</span>
+<a id=__codelineno-21-11 name=__codelineno-21-11></a><span class=w>                </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">groups</span>
+<a id=__codelineno-21-12 name=__codelineno-21-12></a><span class=w>              </span><span class=nt>grant_types</span><span class=p>:</span>
+<a id=__codelineno-21-13 name=__codelineno-21-13></a><span class=w>                </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">authorization_code</span>
+<a id=__codelineno-21-14 name=__codelineno-21-14></a><span class=w>              </span><span class=nt>response_types</span><span class=p>:</span>
+<a id=__codelineno-21-15 name=__codelineno-21-15></a><span class=w>                </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">code</span>
+<a id=__codelineno-21-16 name=__codelineno-21-16></a><span class=w>              </span><span class=nt>authorization_policy</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">two_factor</span>
+<a id=__codelineno-21-17 name=__codelineno-21-17></a><span class=w>              </span><span class=nt>token_endpoint_auth_method</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">client_secret_post</span>
+</code></pre></div></td></tr></table></div> <p>Substitute the <code>&lt;PASTE_PBKDF2_DIGEST_*&gt;</code> placeholder with the <strong>Digest</strong> value (the <code>$pbkdf2-sha512$...</code> string), <strong>not</strong> the plaintext.</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 3: Re-encrypt and verify</strong></li> </ul> <p><div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-22-1>1</a></span>
+<span class=normal><a href=#__codelineno-22-2>2</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-22-1 name=__codelineno-22-1></a>sops<span class=w> </span>--config<span class=w> </span>.sops.yaml<span class=w> </span>-e<span class=w> </span>/tmp/authelia-values.enc.yaml<span class=w> </span>&gt;<span class=w> </span>apps/authelia/values.enc.yaml
+<a id=__codelineno-22-2 name=__codelineno-22-2></a>sops<span class=w> </span>--config<span class=w> </span>.sops.yaml<span class=w> </span>-d<span class=w> </span>apps/authelia/values.enc.yaml<span class=w> </span><span class=p>|</span><span class=w> </span>grep<span class=w> </span>-A<span class=w> </span><span class=m>2</span><span class=w> </span><span class=s2>"client_id: openwebui"</span>
+</code></pre></div></td></tr></table></div> Expected: the new client block appears in the decrypted output.</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 4: Confirm Authelia still builds</strong></li> </ul> <p><div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-23-1>1</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-23-1 name=__codelineno-23-1></a>kustomize<span class=w> </span>build<span class=w> </span>apps/authelia<span class=w> </span>--enable-helm<span class=w> </span>--enable-alpha-plugins<span class=w> </span>--enable-exec<span class=w> </span>&gt;<span class=w> </span>/dev/null
+</code></pre></div></td></tr></table></div> Expected: zero errors.</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 5: Wipe plaintext temp file</strong></li> </ul> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-24-1>1</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-24-1 name=__codelineno-24-1></a>:<span class=w> </span>&gt;<span class=w> </span>/tmp/authelia-values.enc.yaml
+</code></pre></div></td></tr></table></div> <hr> <h2 id=task-9-write-the-websearchmd-runbook>Task 9: Write the WEBSEARCH.md runbook<a class=headerlink href=#task-9-write-the-websearchmd-runbook title="Permanent link">#</a></h2> <p><strong>Files:</strong> - Create: <code>apps/open-webui/WEBSEARCH.md</code></p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 1: Write the runbook</strong></li> </ul> <p>Save the following as <code>apps/open-webui/WEBSEARCH.md</code> (content is in English per the repo convention):</p> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-25-1> 1</a></span>
+<span class=normal><a href=#__codelineno-25-2> 2</a></span>
+<span class=normal><a href=#__codelineno-25-3> 3</a></span>
+<span class=normal><a href=#__codelineno-25-4> 4</a></span>
+<span class=normal><a href=#__codelineno-25-5> 5</a></span>
+<span class=normal><a href=#__codelineno-25-6> 6</a></span>
+<span class=normal><a href=#__codelineno-25-7> 7</a></span>
+<span class=normal><a href=#__codelineno-25-8> 8</a></span>
+<span class=normal><a href=#__codelineno-25-9> 9</a></span>
+<span class=normal><a href=#__codelineno-25-10>10</a></span>
+<span class=normal><a href=#__codelineno-25-11>11</a></span>
+<span class=normal><a href=#__codelineno-25-12>12</a></span>
+<span class=normal><a href=#__codelineno-25-13>13</a></span>
+<span class=normal><a href=#__codelineno-25-14>14</a></span>
+<span class=normal><a href=#__codelineno-25-15>15</a></span>
+<span class=normal><a href=#__codelineno-25-16>16</a></span>
+<span class=normal><a href=#__codelineno-25-17>17</a></span>
+<span class=normal><a href=#__codelineno-25-18>18</a></span>
+<span class=normal><a href=#__codelineno-25-19>19</a></span>
+<span class=normal><a href=#__codelineno-25-20>20</a></span>
+<span class=normal><a href=#__codelineno-25-21>21</a></span>
+<span class=normal><a href=#__codelineno-25-22>22</a></span>
+<span class=normal><a href=#__codelineno-25-23>23</a></span>
+<span class=normal><a href=#__codelineno-25-24>24</a></span>
+<span class=normal><a href=#__codelineno-25-25>25</a></span>
+<span class=normal><a href=#__codelineno-25-26>26</a></span>
+<span class=normal><a href=#__codelineno-25-27>27</a></span>
+<span class=normal><a href=#__codelineno-25-28>28</a></span>
+<span class=normal><a href=#__codelineno-25-29>29</a></span>
+<span class=normal><a href=#__codelineno-25-30>30</a></span>
+<span class=normal><a href=#__codelineno-25-31>31</a></span>
+<span class=normal><a href=#__codelineno-25-32>32</a></span>
+<span class=normal><a href=#__codelineno-25-33>33</a></span>
+<span class=normal><a href=#__codelineno-25-34>34</a></span>
+<span class=normal><a href=#__codelineno-25-35>35</a></span>
+<span class=normal><a href=#__codelineno-25-36>36</a></span>
+<span class=normal><a href=#__codelineno-25-37>37</a></span>
+<span class=normal><a href=#__codelineno-25-38>38</a></span>
+<span class=normal><a href=#__codelineno-25-39>39</a></span>
+<span class=normal><a href=#__codelineno-25-40>40</a></span>
+<span class=normal><a href=#__codelineno-25-41>41</a></span>
+<span class=normal><a href=#__codelineno-25-42>42</a></span>
+<span class=normal><a href=#__codelineno-25-43>43</a></span>
+<span class=normal><a href=#__codelineno-25-44>44</a></span>
+<span class=normal><a href=#__codelineno-25-45>45</a></span>
+<span class=normal><a href=#__codelineno-25-46>46</a></span>
+<span class=normal><a href=#__codelineno-25-47>47</a></span>
+<span class=normal><a href=#__codelineno-25-48>48</a></span>
+<span class=normal><a href=#__codelineno-25-49>49</a></span>
+<span class=normal><a href=#__codelineno-25-50>50</a></span>
+<span class=normal><a href=#__codelineno-25-51>51</a></span>
+<span class=normal><a href=#__codelineno-25-52>52</a></span>
+<span class=normal><a href=#__codelineno-25-53>53</a></span>
+<span class=normal><a href=#__codelineno-25-54>54</a></span>
+<span class=normal><a href=#__codelineno-25-55>55</a></span>
+<span class=normal><a href=#__codelineno-25-56>56</a></span>
+<span class=normal><a href=#__codelineno-25-57>57</a></span>
+<span class=normal><a href=#__codelineno-25-58>58</a></span>
+<span class=normal><a href=#__codelineno-25-59>59</a></span>
+<span class=normal><a href=#__codelineno-25-60>60</a></span>
+<span class=normal><a href=#__codelineno-25-61>61</a></span>
+<span class=normal><a href=#__codelineno-25-62>62</a></span>
+<span class=normal><a href=#__codelineno-25-63>63</a></span>
+<span class=normal><a href=#__codelineno-25-64>64</a></span>
+<span class=normal><a href=#__codelineno-25-65>65</a></span>
+<span class=normal><a href=#__codelineno-25-66>66</a></span>
+<span class=normal><a href=#__codelineno-25-67>67</a></span>
+<span class=normal><a href=#__codelineno-25-68>68</a></span>
+<span class=normal><a href=#__codelineno-25-69>69</a></span>
+<span class=normal><a href=#__codelineno-25-70>70</a></span>
+<span class=normal><a href=#__codelineno-25-71>71</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-25-1 name=__codelineno-25-1></a><span class=gh># Open WebUI — Web Search Setup</span>
+<a id=__codelineno-25-2 name=__codelineno-25-2></a>
+<a id=__codelineno-25-3 name=__codelineno-25-3></a>This document explains the web-search wiring in this app and the post-deploy
+<a id=__codelineno-25-4 name=__codelineno-25-4></a>steps required to expose it transparently to IDE clients (Continue.dev) via
+<a id=__codelineno-25-5 name=__codelineno-25-5></a>the OpenAI-compatible API.
+<a id=__codelineno-25-6 name=__codelineno-25-6></a>
+<a id=__codelineno-25-7 name=__codelineno-25-7></a><span class=gu>## Backend wiring</span>
+<a id=__codelineno-25-8 name=__codelineno-25-8></a>
+<a id=__codelineno-25-9 name=__codelineno-25-9></a>Open WebUI uses Tavily as the search backend. Configuration lives in the SOPS
+<a id=__codelineno-25-10 name=__codelineno-25-10></a>secret <span class=sb>`open-webui-env`</span>:
+<a id=__codelineno-25-11 name=__codelineno-25-11></a>
+<a id=__codelineno-25-12 name=__codelineno-25-12></a><span class=k>-</span><span class=w> </span><span class=sb>`ENABLE_RAG_WEB_SEARCH=true`</span> — enables the web-search feature.
+<a id=__codelineno-25-13 name=__codelineno-25-13></a><span class=k>-</span><span class=w> </span><span class=sb>`RAG_WEB_SEARCH_ENGINE=tavily`</span> — selects Tavily as the provider.
+<a id=__codelineno-25-14 name=__codelineno-25-14></a><span class=k>-</span><span class=w> </span><span class=sb>`TAVILY_API_KEY`</span> — bearer key from https://app.tavily.com.
+<a id=__codelineno-25-15 name=__codelineno-25-15></a><span class=k>-</span><span class=w> </span><span class=sb>`RAG_WEB_SEARCH_RESULT_COUNT=5`</span> — snippets fetched per query.
+<a id=__codelineno-25-16 name=__codelineno-25-16></a><span class=k>-</span><span class=w> </span><span class=sb>`RAG_WEB_SEARCH_CONCURRENT_REQUESTS=10`</span> — parallel fetches.
+<a id=__codelineno-25-17 name=__codelineno-25-17></a>
+<a id=__codelineno-25-18 name=__codelineno-25-18></a><span class=gu>## Embedding bypass</span>
+<a id=__codelineno-25-19 name=__codelineno-25-19></a>
+<a id=__codelineno-25-20 name=__codelineno-25-20></a><span class=sb>`BYPASS_EMBEDDING_AND_RETRIEVAL=true`</span> disables the embedding/retrieval layer
+<a id=__codelineno-25-21 name=__codelineno-25-21></a>inside Open WebUI. Tavily snippets are inserted into the prompt context
+<a id=__codelineno-25-22 name=__codelineno-25-22></a>verbatim, with no semantic chunking. This keeps the inference pipeline simple
+<a id=__codelineno-25-23 name=__codelineno-25-23></a>and avoids running an embedding model on CPU (llama-cpp owns the GPU
+<a id=__codelineno-25-24 name=__codelineno-25-24></a>exclusively and does not serve embeddings).
+<a id=__codelineno-25-25 name=__codelineno-25-25></a>
+<a id=__codelineno-25-26 name=__codelineno-25-26></a>If you later want RAG over uploaded documents, the bypass must be turned off
+<a id=__codelineno-25-27 name=__codelineno-25-27></a>and an embedding model deployed separately (e.g., a second llama.cpp instance
+<a id=__codelineno-25-28 name=__codelineno-25-28></a>with <span class=sb>`--embedding`</span>, or a dedicated embedding service). That is out of scope
+<a id=__codelineno-25-29 name=__codelineno-25-29></a>for the current setup.
+<a id=__codelineno-25-30 name=__codelineno-25-30></a>
+<a id=__codelineno-25-31 name=__codelineno-25-31></a><span class=gu>## Virtual model `qwen2.5-coder-websearch`</span>
+<a id=__codelineno-25-32 name=__codelineno-25-32></a>
+<a id=__codelineno-25-33 name=__codelineno-25-33></a>Open WebUI does not enable web search per request by default. To make web
+<a id=__codelineno-25-34 name=__codelineno-25-34></a>search transparent for IDE clients, create a virtual model with web search
+<a id=__codelineno-25-35 name=__codelineno-25-35></a>toggled on:
+<a id=__codelineno-25-36 name=__codelineno-25-36></a>
+<a id=__codelineno-25-37 name=__codelineno-25-37></a><span class=k>1.</span> Log in to https://chat.internal.neese-web.de as an admin user.
+<a id=__codelineno-25-38 name=__codelineno-25-38></a><span class=k>2.</span> Workspace → Models → "Create a New Model".
+<a id=__codelineno-25-39 name=__codelineno-25-39></a><span class=k>3.</span> Base Model: <span class=sb>`qwen2.5-coder-7b`</span> (exposed by the llama-cpp backend).
+<a id=__codelineno-25-40 name=__codelineno-25-40></a><span class=k>4.</span> Model ID: <span class=sb>`qwen2.5-coder-websearch`</span>.
+<a id=__codelineno-25-41 name=__codelineno-25-41></a><span class=k>5.</span> Capabilities → Web Search: <span class=gs>**enabled**</span>.
+<a id=__codelineno-25-42 name=__codelineno-25-42></a><span class=k>6.</span> Save.
+<a id=__codelineno-25-43 name=__codelineno-25-43></a>
+<a id=__codelineno-25-44 name=__codelineno-25-44></a>IDE clients target this virtual model. Every request goes through the Tavily
+<a id=__codelineno-25-45 name=__codelineno-25-45></a>lookup automatically; the client does not need to know about web search.
+<a id=__codelineno-25-46 name=__codelineno-25-46></a>
+<a id=__codelineno-25-47 name=__codelineno-25-47></a><span class=k>&gt; </span><span class=ge>**Note:** this virtual model lives in the SQLite database on the Longhorn</span>
+<a id=__codelineno-25-48 name=__codelineno-25-48></a><span class=k>&gt; </span><span class=ge>PVC. It is not represented in Git. If the PVC is destroyed, recreate the</span>
+<a id=__codelineno-25-49 name=__codelineno-25-49></a><span class=k>&gt; </span><span class=ge>model by following these steps.</span>
+<a id=__codelineno-25-50 name=__codelineno-25-50></a>
+<a id=__codelineno-25-51 name=__codelineno-25-51></a><span class=gu>## IDE client setup (Continue.dev example)</span>
+<a id=__codelineno-25-52 name=__codelineno-25-52></a>
+<a id=__codelineno-25-53 name=__codelineno-25-53></a>Open WebUI → Settings → Account → API Keys → "Create new key".
+<a id=__codelineno-25-54 name=__codelineno-25-54></a>
+<a id=__codelineno-25-55 name=__codelineno-25-55></a>In <span class=sb>`~/.continue/config.json`</span>:
+<a id=__codelineno-25-56 name=__codelineno-25-56></a>
+<a id=__codelineno-25-57 name=__codelineno-25-57></a><span class=sb>```jsonc</span>
+<a id=__codelineno-25-58 name=__codelineno-25-58></a><span class=s>"models": [{</span>
+<a id=__codelineno-25-59 name=__codelineno-25-59></a><span class=s>  "title": "qwen-websearch",</span>
+<a id=__codelineno-25-60 name=__codelineno-25-60></a><span class=s>  "provider": "openai",</span>
+<a id=__codelineno-25-61 name=__codelineno-25-61></a><span class=s>  "model": "qwen2.5-coder-websearch",</span>
+<a id=__codelineno-25-62 name=__codelineno-25-62></a><span class=s>  "apiBase": "https://chat.internal.neese-web.de/api",</span>
+<a id=__codelineno-25-63 name=__codelineno-25-63></a><span class=s>  "apiKey": "sk-&lt;your personal Open WebUI key&gt;"</span>
+<a id=__codelineno-25-64 name=__codelineno-25-64></a><span class=s>}]</span>
+<a id=__codelineno-25-65 name=__codelineno-25-65></a><span class=sb>```</span>
+<a id=__codelineno-25-66 name=__codelineno-25-66></a>
+<a id=__codelineno-25-67 name=__codelineno-25-67></a><span class=gu>## Tavily Free tier</span>
+<a id=__codelineno-25-68 name=__codelineno-25-68></a>
+<a id=__codelineno-25-69 name=__codelineno-25-69></a>The Free plan covers 1000 calls/month. Track usage in the Tavily dashboard.
+<a id=__codelineno-25-70 name=__codelineno-25-70></a>If you approach the limit, lower <span class=sb>`RAG_WEB_SEARCH_RESULT_COUNT`</span> and
+<a id=__codelineno-25-71 name=__codelineno-25-71></a><span class=sb>`RAG_WEB_SEARCH_CONCURRENT_REQUESTS`</span>, or upgrade the plan.
+</code></pre></div></td></tr></table></div> <hr> <h2 id=task-10-commit-the-app-folder-authelia-update>Task 10: Commit the app folder + Authelia update<a class=headerlink href=#task-10-commit-the-app-folder-authelia-update title="Permanent link">#</a></h2> <p><strong>Files staged:</strong> <code>apps/open-webui/**</code>, <code>apps/authelia/values.enc.yaml</code></p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 1: Stage</strong></li> </ul> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-26-1>1</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-26-1 name=__codelineno-26-1></a>git<span class=w> </span>add<span class=w> </span>apps/open-webui<span class=w> </span>apps/authelia/values.enc.yaml
+</code></pre></div></td></tr></table></div> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 2: Run pre-commit hooks</strong></li> </ul> <p><div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-27-1> 1</a></span>
+<span class=normal><a href=#__codelineno-27-2> 2</a></span>
+<span class=normal><a href=#__codelineno-27-3> 3</a></span>
+<span class=normal><a href=#__codelineno-27-4> 4</a></span>
+<span class=normal><a href=#__codelineno-27-5> 5</a></span>
+<span class=normal><a href=#__codelineno-27-6> 6</a></span>
+<span class=normal><a href=#__codelineno-27-7> 7</a></span>
+<span class=normal><a href=#__codelineno-27-8> 8</a></span>
+<span class=normal><a href=#__codelineno-27-9> 9</a></span>
+<span class=normal><a href=#__codelineno-27-10>10</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-27-1 name=__codelineno-27-1></a>pre-commit<span class=w> </span>run<span class=w> </span>--files<span class=w> </span><span class=se>\</span>
+<a id=__codelineno-27-2 name=__codelineno-27-2></a><span class=w>  </span>apps/open-webui/namespace.yaml<span class=w> </span><span class=se>\</span>
+<a id=__codelineno-27-3 name=__codelineno-27-3></a><span class=w>  </span>apps/open-webui/kustomization.yaml<span class=w> </span><span class=se>\</span>
+<a id=__codelineno-27-4 name=__codelineno-27-4></a><span class=w>  </span>apps/open-webui/kustomize-secret-generator.yaml<span class=w> </span><span class=se>\</span>
+<a id=__codelineno-27-5 name=__codelineno-27-5></a><span class=w>  </span>apps/open-webui/k8s.np.open-webui-default-deny.yaml<span class=w> </span><span class=se>\</span>
+<a id=__codelineno-27-6 name=__codelineno-27-6></a><span class=w>  </span>apps/open-webui/k8s.np.open-webui.yaml<span class=w> </span><span class=se>\</span>
+<a id=__codelineno-27-7 name=__codelineno-27-7></a><span class=w>  </span>apps/open-webui/secrets.enc.yaml<span class=w> </span><span class=se>\</span>
+<a id=__codelineno-27-8 name=__codelineno-27-8></a><span class=w>  </span>apps/open-webui/ingress.enc.yaml<span class=w> </span><span class=se>\</span>
+<a id=__codelineno-27-9 name=__codelineno-27-9></a><span class=w>  </span>apps/open-webui/WEBSEARCH.md<span class=w> </span><span class=se>\</span>
+<a id=__codelineno-27-10 name=__codelineno-27-10></a><span class=w>  </span>apps/authelia/values.enc.yaml
+</code></pre></div></td></tr></table></div> If any hook auto-fixes whitespace or formatting, re-stage and rerun until clean.</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 3: Commit</strong></li> </ul> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-28-1> 1</a></span>
+<span class=normal><a href=#__codelineno-28-2> 2</a></span>
+<span class=normal><a href=#__codelineno-28-3> 3</a></span>
+<span class=normal><a href=#__codelineno-28-4> 4</a></span>
+<span class=normal><a href=#__codelineno-28-5> 5</a></span>
+<span class=normal><a href=#__codelineno-28-6> 6</a></span>
+<span class=normal><a href=#__codelineno-28-7> 7</a></span>
+<span class=normal><a href=#__codelineno-28-8> 8</a></span>
+<span class=normal><a href=#__codelineno-28-9> 9</a></span>
+<span class=normal><a href=#__codelineno-28-10>10</a></span>
+<span class=normal><a href=#__codelineno-28-11>11</a></span>
+<span class=normal><a href=#__codelineno-28-12>12</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-28-1 name=__codelineno-28-1></a>git<span class=w> </span>commit<span class=w> </span>-m<span class=w> </span><span class=s2>"</span><span class=k>$(</span>cat<span class=w> </span><span class=s>&lt;&lt;'EOF'</span>
+<a id=__codelineno-28-2 name=__codelineno-28-2></a><span class=s>feat(open-webui): add Helm-based deployment with Authelia OIDC and Tavily websearch</span>
+<a id=__codelineno-28-3 name=__codelineno-28-3></a>
+<a id=__codelineno-28-4 name=__codelineno-28-4></a><span class=s>Sync wave 66, single-replica, SQLite on Longhorn PVC, Ingress on</span>
+<a id=__codelineno-28-5 name=__codelineno-28-5></a><span class=s>chat.internal.neese-web.de. OIDC client `openwebui` appended to Authelia.</span>
+<a id=__codelineno-28-6 name=__codelineno-28-6></a><span class=s>See apps/open-webui/WEBSEARCH.md for the post-deploy virtual-model steps.</span>
+<a id=__codelineno-28-7 name=__codelineno-28-7></a>
+<a id=__codelineno-28-8 name=__codelineno-28-8></a><span class=s>Spec: docs/superpowers/specs/2026-05-20-open-webui-design.md</span>
+<a id=__codelineno-28-9 name=__codelineno-28-9></a>
+<a id=__codelineno-28-10 name=__codelineno-28-10></a><span class=s>Co-Authored-By: Claude Opus 4.7 (1M context) &lt;noreply@anthropic.com&gt;</span>
+<a id=__codelineno-28-11 name=__codelineno-28-11></a><span class=s>EOF</span>
+<a id=__codelineno-28-12 name=__codelineno-28-12></a><span class=k>)</span><span class=s2>"</span>
+</code></pre></div></td></tr></table></div> <hr> <h2 id=task-11-create-the-argocd-application-manifest>Task 11: Create the ArgoCD Application manifest<a class=headerlink href=#task-11-create-the-argocd-application-manifest title="Permanent link">#</a></h2> <p><strong>Files:</strong> - Create: <code>apps/argo-cd-apps/66-open-webui.yaml</code></p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 1: Write the Application</strong></li> </ul> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-29-1> 1</a></span>
+<span class=normal><a href=#__codelineno-29-2> 2</a></span>
+<span class=normal><a href=#__codelineno-29-3> 3</a></span>
+<span class=normal><a href=#__codelineno-29-4> 4</a></span>
+<span class=normal><a href=#__codelineno-29-5> 5</a></span>
+<span class=normal><a href=#__codelineno-29-6> 6</a></span>
+<span class=normal><a href=#__codelineno-29-7> 7</a></span>
+<span class=normal><a href=#__codelineno-29-8> 8</a></span>
+<span class=normal><a href=#__codelineno-29-9> 9</a></span>
+<span class=normal><a href=#__codelineno-29-10>10</a></span>
+<span class=normal><a href=#__codelineno-29-11>11</a></span>
+<span class=normal><a href=#__codelineno-29-12>12</a></span>
+<span class=normal><a href=#__codelineno-29-13>13</a></span>
+<span class=normal><a href=#__codelineno-29-14>14</a></span>
+<span class=normal><a href=#__codelineno-29-15>15</a></span>
+<span class=normal><a href=#__codelineno-29-16>16</a></span>
+<span class=normal><a href=#__codelineno-29-17>17</a></span>
+<span class=normal><a href=#__codelineno-29-18>18</a></span>
+<span class=normal><a href=#__codelineno-29-19>19</a></span>
+<span class=normal><a href=#__codelineno-29-20>20</a></span>
+<span class=normal><a href=#__codelineno-29-21>21</a></span>
+<span class=normal><a href=#__codelineno-29-22>22</a></span>
+<span class=normal><a href=#__codelineno-29-23>23</a></span>
+<span class=normal><a href=#__codelineno-29-24>24</a></span>
+<span class=normal><a href=#__codelineno-29-25>25</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-29-1 name=__codelineno-29-1></a><span class=nn>---</span>
+<a id=__codelineno-29-2 name=__codelineno-29-2></a><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">argoproj.io/v1alpha1</span>
+<a id=__codelineno-29-3 name=__codelineno-29-3></a><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">Application</span>
+<a id=__codelineno-29-4 name=__codelineno-29-4></a><span class=nt>metadata</span><span class=p>:</span>
+<a id=__codelineno-29-5 name=__codelineno-29-5></a><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">66-open-webui</span>
+<a id=__codelineno-29-6 name=__codelineno-29-6></a><span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">argocd</span>
+<a id=__codelineno-29-7 name=__codelineno-29-7></a><span class=w>  </span><span class=nt>finalizers</span><span class=p>:</span>
+<a id=__codelineno-29-8 name=__codelineno-29-8></a><span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">resources-finalizer.argocd.argoproj.io</span>
+<a id=__codelineno-29-9 name=__codelineno-29-9></a><span class=w>  </span><span class=nt>annotations</span><span class=p>:</span>
+<a id=__codelineno-29-10 name=__codelineno-29-10></a><span class=w>    </span><span class=nt>argocd.argoproj.io/sync-wave</span><span class=p>:</span><span class=w> </span><span class=s>"66"</span>
+<a id=__codelineno-29-11 name=__codelineno-29-11></a><span class=nt>spec</span><span class=p>:</span>
+<a id=__codelineno-29-12 name=__codelineno-29-12></a><span class=w>  </span><span class=nt>project</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+<a id=__codelineno-29-13 name=__codelineno-29-13></a><span class=w>  </span><span class=nt>source</span><span class=p>:</span>
+<a id=__codelineno-29-14 name=__codelineno-29-14></a><span class=w>    </span><span class=nt>repoURL</span><span class=p>:</span><span class=w> </span><span class=s>"example.com"</span>
+<a id=__codelineno-29-15 name=__codelineno-29-15></a><span class=w>    </span><span class=nt>path</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">apps/open-webui</span>
+<a id=__codelineno-29-16 name=__codelineno-29-16></a><span class=w>    </span><span class=nt>targetRevision</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">HEAD</span>
+<a id=__codelineno-29-17 name=__codelineno-29-17></a><span class=w>  </span><span class=nt>destination</span><span class=p>:</span>
+<a id=__codelineno-29-18 name=__codelineno-29-18></a><span class=w>    </span><span class=nt>server</span><span class=p>:</span><span class=w> </span><span class=s>"https://kubernetes.default.svc"</span>
+<a id=__codelineno-29-19 name=__codelineno-29-19></a><span class=w>    </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+<a id=__codelineno-29-20 name=__codelineno-29-20></a><span class=w>  </span><span class=nt>syncPolicy</span><span class=p>:</span>
+<a id=__codelineno-29-21 name=__codelineno-29-21></a><span class=w>    </span><span class=nt>syncOptions</span><span class=p>:</span>
+<a id=__codelineno-29-22 name=__codelineno-29-22></a><span class=w>      </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">ApplyOutOfSyncOnly=true</span>
+<a id=__codelineno-29-23 name=__codelineno-29-23></a><span class=w>    </span><span class=nt>automated</span><span class=p>:</span>
+<a id=__codelineno-29-24 name=__codelineno-29-24></a><span class=w>      </span><span class=nt>prune</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id=__codelineno-29-25 name=__codelineno-29-25></a><span class=w>      </span><span class=nt>selfHeal</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div></td></tr></table></div> <p>The placeholder <code>repoURL: "example.com"</code> is rewritten by the existing Kustomize replacement in <code>apps/argo-cd-apps/kustomization.yaml</code> (sourced from the encrypted <code>argocd-repo-url-public</code> Secret).</p> <hr> <h2 id=task-12-register-the-application-in-the-argo-cd-apps-kustomization>Task 12: Register the Application in the argo-cd-apps kustomization<a class=headerlink href=#task-12-register-the-application-in-the-argo-cd-apps-kustomization title="Permanent link">#</a></h2> <p><strong>Files:</strong> - Modify: <code>apps/argo-cd-apps/kustomization.yaml</code></p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 1: Add the new resource entry</strong></li> </ul> <p>Open <code>apps/argo-cd-apps/kustomization.yaml</code>. In the <code>resources:</code> list, locate the last wave-65 entry (<code>- 65-unifi-controller.yaml</code>). Insert the new entry on its own line <strong>before</strong> <code>- 70-descheduler.yaml</code>:</p> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-30-1>1</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-30-1 name=__codelineno-30-1></a><span class=w>  </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">66-open-webui.yaml</span>
+</code></pre></div></td></tr></table></div> <p>Resulting context should look like: <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-31-1>1</a></span>
+<span class=normal><a href=#__codelineno-31-2>2</a></span>
+<span class=normal><a href=#__codelineno-31-3>3</a></span>
+<span class=normal><a href=#__codelineno-31-4>4</a></span>
+<span class=normal><a href=#__codelineno-31-5>5</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-31-1 name=__codelineno-31-1></a><span class=w>  </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">65-unifi-controller.yaml</span>
+<a id=__codelineno-31-2 name=__codelineno-31-2></a><span class=w>  </span><span class=c1>#- 65-prox01-watchtower.yaml</span>
+<a id=__codelineno-31-3 name=__codelineno-31-3></a><span class=w>  </span><span class=c1>#- 65-wardrowbe.yaml</span>
+<a id=__codelineno-31-4 name=__codelineno-31-4></a><span class=w>  </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">66-open-webui.yaml</span>
+<a id=__codelineno-31-5 name=__codelineno-31-5></a><span class=w>  </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">70-descheduler.yaml</span>
+</code></pre></div></td></tr></table></div></p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 2: Verify argo-cd-apps still builds</strong></li> </ul> <p><div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-32-1>1</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-32-1 name=__codelineno-32-1></a>kustomize<span class=w> </span>build<span class=w> </span>apps/argo-cd-apps<span class=w> </span>--enable-helm<span class=w> </span>--enable-alpha-plugins<span class=w> </span>--enable-exec<span class=w> </span>&gt;<span class=w> </span>/tmp/argocd-apps-rendered.yaml
+</code></pre></div></td></tr></table></div> Expected: zero errors.</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 3: Confirm the repoURL replacement targets the new Application</strong></li> </ul> <p><div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-33-1>1</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-33-1 name=__codelineno-33-1></a>yq<span class=w> </span><span class=s1>'select(.metadata.name == "66-open-webui") | .spec.source.repoURL'</span><span class=w> </span>/tmp/argocd-apps-rendered.yaml
+</code></pre></div></td></tr></table></div> Expected: a real git URL (not the literal string <code>example.com</code>).</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 4: Clean up</strong></li> </ul> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-34-1>1</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-34-1 name=__codelineno-34-1></a>:<span class=w> </span>&gt;<span class=w> </span>/tmp/argocd-apps-rendered.yaml
+</code></pre></div></td></tr></table></div> <hr> <h2 id=task-13-commit-the-argocd-application-registration>Task 13: Commit the ArgoCD Application registration<a class=headerlink href=#task-13-commit-the-argocd-application-registration title="Permanent link">#</a></h2> <p><strong>Files staged:</strong> <code>apps/argo-cd-apps/66-open-webui.yaml</code>, <code>apps/argo-cd-apps/kustomization.yaml</code></p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 1: Stage, lint, commit</strong></li> </ul> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-35-1>1</a></span>
+<span class=normal><a href=#__codelineno-35-2>2</a></span>
+<span class=normal><a href=#__codelineno-35-3>3</a></span>
+<span class=normal><a href=#__codelineno-35-4>4</a></span>
+<span class=normal><a href=#__codelineno-35-5>5</a></span>
+<span class=normal><a href=#__codelineno-35-6>6</a></span>
+<span class=normal><a href=#__codelineno-35-7>7</a></span>
+<span class=normal><a href=#__codelineno-35-8>8</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-35-1 name=__codelineno-35-1></a>git<span class=w> </span>add<span class=w> </span>apps/argo-cd-apps/66-open-webui.yaml<span class=w> </span>apps/argo-cd-apps/kustomization.yaml
+<a id=__codelineno-35-2 name=__codelineno-35-2></a>pre-commit<span class=w> </span>run<span class=w> </span>--files<span class=w> </span>apps/argo-cd-apps/66-open-webui.yaml<span class=w> </span>apps/argo-cd-apps/kustomization.yaml
+<a id=__codelineno-35-3 name=__codelineno-35-3></a>git<span class=w> </span>commit<span class=w> </span>-m<span class=w> </span><span class=s2>"</span><span class=k>$(</span>cat<span class=w> </span><span class=s>&lt;&lt;'EOF'</span>
+<a id=__codelineno-35-4 name=__codelineno-35-4></a><span class=s>feat(argo-cd-apps): deploy open-webui at sync wave 66</span>
+<a id=__codelineno-35-5 name=__codelineno-35-5></a>
+<a id=__codelineno-35-6 name=__codelineno-35-6></a><span class=s>Co-Authored-By: Claude Opus 4.7 (1M context) &lt;noreply@anthropic.com&gt;</span>
+<a id=__codelineno-35-7 name=__codelineno-35-7></a><span class=s>EOF</span>
+<a id=__codelineno-35-8 name=__codelineno-35-8></a><span class=k>)</span><span class=s2>"</span>
+</code></pre></div></td></tr></table></div> <hr> <h2 id=task-14-update-renovate-to-disable-auto-merge-for-open-webui>Task 14: Update Renovate to disable auto-merge for Open WebUI<a class=headerlink href=#task-14-update-renovate-to-disable-auto-merge-for-open-webui title="Permanent link">#</a></h2> <p><strong>Files:</strong> - Modify: <code>.github/renovate.json5</code></p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 1: Add <code>apps/open-webui/**</code> to the no-automerge packageRule</strong></li> </ul> <p>Open <code>.github/renovate.json5</code>. Find the first entry under <code>packageRules</code> — the one with <code>matchFileNames</code> listing critical apps (<code>apps/mariadb/**</code>, <code>apps/traefik/**</code>, ..., <code>apps/llama-cpp/**</code>) and <code>automerge: false</code>. Add <code>'apps/open-webui/**'</code> to that array as a new line at the end, before the closing <code>]</code>.</p> <p>The relevant rule should end up looking like: <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-36-1> 1</a></span>
+<span class=normal><a href=#__codelineno-36-2> 2</a></span>
+<span class=normal><a href=#__codelineno-36-3> 3</a></span>
+<span class=normal><a href=#__codelineno-36-4> 4</a></span>
+<span class=normal><a href=#__codelineno-36-5> 5</a></span>
+<span class=normal><a href=#__codelineno-36-6> 6</a></span>
+<span class=normal><a href=#__codelineno-36-7> 7</a></span>
+<span class=normal><a href=#__codelineno-36-8> 8</a></span>
+<span class=normal><a href=#__codelineno-36-9> 9</a></span>
+<span class=normal><a href=#__codelineno-36-10>10</a></span>
+<span class=normal><a href=#__codelineno-36-11>11</a></span>
+<span class=normal><a href=#__codelineno-36-12>12</a></span>
+<span class=normal><a href=#__codelineno-36-13>13</a></span>
+<span class=normal><a href=#__codelineno-36-14>14</a></span>
+<span class=normal><a href=#__codelineno-36-15>15</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-36-1 name=__codelineno-36-1></a>    {
+<a id=__codelineno-36-2 name=__codelineno-36-2></a>      matchFileNames: [
+<a id=__codelineno-36-3 name=__codelineno-36-3></a>        'apps/mariadb/**',
+<a id=__codelineno-36-4 name=__codelineno-36-4></a>        'apps/traefik/**',
+<a id=__codelineno-36-5 name=__codelineno-36-5></a>        'apps/kubevip-ha/**',
+<a id=__codelineno-36-6 name=__codelineno-36-6></a>        'apps/paperless-ai/**',
+<a id=__codelineno-36-7 name=__codelineno-36-7></a>        'apps/pihole/**',
+<a id=__codelineno-36-8 name=__codelineno-36-8></a>        'apps/monitoring-checkmk-server/**',
+<a id=__codelineno-36-9 name=__codelineno-36-9></a>        'apps/argo-cd-apps-helm/**',
+<a id=__codelineno-36-10 name=__codelineno-36-10></a>        'apps/nvidia-device-plugin/**',
+<a id=__codelineno-36-11 name=__codelineno-36-11></a>        'apps/llama-cpp/**',
+<a id=__codelineno-36-12 name=__codelineno-36-12></a>        'apps/open-webui/**',
+<a id=__codelineno-36-13 name=__codelineno-36-13></a>      ],
+<a id=__codelineno-36-14 name=__codelineno-36-14></a>      automerge: false,
+<a id=__codelineno-36-15 name=__codelineno-36-15></a>    },
+</code></pre></div></td></tr></table></div></p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 2: Validate JSON5 syntax</strong></li> </ul> <p>Quickest check: if <code>node</code>/<code>npx</code> is available, run: <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-37-1>1</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-37-1 name=__codelineno-37-1></a>npx<span class=w> </span>--yes<span class=w> </span>json5<span class=w> </span>-c<span class=w> </span>.github/renovate.json5<span class=w> </span>&gt;<span class=w> </span>/dev/null
+</code></pre></div></td></tr></table></div> Otherwise, rely on the pre-commit run in Step 3 — the existing hooks will fail on broken syntax.</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 3: Stage, lint, commit</strong></li> </ul> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-38-1> 1</a></span>
+<span class=normal><a href=#__codelineno-38-2> 2</a></span>
+<span class=normal><a href=#__codelineno-38-3> 3</a></span>
+<span class=normal><a href=#__codelineno-38-4> 4</a></span>
+<span class=normal><a href=#__codelineno-38-5> 5</a></span>
+<span class=normal><a href=#__codelineno-38-6> 6</a></span>
+<span class=normal><a href=#__codelineno-38-7> 7</a></span>
+<span class=normal><a href=#__codelineno-38-8> 8</a></span>
+<span class=normal><a href=#__codelineno-38-9> 9</a></span>
+<span class=normal><a href=#__codelineno-38-10>10</a></span>
+<span class=normal><a href=#__codelineno-38-11>11</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-38-1 name=__codelineno-38-1></a>git<span class=w> </span>add<span class=w> </span>.github/renovate.json5
+<a id=__codelineno-38-2 name=__codelineno-38-2></a>pre-commit<span class=w> </span>run<span class=w> </span>--files<span class=w> </span>.github/renovate.json5
+<a id=__codelineno-38-3 name=__codelineno-38-3></a>git<span class=w> </span>commit<span class=w> </span>-m<span class=w> </span><span class=s2>"</span><span class=k>$(</span>cat<span class=w> </span><span class=s>&lt;&lt;'EOF'</span>
+<a id=__codelineno-38-4 name=__codelineno-38-4></a><span class=s>renovate: disable automerge for open-webui</span>
+<a id=__codelineno-38-5 name=__codelineno-38-5></a>
+<a id=__codelineno-38-6 name=__codelineno-38-6></a><span class=s>Open WebUI is pre-1.0 and ships breaking config changes between minor</span>
+<a id=__codelineno-38-7 name=__codelineno-38-7></a><span class=s>releases. Every update must go through a manually-reviewed PR.</span>
+<a id=__codelineno-38-8 name=__codelineno-38-8></a>
+<a id=__codelineno-38-9 name=__codelineno-38-9></a><span class=s>Co-Authored-By: Claude Opus 4.7 (1M context) &lt;noreply@anthropic.com&gt;</span>
+<a id=__codelineno-38-10 name=__codelineno-38-10></a><span class=s>EOF</span>
+<a id=__codelineno-38-11 name=__codelineno-38-11></a><span class=k>)</span><span class=s2>"</span>
+</code></pre></div></td></tr></table></div> <hr> <h2 id=task-15-push-and-watch-argocd-sync>Task 15: Push and watch ArgoCD sync<a class=headerlink href=#task-15-push-and-watch-argocd-sync title="Permanent link">#</a></h2> <p><strong>Files:</strong> none (deploy step)</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 1: Push to origin</strong></li> </ul> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-39-1>1</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-39-1 name=__codelineno-39-1></a>git<span class=w> </span>push<span class=w> </span>origin<span class=w> </span>main
+</code></pre></div></td></tr></table></div> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 2: Wait for the new Application to appear</strong></li> </ul> <p><div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-40-1>1</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-40-1 name=__codelineno-40-1></a>kubectl<span class=w> </span>-n<span class=w> </span>argocd<span class=w> </span>get<span class=w> </span>application<span class=w> </span><span class=m>66</span>-open-webui<span class=w> </span>-w
+</code></pre></div></td></tr></table></div> Wait for <code>SYNC STATUS=Synced</code> and <code>HEALTH STATUS=Healthy</code>. If after about two minutes nothing happens, force a refresh: <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-41-1>1</a></span>
+<span class=normal><a href=#__codelineno-41-2>2</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-41-1 name=__codelineno-41-1></a>kubectl<span class=w> </span>annotate<span class=w> </span>-n<span class=w> </span>argocd<span class=w> </span>application<span class=w> </span><span class=m>66</span>-open-webui<span class=w> </span><span class=se>\</span>
+<a id=__codelineno-41-2 name=__codelineno-41-2></a><span class=w>  </span>argocd.argoproj.io/refresh<span class=o>=</span>hard<span class=w> </span>--overwrite
+</code></pre></div></td></tr></table></div></p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 3: Confirm Authelia re-registered the OIDC client</strong></li> </ul> <p>Authelia's chart annotates its Deployment with a checksum of its config and restarts on change. Verify the pod is fresh: <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-42-1>1</a></span>
+<span class=normal><a href=#__codelineno-42-2>2</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-42-1 name=__codelineno-42-1></a>kubectl<span class=w> </span>-n<span class=w> </span>authelia<span class=w> </span>get<span class=w> </span>pods<span class=w> </span>-l<span class=w> </span>app.kubernetes.io/name<span class=o>=</span>authelia<span class=w> </span><span class=se>\</span>
+<a id=__codelineno-42-2 name=__codelineno-42-2></a><span class=w>  </span>-o<span class=w> </span><span class=nv>jsonpath</span><span class=o>=</span><span class=s1>'{range .items[*]}{.metadata.name}{"\t"}{.status.startTime}{"\n"}{end}'</span>
+</code></pre></div></td></tr></table></div> Expected: timestamp within the last few minutes. If the pod did not restart, force one: <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-43-1>1</a></span>
+<span class=normal><a href=#__codelineno-43-2>2</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-43-1 name=__codelineno-43-1></a>kubectl<span class=w> </span>-n<span class=w> </span>authelia<span class=w> </span>rollout<span class=w> </span>restart<span class=w> </span>deploy/authelia
+<a id=__codelineno-43-2 name=__codelineno-43-2></a>kubectl<span class=w> </span>-n<span class=w> </span>authelia<span class=w> </span>rollout<span class=w> </span>status<span class=w> </span>deploy/authelia
+</code></pre></div></td></tr></table></div> Then tail logs: <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-44-1>1</a></span>
+<span class=normal><a href=#__codelineno-44-2>2</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-44-1 name=__codelineno-44-1></a>kubectl<span class=w> </span>-n<span class=w> </span>authelia<span class=w> </span>logs<span class=w> </span>-l<span class=w> </span>app.kubernetes.io/name<span class=o>=</span>authelia<span class=w> </span>--tail<span class=o>=</span><span class=m>100</span><span class=w> </span><span class=se>\</span>
+<a id=__codelineno-44-2 name=__codelineno-44-2></a><span class=w>  </span><span class=p>|</span><span class=w> </span>grep<span class=w> </span>-iE<span class=w> </span><span class=s1>'openwebui|oidc|client'</span>
+</code></pre></div></td></tr></table></div> Expected: the <code>openwebui</code> client appears among the registered clients with no configuration errors.</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 4: Confirm the Open WebUI pod is running</strong></li> </ul> <p><div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-45-1>1</a></span>
+<span class=normal><a href=#__codelineno-45-2>2</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-45-1 name=__codelineno-45-1></a>kubectl<span class=w> </span>-n<span class=w> </span>open-webui<span class=w> </span>get<span class=w> </span>pods,svc,pvc,ingress
+<a id=__codelineno-45-2 name=__codelineno-45-2></a>kubectl<span class=w> </span>-n<span class=w> </span>open-webui<span class=w> </span>logs<span class=w> </span>deploy/open-webui<span class=w> </span>--tail<span class=o>=</span><span class=m>80</span>
+</code></pre></div></td></tr></table></div> Expected: pod <code>Running</code> (1/1), PVC <code>Bound</code>, Service ClusterIP, Ingress with host <code>chat.internal.neese-web.de</code>. Logs should be free of OIDC discovery errors or Tavily auth errors.</p> <hr> <h2 id=task-16-first-login-admin-bootstrap>Task 16: First-login admin bootstrap<a class=headerlink href=#task-16-first-login-admin-bootstrap title="Permanent link">#</a></h2> <p><strong>Files:</strong> none (manual UI step)</p> <blockquote> <p><strong>Critical:</strong> the first OIDC login becomes admin. Do this yourself before sharing the hostname with anyone else.</p> </blockquote> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 1: Resolve DNS</strong></li> </ul> <p>Confirm <code>chat.internal.neese-web.de</code> resolves from your client to a cluster ingress IP: <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-46-1>1</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-46-1 name=__codelineno-46-1></a>dig<span class=w> </span>+short<span class=w> </span>chat.internal.neese-web.de
+</code></pre></div></td></tr></table></div> Expected: a non-empty A record pointing into the home network. If it fails, check Pi-hole / local DNS records.</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 2: Open the UI</strong></li> </ul> <p>Browse to https://chat.internal.neese-web.de. You should be redirected to Authelia. Complete the OIDC flow with your normal credentials + 2FA.</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 3: Verify you are admin</strong></li> </ul> <p>In Open WebUI → Settings → Account, your role should be <code>admin</code>. If it shows <code>pending</code>, the admin bootstrap did not trigger — check Open WebUI logs and confirm <code>DEFAULT_USER_ROLE=pending</code> is set (the first user is still promoted to admin regardless of this default).</p> <hr> <h2 id=task-17-create-the-virtual-model-qwen25-coder-websearch>Task 17: Create the virtual model <code>qwen2.5-coder-websearch</code><a class=headerlink href=#task-17-create-the-virtual-model-qwen25-coder-websearch title="Permanent link">#</a></h2> <p><strong>Files:</strong> none (Open WebUI admin UI)</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 1: Confirm llama-cpp is reachable from Open WebUI</strong></li> </ul> <p>In Open WebUI → Workspace → Models you should see <code>qwen2.5-coder-7b</code> appearing from the OpenAI connection. If it does not, verify reachability from the pod: <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-47-1>1</a></span>
+<span class=normal><a href=#__codelineno-47-2>2</a></span>
+<span class=normal><a href=#__codelineno-47-3>3</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-47-1 name=__codelineno-47-1></a>kubectl<span class=w> </span>-n<span class=w> </span>open-webui<span class=w> </span><span class=nb>exec</span><span class=w> </span>deploy/open-webui<span class=w> </span>--<span class=w> </span><span class=se>\</span>
+<a id=__codelineno-47-2 name=__codelineno-47-2></a><span class=w>  </span>sh<span class=w> </span>-c<span class=w> </span><span class=s1>'curl -sS http://llama-cpp.llama-cpp.svc.cluster.local:8080/v1/models \</span>
+<a id=__codelineno-47-3 name=__codelineno-47-3></a><span class=s1>    -H "Authorization: Bearer $OPENAI_API_KEYS"'</span>
+</code></pre></div></td></tr></table></div> Expected: a JSON object with a <code>data</code> array listing the qwen model.</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 2: Create the virtual model</strong></li> </ul> <p>Workspace → Models → "Create a New Model": - Base Model: <code>qwen2.5-coder-7b</code> - Model ID: <code>qwen2.5-coder-websearch</code> - Capabilities → Web Search: <strong>enabled</strong> - Save.</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 3: Smoke-test in the UI</strong></li> </ul> <p>Start a new chat, select <code>qwen2.5-coder-websearch</code>, ask a current-events question (e.g., "What is the current stable Kubernetes version?"). Expected: the response references web sources fetched via Tavily.</p> <hr> <h2 id=task-18-generate-an-api-key-and-configure-continuedev>Task 18: Generate an API key and configure Continue.dev<a class=headerlink href=#task-18-generate-an-api-key-and-configure-continuedev title="Permanent link">#</a></h2> <p><strong>Files:</strong> none on cluster side; client-side <code>~/.continue/config.json</code> only.</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 1: Generate a personal API key</strong></li> </ul> <p>Open WebUI → Settings → Account → API Keys → "Create new key". Copy the key (starts with <code>sk-</code>).</p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 2: Configure Continue.dev</strong></li> </ul> <p>Edit <code>~/.continue/config.json</code> on your workstation. Add the following entry to the <code>models:</code> array: <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-48-1>1</a></span>
+<span class=normal><a href=#__codelineno-48-2>2</a></span>
+<span class=normal><a href=#__codelineno-48-3>3</a></span>
+<span class=normal><a href=#__codelineno-48-4>4</a></span>
+<span class=normal><a href=#__codelineno-48-5>5</a></span>
+<span class=normal><a href=#__codelineno-48-6>6</a></span>
+<span class=normal><a href=#__codelineno-48-7>7</a></span></pre></div></td><td class=code><div><pre><span></span><code><a id=__codelineno-48-1 name=__codelineno-48-1></a>{
+<a id=__codelineno-48-2 name=__codelineno-48-2></a>  "title": "qwen-websearch",
+<a id=__codelineno-48-3 name=__codelineno-48-3></a>  "provider": "openai",
+<a id=__codelineno-48-4 name=__codelineno-48-4></a>  "model": "qwen2.5-coder-websearch",
+<a id=__codelineno-48-5 name=__codelineno-48-5></a>  "apiBase": "https://chat.internal.neese-web.de/api",
+<a id=__codelineno-48-6 name=__codelineno-48-6></a>  "apiKey": "sk-..."
+<a id=__codelineno-48-7 name=__codelineno-48-7></a>}
+</code></pre></div></td></tr></table></div></p> <ul class=task-list> <li class=task-list-item><input type=checkbox disabled> <strong>Step 3: Verify from VSCode</strong></li> </ul> <p>Reload Continue, select <code>qwen-websearch</code>, ask a question that requires recent information. Confirm the answer references current web sources, indicating Tavily ran in the request path.</p> <hr> <h2 id=self-review-already-applied>Self-Review (already applied)<a class=headerlink href=#self-review-already-applied title="Permanent link">#</a></h2> <p>Spec coverage:</p> <ul> <li>Architecture / components: Tasks 2, 3, 6.</li> <li>Hostname &amp; TLS: Task 5.</li> <li>OIDC client registration: Task 8.</li> <li>Helm values + chart wiring: Task 6.</li> <li>Env vars (SOPS secret): Task 4.</li> <li>Network Policy: Tasks 2 + 3.</li> <li>File layout: Tasks 2–6 + 9.</li> <li>ArgoCD Application + registration: Tasks 11 + 12.</li> <li>Renovate policy: Task 14.</li> <li>First-deploy operational procedures: Tasks 1, 15, 16.</li> <li>Virtual model creation: Task 17.</li> <li>Tavily usage monitoring: documented in WEBSEARCH.md (Task 9).</li> <li>Browser &amp; IDE request flows: exercised in Tasks 16 + 18.</li> </ul> <p>Type consistency:</p> <ul> <li>Secret name <code>open-webui-env</code> consistent across Task 4 metadata and Task 6 <code>extraEnvFrom.secretRef.name</code>.</li> <li>Hostname <code>chat.internal.neese-web.de</code> consistent across Tasks 4, 5, 8, 9, 15, 16.</li> <li>Sync wave <code>66</code> consistent across Tasks 6, 11, 12.</li> <li>Service port 80 → Ingress backend port 80 (Tasks 5 + 6).</li> <li>PVC size 10Gi (Task 6) matches spec.</li> <li>Pod label <code>app.kubernetes.io/name: open-webui</code> (Task 3 selector) is verified in Task 7 Step 3 against the rendered Deployment, with a documented fallback if the chart uses a different label.</li> </ul> <p>No remaining <code>TBD</code>/<code>TODO</code>/<code>later</code> placeholders. Every <code>&lt;PASTE_*&gt;</code> value points back to where it was gathered in Task 1.</p> </article> </div> <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script> </div> </main> <footer class=md-footer> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-copyright> <div class=md-copyright__highlight> Copyright &copy; 2024 </div> Made with <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener"> Material for MkDocs </a> </div> <div class=md-social> <a href="https://github.com/madic-creates" target="_blank" rel="noopener" title="github.com" class="md-social__link"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 512 512"><!-- Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg> </a> <a href="https://chaos.social/@Madic" target="_blank" rel="noopener me" title="chaos.social" class="md-social__link"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><!-- Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M433 179.1c0-97.2-63.7-125.7-63.7-125.7-62.5-28.7-228.6-28.4-290.5 0 0 0-63.7 28.5-63.7 125.7 0 115.7-6.6 259.4 105.6 289.1 40.5 10.7 75.3 13 103.3 11.4 50.8-2.8 79.3-18.1 79.3-18.1l-1.7-36.9s-36.3 11.4-77.1 10.1c-40.4-1.4-83-4.4-89.6-54-.6-4.6-.9-9.3-.9-13.9 85.6 20.9 158.7 9.1 178.7 6.7 56.1-6.7 105-41.3 111.2-72.9 9.8-49.8 9-121.5 9-121.5zm-75.1 125.2h-46.6V190.1c0-49.7-64-51.6-64 6.9v62.5H201V197c0-58.5-64-56.6-64-6.9v114.2H90.3c0-122.1-5.2-147.9 18.4-175 25.9-28.9 79.8-30.8 103.8 6.1l11.6 19.5 11.6-19.5c24.1-37.1 78.1-34.8 103.8-6.1 23.7 27.3 18.4 53 18.4 175"/></svg> </a> <a href="https://www.geekbundle.org" target="_blank" rel="noopener" title="www.geekbundle.org" class="md-social__link"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 512 512"><!-- Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="m61.7 169.4 101.5 278C92.2 413 43.3 340.2 43.3 256c0-30.9 6.6-60.1 18.4-86.6m337.9 75.9c0-26.3-9.4-44.5-17.5-58.7-10.8-17.5-20.9-32.4-20.9-49.9 0-19.6 14.8-37.8 35.7-37.8.9 0 1.8.1 2.8.2-37.9-34.7-88.3-55.9-143.7-55.9-74.3 0-139.7 38.1-177.8 95.9 5 .2 9.7.3 13.7.3 22.2 0 56.7-2.7 56.7-2.7 11.5-.7 12.8 16.2 1.4 17.5 0 0-11.5 1.3-24.3 2l77.5 230.4L249.8 247l-33.1-90.8c-11.5-.7-22.3-2-22.3-2-11.5-.7-10.1-18.2 1.3-17.5 0 0 35.1 2.7 56 2.7 22.2 0 56.7-2.7 56.7-2.7 11.5-.7 12.8 16.2 1.4 17.5 0 0-11.5 1.3-24.3 2l76.9 228.7 21.2-70.9c9-29.4 16-50.5 16-68.7m-139.9 29.3-63.8 185.5c19.1 5.6 39.2 8.7 60.1 8.7 24.8 0 48.5-4.3 70.6-12.1-.6-.9-1.1-1.9-1.5-2.9zm183-120.7c.9 6.8 1.4 14 1.4 21.9 0 21.6-4 45.8-16.2 76.2l-65 187.9C426.2 403 468.7 334.5 468.7 256c0-37-9.4-71.8-26-102.1M8 256a248 248 0 1 1 496 0 248 248 0 1 1-496 0m484.6 0a236.6 236.6 0 1 0-473.2 0 236.6 236.6 0 1 0 473.2 0"/></svg> </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <script id=__config type=application/json>{"annotate": null, "base": "../../..", "features": ["navigation.sections", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script> <script src=../../../assets/javascripts/bundle.d7400e89.min.js></script> </body> </html>
