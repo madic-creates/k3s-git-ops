@@ -54,8 +54,9 @@ helmCharts:
           type: LoadBalancer
           annotations:
             lbipam.cilium.io/ips: 192.168.1.233
-            # Force SNAT instead of the cluster-wide DSR (loadBalancer.mode: hybrid).
-            # Emby runs a single replica, so requests arriving on any other node are
+            # Pin SNAT explicitly. The cluster default (loadBalancer.mode) is snat
+            # as well, but this annotation keeps the service tunnel-safe even if
+            # that default is ever switched to dsr or hybrid. Emby runs a single replica, so requests arriving on any other node are
             # forwarded to that one backend. Under DSR the backend node replies
             # directly out of its own wg-overlay interface using the original service
             # address as source (e.g. 192.168.2.2:31961 leaving node03), which the
