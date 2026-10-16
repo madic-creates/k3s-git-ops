@@ -1,0 +1,119 @@
+---
+# Pi-hole 03 Network Policy
+# Pi-hole is a DNS sinkhole that provides network-level ad blocking and DNS resolution
+# This instance (pihole-03) has DoH (DNS-over-HTTPS) enabled and serves as a primary DNS server
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: pihole-03
+  namespace: dns
+  annotations:
+    argocd.argoproj.io/sync-wave: "13"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: pihole-03
+  ingress:
+  # Allow ingress from Traefik for web UI access
+  # Pi-hole web interface is exposed via Traefik with Authelia authentication
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: traefik
+        k8s:io.kubernetes.pod.namespace: traefik
+        k8s:app.kubernetes.io/name: traefik
+    toPorts:
+    - ports:
+      - port: "80"
+        protocol: TCP
+      - port: "443"
+        protocol: TCP
+  # Allow DNS queries from the world (LoadBalancer service on 192.168.1.234)
+  # Pi-hole serves as network DNS server for internal network clients
+  - fromEntities:
+    - world
+    - cluster
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow DNS queries from CoreDNS
+  # CoreDNS forwards queries to Pi-hole for custom domain resolution
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow internal cluster access to web interface for metrics/monitoring
+  - fromEndpoints:
+    - {}
+    toPorts:
+    - ports:
+      - port: "80"
+        protocol: TCP
+  # Allow Homepage dashboard to query Pi-hole web API for widget data
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: media
+        k8s:app.kubernetes.io/name: homepage
+    toPorts:
+    - ports:
+      - port: "80"
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via internal pod DNS (DoH container uses 127.0.0.1 and 1.1.1.1)
+  # Pi-hole is configured with podDnsConfig.policy: None and uses localhost:5053 for DNS1
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow loopback DNS for DoH sidecar container
+  # The cloudflared DoH container listens on 127.0.0.1:5053
+  - toFQDNs:
+    - matchPattern: "localhost"
+    toPorts:
+    - ports:
+      - port: "5053"
+        protocol: UDP
+  # Allow DNS-over-HTTPS (DoH) queries to NextDNS
+  # Configured in values.yaml: TUNNEL_DNS_UPSTREAM: https://dns.nextdns.io/735278/pihole02
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+  # Allow HTTP/HTTPS for gravity updates, blocklist downloads, and FTL updates
+  # Pi-hole regularly fetches blocklists and updates from the internet
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "80"
+        protocol: TCP
+      - port: "443"
+        protocol: TCP
+  # Allow external DNS queries for upstream resolution
+  # Pi-hole needs to query external DNS servers for non-blocked domains
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP

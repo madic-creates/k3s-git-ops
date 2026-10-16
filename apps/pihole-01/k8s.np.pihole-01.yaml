@@ -1,0 +1,305 @@
+---
+# Pi-hole Network Policy
+# Controls network access for Pi-hole DNS server, ad blocker, and DHCP server
+# Pi-hole provides DNS filtering, DHCP services, and DoH (DNS-over-HTTPS) for the home network
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: pihole
+  namespace: dns
+  annotations:
+    argocd.argoproj.io/sync-wave: "12"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: pihole
+  ingress:
+  # Allow Traefik ingress controller to reach Pi-hole web UI
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/instance: traefik-kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+    toPorts:
+    - ports:
+      - port: '80'
+        protocol: TCP
+  # Allow DNS queries from CoreDNS (conditional forwarding)
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: '53'
+        protocol: UDP
+      - port: '53'
+        protocol: TCP
+  # ICMP from coredns
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    icmps:
+    - fields:
+      - type: EchoRequest
+        family: IPv4
+      - type: EchoReply
+        family: IPv4
+      - type: DestinationUnreachable
+        family: IPv4
+      - type: TimeExceeded
+        family: IPv4
+      - type: ParameterProblem
+        family: IPv4
+      - type: Redirect
+        family: IPv4
+      - type: EchoRequest
+        family: IPv6
+      - type: DestinationUnreachable
+        family: IPv6
+      - type: TimeExceeded
+        family: IPv6
+      - type: ParameterProblem
+        family: IPv6
+      - type: RedirectMessage
+        family: IPv6
+      - type: PacketTooBig
+        family: IPv6
+      - type: MulticastListenerQuery
+        family: IPv6
+      - type: MulticastListenerReport
+        family: IPv6
+  # Allow DNS queries from cluster pods (any namespace)
+  - fromEndpoints:
+    - {}
+    toPorts:
+    - ports:
+      - port: '53'
+        protocol: UDP
+      - port: '53'
+        protocol: TCP
+  # Allow DNS queries from the outside world (home network devices)
+  # Pi-hole is exposed via LoadBalancer on 192.168.1.232
+  - fromEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: '53'
+        protocol: UDP
+      - port: '53'
+        protocol: TCP
+  # Allow DHCP traffic from the world (home network devices)
+  # DHCP server is exposed via LoadBalancer on 192.168.1.232
+  - fromEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: '67'
+        protocol: UDP
+      - port: '68'
+        protocol: UDP
+  # Allow internal communication within dns namespace
+  # This enables pihole-exporter to query the web service
+  # and DoH container to communicate with the main Pi-hole container
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: dns
+  # Allow Prometheus to scrape metrics from pihole-exporter
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: prometheus
+        k8s:io.kubernetes.pod.namespace: monitoring
+    toPorts:
+    - ports:
+      - port: '9617'
+        protocol: TCP
+  # Allow Homepage dashboard to query Pi-hole web API for widget data
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: media
+        k8s:app.kubernetes.io/name: homepage
+    toPorts:
+    - ports:
+      - port: '80'
+        protocol: TCP
+  # Allow health check probes from host/kubelet
+  - fromEntities:
+    - host
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: '53'
+        protocol: UDP
+      - port: '53'
+        protocol: TCP
+  # Allow internal communication within dns namespace
+  # This enables the main Pi-hole container to communicate with the DoH sidecar
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: dns
+  # Allow HTTPS egress to NextDNS API for DoH upstream resolution
+  # The cloudflared sidecar uses https://dns.nextdns.io for upstream DNS
+  - toFQDNs:
+    - matchName: "dns.nextdns.io"
+    toPorts:
+    - ports:
+      - port: '443'
+        protocol: TCP
+  # Allow egress to world on port 443 for blocklist updates and DoH
+  # Pi-hole needs to download blocklists and the DoH container needs HTTPS access
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: '443'
+        protocol: TCP
+  # Allow egress to world on port 80 for blocklist updates
+  # Pi-hole downloads ad blocking lists from various sources
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: '80'
+        protocol: TCP
+---
+# Pi-hole Exporter Network Policy
+# Controls network access for the Pi-hole metrics exporter
+# The exporter scrapes Pi-hole statistics and exposes them for Prometheus
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: pihole-exporter
+  namespace: dns
+  annotations:
+    argocd.argoproj.io/sync-wave: "12"
+spec:
+  endpointSelector:
+    matchLabels:
+      app: pihole-exporter
+  ingress:
+  # Allow Prometheus to scrape metrics
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: prometheus
+        k8s:io.kubernetes.pod.namespace: monitoring
+    toPorts:
+    - ports:
+      - port: '9617'
+        protocol: TCP
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: '53'
+        protocol: UDP
+      - port: '53'
+        protocol: TCP
+  # Allow connection to Pi-hole web service for metrics scraping
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: pihole
+        k8s:io.kubernetes.pod.namespace: dns
+    toPorts:
+    - ports:
+      - port: '80'
+        protocol: TCP
+---
+# DHCP Helper Network Policy
+# Controls network access for the DHCP relay helper
+# This container relays DHCP requests to Pi-hole using hostNetwork
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: dhcphelper
+  namespace: dns
+  annotations:
+    argocd.argoproj.io/sync-wave: "12"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: dhcphelper
+  ingress:
+  # Allow DHCP traffic from world (home network)
+  - fromEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: '67'
+        protocol: UDP
+      - port: '68'
+        protocol: UDP
+  # Allow health checks from host
+  - fromEntities:
+    - host
+  egress:
+  # Allow DHCP relay to Pi-hole
+  # The helper forwards DHCP requests to Pi-hole at 192.168.1.232
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: '67'
+        protocol: UDP
+  # Note: dhcphelper runs with hostNetwork: true, so network policies have
+  # limited effect on its network behavior, but this documents intended traffic
+---
+# Nebula Sync Network Policy
+# Controls network access for the Nebula configuration sync service
+# This service synchronizes Pi-hole configuration with Nebula
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: nebula-sync
+  namespace: dns
+  annotations:
+    argocd.argoproj.io/sync-wave: "12"
+spec:
+  endpointSelector:
+    matchLabels:
+      app: nebula-sync
+  ingress:
+  # Allow health checks from host
+  - fromEntities:
+    - host
+  egress:
+  # Allow DNS resolution via CoreDNS
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: '53'
+        protocol: UDP
+      - port: '53'
+        protocol: TCP
+  # Allow connection to Pi-hole web service for configuration sync
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: pihole
+        k8s:io.kubernetes.pod.namespace: dns
+    toPorts:
+    - ports:
+      - port: '80'
+        protocol: TCP
+  # Allow HTTPS egress to Nebula API for configuration sync
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: '443'
+        protocol: TCP
