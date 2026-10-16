@@ -100,7 +100,7 @@ helmCharts:
           # WorldEditSUI - https://www.spigotmc.org/resources/worldeditsui-visualize-your-selection.60726/ / https://github.com/kennytv/WorldEditSUI
           - https://github.com/kennytv/WorldEditSUI/releases/download/1.7.4/WorldEditSUI-1.7.4.jar
           # StoneDrop - https://github.com/JohnButzel/StoneDropPlugin
-          - https://github.com/JohnButzel/StoneDropPlugin/releases/download/v3.0.1/StoneDrop-3.0.1.jar
+          #- https://github.com/JohnButzel/StoneDropPlugin/releases/download/v3.0.1/StoneDrop-3.0.1.jar
         modrinth:
           projects:
             - viaversion
