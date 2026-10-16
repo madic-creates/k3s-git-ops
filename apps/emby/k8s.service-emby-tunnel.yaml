@@ -8,8 +8,8 @@
 # SNAT is pinned explicitly: under DSR the backend node would reply out of its
 # own wg-overlay with the service address as source, which vps08 drops via
 # cryptokey routing. Trade-off: forwarded requests reach Emby with a node IP
-# (192.168.1.21-.24) as source. Emby's LAN networks exclude those addresses,
-# so tunnel clients are classified as remote. See docs/loadbalancer.md.
+# (192.168.1.21-.24) as TCP source. Emby still sees the real client, because
+# the vps08 nginx sets X-Real-IP/X-Forwarded-For. See docs/loadbalancer.md.
 #
 # Synced in wave 31 (patch in kustomization.yaml): the emby Service must
 # release these NodePorts first.

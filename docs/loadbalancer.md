@@ -72,20 +72,18 @@ All Services of type `LoadBalancer` in the cluster (there are no plain `NodePort
 | `dns/pihole-03-dns` (`.238`) | 1 | `Local` | node01 / node01 | Preserved | Yes, as above |
 | `minecraft/minecraft-crossplay` (`.235`) | 1 | `Local` | node04 / node04 | Preserved | Yes: bans, player IP logging |
 | `media/emby` (`.233`) | 1 | `Local` | follows the pod | Preserved | Yes: LAN vs. remote classification, remote bitrate limits, login logs |
-| `media/emby-tunnel` (NodePort only) | 1 | `Cluster` + `forwarding-mode: snat` | n/a / any node | Lost (node IP or vps08 `192.168.2.11`) | No: tunnel clients only need to be classified as remote |
+| `media/emby-tunnel` (NodePort only) | 1 | `Cluster` + `forwarding-mode: snat` | n/a / any node | TCP source lost; Emby uses `X-Real-IP` from the vps08 nginx | Via headers only |
 
-Result: until 2026-10-16 Emby was the only Service that lost the client IP. It used `Cluster`, because clients behind the vps08 WireGuard tunnel reach it through NodePorts (`32606`/`31961`) on the node WireGuard addresses, and with `Local` those would answer only on the node hosting the Emby pod. Emby therefore saw every request as coming from inside `192.168.1.0/24`, including remote tunnel clients, and the remote bitrate limit never applied.
+Result: until 2026-10-16 Emby was the only Service that lost the client IP. It used `Cluster`, because clients behind the vps08 WireGuard tunnel reach it through NodePorts (`32606`/`31961`) on the node WireGuard addresses, and with `Local` those would answer only on the node hosting the Emby pod. Emby therefore saw every request as coming from inside `192.168.1.0/24`, including remote tunnel clients, at the TCP level. Tunnel clients were still identified correctly through the proxy headers (see below).
 
 Emby now has two Services (td-5bcf7c):
 
 - `emby` (LoadBalancer, VIP `.233`) uses `Local` with `allocateLoadBalancerNodePorts: false`. LAN clients keep their real IP.
 - `emby-tunnel` (NodePort `32606`/`31961`, `apps/emby/k8s.service-emby-tunnel.yaml`) uses `Cluster` plus pinned SNAT, so vps08 can still target any node. It syncs in wave 31, after `emby` has released those NodePorts.
 
-Tunnel requests therefore reach Emby with a node IP (`192.168.1.21`-`.24`) or vps08's `192.168.2.11` as source. Emby's **LAN networks** setting (Settings → Network, stored as `LocalNetworkSubnets` in `/config/config/system.xml` on the PVC, not in Git) has to list `192.168.1.0/24` without the node addresses so that those sources count as remote:
+Tunnel requests reach the Emby pod with a node IP (`192.168.1.21`-`.24`) or vps08's WireGuard address as TCP source. That is harmless: vps08's nginx is an HTTP reverse proxy that sets `X-Real-IP` and `X-Forwarded-For`, and Emby takes the client IP from those headers (its log shows `Source Ip: <public client IP>`), so tunnel clients are already classified as remote. Leave Emby's **LAN networks** setting empty (default: all private ranges): if the node IPs stopped counting as local, Emby might stop trusting the forwarded headers from them.
 
-```
-192.168.1.0/28, 192.168.1.16/30, 192.168.1.20/32, 192.168.1.25/32, 192.168.1.26/31, 192.168.1.28/30, 192.168.1.32/27, 192.168.1.64/26, 192.168.1.128/25
-```
+What the split fixes is the LAN side: before it, LAN clients reaching the VIP on a node without the pod showed up as a node IP in Emby's logs and sessions.
 
 When adding a new single-replica `LoadBalancer` Service that needs the client IP, use `externalTrafficPolicy: Local` unless it must be reachable through NodePorts on every node.
 
