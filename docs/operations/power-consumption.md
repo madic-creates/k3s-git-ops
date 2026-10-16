@@ -99,11 +99,13 @@ td-74ae82 tested the usual blockers one at a time on node01 and node02, measurin
 | I219-V GbE link (`e1000e`, 1 Gb/s) | `eno1` down for 20 s | No change |
 | iGPU render power state | `rc6_residency_ms` | 100 % RC6. Not a blocker. |
 
-What remains is the wakeup rate. node01 takes about 11,300 local timer interrupts per second, roughly 1,400 per thread. That is above the 1,000 Hz kernel tick even with `NO_HZ_FULL`, so the timers come from userspace (k3s, etcd, Cilium, kubelet, containerd). Each thread idles into CC10 on its own, but all eight threads are almost never idle at the same time for long enough. MSR 0xE2 has C-state auto-demotion enabled, so the hardware demotes those short package idles to PC3.
+The most likely explanation is the wakeup rate. This is an inference, not a confirmed cause: no test reduced the wakeup rate and showed PC6 appear. node01 takes about 11,300 local timer interrupts per second, roughly 1,400 per thread. That is above the 1,000 Hz kernel tick even with `NO_HZ_FULL`, so the timers come from userspace (k3s, etcd, Cilium, kubelet, containerd). Each thread idles into CC10 on its own, but all eight threads are almost never idle at the same time for long enough. MSR 0xE2 has C-state auto-demotion enabled, so the hardware demotes those short package idles to PC3.
 
-This is the cost of running a Kubernetes control-plane node, not a misconfiguration. No ASPM, EPP or udev setting changes it. The saving from PC6+ on a 15 W NUC would be about 1-2 W per node at best. That is not worth cutting cluster services for, so no change was made.
+If that is right, this is the cost of running a Kubernetes control-plane node, not a misconfiguration. PCIe ASPM policy `powersupersave` and EPP `power` were not tested (td-831b31). The saving from PC6+ on a 15 W NUC is estimated at 1-2 W per node at best; it has not been measured yet (td-3135c2, needs the NUC plug from td-8da11b). That is not worth cutting cluster services for, so no change was made.
 
 The node02 display finding still matters: a monitor left on a node keeps the display out of its power states.
+
+Left over from the tests: the GL9755 SD reader on node01 and node02 is still removed through sysfs until a `pci rescan` or reboot (td-c6b050), node03 was not measured because it asks for a sudo password (td-64e4c9), and the monitor and keyboard on node02 are still unplugged (td-9aa0c8).
 
 ### Longhorn backup target poll on node01
 
@@ -116,5 +118,10 @@ The node02 display finding still matters: a monitor left on a node keeps the dis
 | td-d17e4e | Fix the recurring Longhorn `backup ls` poll on node01 |
 | td-709827 | Test runtime PM for the RTX 3060 Ti on node04 (done: not supported, no D3cold) |
 | td-8da11b | Add a 4th Shelly plug to meter the NUC rail |
-| td-74ae82 | Unblock package C-states on the NUCs (done: blocked by the k3s timer wakeup rate, no fix) |
+| td-74ae82 | Unblock package C-states on the NUCs (done: most likely blocked by the k3s timer wakeup rate, no fix) |
+| td-831b31 | Test PCIe ASPM `powersupersave` and EPP `power` on node01 |
+| td-3135c2 | Measure the NUC PC6+ saving with the NUC plug |
+| td-c6b050 | Restore the GL9755 SD reader on node01 and node02 |
+| td-64e4c9 | Check package C-states on node03 |
+| td-9aa0c8 | Decide whether monitor and keyboard go back on node02 |
 | td-866186 | Controlled per-node power experiment (done: load deltas above, idle split still open) |
