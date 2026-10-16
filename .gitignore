@@ -9,6 +9,8 @@ site/
 values.yaml
 .vscode/*
 CLAUDE.local.md
+.claude/scheduled_tasks.lock
+.codegraph/
 
 ## Ansible
 .ansible/*
