@@ -10,28 +10,28 @@ spec:
             X-Forwarded-Proto: https
 sops:
     age:
-        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
-          enc: |
+        - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBLSjgzbm9DcWRMUTBSeHJG
-            RG00RXcrbnZQK0wwWHFHbEJDZFlLcS9QQzNZCkc2WTNKSEh3RFRlbXRxSzZ1cWFU
-            SkhlMHN0KytBOE9tUzRITXhNTk9TS1EKLS0tIEl1VG03WEoxY2pnMDVMU1lCYjUr
-            RW45azlhU3VmQlZLM2QwYUFPOGg4QW8KdvJtNTyhfRNdvNKEWy/be6JoqZTRKkMA
-            d+aPJrDzVDNjG2qZdHD3SQvwMbvHuKpnvh4nU7StzUBfUhavBT74GQ==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBLS0czMlgyTE5ESzE2cmdP
+            MUYzakJsR2FHVXJkMUpxVVdZK2trbVhIb2tnCnNXbEM1ZDJONC9zVHlkVUxuZ0ZM
+            NkZPZFhvbUEzaE03ODVuaEFIZ2R3RUkKLS0tICtRRnJJNnVCLzBYdVhXSmNuNksw
+            RnpRZEFBc3hrWHI3bS9yQk53Q1FKaUUK7soTkt1AmuZfUmQIbYvkffFqLo3AcxaX
+            vCNNgX9hhgTXxWmT8HziBbZJrnSM+Tt7B5JXBn8x1xaoE0cpO1lyPw==
             -----END AGE ENCRYPTED FILE-----
-        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
-          enc: |
+          recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+        - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSByWlpubUtMdC85SVdPTGMx
-            dnhxSGREV3VSN3FUY1JzcUw1eWFYNmhHaG1vCjBiWXkvZlhNbGJUZTZ0V1BZVk91
-            RllvT0tMYldreC9qZ2xUc1pINjRGRkUKLS0tIFQ0T0psQWQ2ZGNLbDdWd2hwandJ
-            QVVVNHFJb0I2anlHcGZmc1lVRUQ0Z2sKvYOAkSyjsu989v7Bhmy3lZzLoYyTIUYy
-            6nkjVV1BGHM6u4oDyF1WD1nP1W6I89avWZS32Z1Fc5aWxi3K8BlOLQ==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBGMWZyQWd4WHhISDlqZkRF
+            aUtQTWxFQW1aVzA4UTdQN2lrQlZ1dWNYOEZVCkptMmJ0S3dpekhqdFVPV3dQZ2x0
+            WmRObXBMckp5NXA3MmUrcUptK2xzaU0KLS0tIE5scGgxYXhsdldpL2hsdTJRVm95
+            TThzYXN4UGpNWFhGVW5VVzVia1pMTzQKNazJ1Tll5Tdc/wC4MlrCNh+2Y9PVf0g8
+            rRubP+wgDWM3xJQvnYkRX6sr7Vpx9Wfi3NAcSBggXWdeFXsahxRDSQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-10-13T19:31:39Z"
-    mac: ENC[AES256_GCM,data:zA8Hppy9MrK3OvXJuGrJbQVOMof7ztl2/7o/6DOJPmHgRu89vYF16xExTj+LorTosuFj3/M1Zgf7tIDexf3r4sA8ttKWpdMfCf1/deDnfw4vYUeKSE75ogLiV3z/ZdFx7Ecph/jfzG1/FGwtC6hjmJmfa4py8HviCbcsUxJE7CM=,iv:UTIJwn1BdSySCTentqS3bfgV9z778qGhCNKychZLPlQ=,tag:GfX6ZW8Exyag11y/s3jKjA==,type:str]
-    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
-    version: 3.11.0
+          recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
+    lastmodified: "2026-10-16T09:51:14Z"
+    mac: ENC[AES256_GCM,data:o4xDHOHhz5xRHOjM/LjPadAiTcNjJzTarqmsiausRptHtlN3DOK3tG8HtfIv0jqt0TW/eXf3Ai/nAlXWoKi3n73h2ZE/hpMo3BQOuGueL67SrVpCthdMndmDLMHk1t3MyNhPK4e8WuGmU9pbCxBJ1oXHoc0Ya4B8cgbXdFuvo4Y=,iv:+yos2szE40CI47N5gp55mlENuCEnYt1Z2JpFWzdAztM=,tag:5ojh8v3wD2A3UTYR0AdgRw==,type:str]
+    version: 3.13.3
 ---
 # HTTPS Ingress
 apiVersion: networking.k8s.io/v1
@@ -52,10 +52,10 @@ metadata:
 spec:
     tls:
         - hosts:
-            - ENC[AES256_GCM,data:XLrpUS90X7uVSbLO1ZalavWSMpkSoY3ut4u9zDg=,iv:zEUi613nwVG1ZWZrFPs9uPc3JAUlpYNXF1g/QqZwN3w=,tag:Echf/FaBngzin0noPGBlKQ==,type:str]
+            - ENC[AES256_GCM,data:pYqwn3WZ/iswkD+ZNMhJsSAASBCmQypCQvpL9YQ=,iv:+D/KgbtlRAmZVd2QIHcPDGfOCykgyGPCiMbP0eNfvxk=,tag:uraAL6FOF4DknzsG9x2Xmg==,type:str]
           secretName: wildcard-cloudflare-production-02
     rules:
-        - host: ENC[AES256_GCM,data:D8atKMa1c6wzdQt12dvLHJpG6hX1MDSsxvTYt48=,iv:9w5pMJKMb2R2X8ptQYNW7jBMYypz+/z/ky2JHTyhHaY=,tag:xWaZLYOVFM0V1qRGicSHfw==,type:str]
+        - host: ENC[AES256_GCM,data:J+1+siM5KrGVrsmS2b/kbJuYlcAtlHl7lFZolPY=,iv:E8xnsd2JCxu8/EoSZhpCxoxqVZ0e1VkG3HaajMvExbM=,tag:NYwT9xDbLcBN0q6rMggh8g==,type:str]
           http:
             paths:
                 - path: /
@@ -65,43 +65,6 @@ spec:
                         name: longhorn-frontend
                         port:
                             number: 80
-sops:
-    age:
-        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
-          enc: |
-            -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBLSjgzbm9DcWRMUTBSeHJG
-            RG00RXcrbnZQK0wwWHFHbEJDZFlLcS9QQzNZCkc2WTNKSEh3RFRlbXRxSzZ1cWFU
-            SkhlMHN0KytBOE9tUzRITXhNTk9TS1EKLS0tIEl1VG03WEoxY2pnMDVMU1lCYjUr
-            RW45azlhU3VmQlZLM2QwYUFPOGg4QW8KdvJtNTyhfRNdvNKEWy/be6JoqZTRKkMA
-            d+aPJrDzVDNjG2qZdHD3SQvwMbvHuKpnvh4nU7StzUBfUhavBT74GQ==
-            -----END AGE ENCRYPTED FILE-----
-        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
-          enc: |
-            -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSByWlpubUtMdC85SVdPTGMx
-            dnhxSGREV3VSN3FUY1JzcUw1eWFYNmhHaG1vCjBiWXkvZlhNbGJUZTZ0V1BZVk91
-            RllvT0tMYldreC9qZ2xUc1pINjRGRkUKLS0tIFQ0T0psQWQ2ZGNLbDdWd2hwandJ
-            QVVVNHFJb0I2anlHcGZmc1lVRUQ0Z2sKvYOAkSyjsu989v7Bhmy3lZzLoYyTIUYy
-            6nkjVV1BGHM6u4oDyF1WD1nP1W6I89avWZS32Z1Fc5aWxi3K8BlOLQ==
-            -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-10-13T19:31:39Z"
-    mac: ENC[AES256_GCM,data:zA8Hppy9MrK3OvXJuGrJbQVOMof7ztl2/7o/6DOJPmHgRu89vYF16xExTj+LorTosuFj3/M1Zgf7tIDexf3r4sA8ttKWpdMfCf1/deDnfw4vYUeKSE75ogLiV3z/ZdFx7Ecph/jfzG1/FGwtC6hjmJmfa4py8HviCbcsUxJE7CM=,iv:UTIJwn1BdSySCTentqS3bfgV9z778qGhCNKychZLPlQ=,tag:GfX6ZW8Exyag11y/s3jKjA==,type:str]
-    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
-    version: 3.11.0
----
-# Wasabi Credentials
-# Uses the following endpoint: https://s3.eu-central-2.wasabisys.com
-apiVersion: v1
-kind: Secret
-metadata:
-    name: wasabi-secret
-    namespace: longhorn
-type: Opaque
-data:
-    AWS_ACCESS_KEY_ID: ENC[AES256_GCM,data:5fI9iiE1yL2z9/EmK2rJUqkJElSXt7XfauHDcA==,iv:0PLU25RCvSrirD98KMQOfM4VjTclWTYuIXeL/LMssak=,tag:7P1kgqpHPdtjiEEMiqR8kA==,type:str]
-    AWS_SECRET_ACCESS_KEY: ENC[AES256_GCM,data:ZxUGihx746wrE5IAHUMsVt1MfId3g8SJtfaxZ1E3gT7JxwMS2KT8DnzlBxoKTHbyheS3/ZQHnzg=,iv:/WZHCTo79iJWGn4FQh+zifvjdOBloMpYAtEcnHMoAhY=,tag:VUl6r7G51l31Wlqg15jhCg==,type:str]
-    AWS_ENDPOINTS: ENC[AES256_GCM,data:Cju2kTvnkEmSOVwQDKF6PT8I2D4BVUFu1QeF9boC5ZxelCcEVZxUcZyI3SgMznBM082Ckg==,iv:DSYy8B26jcGsRNv7dhpe4qbAq2sgQXSKOfozN6hJKvI=,tag:CLE30A8sjdJK4IbAPI9wFg==,type:str]
 # Daily Backup
 #---
 #apiVersion: longhorn.io/v1beta1
@@ -122,28 +85,28 @@ data:
 # Trim Filesystem
 sops:
     age:
-        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
-          enc: |
+        - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBLSjgzbm9DcWRMUTBSeHJG
-            RG00RXcrbnZQK0wwWHFHbEJDZFlLcS9QQzNZCkc2WTNKSEh3RFRlbXRxSzZ1cWFU
-            SkhlMHN0KytBOE9tUzRITXhNTk9TS1EKLS0tIEl1VG03WEoxY2pnMDVMU1lCYjUr
-            RW45azlhU3VmQlZLM2QwYUFPOGg4QW8KdvJtNTyhfRNdvNKEWy/be6JoqZTRKkMA
-            d+aPJrDzVDNjG2qZdHD3SQvwMbvHuKpnvh4nU7StzUBfUhavBT74GQ==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBLS0czMlgyTE5ESzE2cmdP
+            MUYzakJsR2FHVXJkMUpxVVdZK2trbVhIb2tnCnNXbEM1ZDJONC9zVHlkVUxuZ0ZM
+            NkZPZFhvbUEzaE03ODVuaEFIZ2R3RUkKLS0tICtRRnJJNnVCLzBYdVhXSmNuNksw
+            RnpRZEFBc3hrWHI3bS9yQk53Q1FKaUUK7soTkt1AmuZfUmQIbYvkffFqLo3AcxaX
+            vCNNgX9hhgTXxWmT8HziBbZJrnSM+Tt7B5JXBn8x1xaoE0cpO1lyPw==
             -----END AGE ENCRYPTED FILE-----
-        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
-          enc: |
+          recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+        - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSByWlpubUtMdC85SVdPTGMx
-            dnhxSGREV3VSN3FUY1JzcUw1eWFYNmhHaG1vCjBiWXkvZlhNbGJUZTZ0V1BZVk91
-            RllvT0tMYldreC9qZ2xUc1pINjRGRkUKLS0tIFQ0T0psQWQ2ZGNLbDdWd2hwandJ
-            QVVVNHFJb0I2anlHcGZmc1lVRUQ0Z2sKvYOAkSyjsu989v7Bhmy3lZzLoYyTIUYy
-            6nkjVV1BGHM6u4oDyF1WD1nP1W6I89avWZS32Z1Fc5aWxi3K8BlOLQ==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBGMWZyQWd4WHhISDlqZkRF
+            aUtQTWxFQW1aVzA4UTdQN2lrQlZ1dWNYOEZVCkptMmJ0S3dpekhqdFVPV3dQZ2x0
+            WmRObXBMckp5NXA3MmUrcUptK2xzaU0KLS0tIE5scGgxYXhsdldpL2hsdTJRVm95
+            TThzYXN4UGpNWFhGVW5VVzVia1pMTzQKNazJ1Tll5Tdc/wC4MlrCNh+2Y9PVf0g8
+            rRubP+wgDWM3xJQvnYkRX6sr7Vpx9Wfi3NAcSBggXWdeFXsahxRDSQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-10-13T19:31:39Z"
-    mac: ENC[AES256_GCM,data:zA8Hppy9MrK3OvXJuGrJbQVOMof7ztl2/7o/6DOJPmHgRu89vYF16xExTj+LorTosuFj3/M1Zgf7tIDexf3r4sA8ttKWpdMfCf1/deDnfw4vYUeKSE75ogLiV3z/ZdFx7Ecph/jfzG1/FGwtC6hjmJmfa4py8HviCbcsUxJE7CM=,iv:UTIJwn1BdSySCTentqS3bfgV9z778qGhCNKychZLPlQ=,tag:GfX6ZW8Exyag11y/s3jKjA==,type:str]
-    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
-    version: 3.11.0
+          recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
+    lastmodified: "2026-10-16T09:51:14Z"
+    mac: ENC[AES256_GCM,data:o4xDHOHhz5xRHOjM/LjPadAiTcNjJzTarqmsiausRptHtlN3DOK3tG8HtfIv0jqt0TW/eXf3Ai/nAlXWoKi3n73h2ZE/hpMo3BQOuGueL67SrVpCthdMndmDLMHk1t3MyNhPK4e8WuGmU9pbCxBJ1oXHoc0Ya4B8cgbXdFuvo4Y=,iv:+yos2szE40CI47N5gp55mlENuCEnYt1Z2JpFWzdAztM=,tag:5ojh8v3wD2A3UTYR0AdgRw==,type:str]
+    version: 3.13.3
 ---
 apiVersion: longhorn.io/v1beta2
 kind: RecurringJob
@@ -162,61 +125,25 @@ spec:
         schedule: daily
 sops:
     age:
-        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
-          enc: |
+        - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBLSjgzbm9DcWRMUTBSeHJG
-            RG00RXcrbnZQK0wwWHFHbEJDZFlLcS9QQzNZCkc2WTNKSEh3RFRlbXRxSzZ1cWFU
-            SkhlMHN0KytBOE9tUzRITXhNTk9TS1EKLS0tIEl1VG03WEoxY2pnMDVMU1lCYjUr
-            RW45azlhU3VmQlZLM2QwYUFPOGg4QW8KdvJtNTyhfRNdvNKEWy/be6JoqZTRKkMA
-            d+aPJrDzVDNjG2qZdHD3SQvwMbvHuKpnvh4nU7StzUBfUhavBT74GQ==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBLS0czMlgyTE5ESzE2cmdP
+            MUYzakJsR2FHVXJkMUpxVVdZK2trbVhIb2tnCnNXbEM1ZDJONC9zVHlkVUxuZ0ZM
+            NkZPZFhvbUEzaE03ODVuaEFIZ2R3RUkKLS0tICtRRnJJNnVCLzBYdVhXSmNuNksw
+            RnpRZEFBc3hrWHI3bS9yQk53Q1FKaUUK7soTkt1AmuZfUmQIbYvkffFqLo3AcxaX
+            vCNNgX9hhgTXxWmT8HziBbZJrnSM+Tt7B5JXBn8x1xaoE0cpO1lyPw==
             -----END AGE ENCRYPTED FILE-----
-        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
-          enc: |
+          recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+        - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSByWlpubUtMdC85SVdPTGMx
-            dnhxSGREV3VSN3FUY1JzcUw1eWFYNmhHaG1vCjBiWXkvZlhNbGJUZTZ0V1BZVk91
-            RllvT0tMYldreC9qZ2xUc1pINjRGRkUKLS0tIFQ0T0psQWQ2ZGNLbDdWd2hwandJ
-            QVVVNHFJb0I2anlHcGZmc1lVRUQ0Z2sKvYOAkSyjsu989v7Bhmy3lZzLoYyTIUYy
-            6nkjVV1BGHM6u4oDyF1WD1nP1W6I89avWZS32Z1Fc5aWxi3K8BlOLQ==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBGMWZyQWd4WHhISDlqZkRF
+            aUtQTWxFQW1aVzA4UTdQN2lrQlZ1dWNYOEZVCkptMmJ0S3dpekhqdFVPV3dQZ2x0
+            WmRObXBMckp5NXA3MmUrcUptK2xzaU0KLS0tIE5scGgxYXhsdldpL2hsdTJRVm95
+            TThzYXN4UGpNWFhGVW5VVzVia1pMTzQKNazJ1Tll5Tdc/wC4MlrCNh+2Y9PVf0g8
+            rRubP+wgDWM3xJQvnYkRX6sr7Vpx9Wfi3NAcSBggXWdeFXsahxRDSQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-10-13T19:31:39Z"
-    mac: ENC[AES256_GCM,data:zA8Hppy9MrK3OvXJuGrJbQVOMof7ztl2/7o/6DOJPmHgRu89vYF16xExTj+LorTosuFj3/M1Zgf7tIDexf3r4sA8ttKWpdMfCf1/deDnfw4vYUeKSE75ogLiV3z/ZdFx7Ecph/jfzG1/FGwtC6hjmJmfa4py8HviCbcsUxJE7CM=,iv:UTIJwn1BdSySCTentqS3bfgV9z778qGhCNKychZLPlQ=,tag:GfX6ZW8Exyag11y/s3jKjA==,type:str]
-    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
-    version: 3.11.0
----
-# CSI VolumeSnapshot Associated With Longhorn Backup
-kind: VolumeSnapshotClass
-apiVersion: snapshot.storage.k8s.io/v1
-metadata:
-    name: longhorn-vsc-backup
-    labels:
-        velero.io/csi-volumesnapshot-class: "true"
-driver: driver.longhorn.io
-deletionPolicy: Delete
-parameters:
-    type: bak
-sops:
-    age:
-        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
-          enc: |
-            -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBLSjgzbm9DcWRMUTBSeHJG
-            RG00RXcrbnZQK0wwWHFHbEJDZFlLcS9QQzNZCkc2WTNKSEh3RFRlbXRxSzZ1cWFU
-            SkhlMHN0KytBOE9tUzRITXhNTk9TS1EKLS0tIEl1VG03WEoxY2pnMDVMU1lCYjUr
-            RW45azlhU3VmQlZLM2QwYUFPOGg4QW8KdvJtNTyhfRNdvNKEWy/be6JoqZTRKkMA
-            d+aPJrDzVDNjG2qZdHD3SQvwMbvHuKpnvh4nU7StzUBfUhavBT74GQ==
-            -----END AGE ENCRYPTED FILE-----
-        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
-          enc: |
-            -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSByWlpubUtMdC85SVdPTGMx
-            dnhxSGREV3VSN3FUY1JzcUw1eWFYNmhHaG1vCjBiWXkvZlhNbGJUZTZ0V1BZVk91
-            RllvT0tMYldreC9qZ2xUc1pINjRGRkUKLS0tIFQ0T0psQWQ2ZGNLbDdWd2hwandJ
-            QVVVNHFJb0I2anlHcGZmc1lVRUQ0Z2sKvYOAkSyjsu989v7Bhmy3lZzLoYyTIUYy
-            6nkjVV1BGHM6u4oDyF1WD1nP1W6I89avWZS32Z1Fc5aWxi3K8BlOLQ==
-            -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-10-13T19:31:39Z"
-    mac: ENC[AES256_GCM,data:zA8Hppy9MrK3OvXJuGrJbQVOMof7ztl2/7o/6DOJPmHgRu89vYF16xExTj+LorTosuFj3/M1Zgf7tIDexf3r4sA8ttKWpdMfCf1/deDnfw4vYUeKSE75ogLiV3z/ZdFx7Ecph/jfzG1/FGwtC6hjmJmfa4py8HviCbcsUxJE7CM=,iv:UTIJwn1BdSySCTentqS3bfgV9z778qGhCNKychZLPlQ=,tag:GfX6ZW8Exyag11y/s3jKjA==,type:str]
-    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
-    version: 3.11.0
+          recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
+    lastmodified: "2026-10-16T09:51:14Z"
+    mac: ENC[AES256_GCM,data:o4xDHOHhz5xRHOjM/LjPadAiTcNjJzTarqmsiausRptHtlN3DOK3tG8HtfIv0jqt0TW/eXf3Ai/nAlXWoKi3n73h2ZE/hpMo3BQOuGueL67SrVpCthdMndmDLMHk1t3MyNhPK4e8WuGmU9pbCxBJ1oXHoc0Ya4B8cgbXdFuvo4Y=,iv:+yos2szE40CI47N5gp55mlENuCEnYt1Z2JpFWzdAztM=,tag:5ojh8v3wD2A3UTYR0AdgRw==,type:str]
+    version: 3.13.3

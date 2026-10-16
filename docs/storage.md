@@ -36,7 +36,7 @@
 
 - Longhorn's own backup target is disabled (`defaultBackupStore.backupTarget: ""` in `apps/longhorn/kustomization.yaml`). Volume data is backed up by the restic backup fleet instead (see [Backup](backup.md)). The former Wasabi target's credentials were revoked, and with a dead S3 target longhorn-manager re-ran `longhorn backup ls` in a tight loop at 100-200% CPU.
 - To re-enable it, set `defaultBackupStore.backupTarget` and `backupTargetCredentialSecret` to a reachable target and a valid secret. Since chart 1.8 these keys live under `defaultBackupStore`; `defaultSettings.backupTarget` is ignored.
-- The CSI `VolumeSnapshotClass` `longhorn-vsc-backup` creates Longhorn backups, so it does not work while the backup target is disabled.
+- There is no CSI `VolumeSnapshotClass` for Longhorn backups (the former `longhorn-vsc-backup`, `type: bak`, was removed together with the revoked `wasabi-secret`). Re-add one alongside a working backup target if CSI-driven backups are needed again.
 - A recurring job named `trim-filesystem` runs daily at 06:00 to perform filesystem trim on all volumes assigned to the `default` group. Adjust or add jobs through Git in `apps/longhorn/longhorn-config.enc.yaml`.
 
 ### Operational Guidance
