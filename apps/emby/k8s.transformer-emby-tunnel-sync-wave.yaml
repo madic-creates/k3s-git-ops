@@ -1,0 +1,13 @@
+---
+apiVersion: builtin
+kind: PatchTransformer
+metadata:
+  name: emby-tunnel-sync-wave
+target:
+  version: v1
+  kind: Service
+  name: emby-tunnel
+patch: |-
+  - op: replace
+    path: /metadata/annotations/argocd.argoproj.io~1sync-wave
+    value: "31"

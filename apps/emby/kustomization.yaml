@@ -11,6 +11,7 @@ resources:
   - k8s.rbac-ldap-cert-update.yaml
   - k8s.np.ldap-cert-update.yaml
   - k8s.backup-cronjob.yaml
+  - k8s.service-emby-tunnel.yaml
 
 namespace: media
 
@@ -54,25 +55,12 @@ helmCharts:
           type: LoadBalancer
           annotations:
             lbipam.cilium.io/ips: 192.168.1.233
-            # Pin SNAT explicitly. The cluster default (loadBalancer.mode) is snat
-            # as well, but this annotation keeps the service tunnel-safe even if
-            # that default is ever switched to dsr or hybrid. Emby runs a single replica, so requests arriving on any other node are
-            # forwarded to that one backend. Under DSR the backend node replies
-            # directly out of its own wg-overlay interface using the original service
-            # address as source (e.g. 192.168.2.2:31961 leaving node03), which the
-            # vps08 WireGuard peer drops because that address is not in node03's
-            # AllowedIPs. SNAT keeps the reply on the ingress node, so it leaves
-            # through the matching tunnel. Trade-off: the pod sees the node IP
-            # instead of the client IP. externalTrafficPolicy: Local would keep the
-            # client IP, but the NodePorts used by tunnel clients would then answer
-            # only on the node hosting the pod. See docs/loadbalancer.md.
-            service.cilium.io/forwarding-mode: snat
-          #externalTrafficPolicy: Local
-          #ports:
-          #  http:
-          #    nodePort: 8096
-          #  https:
-          #    nodePort: 8920
+          # LAN clients reach Emby through this VIP. With Local, kube-vip
+          # (svc_election) moves the VIP to the node hosting the pod, so Emby sees
+          # the real client IP. Clients behind the vps08 WireGuard tunnel use the
+          # NodePorts of the separate emby-tunnel Service instead
+          # (k8s.service-emby-tunnel.yaml). See docs/loadbalancer.md.
+          externalTrafficPolicy: Local
       persistence:
         config:
           enabled: true
@@ -126,7 +114,8 @@ patches:
       metadata:
         name: emby
       automountServiceAccountToken: false
-  # Set NodePorts for Service
+  # Release the NodePorts of the LoadBalancer Service. 32606/31961 belong to
+  # the emby-tunnel Service, which syncs one wave later, after they are freed.
   - target:
       version: v1
       kind: Service
@@ -137,17 +126,7 @@ patches:
       metadata:
         name: emby
       spec:
-        ports:
-          - name: http
-            port: 8096
-            protocol: TCP
-            targetPort: http
-            nodePort: 32606
-          - name: https
-            port: 8920
-            protocol: TCP
-            targetPort: https
-            nodePort: 31961
+        allocateLoadBalancerNodePorts: false
   # Disable service account token mount on the Deployment.
   - target:
       group: apps
@@ -164,6 +143,12 @@ patches:
         template:
           spec:
             automountServiceAccountToken: false
+
+# Sync emby-tunnel one wave after the emby Service, which first has to free
+# NodePorts 32606/31961. A transformer, because it runs after commonAnnotations,
+# which would otherwise reset the wave to 30.
+transformers:
+  - k8s.transformer-emby-tunnel-sync-wave.yaml
 
 generators:
   - kustomize-secret-generator.yaml

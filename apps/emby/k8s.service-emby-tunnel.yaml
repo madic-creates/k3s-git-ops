@@ -1,0 +1,42 @@
+---
+# NodePort entry for clients behind the vps08 WireGuard tunnel. vps08 forwards
+# to 32606/31961 on the node WireGuard addresses, so these ports must answer on
+# every node, not only on the one hosting the single Emby replica. Hence
+# externalTrafficPolicy Cluster, while the LoadBalancer Service (emby, VIP
+# 192.168.1.233) uses Local to keep LAN client IPs.
+#
+# SNAT is pinned explicitly: under DSR the backend node would reply out of its
+# own wg-overlay with the service address as source, which vps08 drops via
+# cryptokey routing. Trade-off: forwarded requests reach Emby with a node IP
+# (192.168.1.21-.24) as source. Emby's LAN networks exclude those addresses,
+# so tunnel clients are classified as remote. See docs/loadbalancer.md.
+#
+# Synced in wave 31 (patch in kustomization.yaml): the emby Service must
+# release these NodePorts first.
+apiVersion: v1
+kind: Service
+metadata:
+  name: emby-tunnel
+  namespace: media
+  labels:
+    app.kubernetes.io/instance: emby
+    app.kubernetes.io/name: emby
+  annotations:
+    service.cilium.io/forwarding-mode: snat
+spec:
+  type: NodePort
+  externalTrafficPolicy: Cluster
+  selector:
+    app.kubernetes.io/instance: emby
+    app.kubernetes.io/name: emby
+  ports:
+    - name: http
+      port: 8096
+      protocol: TCP
+      targetPort: http
+      nodePort: 32606
+    - name: https
+      port: 8920
+      protocol: TCP
+      targetPort: https
+      nodePort: 31961
