@@ -43,7 +43,7 @@ spec:
           # Shelly.GetDeviceInfo stays public. Without this the exporter still
           # starts and still scrapes green, but emits two info series instead
           # of the full set, which is exactly the kind of silent half-failure
-          # the ServiceMonitor cannot see. ShellyExporterNoDevices alerts on it.
+          # the ServiceMonitor cannot see. ShellyExporterDeviceMissing alerts on it.
           - name: SHELLY_GEN2AUTH_PASSWORD
             valueFrom:
               secretKeyRef:

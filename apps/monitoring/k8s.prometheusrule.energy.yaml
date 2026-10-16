@@ -273,8 +273,8 @@ spec:
             summary: "PV string {{ $labels.string }} is producing far below its irradiance reference"
             description: "String {{ $labels.string }} has been under 40% of its modelled clear-reference for two hours during the unshaded part of the day, while irradiance on that string was high. Because the model already accounts for cloud cover and the known late-afternoon shading of pv1 is excluded by the time window, this points at the panel rather than the weather: check for soiling, bird droppings, snow, new vegetation growth or a failed string. Measured baseline on 2026-09-08: 0.69 for pv1, 0.79 for pv2."
 
-        # Unlike the inverter, this exporter has no legitimate nightly outage,
-        # so `up` may be alerted on with a short window.
+        # The plugs stay powered around the clock, so this exporter has no
+        # legitimate outage window and `up` may be alerted on directly.
         - alert: ShellyExporterDown
           expr: up{job="shelly-exporter"} == 0
           for: 10m
@@ -325,6 +325,8 @@ spec:
             summary: "Fewer Shelly plugs are reporting than are configured"
             description: "The Shelly exporter is scraping fine but fewer appliances report power than are configured in SHELLY_GEN2DEVICES_HOSTS. Most likely the device password is wrong (every Shelly data endpoint returns 401 while the public device-info endpoint keeps working, so the scrape still looks healthy), or a plug lost its DHCP reservation and is now blocked by the /32 egress rule in apps/monitoring-shelly-exporter/k8s.np.shelly-exporter.yaml. Until it is fixed, the affected appliance silently moves into the unaccounted remainder on the energy dashboard."
 
+        # Unlike the inverter, this exporter has no legitimate nightly outage,
+        # so `up` may be alerted on with a short window.
         - alert: SolarIrradianceExporterDown
           expr: up{job="openmeteo-exporter"} == 0
           for: 30m

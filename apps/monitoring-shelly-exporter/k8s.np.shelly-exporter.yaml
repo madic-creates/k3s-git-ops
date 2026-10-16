@@ -8,7 +8,7 @@
 # The egress rules match CIDRs, so every plug IP MUST be a DHCP reservation in
 # the FRITZ!Box. A changed lease does not produce an error here -- the plug
 # simply disappears from the metrics while the exporter keeps scraping green.
-# ShellyExporterNoDevices in the energy PrometheusRule is what catches that.
+# ShellyExporterDeviceMissing in the energy PrometheusRule is what catches that.
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
