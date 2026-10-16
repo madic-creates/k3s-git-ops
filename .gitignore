@@ -38,3 +38,4 @@ docs/energy-metrics-api.md
 # Python bytecode from running exporter scripts locally.
 __pycache__/
 *.pyc
+.worktrees/

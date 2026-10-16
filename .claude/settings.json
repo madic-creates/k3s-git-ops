@@ -1,0 +1,5 @@
+{
+  "enabledPlugins": {
+    "td-orchestrator@td-orchestrator": true
+  }
+}
