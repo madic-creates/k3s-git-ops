@@ -13,3 +13,21 @@ spec:
   resources:
     requests:
       storage: 2Gi
+---
+# Replacement for longhorn-pvc-td-sync, whose ext4 got corrupted on node02
+# (bad RAM) on 2026-10-16 and was remounted read-only. The old claim is kept
+# until the restored data is confirmed, then removed.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: longhorn-pvc-td-sync-v2
+  namespace: td-sync
+  labels:
+    app.kubernetes.io/name: td-sync
+spec:
+  storageClassName: longhorn
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi

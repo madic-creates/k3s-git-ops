@@ -1,0 +1,109 @@
+---
+# One-shot restore of the latest td-sync restic snapshot into the fresh
+# longhorn-pvc-td-sync-v2. Temporary: removed again once td-sync runs on the
+# restored data.
+#
+# Labelled like the backup pods (name + component) so the existing backup-td-sync
+# CiliumNetworkPolicy (DNS + rest-server) and the rest-server ingress
+# allowlist apply unchanged.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: restore-td-sync
+  namespace: td-sync
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 900
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: backup-td-sync
+        app.kubernetes.io/component: backup
+    spec:
+      automountServiceAccountToken: false
+      restartPolicy: Never
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        runAsNonRoot: true
+      initContainers:
+        - name: restic-restore
+          image: ghcr.io/madic-creates/container-restic:latest@sha256:5882ed8d36b4381ee2e6a7dad1a0c99f0341653a262209d655c69cee89770e62
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -eu
+              # Refuse to overwrite: a re-sync must never clobber live data.
+              if [ -e /pvc/data/server.db ]; then
+                echo "FATAL: /pvc/data/server.db already exists, refusing to restore"
+                exit 1
+              fi
+              restic snapshots --tag td-sync --latest 3
+              restic restore latest --tag td-sync --target /restore
+              mkdir -p /pvc/data /pvc/backups
+              cp -a /restore/backup/td-sync/. /pvc/data/
+              ls -laR /pvc/data
+          env:
+            - name: HOME
+              value: /home/restic
+          envFrom:
+            - secretRef:
+                name: backup-env-configuration-td-sync
+          volumeMounts:
+            - name: pvc
+              mountPath: /pvc
+            - name: restore
+              mountPath: /restore
+            - name: home
+              mountPath: /home/restic
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+      containers:
+        # td-sync's own image ships sqlite3; verify every restored database.
+        - name: verify
+          image: forge.geekbundle.org/madic/td-sync:v0.65.0@sha256:27be8bfb7ce91b7acde0edde01a6372e685318c2989ad459e22ff38ca27180f0
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -eu
+              rc=0
+              for db in $(find /data -type f -name '*.db'); do
+                res=$(sqlite3 "$db" "PRAGMA integrity_check;")
+                echo "$db: $res"
+                [ "$res" = "ok" ] || rc=1
+              done
+              sqlite3 /data/server.db "SELECT name FROM sqlite_master WHERE type='table';" | while read -r t; do
+                echo "server.db $t: $(sqlite3 /data/server.db "SELECT count(*) FROM \"$t\";")"
+              done
+              exit $rc
+          volumeMounts:
+            - name: pvc
+              mountPath: /data
+              subPath: data
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+      volumes:
+        - name: pvc
+          persistentVolumeClaim:
+            claimName: longhorn-pvc-td-sync-v2
+        - name: restore
+          emptyDir:
+            sizeLimit: 2Gi
+        - name: home
+          emptyDir:
+            medium: Memory
+            sizeLimit: 200Mi

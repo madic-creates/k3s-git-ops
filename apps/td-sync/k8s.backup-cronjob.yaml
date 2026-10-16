@@ -16,6 +16,7 @@ spec:
   # :35 to stay clear of the Grafana job at :20.
   schedule: "35 * * * *"
   concurrencyPolicy: Forbid
+  suspend: true
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 1
   startingDeadlineSeconds: 3600
@@ -142,7 +143,7 @@ spec:
           volumes:
             - name: td-sync
               persistentVolumeClaim:
-                claimName: longhorn-pvc-td-sync
+                claimName: longhorn-pvc-td-sync-v2
             - name: snapshot
               emptyDir:
                 sizeLimit: 2Gi
