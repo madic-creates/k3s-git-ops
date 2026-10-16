@@ -123,6 +123,7 @@ nav:
   - Operations:
       - Longhorn Maintenance: operations/longhorn-maintenance.md
       - Migration to Cilium: operations/cilium-migration.md
+      - Power Consumption: operations/power-consumption.md
   - Tools:
       - Helm: helm.md
       - Secrets: secrets.md
