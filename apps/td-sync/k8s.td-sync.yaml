@@ -19,7 +19,7 @@ metadata:
   namespace: td-sync
 spec:
   revisionHistoryLimit: 3
-  replicas: 0
+  replicas: 1
   # SQLite tolerates exactly one writer and the Longhorn PVC is ReadWriteOnce.
   # A RollingUpdate would briefly run two pods; Recreate keeps it at one.
   strategy:

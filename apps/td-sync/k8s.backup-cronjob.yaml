@@ -16,7 +16,6 @@ spec:
   # :35 to stay clear of the Grafana job at :20.
   schedule: "35 * * * *"
   concurrencyPolicy: Forbid
-  suspend: true
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 1
   startingDeadlineSeconds: 3600
