@@ -14,8 +14,9 @@ spec:
   #   kubectl -n llama-cpp scale deploy/llama-cpp-qwen2.5-coder --replicas=0
   #   kubectl -n llama-cpp scale deploy/llama-cpp-qwen3.5-9b    --replicas=1
   # Qwen3.5-9B (Q4_K_M ~5.7 GB) is the fully-on-GPU agentic/tool-calling
-  # model: fast, no system RAM pressure, but weaker on long multi-file tasks
-  # than the qwen3.6-35b-a3b Deployment.
+  # model: fast, no system RAM pressure. Qwen3.6-35B-A3B (MoE with experts
+  # offloaded to RAM) was tried and dropped: node04's free RAM could not hold
+  # the offloaded experts, mmap pages thrashed and generation fell to 2-3 t/s.
   replicas: 0
   revisionHistoryLimit: 2
   strategy:
