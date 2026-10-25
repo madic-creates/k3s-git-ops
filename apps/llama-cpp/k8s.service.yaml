@@ -6,9 +6,10 @@ metadata:
   namespace: llama-cpp
 spec:
   # Selects on `app` only, so traffic reaches whichever model Deployment is
-  # currently scaled up (qwen2.5-coder or andy-4). The single node GPU acts as
-  # a mutex: only one model pod can be Running at a time, the other stays
-  # Pending, so this Service never load-balances across two different models.
+  # currently scaled up (qwen2.5-coder, andy-4, qwen3.6-35b-a3b, qwen3.5-9b).
+  # The single node GPU acts as a mutex: only one model pod can be Running at
+  # a time, the others stay Pending, so this Service never load-balances
+  # across two different models.
   selector:
     app: llama-cpp
   ports:

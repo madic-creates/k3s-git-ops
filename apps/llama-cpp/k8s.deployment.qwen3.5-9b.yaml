@@ -1,0 +1,142 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llama-cpp-qwen3.5-9b
+  namespace: llama-cpp
+  labels:
+    app: llama-cpp
+    model: qwen3.5-9b
+spec:
+  # Starts at 0 so the GPU stays available to the qwen2.5-coder Deployment by
+  # default. Switch on demand with `kubectl scale`; replicas is ignored by
+  # ArgoCD (see apps/argo-cd-apps/65-llama-cpp.yaml) so no git sync is needed:
+  #   kubectl -n llama-cpp scale deploy/llama-cpp-qwen2.5-coder --replicas=0
+  #   kubectl -n llama-cpp scale deploy/llama-cpp-qwen3.5-9b    --replicas=1
+  # Qwen3.5-9B (Q4_K_M ~5.7 GB) is the fully-on-GPU agentic/tool-calling
+  # model: fast, no system RAM pressure, but weaker on long multi-file tasks
+  # than the qwen3.6-35b-a3b Deployment.
+  replicas: 0
+  revisionHistoryLimit: 2
+  strategy:
+    # Single-tenant GPU; rolling would deadlock on nvidia.com/gpu.
+    type: Recreate
+  selector:
+    matchLabels:
+      app: llama-cpp
+      model: qwen3.5-9b
+  template:
+    metadata:
+      labels:
+        app: llama-cpp
+        model: qwen3.5-9b
+    spec:
+      runtimeClassName: nvidia
+      nodeSelector:
+        node-role/workload: zfs
+      initContainers:
+        # Fail fast with a clear error if the operator forgot to stage the
+        # GGUF, or if the file got truncated. Cheaper than a CrashLoop on the
+        # main container, which buries the cause in llama.cpp logs.
+        # SHA256 pinned from huggingface.co/unsloth/Qwen3.5-9B-GGUF
+        # (Qwen3.5-9B-Q4_K_M.gguf).
+        - name: verify-model
+          image: alpine:3.24@sha256:294b683cb724975bec92580e1e685676bd4b50bda910ddb8c51d4cabeaec77e6
+          command:
+            - sh
+            - -c
+            - |
+              set -eu
+              MODEL=/models/Qwen3.5-9B-Q4_K_M.gguf
+              EXPECTED_SHA256=03b74727a860a56338e042c4420bb3f04b2fec5734175f4cb9fa853daf52b7e8
+              test -f "$MODEL" || { echo "model file missing: $MODEL"; exit 1; }
+              # GGUF magic number is the ASCII string "GGUF" at offset 0
+              head -c4 "$MODEL" | grep -q '^GGUF' || {
+                echo "not a GGUF file (header mismatch)"; exit 1; }
+              echo "$EXPECTED_SHA256  $MODEL" | sha256sum -c -
+          volumeMounts:
+            - name: models
+              mountPath: /models
+              readOnly: true
+      containers:
+        - name: llama-cpp
+          image: ghcr.io/ggml-org/llama.cpp:server-cuda@sha256:334ddc356f5ad08dbf7eb6c98d1739a72e15b5cf452d1aeeae740c6625eb1226
+          args:
+            - --model
+            - /models/Qwen3.5-9B-Q4_K_M.gguf
+            - --host
+            - 0.0.0.0
+            - --port
+            - "8080"
+            # --n-gpu-layers is intentionally unset: --fit (default on) keeps
+            # all layers on the GPU if weights + 64k KV cache fit, and only
+            # offloads layers to the CPU (with a log line) if they do not.
+            - --ctx-size
+            - "65536"
+            - --cache-type-k
+            - q8_0
+            - --cache-type-v
+            - q8_0
+            - --parallel
+            - "1"
+            - --flash-attn
+            - "on"
+            # Qwen's recommended sampling for thinking mode, precise coding.
+            # Clients can still override per request.
+            - --temp
+            - "0.6"
+            - --top-p
+            - "0.95"
+            - --top-k
+            - "20"
+            - --min-p
+            - "0.0"
+            - --api-key-file
+            - /etc/llama-cpp/api-key
+            - --alias
+            - qwen3.5-9b
+            - --jinja
+          ports:
+            - containerPort: 8080
+              name: http
+          resources:
+            requests:
+              cpu: "2"
+              memory: 8Gi
+              nvidia.com/gpu: 1
+            limits:
+              cpu: "4"
+              memory: 12Gi
+              nvidia.com/gpu: 1
+          volumeMounts:
+            - name: models
+              mountPath: /models
+              readOnly: true
+            - name: api-key
+              mountPath: /etc/llama-cpp
+              readOnly: true
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 120  # cold model load can be slow
+            periodSeconds: 30
+            failureThreshold: 6
+      volumes:
+        - name: models
+          hostPath:
+            path: /vol_raidz1/downloads/llama-cpp/models
+            type: Directory
+        - name: api-key
+          secret:
+            secretName: llama-cpp-env
+            defaultMode: 0400
+            items:
+              - key: API_KEY
+                path: api-key
