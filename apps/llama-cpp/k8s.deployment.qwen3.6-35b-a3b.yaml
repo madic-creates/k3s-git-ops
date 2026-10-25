@@ -80,8 +80,19 @@ spec:
             - q8_0
             - --cache-type-v
             - q8_0
+            # Two slots sharing one 64k KV pool: opencode fires a title request
+            # next to every agent request, and with a single slot the title
+            # run blocked the agent request until the client timed out.
             - --parallel
-            - "1"
+            - "2"
+            - --kv-unified
+            # Hard caps for requests that send no max_tokens: opencode's title
+            # request once looped in thinking for 20k+ tokens and held the
+            # slot. 16384 matches limit.output in the opencode config.
+            - --n-predict
+            - "16384"
+            - --reasoning-budget
+            - "8192"
             - --flash-attn
             - "on"
             # Expert matmuls on the CPU are memory-bandwidth bound; one thread
