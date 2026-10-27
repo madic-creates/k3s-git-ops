@@ -13,7 +13,7 @@ helmCharts:
   # directly over HTTPS.
   - name: stirling-pdf-chart
     repo: https://docs.stirlingpdf.com/Stirling-PDF-chart
-    version: 3.2.0
+    version: 4.0.0
     releaseName: stirling-pdf
     namespace: stirling-pdf
     valuesFile: values.public.yaml
