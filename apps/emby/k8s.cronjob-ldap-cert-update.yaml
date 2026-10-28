@@ -44,6 +44,29 @@ spec:
 
                   echo "New certificate SHA1: $NEW_SHA1"
 
+                  # lldap loads its TLS certificate only at startup. If the oldest
+                  # lldap pod started before the current cert became valid, it still
+                  # serves the old cert and Emby (pinned to the new SHA1) rejects it.
+                  CERT_NOT_BEFORE=$(echo "$CERT_PEM" | openssl x509 -startdate -noout | sed 's/^notBefore=//')
+                  CERT_NOT_BEFORE_TS=$(date -d "$CERT_NOT_BEFORE" +%s)
+                  LLDAP_STARTS=$(kubectl get pod -n authelia -l app.kubernetes.io/name=lldap -o jsonpath='{range .items[*]}{.status.startTime}{"\n"}{end}')
+
+                  if [ -z "$LLDAP_STARTS" ]; then
+                    echo "ERROR: lldap pod not found"
+                    exit 1
+                  fi
+
+                  LLDAP_OLDEST_START=$(echo "$LLDAP_STARTS" | sort | head -n 1)
+                  echo "Certificate notBefore: $CERT_NOT_BEFORE, oldest lldap pod start: $LLDAP_OLDEST_START"
+
+                  if [ "$(date -d "$LLDAP_OLDEST_START" +%s)" -lt "$CERT_NOT_BEFORE_TS" ]; then
+                    echo "lldap started before certificate renewal, restarting lldap..."
+                    kubectl rollout restart deployment/lldap -n authelia
+                    kubectl rollout status deployment/lldap -n authelia --timeout=300s
+                  else
+                    echo "lldap already serves the current certificate"
+                  fi
+
                   # Get current SHA1 from LDAP.xml
                   CURRENT_SHA1=$(kubectl exec -n media "$EMBY_POD" -c emby -- cat "$LDAP_XML_PATH" 2>/dev/null | grep -oP '(?<=<CertHash>)[^<]+' || echo "")
 
