@@ -15,5 +15,15 @@ resources:
   - k8s.np.navidrome-test.yaml
   - k8s.test.service.yaml
 
+configMapGenerator:
+  # Retry wrapper for the dztnr jobs, mounted as sitecustomize.py. No hash
+  # suffix: kustomize does not rewrite configMap volume names inside a
+  # CronJob's jobTemplate, and every job run starts a fresh pod anyway.
+  - name: dztnr-retry
+    files:
+      - sitecustomize.py=dztnr-retry.py
+    options:
+      disableNameSuffixHash: true
+
 generators:
   - kustomize-secret-generator.yaml

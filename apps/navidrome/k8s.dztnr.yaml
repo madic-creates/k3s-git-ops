@@ -11,6 +11,11 @@
 # --skip-rated and --skip-starred keep manual ratings and favourites untouched;
 # --curve artist grades tracks against the artist's biggest hit instead of the
 # global Deezer rank. A full library run takes roughly 5 minutes per 1000 tracks.
+#
+# dztnr itself exits on the first network error and treats Deezer's rate-limit
+# answer as "not found"; dztnr-retry.py (mounted as sitecustomize) retries both.
+# To resume an aborted run, add "-s N" where N = previous start + the [index]
+# of the last "Artist:" log line (dztnr numbers artists relative to -s).
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -48,6 +53,9 @@ spec:
                 - --curve
                 - artist
               env:
+                # Loads dztnr-retry.py (as sitecustomize) before dztnr.py starts
+                - name: PYTHONPATH
+                  value: /opt/dztnr-retry
                 - name: NAV_BASE_URL
                   value: http://navidrome.media.svc.cluster.local:4533
                 - name: NAV_USER
@@ -74,10 +82,16 @@ spec:
                 # The script writes a log file to ./logs relative to its workdir.
                 - name: logs
                   mountPath: /usr/src/app/logs
+                - name: retry
+                  mountPath: /opt/dztnr-retry
+                  readOnly: true
           volumes:
             - name: logs
               emptyDir:
                 sizeLimit: 100Mi
+            - name: retry
+              configMap:
+                name: dztnr-retry
 ---
 # Same as above against the test instance. The test Deployment is often scaled
 # to 0; scale it up before triggering this job, otherwise it fails immediately.
@@ -118,6 +132,9 @@ spec:
                 - --curve
                 - artist
               env:
+                # Loads dztnr-retry.py (as sitecustomize) before dztnr.py starts
+                - name: PYTHONPATH
+                  value: /opt/dztnr-retry
                 - name: NAV_BASE_URL
                   value: http://navidrome-test.media.svc.cluster.local:4533
                 # The test instance runs on a copy of the production database,
@@ -145,10 +162,16 @@ spec:
               volumeMounts:
                 - name: logs
                   mountPath: /usr/src/app/logs
+                - name: retry
+                  mountPath: /opt/dztnr-retry
+                  readOnly: true
           volumes:
             - name: logs
               emptyDir:
                 sizeLimit: 100Mi
+            - name: retry
+              configMap:
+                name: dztnr-retry
 ---
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
