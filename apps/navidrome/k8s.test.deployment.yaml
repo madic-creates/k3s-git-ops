@@ -91,7 +91,7 @@ spec:
               value: "/vol_raidz1/music/My Music"
             - name: ND_DATAFOLDER
               value: /data
-            - name: ND_REVERSEPROXYWHITELIST
+            - name: ND_EXTAUTH_TRUSTEDSOURCES
               value: "10.42.0.0/16"
             - name: ND_ENABLEUSEREDITING
               value: "false"
