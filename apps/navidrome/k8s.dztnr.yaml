@@ -1,0 +1,193 @@
+---
+# dztnr (github.com/scatolo/dztnr) sets Navidrome star ratings from Deezer's
+# track popularity via the Subsonic API. Ratings are per user, so they land on
+# the account in DZTNR_NAV_USER / DZTNR_NAV_PASS (navidrome-secrets).
+#
+# Both CronJobs are suspended: they only exist as templates for manual runs.
+#   kubectl -n media create job --from=cronjob/dztnr dztnr-manual-$(date +%s)
+#   kubectl -n media create job --from=cronjob/dztnr-test dztnr-test-manual-$(date +%s)
+# The schedule is required by the API but never fires while suspend is true.
+#
+# --skip-rated and --skip-starred keep manual ratings and favourites untouched;
+# --curve artist grades tracks against the artist's biggest hit instead of the
+# global Deezer rank. A full library run takes roughly 5 minutes per 1000 tracks.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: dztnr
+  namespace: media
+spec:
+  suspend: true
+  schedule: "0 4 1 1 *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      # 12 hours
+      activeDeadlineSeconds: 43200
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: dztnr
+        spec:
+          automountServiceAccountToken: false
+          restartPolicy: Never
+          securityContext:
+            runAsUser: 65534
+            runAsGroup: 65534
+            runAsNonRoot: true
+          containers:
+            - name: dztnr
+              image: ghcr.io/scatolo/dztnr:latest@sha256:ea84ac4c74384dfde0b12aa94d226ad2f6e10a6c294b917c3eaabc92c5eea18d
+              imagePullPolicy: IfNotPresent
+              args:
+                - --skip-rated
+                - --skip-starred
+                - --curve
+                - artist
+              env:
+                - name: NAV_BASE_URL
+                  value: http://navidrome.media.svc.cluster.local:4533
+                - name: NAV_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: navidrome-secrets
+                      key: DZTNR_NAV_USER
+                - name: NAV_PASS
+                  valueFrom:
+                    secretKeyRef:
+                      name: navidrome-secrets
+                      key: DZTNR_NAV_PASS
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 64Mi
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop:
+                    - ALL
+              volumeMounts:
+                # The script writes a log file to ./logs relative to its workdir.
+                - name: logs
+                  mountPath: /usr/src/app/logs
+          volumes:
+            - name: logs
+              emptyDir:
+                sizeLimit: 100Mi
+---
+# Same as above against the test instance. The test Deployment is often scaled
+# to 0; scale it up before triggering this job, otherwise it fails immediately.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: dztnr-test
+  namespace: media
+spec:
+  suspend: true
+  schedule: "0 4 1 1 *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      # 12 hours
+      activeDeadlineSeconds: 43200
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: dztnr
+        spec:
+          automountServiceAccountToken: false
+          restartPolicy: Never
+          securityContext:
+            runAsUser: 65534
+            runAsGroup: 65534
+            runAsNonRoot: true
+          containers:
+            - name: dztnr
+              image: ghcr.io/scatolo/dztnr:latest@sha256:ea84ac4c74384dfde0b12aa94d226ad2f6e10a6c294b917c3eaabc92c5eea18d
+              imagePullPolicy: IfNotPresent
+              args:
+                - --skip-rated
+                - --skip-starred
+                - --curve
+                - artist
+              env:
+                - name: NAV_BASE_URL
+                  value: http://navidrome-test.media.svc.cluster.local:4533
+                # The test instance runs on a copy of the production database,
+                # so the production account works there as well.
+                - name: NAV_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: navidrome-secrets
+                      key: DZTNR_NAV_USER
+                - name: NAV_PASS
+                  valueFrom:
+                    secretKeyRef:
+                      name: navidrome-secrets
+                      key: DZTNR_NAV_PASS
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 64Mi
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop:
+                    - ALL
+              volumeMounts:
+                - name: logs
+                  mountPath: /usr/src/app/logs
+          volumes:
+            - name: logs
+              emptyDir:
+                sizeLimit: 100Mi
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: dztnr
+  namespace: media
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: dztnr
+  egress:
+    # Allow DNS resolution via CoreDNS
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s:k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    # Subsonic API of both Navidrome instances
+    - toEndpoints:
+        - matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+                - navidrome
+                - navidrome-test
+      toPorts:
+        - ports:
+            - port: "4533"
+              protocol: TCP
+    # Deezer public API (api.deezer.com)
+    - toEntities:
+        - world
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP

@@ -38,6 +38,15 @@ spec:
     - ports:
       - port: "4533"
         protocol: TCP
+  # Allow the dztnr rating jobs (k8s.dztnr.yaml) to use the Subsonic API
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: dztnr
+        k8s:io.kubernetes.pod.namespace: media
+    toPorts:
+    - ports:
+      - port: "4533"
+        protocol: TCP
   egress:
   # Allow DNS resolution via CoreDNS
   - toEndpoints:
