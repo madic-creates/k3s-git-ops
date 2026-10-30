@@ -3,14 +3,24 @@
 # track popularity via the Subsonic API. Ratings are per user, so they land on
 # the account in DZTNR_NAV_USER / DZTNR_NAV_PASS (navidrome-secrets).
 #
-# Both CronJobs are suspended: they only exist as templates for manual runs.
-#   kubectl -n media create job --from=cronjob/dztnr dztnr-manual-$(date +%s)
+# The initial full-library run is done. The production CronJob now runs daily
+# over the 100 most recently added albums (--recent 100); dztnr has no "since
+# last run" option, but --skip-rated makes already rated tracks cost only a
+# Navidrome lookup, so the overlap between runs is cheap. Raise the number if
+# more than ~100 albums are added between two runs. Tracks Deezer does not
+# know stay unrated and are searched again on every run while they are among
+# the newest albums.
+#
+# The test CronJob stays suspended: the test instance does not scan, so it never
+# gets new albums. Trigger it by hand if needed:
 #   kubectl -n media create job --from=cronjob/dztnr-test dztnr-test-manual-$(date +%s)
-# The schedule is required by the API but never fires while suspend is true.
+#
+# For a full-library run, drop "--recent 100" from the args of a one-off job
+# (roughly 5 minutes per 1000 tracks).
 #
 # --skip-rated and --skip-starred keep manual ratings and favourites untouched;
 # --curve artist grades tracks against the artist's biggest hit instead of the
-# global Deezer rank. A full library run takes roughly 5 minutes per 1000 tracks.
+# global Deezer rank.
 #
 # dztnr itself exits on the first network error and treats Deezer's rate-limit
 # answer as "not found"; dztnr-retry.py (mounted as sitecustomize) retries both.
@@ -22,8 +32,10 @@ metadata:
   name: dztnr
   namespace: media
 spec:
-  suspend: true
-  schedule: "0 4 1 1 *"
+  # Daily, after the hourly library scans of the night have picked up new albums
+  schedule: "30 4 * * *"
+  timeZone: Europe/Berlin
+  startingDeadlineSeconds: 3600
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 1
@@ -48,6 +60,8 @@ spec:
               image: ghcr.io/scatolo/dztnr:latest@sha256:ea84ac4c74384dfde0b12aa94d226ad2f6e10a6c294b917c3eaabc92c5eea18d
               imagePullPolicy: IfNotPresent
               args:
+                - --recent
+                - "100"
                 - --skip-rated
                 - --skip-starred
                 - --curve
@@ -127,6 +141,8 @@ spec:
               image: ghcr.io/scatolo/dztnr:latest@sha256:ea84ac4c74384dfde0b12aa94d226ad2f6e10a6c294b917c3eaabc92c5eea18d
               imagePullPolicy: IfNotPresent
               args:
+                - --recent
+                - "100"
                 - --skip-rated
                 - --skip-starred
                 - --curve
