@@ -3,6 +3,13 @@ auth:
     enabled: false
     password: ENC[AES256_GCM,data:jEq3tKqX0w4nZ1T7kunXBa4iDL8sI3EL,iv:5Gk9gs5Tusgx5/XlA/tveNGvPNETrq7nEx8WsTYTO0w=,tag:bI0bKNsV1Ly9aHF19qdPTw==,type:str]
 master:
+    resources:
+        requests:
+            cpu: 100m
+            memory: 128Mi
+        limits:
+            cpu: 500m
+            memory: 192Mi
     persistence:
         enabled: true
         storageClass: longhorn
@@ -12,13 +19,8 @@ master:
         whenScaled: Retain
         whenDeleted: Retain
 sops:
-    kms: []
-    gcp_kms: []
-    azure_kv: []
-    hc_vault: []
     age:
-        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
-          enc: |
+        - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
             YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBGbFdjUTFoU0lHOXczakU4
             V1ZwbmZ2M2VGYTUyVnlCV0pnOWZPOG5DeEZJCkFqaFpSRU0wWlRXblV4ajdWTE00
@@ -26,8 +28,8 @@ sops:
             cGRYV215NE1VUEJ0WmtuUHVyK2g1cHcKFaFu28w+ZCcYw6bAMrn9+YWYplAMvT9M
             27jBiLkzlutQBblBtTiCQpDWYF+Ft64jwv/TaxZwP6BhFulqLItrsA==
             -----END AGE ENCRYPTED FILE-----
-        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
-          enc: |
+          recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+        - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
             YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBDRlNLUVpST21PT1J6WUlt
             V0M5ei9tbVNqVnJTRUZ6ZVZrT3ZWQk13ZndnCisyeHdSQXozdkk3QTlhcE0rM3hP
@@ -35,8 +37,8 @@ sops:
             WHZGZ1lZZnZrYmpUY3JXRHREdkFjMVUKwcRxR6POv0YFs1YHIpuwbIPSwAaqoy5W
             c71jdNLPVYm19lYEhI7JrFYN1AJgSnupLh//0Nil1sWHZvHoYf6P+A==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-10-25T09:49:35Z"
-    mac: ENC[AES256_GCM,data:rhmV5AKMUJhB30KSt7Nh6rmk2CNIlS+1rG+3ixNH+WDvBMctsZdyYmscWt2MaVJ/x77cKtkIlgzjIENzR9co5DseqmfX/XpPDwkLG3Ca4UptmsCYSpzY8N+NeJNLkF0x/rFFLd0vdUXYlWjcOO6q5UcfagMEErWOrU+Sl/LOxaY=,iv:mXXTXUD3U/0Gdkv/dHXPnPVowenv7NkBuCr7ar4v1WA=,tag:DvgGTaLqd3fQMgXOFLkA/g==,type:str]
-    pgp: []
+          recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url)$
-    version: 3.9.0
+    lastmodified: "2026-10-30T15:39:15Z"
+    mac: ENC[AES256_GCM,data:O0A0rGvdVbs9ODgSC1aX8tFciAuN3F7NDs414HEisKGCbUKrLxdpHcCE/evHyAzhgCMs6QtPD60rrquLz56AnYRDLlxbt3HnA6nIdD1trlQ6tFuXZTbdFcpyX2Nb8zWWjy8vmZ5W1XRa8lQ3jahNzX2+xMGY6L9AL/JfL5H1e5s=,iv:AAiXzjjt2AASLbw8TSeW3Nfs5+9eCpTa7UGT7Wkee4s=,tag:HKda+RdpP4WD4pOKqXbY0w==,type:str]
+    version: 3.13.3
