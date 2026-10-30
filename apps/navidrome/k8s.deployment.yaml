@@ -24,6 +24,44 @@ spec:
         runAsUser: 1001
         runAsGroup: 1002
         fsGroupChangePolicy: OnRootMismatch
+      initContainers:
+        # Installs the nd-lyrics plugin (github.com/J0R6IT0/navidrome-lyrics-plugin)
+        # into Navidrome's default plugin folder ($ND_DATAFOLDER/plugins). The
+        # download only happens when the file is missing or its checksum differs,
+        # so restarts do not depend on GitHub. After the first install the plugin
+        # must be enabled once in the Navidrome UI (Plugins page); that state
+        # lives in navidrome.db. Renovate does not track this release: bump
+        # version and checksum together by hand.
+        - name: install-plugins
+          image: docker.io/curlimages/curl:8.23.0@sha256:3fb7e13e5d179a845c97d78204f3f1064d1907037f26a3ebf91710571151fd93
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: ND_LYRICS_URL
+              value: https://github.com/J0R6IT0/navidrome-lyrics-plugin/releases/download/v8.1.0/nd-lyrics.ndp
+            - name: ND_LYRICS_SHA256
+              value: 29dd571ba0d4bb756e62c0d5c594a2d7e7c9ccec2950f3b027bd64c73c605715
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              f=/data/plugins/nd-lyrics.ndp
+              if echo "$ND_LYRICS_SHA256  $f" | sha256sum -cs 2>/dev/null; then
+                echo "nd-lyrics already installed"
+                exit 0
+              fi
+              mkdir -p /data/plugins
+              chmod 0700 /data/plugins
+              curl -fsSL --retry 3 -o "$f.tmp" "$ND_LYRICS_URL"
+              echo "$ND_LYRICS_SHA256  $f.tmp" | sha256sum -c
+              mv "$f.tmp" "$f"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: config-vol
+              mountPath: /data
       containers:
         - name: navidrome
           image: ghcr.io/navidrome/navidrome:0.64.2
@@ -43,6 +81,10 @@ spec:
               value: "false"
             - name: ND_ENABLESHARING
               value: "true"
+            # Navidrome's default order, with the nd-lyrics plugin as last
+            # fallback so local and embedded lyrics still win.
+            - name: ND_LYRICSPRIORITY
+              value: ".ttml,.yaml,.yml,.elrc,.lrc,.srt,.txt,embedded,nd-lyrics"
             - name: TZ
               value: Europe/Berlin
             - name: ND_LASTFM_APIKEY
