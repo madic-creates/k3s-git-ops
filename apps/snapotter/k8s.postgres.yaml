@@ -1,0 +1,89 @@
+---
+# Dedicated PostgreSQL for SnapOtter. SnapOtter 2.x uses Drizzle ORM with
+# pg-core and supports no other database; the cluster's MariaDB cannot be used.
+# Single-role setup: the 2.2.0 image ignores DATABASE_MIGRATION_URL, so the
+# owner role in DATABASE_URL both migrates and serves requests.
+apiVersion: v1
+kind: Service
+metadata:
+  name: snapotter-postgres
+  namespace: snapotter
+  labels:
+    app.kubernetes.io/name: snapotter-postgres
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: snapotter-postgres
+  ports:
+    - port: 5432
+      name: postgres
+      targetPort: 5432
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: snapotter-postgres
+  namespace: snapotter
+spec:
+  serviceName: snapotter-postgres
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: snapotter-postgres
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: snapotter-postgres
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: postgres
+          # Same image upstream pins in docker/docker-compose.yml
+          image: postgres:17-alpine@sha256:742f40ea20b9ff2ff31db5458d127452988a2164df9e17441e191f3b72252193
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: POSTGRES_USER
+              value: snapotter
+            - name: POSTGRES_DB
+              value: snapotter
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: snapotter
+                  key: POSTGRES_PASSWORD
+            # Subdirectory so initdb does not trip over the volume's lost+found
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          ports:
+            - containerPort: 5432
+              name: postgres
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "snapotter", "-d", "snapotter"]
+            periodSeconds: 10
+            timeoutSeconds: 5
+          livenessProbe:
+            exec:
+              command: ["pg_isready", "-U", "snapotter", "-d", "snapotter"]
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 5
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              memory: 1Gi
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: longhorn
+        resources:
+          requests:
+            storage: 5Gi

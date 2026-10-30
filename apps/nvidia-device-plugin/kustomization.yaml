@@ -15,12 +15,25 @@ helmCharts:
     includeCRDs: true
     # NOTE: chart 0.19.1 always renders an MPS-control-daemon DaemonSet in
     # addition to the device plugin DaemonSet. We do not use MPS sharing
-    # (the downstream llama-cpp workload requires exclusive GPU access),
-    # so the MPS daemon idles. There is no simple values flag to disable
+    # (sharing is done via time-slicing below), so the MPS daemon idles. There is no simple values flag to disable
     # it in this chart version; revisit with a kustomize delete patch if
     # the idle daemon becomes a real cost.
     valuesInline:
       runtimeClassName: nvidia
+      # Time-slicing: advertise the single RTX 3060 Ti as 2 nvidia.com/gpu so
+      # llama-cpp and snapotter can both hold a GPU request. There is no VRAM
+      # isolation between slices: both workloads share the 8 GB, and a CUDA
+      # OOM is possible when both run heavy models at the same time.
+      config:
+        map:
+          default: |-
+            version: v1
+            sharing:
+              timeSlicing:
+                resources:
+                  - name: nvidia.com/gpu
+                    replicas: 2
+        default: default
       nodeSelector:
         feature.node.kubernetes.io/pci-0300_10de.present: "true"
       # The chart's default nodeAffinity targets `pci-10de.present` (no PCI

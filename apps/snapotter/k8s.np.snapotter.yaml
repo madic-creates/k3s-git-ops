@@ -1,0 +1,88 @@
+---
+# SnapOtter application network policy
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: snapotter
+  namespace: snapotter
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: snapotter
+  ingress:
+    # Allow ingress from Traefik
+    - fromEndpoints:
+        - matchLabels:
+            k8s:app.kubernetes.io/instance: traefik-kube-system
+            k8s:io.kubernetes.pod.namespace: kube-system
+      toPorts:
+        - ports:
+            - port: "1349"
+              protocol: TCP
+  egress:
+    # DNS via CoreDNS, through Cilium's DNS proxy so the toFQDNs rule below
+    # can learn the resolved addresses. matchPattern "*" because musl treats
+    # the proxy's REFUSED for search-domain candidates as fatal (see
+    # apps/solar/k8s.np.openmeteo-exporter.yaml).
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s:k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+          rules:
+            dns:
+              - matchPattern: "*"
+    # Own PostgreSQL
+    - toEndpoints:
+        - matchLabels:
+            k8s:app.kubernetes.io/name: snapotter-postgres
+            k8s:io.kubernetes.pod.namespace: snapotter
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
+    # Cluster Redis for the BullMQ job queues
+    - toEndpoints:
+        - matchLabels:
+            k8s:app.kubernetes.io/name: redis
+            k8s:io.kubernetes.pod.namespace: databases
+      toPorts:
+        - ports:
+            - port: "6379"
+              protocol: TCP
+    # OIDC discovery/token loopback: auth.k8s.neese-web.de resolves to the
+    # Traefik LB IP; Cilium kube-proxy-replacement DNATs that to the Traefik
+    # pod on its websecure container port 8443 before policy is evaluated.
+    - toEndpoints:
+        - matchLabels:
+            k8s:app.kubernetes.io/instance: traefik-kube-system
+            k8s:io.kubernetes.pod.namespace: kube-system
+      toPorts:
+        - ports:
+            - port: "8443"
+              protocol: TCP
+    # AI bundle installs (pip + model weights, see install_feature.py and
+    # feature-manifest.json upstream). Deliberately no world:443, which keeps
+    # the image's default-on product analytics (PostHog) from leaving.
+    # A Cilium "*" never crosses a dot, hence the extra xethub pattern.
+    - toFQDNs:
+        - matchName: huggingface.co
+        - matchPattern: "*.huggingface.co"
+        - matchPattern: "*.hf.co"
+        - matchPattern: "*.xethub.hf.co"
+        - matchName: github.com
+        - matchPattern: "*.githubusercontent.com"
+        - matchName: storage.googleapis.com
+        - matchName: pypi.org
+        - matchName: files.pythonhosted.org
+        - matchPattern: "*.pytorch.org"
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP

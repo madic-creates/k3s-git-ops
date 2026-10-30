@@ -41,6 +41,15 @@ spec:
     - ports:
       - port: "6379"
         protocol: TCP
+  # Allow SnapOtter to connect to Redis on port 6379 for BullMQ job queues
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/name: snapotter
+        k8s:io.kubernetes.pod.namespace: snapotter
+    toPorts:
+    - ports:
+      - port: "6379"
+        protocol: TCP
   # Allow internal health checks and operations within databases namespace
   - fromEndpoints:
     - matchLabels:

@@ -1,0 +1,14 @@
+---
+resources:
+  - namespace.yaml
+  - k8s.np.snapotter-default-deny.yaml
+  - k8s.np.snapotter.yaml
+  - k8s.np.snapotter-postgres.yaml
+  - k8s.postgres.yaml
+  - k8s.snapotter.yaml
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "50"
+
+generators:
+  - kustomize-secret-generator.yaml

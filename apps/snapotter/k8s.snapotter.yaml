@@ -1,0 +1,143 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: snapotter
+  namespace: snapotter
+automountServiceAccountToken: false
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: snapotter-data
+  namespace: snapotter
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: longhorn
+  resources:
+    requests:
+      # User files, logs, Python venv and the AI bundles (4-5 GB each)
+      storage: 30Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: snapotter
+  namespace: snapotter
+spec:
+  revisionHistoryLimit: 3
+  replicas: 1
+  strategy:
+    # RWO volume and a GPU slot: the old pod must release both first
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: snapotter
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: snapotter
+    spec:
+      serviceAccountName: snapotter
+      runtimeClassName: nvidia
+      # node04 carries the RTX 3060 Ti (time-sliced, shared with llama-cpp)
+      nodeSelector:
+        node-role/workload: zfs
+      containers:
+        - name: snapotter
+          # https://github.com/snapotter-hq/snapotter
+          # https://hub.docker.com/r/snapotter/snapotter
+          # The entrypoint starts as root, chowns /data and /tmp/workspace,
+          # then drops to the unprivileged snapotter user via gosu.
+          image: snapotter/snapotter:2.2.0@sha256:2e11b4fa9138fa93e0fdfde5da3a2d042eebcfa81dd51286488872a3eb8086c8
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            # DATABASE_URL, EXTERNAL_URL, OIDC_ISSUER_URL, OIDC_CLIENT_SECRET,
+            # DEFAULT_PASSWORD, DATA_ENCRYPTION_KEY
+            - secretRef:
+                name: snapotter
+          env:
+            # Cluster Redis (databases ns, no auth, maxmemory-policy noeviction
+            # as BullMQ requires). db 1-3 are used by other apps.
+            - name: REDIS_URL
+              value: redis://redis-master.databases.svc.cluster.local:6379/4
+            - name: AUTH_ENABLED
+              value: "true"
+            - name: DEFAULT_USERNAME
+              value: admin
+            - name: OIDC_ENABLED
+              value: "true"
+            - name: OIDC_CLIENT_ID
+              value: snapotter
+            - name: OIDC_PROVIDER_NAME
+              value: Authelia
+            - name: OIDC_DEFAULT_ROLE
+              value: user
+            - name: MAX_PIPELINE_STEPS
+              value: "20"
+          ports:
+            - containerPort: 1349
+              name: http
+          startupProbe:
+            httpGet:
+              path: /api/v1/health
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 5
+            # First boot seeds the AI venv on /data
+            failureThreshold: 60
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: http
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 5
+          resources:
+            requests:
+              cpu: 250m
+              memory: 1Gi
+            limits:
+              memory: 6Gi
+              nvidia.com/gpu: 1
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: workspace
+              mountPath: /tmp/workspace
+            - name: dshm
+              mountPath: /dev/shm
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: snapotter-data
+        - name: workspace
+          emptyDir:
+            sizeLimit: 10Gi
+        # Upstream compose sets shm_size: 2gb (PyTorch data loaders)
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 2Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: snapotter
+  namespace: snapotter
+  labels:
+    app.kubernetes.io/name: snapotter
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: snapotter
+  ports:
+    - port: 80
+      name: http
+      targetPort: 1349

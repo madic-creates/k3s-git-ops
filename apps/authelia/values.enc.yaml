@@ -251,6 +251,25 @@ configMap:
                     - code
                   authorization_policy: two_factor
                   token_endpoint_auth_method: client_secret_basic
+                - client_id: snapotter
+                  client_name: SnapOtter
+                  client_secret: ENC[AES256_GCM,data:wPmujbVo9U4KlOAFmfHvQ6oDnuu/9RWySXZdIR1CkBbQiDnOJbaB9aIf9MHHQ95iA7BDBbVtfYJ9+yTcrLQxsJtwM4kiGUKo1cxA/ylH/nQ8uqmV0Q8tj8deMzq8yirPLBJ1bqtk5IBRq3S/Gpo2fdqUO/mZ1i0Ihrrxtk5u084bIro=,iv:4ZRDURbjqK3iQOaRvP8wjFTCsjFsE9/WaGbP3ms1Rss=,tag:OH1tGXjlVLg8X5LNhX8aoQ==,type:str]
+                  claims_policy: default_claims_policy
+                  public: false
+                  redirect_uris:
+                    - ENC[AES256_GCM,data:VTXe4DGcrg108XMMxNh1bGOezQn7GhCPC2B8dezPy+Q1auzK8VNunZcOT7a7jEi/gAz6e+SOyEq8HA==,iv:XUEcnEc9eOEWsdKNXV/jPAtErRB6n7eJEfO5r3Gm3io=,tag:N7DeyoLUtVStxS5bw8Kq4g==,type:str]
+                  scopes:
+                    - openid
+                    - profile
+                    - email
+                  grant_types:
+                    - authorization_code
+                  response_types:
+                    - code
+                  require_pkce: true
+                  pkce_challenge_method: S256
+                  authorization_policy: two_factor
+                  token_endpoint_auth_method: client_secret_post
 sops:
     age:
         - enc: |
@@ -272,6 +291,6 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(value|domain|subdomain|default_redirection_url|base_dn|user|secret|sender|redirect_uris|client_secret|authelia_url)$
-    lastmodified: "2026-10-30T10:45:15Z"
-    mac: ENC[AES256_GCM,data:RJYWIhLJtWF/jYVlpq1RSMrH7GzxUQ+ChQRoibjYc77Lmu9PTC+t6yS3M7zqVfjQlhmHND0GllsnOqar9WM6ue+LvDm4paaZeTBMRr1dOsA+fjRZDcwxss8OPxmBTSjv9fXbvrWM03k7ol6HIyTwFE1Rwi371ZBHGlBxeFazckA=,iv:eJPY8iR29GgIopYwBNQ6RpYyvd2t+Y5RoIfqmCmXUd8=,tag:IcsYBNF0pGvwKOS4lE35yg==,type:str]
+    lastmodified: "2026-10-30T18:00:40Z"
+    mac: ENC[AES256_GCM,data:K/RB23lt+seO5lykzNeq+Ycpq6uoqkxiQ8ouDSPVlz7ltxAnhHBKf1R+h+BDI14FOtZbkPgkUw2IJRJu1829jMkXucv+AA5q89SAyKJRYe9pdnCgy3432r864brglVBA2UpI2+7/lvGnuh12Ld4EejDj3NcV81af5DHpDrMeCJY=,iv:C5QSVYEcN1hbe14+nKGBvEejej0d25LORyLW3sJz+tI=,tag:mCNAqODVkOMRwiUoZDyfAQ==,type:str]
     version: 3.13.3
