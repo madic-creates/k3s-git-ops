@@ -3,15 +3,15 @@
 # feat-podcast-ux-improvements/5420 (upstream PR navidrome/navidrome#5949, for issue #5420).
 #
 # Isolated from the production Navidrome on purpose: the branch is rebased on
-# navidrome master and carries five podcast migrations that upgrade navidrome.db
-# to a schema 0.63.2 cannot read. It therefore uses its own data folder holding a
-# point-in-time copy of the production database.
+# navidrome master and carries six podcast migrations that upgrade navidrome.db
+# to a schema the production release cannot read. It therefore uses its own data
+# folder holding a point-in-time copy of the production database.
 #
-# The branch has two defects: it does not compile (calls validateURL() without
-# defining it), and its podcast migrations are backdated relative to master, so
-# goose refuses to apply them to an existing database. The image is built with
-# navidrome-pr5949.patch in this directory applied on top; see that file for the
-# reasoning. What runs here is therefore PR + patch, not the PR verbatim.
+# Built from the PR head verbatim (08a96541). Earlier heads needed a local patch
+# for a missing validateURL() and backdated migrations; upstream fixed both. The
+# migrations were renumbered to 20260930*, and they are not idempotent, so a data
+# folder migrated by an older image of this branch must be replaced with a fresh
+# production copy before upgrading.
 #
 # The label value MUST stay "navidrome-test". The production Service selects
 # app.kubernetes.io/name=navidrome; reusing that value here would make Traefik
@@ -24,6 +24,9 @@ metadata:
   labels:
     app.kubernetes.io/name: navidrome-test
 spec:
+  # Only the initial value: ArgoCD ignores replicas for this Deployment (see
+  # apps/argo-cd-apps/33-navidrome.yaml), so start and stop it with
+  #   kubectl -n media scale deploy/navidrome-test --replicas=0|1
   replicas: 1
   revisionHistoryLimit: 3
   strategy:
@@ -43,7 +46,7 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
       containers:
         - name: navidrome
-          image: forge.geekbundle.org/madic/navidrome-test:5420-07cf48cb-p2@sha256:f823ba87b0c47a672cc8a8f444437c85b966f68b11b1db888425c6742ab6891a
+          image: forge.geekbundle.org/madic/navidrome-test:5420-08a96541@sha256:7727b51d286d80f5fe67fe101b458485cdac717c344a5d06d9f81cb400b09ac4
           imagePullPolicy: IfNotPresent
           env:
             # No automatic scan: the copied database already holds the scanned library.
