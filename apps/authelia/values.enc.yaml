@@ -80,7 +80,9 @@ configMap:
     access_control:
         default_policy: deny
         rules:
-            - domain: ENC[AES256_GCM,data:n7nMcN+XRCdjeb6vbEVlVcPTGeNUlQ==,iv:Em2/IiqHxNIMCr9ai8nYqmjjTX06s7hY/e8nH2K22xE=,tag:IJ4Jm7xmJWF4ICdYXy8E1Q==,type:str]
+            - domain:
+                - ENC[AES256_GCM,data:n7nMcN+XRCdjeb6vbEVlVcPTGeNUlQ==,iv:Em2/IiqHxNIMCr9ai8nYqmjjTX06s7hY/e8nH2K22xE=,tag:IJ4Jm7xmJWF4ICdYXy8E1Q==,type:str]
+                - ENC[AES256_GCM,data:tcs4oqFx7fH9S470WV/I+FPwq22XfgN8wR5h,iv:0MeHQ+9UQyOlXFsPSY3/WrkfPqQxVekZ53bqs2Q4xEg=,tag:UI3MkrypGKnzBW+g33qcYg==,type:str]
               policy: one_factor
               resources:
                 - ^/rest/.*$
@@ -270,6 +272,6 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(value|domain|subdomain|default_redirection_url|base_dn|user|secret|sender|redirect_uris|client_secret|authelia_url)$
-    lastmodified: "2026-10-16T10:27:31Z"
-    mac: ENC[AES256_GCM,data:p8JCIPWHWkt7CeJ539ULadrnIFW1L+W2PCkhXCl5snqwcBavHxgK1Y7c2GVCJ/fRR8csSONgaVswihce8wUDGUAig840sTc2QZNx5SQ3zvnrjYcLCyh6XorSwWVIrml+egF8E4mUh0zoPOEKqAUwnXwBh/37/kyBs2YzfpknedQ=,iv:C4GDeFQrCmdxuVDib8aRPUMvxIfcHIi3FQ9CX5BZLfg=,tag:MA0otybxKHDJp+9bjz1tiA==,type:str]
+    lastmodified: "2026-10-30T10:45:15Z"
+    mac: ENC[AES256_GCM,data:RJYWIhLJtWF/jYVlpq1RSMrH7GzxUQ+ChQRoibjYc77Lmu9PTC+t6yS3M7zqVfjQlhmHND0GllsnOqar9WM6ue+LvDm4paaZeTBMRr1dOsA+fjRZDcwxss8OPxmBTSjv9fXbvrWM03k7ol6HIyTwFE1Rwi371ZBHGlBxeFazckA=,iv:eJPY8iR29GgIopYwBNQ6RpYyvd2t+Y5RoIfqmCmXUd8=,tag:IcsYBNF0pGvwKOS4lE35yg==,type:str]
     version: 3.13.3
