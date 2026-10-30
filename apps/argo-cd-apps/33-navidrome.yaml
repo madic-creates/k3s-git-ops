@@ -17,9 +17,21 @@ spec:
   destination:
     server: "https://kubernetes.default.svc"
     namespace: default
+  # The test instance is started and stopped out-of-band via `kubectl scale`,
+  # e.g. to replace its data folder with a fresh production copy. ArgoCD must
+  # ignore the field AND honour that during sync, otherwise selfHeal reverts
+  # it. Scoped to navidrome-test so production replicas stay managed by Git.
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      name: navidrome-test
+      namespace: media
+      jsonPointers:
+        - /spec/replicas
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
+      - RespectIgnoreDifferences=true
     automated:
       prune: true
       selfHeal: true
