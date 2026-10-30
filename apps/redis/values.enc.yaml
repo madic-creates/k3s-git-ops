@@ -1,4 +1,6 @@
 architecture: standalone
+image:
+    digest: sha256:37c559e3894161f1b1122353a54938e30299383ae801417debda7d3e7d69490a
 auth:
     enabled: false
     password: ENC[AES256_GCM,data:jEq3tKqX0w4nZ1T7kunXBa4iDL8sI3EL,iv:5Gk9gs5Tusgx5/XlA/tveNGvPNETrq7nEx8WsTYTO0w=,tag:bI0bKNsV1Ly9aHF19qdPTw==,type:str]
@@ -39,6 +41,6 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url)$
-    lastmodified: "2026-10-30T15:39:15Z"
-    mac: ENC[AES256_GCM,data:O0A0rGvdVbs9ODgSC1aX8tFciAuN3F7NDs414HEisKGCbUKrLxdpHcCE/evHyAzhgCMs6QtPD60rrquLz56AnYRDLlxbt3HnA6nIdD1trlQ6tFuXZTbdFcpyX2Nb8zWWjy8vmZ5W1XRa8lQ3jahNzX2+xMGY6L9AL/JfL5H1e5s=,iv:AAiXzjjt2AASLbw8TSeW3Nfs5+9eCpTa7UGT7Wkee4s=,tag:HKda+RdpP4WD4pOKqXbY0w==,type:str]
+    lastmodified: "2026-10-30T16:03:33Z"
+    mac: ENC[AES256_GCM,data:XitLLJRRXmpmjhRwhHinHKJ2xEOXF5hvNwaSuXgyFeFCqAisgZJ7LNaqm+sdfj+2dyDQ9H4qiwt528lVc78AterxgDeffqFSlxV8AOtz361dcj6nBB8yCwVQyOm7YfmcrTxwzhl/a7Rf711UCI/zWjNy6wJFQQlWpU+a0vjBPuM=,iv:vx6jZrk35i1Th08Q3t4yVL6xDqA/FnVOevrdwuSXgLM=,tag:1EiZFzSMxkXI1rOY1N3Jsw==,type:str]
     version: 3.13.3
