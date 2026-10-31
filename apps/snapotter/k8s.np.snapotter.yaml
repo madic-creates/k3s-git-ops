@@ -73,10 +73,14 @@ spec:
     # A Cilium "*" never crosses a dot and 1.18 has no "**", so each
     # subdomain depth needs its own pattern: HF weights come from
     # us.aws.cdn.hf.co (3 levels) and cas-bridge.xethub.hf.co (2 levels).
+    # Keep "*.xethub.hf.co" although "*.*.hf.co" covers it: IPs Cilium 1.18
+    # had already labelled fqdn:*.xethub.hf.co were not relabelled when that
+    # selector was removed, and stayed denied (cas-server.xethub.hf.co).
     - toFQDNs:
         - matchName: huggingface.co
         - matchPattern: "*.huggingface.co"
         - matchPattern: "*.hf.co"
+        - matchPattern: "*.xethub.hf.co"
         - matchPattern: "*.*.hf.co"
         - matchPattern: "*.*.*.hf.co"
         - matchName: github.com
