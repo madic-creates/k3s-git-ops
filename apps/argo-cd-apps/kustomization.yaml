@@ -46,7 +46,7 @@ resources:
   - 40-paperless-gpt.yaml
   - 40-paperless-ngx.yaml
   #- 50-codeserver-resources.yaml
-  #- 50-omnitools.yaml
+  - 50-omnitools.yaml
   - 50-snapotter.yaml
   #- 50-stirling-pdf.yaml
   #- 51-codeserver.yaml

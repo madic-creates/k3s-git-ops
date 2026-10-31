@@ -257,7 +257,7 @@ configMap:
                   claims_policy: default_claims_policy
                   public: false
                   redirect_uris:
-                    - ENC[AES256_GCM,data:VTXe4DGcrg108XMMxNh1bGOezQn7GhCPC2B8dezPy+Q1auzK8VNunZcOT7a7jEi/gAz6e+SOyEq8HA==,iv:XUEcnEc9eOEWsdKNXV/jPAtErRB6n7eJEfO5r3Gm3io=,tag:N7DeyoLUtVStxS5bw8Kq4g==,type:str]
+                    - ENC[AES256_GCM,data:YFPr6wR7yAz8A0g6zZdTMim18icJ2fWyT3Z/eJXJZY3j1CgJhhgQ/AIthUcrlxBT/4NnWTSwTLea,iv:oWPa4p6xjTafGRSzw8Zo4GxbqBU+rr0heXo3iAtemvU=,tag:zZf448QnACp7vPJBUb5xRg==,type:str]
                   scopes:
                     - openid
                     - profile
@@ -291,6 +291,6 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(value|domain|subdomain|default_redirection_url|base_dn|user|secret|sender|redirect_uris|client_secret|authelia_url)$
-    lastmodified: "2026-10-30T18:00:40Z"
-    mac: ENC[AES256_GCM,data:K/RB23lt+seO5lykzNeq+Ycpq6uoqkxiQ8ouDSPVlz7ltxAnhHBKf1R+h+BDI14FOtZbkPgkUw2IJRJu1829jMkXucv+AA5q89SAyKJRYe9pdnCgy3432r864brglVBA2UpI2+7/lvGnuh12Ld4EejDj3NcV81af5DHpDrMeCJY=,iv:C5QSVYEcN1hbe14+nKGBvEejej0d25LORyLW3sJz+tI=,tag:mCNAqODVkOMRwiUoZDyfAQ==,type:str]
+    lastmodified: "2026-10-31T08:47:21Z"
+    mac: ENC[AES256_GCM,data:Qxhaq6prPBnyohfcby2B0eLYdXiOVHRXoE8IKeMvCjD6WKcplxQpSyuSsOBW9kNVMczxaBboXwioxwZ8TK3IGfUaE0F/QUuPkwYmFny2d0f83EGRf85zUE/QBiyZ66cy1mZe1iCwfi7fBze4UrwzXlc21FeDEUnBucKzGT/ZORQ=,iv:vrUWfJn8xhKFsDdbcA0J6K/9y85F6DaP6fi1pAwlnEA=,tag:Rmad7w+icpT7RioxoG+WYw==,type:str]
     version: 3.13.3

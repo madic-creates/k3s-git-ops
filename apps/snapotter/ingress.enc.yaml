@@ -11,10 +11,10 @@ spec:
     ingressClassName: traefik
     tls:
         - hosts:
-            - ENC[AES256_GCM,data:IR75FdNuD6Hm3EFDl7KaSIYoZMRocUQpMU3J,iv:ms2fAUtPmwQydggJkKBJlHMISj7MS/YC6GHoXB+vy7M=,tag:Fi0NgwAduq2UzonGOuvUBw==,type:str]
+            - ENC[AES256_GCM,data:Gch7YkPZsg4N0w+hIlnjyQfV+eW/HmYDLUY=,iv:HtdhHKRj3CiVjV7CaIjWo4+7JFz/e22JcjOBvsO/vGM=,tag:75iijIWuN1VnVO3tR9D94w==,type:str]
           secretName: wildcard-cloudflare-production-02
     rules:
-        - host: ENC[AES256_GCM,data:tG4V3HQkZro/oSIggVBfi8mNWLWJ8PQSFvMq,iv:c+pOfNTbm0aGMNv4KZHyLKVDNJTLBPudTU0Rb9RThXc=,tag:On+3sT1Km2z4+nAqA8h0gA==,type:str]
+        - host: ENC[AES256_GCM,data:O5kglWaVesjMEoxzOdZswFyXpbKIh9wJW7E=,iv:wNRcXu8o9Pk6o+YvrVqCIARa8teU5zRor6cI8RROc1M=,tag:YovSsTkH2+SInGf8wRrrgg==,type:str]
           http:
             paths:
                 - path: /
@@ -45,6 +45,6 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
-    lastmodified: "2026-10-30T17:59:56Z"
-    mac: ENC[AES256_GCM,data:ezB/1yC+bScKt/MPzT7JRuQ36/xxsBkG4rutgYHEMFCQ9p6nzVEFtzEEVyLTb3yHt+zdR3K8reuKGxeOVldV+hyvglnK5dIGdcR1wvao6Vebd5haVUsvQ2NIX32SePcDaSLoVt6VSxcQY2Pqdrl/IAPMXE2Fz5wBSb5tphehf/w=,iv:M4dkmVs8B1dSoR1Cq7Lj4uUupK6+BR7TE0/XEvqlogk=,tag:WAdE4aHW6DJ7QgSf4Y3HAA==,type:str]
+    lastmodified: "2026-10-31T08:47:21Z"
+    mac: ENC[AES256_GCM,data:7LsDK5uARbuc0Pp68QFuTjzPl2podCE7zQr1K9axs3szc6rXhb0w0tp1ChW12Hz2c7hTUiLFVmC82GE09hVqQN9A+1G4PaZ/gMDXr/cYtuA7e2F9Rdp3qEvu/yuA1IqkUIxfWvdTC0+k0DjPt4z2KtB5MNBdhmD3fKE5cVMLCqs=,iv:IB3DrIh9rl20O9CxTLteOBkU9XchhZoqM9qu+pD7+mk=,tag:IZKmevZGjfOFspHNbxw8xg==,type:str]
     version: 3.13.3
