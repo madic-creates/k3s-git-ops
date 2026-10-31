@@ -70,12 +70,15 @@ spec:
     # AI bundle installs (pip + model weights, see install_feature.py and
     # feature-manifest.json upstream). Deliberately no world:443, which keeps
     # the image's default-on product analytics (PostHog) from leaving.
-    # A Cilium "*" never crosses a dot, hence the extra xethub pattern.
+    # A Cilium "*" never crosses a dot and 1.18 has no "**", so each
+    # subdomain depth needs its own pattern: HF weights come from
+    # us.aws.cdn.hf.co (3 levels) and cas-bridge.xethub.hf.co (2 levels).
     - toFQDNs:
         - matchName: huggingface.co
         - matchPattern: "*.huggingface.co"
         - matchPattern: "*.hf.co"
-        - matchPattern: "*.xethub.hf.co"
+        - matchPattern: "*.*.hf.co"
+        - matchPattern: "*.*.*.hf.co"
         - matchName: github.com
         - matchPattern: "*.githubusercontent.com"
         - matchName: storage.googleapis.com
