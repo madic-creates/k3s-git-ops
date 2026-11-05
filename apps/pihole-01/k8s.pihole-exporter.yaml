@@ -34,7 +34,7 @@ spec:
             - name: PORT
               value: "9617"
           # https://github.com/eko/pihole-exporter
-          image: ekofr/pihole-exporter:v1.3.0
+          image: ekofr/pihole-exporter:v1.3.1
           imagePullPolicy: IfNotPresent
           name: pihole-exporter
           ports:
