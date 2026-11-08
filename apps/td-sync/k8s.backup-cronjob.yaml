@@ -56,7 +56,7 @@ spec:
             # live db/-wal/-shm triplet with restic is not atomic and can yield
             # an unrestorable snapshot.
             - name: sqlite-snapshot
-              image: forge.geekbundle.org/madic/td-sync:v0.69.0@sha256:029912abd300eba9e1272be0b652bbab3ae7abe475f9bea9b89cae7fa4c4ae0e
+              image: forge.geekbundle.org/madic/td-sync:v0.69.0@sha256:79469b71c23dcaedfd4e9b25c88165ff02e565ed62cc603ea8be2723bc7b0bbe
               imagePullPolicy: IfNotPresent
               command:
                 - /bin/sh
