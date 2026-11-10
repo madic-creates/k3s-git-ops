@@ -10,7 +10,7 @@ commonAnnotations:
 helmCharts:
   - name: goldilocks
     repo: https://charts.fairwinds.com/stable
-    version: 11.2.0
+    version: 11.2.1
     releaseName: goldilocks
     namespace: goldilocks
     includeCRDs: true
