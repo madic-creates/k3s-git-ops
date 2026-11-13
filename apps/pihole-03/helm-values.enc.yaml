@@ -175,6 +175,25 @@ tolerations:
       operator: Exists
       effect: NoExecute
       tolerationSeconds: 30
+# Pod hostname = Service name: Pi-hole accepts its own hostname as Host
+# header without a password, so nebula-sync can use http://pihole-03-web
+hostname: ENC[AES256_GCM,data:VZbu09TcPylCIGIhNg==,iv:nYaBdIj47BZcssTr6yj2E5QGjkyzprSLcKmgxhg8G+M=,tag:U7Q/ca/mkAdiuXidkTVbTg==,type:str]
+networkPolicy:
+    enabled: true
+    ingress:
+        # Web interface: only Traefik (ingress) and nebula-sync (config sync).
+        # The API runs without a password (Authelia protects the UI), so no
+        # other pod may reach it. DNS stays open (dnsFrom is empty).
+        from:
+            - namespaceSelector:
+                matchLabels:
+                    kubernetes.io/metadata.name: kube-system
+              podSelector:
+                matchLabels:
+                    app.kubernetes.io/name: traefik
+            - podSelector:
+                matchLabels:
+                    app: nebula-sync
 sops:
     age:
         - enc: |
@@ -196,6 +215,6 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
-    lastmodified: "2026-07-22T20:05:11Z"
-    mac: ENC[AES256_GCM,data:Eo79m3/rR5VWn8fgOCwQDGDH2gdkCOJyLyuAMBv8U65haABBoNAU2FbjeYjpf9JVOgVN7D/B1++mnvNQujNkwhV0ciVjbxWMgozWe3zASF+Z4gAnoyW7YQBbtA8HsGKHB+MhMaNQsHDoWAKYT7LwMLzmif/2UPMv/eh1AUhqMIY=,iv:s0MJJV6PweDufUUcpONpOGQSUSkLEcw4Soc0BLOJSgQ=,tag:ERlDN2+F/Tmmlk7rRNMHxA==,type:str]
-    version: 3.13.2
+    lastmodified: "2026-11-13T16:05:58Z"
+    mac: ENC[AES256_GCM,data:ajfI2eybBbe9N+5iDnprmfPTo0z5IeKnba5MpX9JT/RmW/7FO/lxnZDQdTwFgJN0gzO6hXYY92PNjk8H8Wcw6LPYA94Mb65o2foKoMNkliybwo98y/sA7oz6iqzZmqzyGRzBvB8ILt0vhrK9IZ+3DMfydX4fIAMnfhzoOqa1b0E=,iv:oKUKQk3b/xhuTqedoOM2LXHpHEN0Qwf1o+zwdlE8pdE=,tag:X13AQHHDJWAP4aWLVF2Sug==,type:str]
+    version: 3.13.3

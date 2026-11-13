@@ -1,0 +1,70 @@
+---
+# NetworkPolicy for the pihole-01 release (12-pihole-helm), rendered from the
+# networkPolicy template of the upstream chart's main branch.
+#
+# Chart 3.0.0-rc.2 cannot express this: its template applies one `from` list to
+# DNS and the web port alike, so restricting the web port would also block DNS
+# clients. Once 12-pihole-helm runs chart >= 3.0.0, move the networkPolicy block
+# from apps/pihole-03/helm-values.enc.yaml into apps/pihole-01/helm-values.enc.yaml
+# and delete this file. The different name avoids a clash with the chart's
+# NetworkPolicy "pihole" during that switch.
+#
+# Why the web port is restricted: Pi-hole runs without an API password (Authelia
+# protects the UI), so only Traefik and nebula-sync may reach it.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: pihole-web-restricted
+  namespace: dns
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: pihole
+      app.kubernetes.io/instance: pihole
+  policyTypes:
+    - Ingress
+    - Egress
+  # NetworkPolicy ports are the pod's (container) ports, not the Service ports.
+  ingress:
+    # DNS (and DHCP): clients are usually outside the cluster, so every source is allowed unless dnsFrom is set
+    - ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+        - protocol: UDP
+          port: 67
+    # Web interface and metrics
+    - ports:
+        - protocol: TCP
+          port: 80
+        - protocol: TCP
+          port: 443
+      from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: traefik
+        - podSelector:
+            matchLabels:
+              app: nebula-sync
+  egress:
+    - ports:
+      - port: 53
+        protocol: UDP
+      - port: 53
+        protocol: TCP
+    - ports:
+      - port: 80
+        protocol: TCP
+      - port: 443
+        protocol: TCP
+    - ports:
+      - port: 853
+        protocol: TCP
+      - port: 123
+        protocol: UDP
+    - to:
+      - namespaceSelector: {}

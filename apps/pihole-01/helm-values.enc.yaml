@@ -14,6 +14,8 @@ serviceDns:
     #externalTrafficPolicy: Cluster
     #type: ClusterIP
 serviceDhcp:
+    # Explicit: the chart default changes to false in 3.0.0; dhcphelper relays to this Service
+    enabled: true
     annotations:
         lbipam.cilium.io/ips: 192.168.1.232
         lbipam.cilium.io/sharing-key: piholednsdhcp
@@ -215,6 +217,9 @@ tolerations:
       operator: Exists
       effect: NoExecute
       tolerationSeconds: 30
+# Pod hostname = Service name: Pi-hole accepts its own hostname as Host
+# header without a password, so nebula-sync can use http://pihole-web
+hostname: ENC[AES256_GCM,data:sxkfl0r+uTx3lA==,iv:uSGFPN8YAuov5io8Jw1VDXrhJNscQ7Cjpip/NDQhpew=,tag:/9GuLtOa2hgbSc4AydmsEw==,type:str]
 sops:
     age:
         - enc: |
@@ -236,6 +241,6 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
-    lastmodified: "2026-10-24T17:19:21Z"
-    mac: ENC[AES256_GCM,data:9U4corsUSm27hkBMIklTJursSNunFe3wWdhI8LrnIvWrmpDJbcwqMqx1/h/Z1D5//xmqaSNmVOTcssf2FuUa164/6ozV1DIfXJd3Yl7ViUcldThaNcNyYMrMg/DEtNxw/XmEM8s0ehRg88sLO93SRQ92JuTZS4obMEQJlq2HudE=,iv:WGUum3UAkIeztR2qs8XSorAh+oeMV/s024+ZRPSRryM=,tag:E2+IaTBEFvEHLHaK0zKiLA==,type:str]
+    lastmodified: "2026-11-13T16:05:58Z"
+    mac: ENC[AES256_GCM,data:7vaakt4ubMAtBkyrLXbDDulMGJJZ0uwbOTmtAj5qHwsC5rkughPIPxORku5bANTlW00LCnR3oRpqP1R6t3S9CHcFMw/JYH5E4OBTavzbGhkudc5H5NfENM8Mczxm3v3vZ4dga9zpVYeKaiuYMqxO2nTMrXjmU2fQlajcNkvobU0=,iv:dUBvRjxjvoTDvQ+oT6aKgKxbCgDBjZNYF3/qRsDSGL8=,tag:H+44o64DgY+vCbTo38NoAQ==,type:str]
     version: 3.13.3

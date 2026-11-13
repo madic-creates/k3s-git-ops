@@ -6,9 +6,9 @@ metadata:
     annotations:
         kustomize.config.k8s.io/needs-hash: "true"
 data:
-    PRIMARY: ENC[AES256_GCM,data:hJDn03b0+bv+zQFWBeqiya2twggQ+SGvXPgK1L09fWnEkvf/mAaeHPUjDsCJW/6YlDC3P7zYftDWUF3yFGg5sVqXb0zwSWWkNA8+/+c8DWEeE90M,iv:eLsd0AVpI6lraemvYx5krNoRv+d/F3FBg1CRjsFR4wA=,tag:2I3Kkmq8byVcH+SPyvbJzg==,type:str]
-    #ENC[AES256_GCM,data:cR9wlRJ/dp9R5odnMDQb6ZQqVBTRdG9Jk7aiNqcyVReViM/JWRxrVS7OoGostpmOsUk6u+TdKtCHTw3ZQ70g2q/WTOxmyU6W6WhgCKBUFPQTueXsFItIzy06GrtSQrehhdv0v0ujLE9W95a89KQPrHesr+dAUSvsIJbSfHd4l1S/MM/sb8ODC21yt6KRHYnBu/DDDKMvVG3mZ7Aiv2xNF9Ntw8/WOMqkZjpPCESFKY1z2xiXdwL1wQ==,iv:DzzMiylZemU8WiFmHIerYLGqrZbzhElhwRlgsOv5qMs=,tag:LigDwgu05Xe+TqzUxfd/Ww==,type:comment]
-    REPLICAS: ENC[AES256_GCM,data:2zQgLqv/3jONhWsNLaZkpvP3tCoVQ4ldFrORJn6aJu1HdujC7HPtY29t0hSyz6fB6S5eaZtYvVwk8vVEFiDef+B6YsT5SkOvQbJRW0QKIrgobbIWq8dR,iv:5LPxec+pqttdrkKKZmtJdFxF8Qi0wLvEPapmDuzlN80=,tag:r0DXpdAtLoTt/9/HPV4zMw==,type:str]
+    PRIMARY: ENC[AES256_GCM,data:ZXMLT9fuvB6w+ELEj4YFvVY10pIR2YFI5pLwr4Z/tePi+wAKh1aOMV095RV4jK6lLjkLWr5DBJBrzwaWn74=,iv:FhmZwXOYObPIwkay7Tkh6mNjXf8jDJ1kS91iNW538wA=,tag:fLvSSrmhJWE3+AcRDjVZ8w==,type:str]
+    #ENC[AES256_GCM,data:IIvd4CAM5A18XuLDQK2uGaydapq2OO5XbqV2lItSMnxyyPcxpjsMR9krmhbhW3oulu4B9BN0cWVV2/szpb1M7amOr2B8e/hPdUvNg/2AxHmirjRNzij21pAvjA6oQNSTVwsslqCoQH7J1qdgEhO2ihbcqt4bF50vrPPX1q+/xz6hF94MqDqQCUzFcHy7Rp3DB1kflvPmgKUMNNP4MS0mQo3x,iv:T2SbYwd29Edii7kfyFUa8MwuOtE1TnC9dcQmWZo8Wps=,tag:lCMDMejTti1xo0q4v5GWCw==,type:comment]
+    REPLICAS: ENC[AES256_GCM,data:JxoQWcAfa/JIPl4olh2ussP+8TVFMc7P0VQxIAh8RS14b+XBdc6uz7d0MvZwuliXxMY+QuLj5De1Fp1/DWCzoXA=,iv:ydJVAK9qd9zt4SHJt5yZxInpCNfyZI+6ScsxJquFnMU=,tag:/xm2xHl8Z5CZf0Cfes2a0w==,type:str]
     FULL_SYNC: ENC[AES256_GCM,data:Utz3CcM=,iv:aJcsS9rbpspMv57e6ExWUSP2XK1h8vakPPxV7238fHY=,tag:TTqszKES1CgmJ+NHgL1tJQ==,type:str]
     RUN_GRAVITY: ENC[AES256_GCM,data:6KztfGo=,iv:84vxZFizLH/V164MFdXh6ZHnToq6b1LGmLGwYFmrBho=,tag:MoshCwueSZXKYQNgsI4LLQ==,type:str]
     CRON: ENC[AES256_GCM,data:5Q0adbAqG9YFSBM=,iv:0t/8vmZ6YjQkOkERHfOOrF9t6ipQOV0mR8GqejFF/bc=,tag:11PCJLPhJaoaGAnPqaxaQw==,type:str]
@@ -31,8 +31,7 @@ data:
     SYNC_GRAVITY_CLIENT_BY_GROUP: ENC[AES256_GCM,data:dNnuhQ==,iv:GczeHeV8eEGMEPb0O7+StA9lLlorWz2uD01eQ1KhApc=,tag:gzkxlpasDW1sgZk/22hkqQ==,type:str]
 sops:
     age:
-        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
-          enc: |
+        - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
             YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSByc0pkb05sQU1yWFlydUlk
             VXNMdnBCc01CdWdESTZtT2QrYlVLR0J6Z1Q0ClVJQVVuNlltazA5OUl4Y3JUdStw
@@ -40,8 +39,8 @@ sops:
             dXpxUElzQmg3VnBYeEZDbE9yMWVpNHcKOpM4IvPfVyBM/2rit8Y1Sz7xU5o7iAtL
             4F+XC6ex3qnwPAFZYBKXHiVAqHC2GGJ6lA5fafIY2NAyeUGA6OF0qQ==
             -----END AGE ENCRYPTED FILE-----
-        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
-          enc: |
+          recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+        - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
             YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBoQm9aTzRPMkI2OWNTejBP
             Z0haMS9WWXkxc1l1b3N4ODczVDUyN0E3UzJzCjR2L3NwMEp0d0Y1WE9WZzZkUjV1
@@ -49,7 +48,8 @@ sops:
             bWo5QTduN0FHRjZsWTNYeWE1S3VOc0EK8B0lbXRwz/sBPl+E+0ub/OkglI7wVapy
             fS6Y0EiLbBz6P064FaqD5e/wigzoXU/dUMUoSWeru+Xt2rKUrdWKMA==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2026-04-26T11:41:35Z"
-    mac: ENC[AES256_GCM,data:5cSXhQ3+NDth8+zNB+/R1gBNjcL0YUa+D1Rec+01zwyqj0gLDeX8Fy5gQ3Zl6n1+MSqDVAIxWp9z3NbzWIBYgp0lKRGaWerMgny9pEVOc7ifH0jP16HrhT3nL3N20Qmt+KomnxrrBSkMyXknSq6MMns5enu+p/AsDJInYJe+HVs=,iv:Nlcn6N/j2TF/u602FZdDiAGpWwm1CisL35MNFA4lIBk=,tag:+MCglHsvLD+KsaPWZPPN7A==,type:str]
+          recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
-    version: 3.12.2
+    lastmodified: "2026-11-13T16:05:58Z"
+    mac: ENC[AES256_GCM,data:JdL6Oj78mFaIUu7wVv3M0NgFLHqwq80ZCEbB+jIiKczrZlybAfFJCT1lkzOU9ZmDKq0o2Iz8RC3uQyEnAleabmSW30tUbnHZQ/TlIn/+lwMMCopT/v1kYlX61kKt3KejpfnJi/KV33L5vGtg2P+MB3etQyVCZ9Jipe79Wjdkq7M=,iv:yu5R4Y3Afz7uC4cLHRDfPudSb8poKkSeRrMaQhGwOwI=,tag:CFz9lCUhMEUItlopl9bskQ==,type:str]
+    version: 3.13.3
