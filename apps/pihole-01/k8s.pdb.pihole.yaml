@@ -1,0 +1,19 @@
+---
+# Keep at least one of the two Pi-holes running during voluntary disruptions
+# (node drains, e.g. by system-upgrade-controller). Spans both Helm releases,
+# which carry different app.kubernetes.io/name labels (pihole-03 uses
+# nameOverride). The chart's own pdb.yaml only covers a single release, which
+# with one replica would block every drain.
+# Note: while one Pi-hole is down, draining the other one's node waits.
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: pihole-any
+  namespace: dns
+spec:
+  minAvailable: 1
+  selector:
+    matchExpressions:
+      - key: app.kubernetes.io/name
+        operator: In
+        values: [pihole, pihole-03]

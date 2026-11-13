@@ -4,8 +4,9 @@ kind: Application
 metadata:
   name: 13-pihole03
   namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
+  # No resources finalizer: this Application is being merged into
+  # 12-pihole-helm, and deleting it must leave the pihole-03 resources (PVC!)
+  # in place for the new owner to adopt.
   annotations:
     # One wave after 12-pihole-helm: when the parent syncs Application changes
     # (chart source, version), it waits until pihole-01 is Healthy before

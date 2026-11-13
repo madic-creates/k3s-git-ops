@@ -20,6 +20,7 @@ resources:
   #- ks8.doh-service.yaml
   - k8s.nebula-sync.yaml
   - k8s.networkpolicy.pihole.yaml
+  - k8s.pdb.pihole.yaml
 
 generators:
   - kustomize-secret-generator.yaml
