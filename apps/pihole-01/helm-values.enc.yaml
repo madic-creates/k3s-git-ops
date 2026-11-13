@@ -171,10 +171,13 @@ dnsmasq:
     #- cname=www.youtube-nocookie.com,restrict.youtube.com
 # Not required. We're running a dhcp relay via host network.
 #hostNetwork: "true"
-capabilities:
-    add:
-        - NET_ADMIN
-        - SYS_NICE
+# capabilities is deprecated in the chart; containerSecurityContext replaces it
+containerSecurityContext:
+    privileged: false
+    capabilities:
+        add:
+            - NET_ADMIN
+            - SYS_NICE
 persistentVolumeClaim:
     enabled: true
     existingClaim: pihole
@@ -247,6 +250,6 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
-    lastmodified: "2026-11-13T18:11:38Z"
-    mac: ENC[AES256_GCM,data:qe/NYssZQ01OIr16ClY91feQ+py7J7VijoWSqe5twqeNs1fRbI/zEIZQ42gNBpjcRRI5zTRLMn9+RZXg2hAw4kDCKLjInpVnml58FL+6gDowjk1ceYP+3gT4rRsq32N92mkWxRW0qBinOxpdiazntcjGl+YDI/g0hLD8+KoIQyE=,iv:DDx5UyoD0mktqW3/dn7M6snmlNzVPynb+W4yGIq7Ssc=,tag:M0zodrhd89Qi5A/gsyUMWQ==,type:str]
+    lastmodified: "2026-11-13T18:50:58Z"
+    mac: ENC[AES256_GCM,data:LRHeWcyhvjYZURzsmak4g0T++2mxHTm/xeWXXkMn/gNzZPSQl5TEPOozwkNrExLAOZ5qRkSUhThwByKWQUzLWICevNiJsiiQ+vU4hDSPk39lhOTHjqAlV5lTvICez2Fwk9rBgqUQXnlCL9ljkJu9l6/us8gc9fMMMVc/mrPjLSE=,iv:6aA5a+7NktRHtv6F5eA40hjzxLpSvFbaEaidl87AyqQ=,tag:kg3Z9WKEtBE1ra4j1jNVYg==,type:str]
     version: 3.13.3
