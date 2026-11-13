@@ -128,6 +128,9 @@ dnsmasq:
         - dhcp-option=6,192.168.1.232
         # NTP
         - dhcp-option=42,192.168.1.1
+        # Server-ID = relay address (dhcphelper node IP) instead of the pod IP,
+        # so unicast renewals reach the relay instead of an unroutable pod IP
+        - dhcp-proxy
         - dhcp-range=::,ra-names
         - server=/geekbundle.org/192.168.1.1
         - ptr-record=1.1.168.192.in-addr.arpa.,"despair"
@@ -241,6 +244,6 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
-    lastmodified: "2026-11-13T16:05:58Z"
-    mac: ENC[AES256_GCM,data:7vaakt4ubMAtBkyrLXbDDulMGJJZ0uwbOTmtAj5qHwsC5rkughPIPxORku5bANTlW00LCnR3oRpqP1R6t3S9CHcFMw/JYH5E4OBTavzbGhkudc5H5NfENM8Mczxm3v3vZ4dga9zpVYeKaiuYMqxO2nTMrXjmU2fQlajcNkvobU0=,iv:dUBvRjxjvoTDvQ+oT6aKgKxbCgDBjZNYF3/qRsDSGL8=,tag:H+44o64DgY+vCbTo38NoAQ==,type:str]
+    lastmodified: "2026-11-13T16:19:17Z"
+    mac: ENC[AES256_GCM,data:+RdCHKhSZ5mfxhXM3Ou7Jxpu3I9QNtR1AwcSHlBvFJN0VGQ7WreHUF8clNaHoFHYPzAQgzKME1C7PlVYALBOle/TwmUUAunATSYsIPN7mGDJxcn17BS/A+ZzvO88a/XirNWRti0waAhMeNy778tUDrqPOKaoQW1WYVWXPPbTTa8=,iv:CjMOgkD50HYRtDvVgyMf8H2dMgOu4FNl/n0u2N7oYpU=,tag:I58yc4VbymkrdWQiEZrMwQ==,type:str]
     version: 3.13.3
