@@ -198,6 +198,9 @@ networkPolicy:
             - podSelector:
                 matchLabels:
                     app: nebula-sync
+# Roll out only after pihole-01 (wave 0) is Healthy, see 12-pihole-helm
+deploymentAnnotations:
+    argocd.argoproj.io/sync-wave: "1"
 sops:
     age:
         - enc: |
@@ -219,6 +222,6 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
-    lastmodified: "2026-11-13T17:44:24Z"
-    mac: ENC[AES256_GCM,data:E+vi8+qyuKLLwDCNqZvZUs5ljszCoIMXe23Gn8icMA5RwAKoZrbBO2R45JbSAO0NEiJqnoHZDzvvxCvczT6zjTuhBSXp77O3LRGbvDrKVzEZm5b4u2ESQg7wZ6PbP7eDmt9h2oZUzJcAg3KOkZAkjpeRscq8GUHq8KPbGR+OHps=,iv:adT/DIj2VVFFREn9vPvdj9TiFchoMewR5kZPZpUrn74=,tag:o61grngHb7M8En1heC0HfQ==,type:str]
+    lastmodified: "2026-11-13T17:56:56Z"
+    mac: ENC[AES256_GCM,data:4yCd6XHGxTFLVDctlvt6JqwNoGJ7bnWK7TYV3zkoI8Fx/MOsK9CcoVMjMnR/wbJv470GA8mqZga/c+8Drjn/3ipsHRMh4RsctnM3LXdjLzqrbVRmap3OiHnc2jdpX6ueG47QMAuOqpYj1iMKA+gHY1lUm2QX9v8PNOdwk5vvCB8=,iv:gRIF6N42+MfeUbMqEOJPw6d+rK0b9igIqMccPhj2MV8=,tag:e5HY5aXVqPsIEjE7PHXxcQ==,type:str]
     version: 3.13.3

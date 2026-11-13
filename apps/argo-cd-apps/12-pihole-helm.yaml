@@ -1,4 +1,8 @@
 ---
+# Both Pi-hole releases in one Application, so a single sync handles them in
+# order: pihole-01's Deployment is wave 0, pihole-03's Deployment is wave 1
+# (deploymentAnnotations in apps/pihole-03/helm-values.enc.yaml). ArgoCD only
+# rolls pihole-03 once pihole-01 is Healthy, also for values-only commits.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -11,6 +15,7 @@ metadata:
 spec:
   project: default
   sources:
+    # pihole-01: published chart release
     - repoURL: https://mojo2600.github.io/pihole-kubernetes/
       chart: pihole
       targetRevision: 3.0.0-rc.2
@@ -18,6 +23,14 @@ spec:
         releaseName: pihole
         valueFiles:
           - $values/apps/pihole-01/helm-values.enc.yaml
+    # pihole-03: tracks the upstream main branch on purpose
+    - repoURL: https://github.com/MoJo2600/pihole-kubernetes.git
+      targetRevision: main
+      path: charts/pihole
+      helm:
+        releaseName: pihole-03
+        valueFiles:
+          - $values/apps/pihole-03/helm-values.enc.yaml
     - repoURL: "example.com"
       targetRevision: HEAD
       ref: values

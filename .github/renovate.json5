@@ -36,7 +36,7 @@
     ],
   },
   // ArgoCD Applications that pull a chart from an external Helm repo or git tag.
-  // 13-pihole03 tracks a branch (main) and is skipped by Renovate.
+  // The pihole-03 source in 12-pihole-helm tracks a branch (main) and is skipped.
   argocd: {
     managerFilePatterns: [
       '/apps/argo-cd-apps/.+-pihole.*\\.yaml$/',

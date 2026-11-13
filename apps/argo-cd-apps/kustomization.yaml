@@ -124,11 +124,14 @@ replacements:
           name: 51-codeserver
         fieldPaths:
           - spec.sources.1.repoURL
+      # 12-pihole-helm is a multi-source Application with both Pi-hole charts
+      # (index 0 and 1, upstream); only the $values source (index 2) points
+      # at this repo.
       - select:
           kind: Application
           name: 12-pihole-helm
         fieldPaths:
-          - spec.sources.1.repoURL
+          - spec.sources.2.repoURL
 
 generators:
   - kustomize-secret-generator.yaml
