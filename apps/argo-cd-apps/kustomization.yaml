@@ -14,7 +14,6 @@ resources:
   - 09-redis.yaml
   - 10-authelia.yaml
   - 11-lldap.yaml
-  - 12-pihole.yaml
   - 12-pihole-helm.yaml
   - 13-node-feature-discovery.yaml
   - 14-external-snapshotter.yaml
