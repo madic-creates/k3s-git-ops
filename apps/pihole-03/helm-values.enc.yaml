@@ -147,16 +147,17 @@ dnsmasq:
         - dhcp-host=net:youtubedns,00:e0:4c:7b:c2:98,Sanctuary
         - dhcp-host=net:youtubedns,8c:8c:aa:32:ce:7a,IONB000201752-LAN
         - dhcp-host=net:youtubedns,4e:80:5d:ae:a9:dd,IONB000201752-WLAN
-#affinity:
-#    podAntiAffinity:
-#        requiredDuringSchedulingIgnoredDuringExecution:
-#            - labelSelector:
-#                matchExpressions:
-#                    - key: app.kubernetes.io/name
-#                      operator: In
-#                      values:
-#                        - pihole
-#              topologyKey: kubernetes.io/hostname
+# Never on the same node as pihole-01 (release "pihole")
+affinity:
+    podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - pihole
+              topologyKey: kubernetes.io/hostname
 podSecurityContext:
     seccompProfile:
         type: RuntimeDefault
@@ -218,6 +219,6 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
-    lastmodified: "2026-11-13T16:20:40Z"
-    mac: ENC[AES256_GCM,data:spwXXjF9Uw+5K4N+erjoZCMbHxJgtkKcctUJIMO60HFc3mhTC6YZVU9bmpxejEDOofZp26Hq9y4JUB5t/an7JkDiQ3DpPgTcpUK1YPVzRx4Nv5mGntrSOLx3oeQPmS5o666RxkNEzdIlFwd7fatPSYSzy+4nZIhvlktqhf7gbQg=,iv:F0mnueo/+4ZaotRzQYjalovpj3+cVPeOeBEs/FYk44Y=,tag:wns7ZJAnRJlb/q4/wwjF1w==,type:str]
+    lastmodified: "2026-11-13T17:44:24Z"
+    mac: ENC[AES256_GCM,data:E+vi8+qyuKLLwDCNqZvZUs5ljszCoIMXe23Gn8icMA5RwAKoZrbBO2R45JbSAO0NEiJqnoHZDzvvxCvczT6zjTuhBSXp77O3LRGbvDrKVzEZm5b4u2ESQg7wZ6PbP7eDmt9h2oZUzJcAg3KOkZAkjpeRscq8GUHq8KPbGR+OHps=,iv:adT/DIj2VVFFREn9vPvdj9TiFchoMewR5kZPZpUrn74=,tag:o61grngHb7M8En1heC0HfQ==,type:str]
     version: 3.13.3
