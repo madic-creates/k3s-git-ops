@@ -7,8 +7,10 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
   annotations:
-    # One wave after 12-pihole-helm: the parent waits until pihole-01 is Healthy
-    # before it touches pihole-03, so a shared change never restarts both at once
+    # One wave after 12-pihole-helm: when the parent syncs Application changes
+    # (chart source, version), it waits until pihole-01 is Healthy before
+    # touching pihole-03. Values-only commits are synced by each child app on
+    # its own, so a commit changing both values files still restarts both.
     argocd.argoproj.io/sync-wave: "52"
 spec:
   project: default
