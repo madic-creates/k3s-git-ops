@@ -7,7 +7,9 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
   annotations:
-    argocd.argoproj.io/sync-wave: "51"
+    # One wave after 12-pihole-helm: the parent waits until pihole-01 is Healthy
+    # before it touches pihole-03, so a shared change never restarts both at once
+    argocd.argoproj.io/sync-wave: "52"
 spec:
   project: default
   sources:
