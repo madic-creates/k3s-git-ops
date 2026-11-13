@@ -68,3 +68,13 @@ spec:
         protocol: UDP
     - to:
       - namespaceSelector: {}
+    # DHCP replies. Not part of the chart template: dnsmasq answers the relay
+    # agent (dhcphelper, hostNetwork) at its node IP (giaddr) on port 67, which
+    # is not the reverse tuple of the request (that arrives SNATed from
+    # cilium_host via the LoadBalancer), so conntrack does not let it pass.
+    # 68 covers direct replies to clients.
+    - ports:
+      - port: 67
+        protocol: UDP
+      - port: 68
+        protocol: UDP
