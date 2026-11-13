@@ -56,11 +56,15 @@ spec:
   # Used for conditional forwarding within the cluster.
   # Pi-hole pods are selected via app.kubernetes.io/name (Helm chart convention);
   # using "app: pihole" silently drops traffic because no pod carries that label.
+  # Both releases: pihole-03 uses nameOverride, so its name label is pihole-03.
   - toEndpoints:
     - matchLabels:
         k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: dns
         k8s:io.kubernetes.pod.namespace: dns
-        k8s:app.kubernetes.io/name: pihole
+      matchExpressions:
+        - key: k8s:app.kubernetes.io/name
+          operator: In
+          values: [pihole, pihole-03]
     toPorts:
     - ports:
       - port: "53"
@@ -90,8 +94,11 @@ spec:
   # ICMP to pihole
   - toEndpoints:
     - matchLabels:
-        k8s:app.kubernetes.io/name: pihole
         k8s:io.kubernetes.pod.namespace: dns
+      matchExpressions:
+        - key: k8s:app.kubernetes.io/name
+          operator: In
+          values: [pihole, pihole-03]
     icmps:
     - fields:
       - type: EchoRequest
