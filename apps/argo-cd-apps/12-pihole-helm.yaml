@@ -3,6 +3,8 @@
 # order: pihole-01's Deployment is wave 0, pihole-03's Deployment is wave 1
 # (deploymentAnnotations in apps/pihole-03/helm-values.enc.yaml). ArgoCD only
 # rolls pihole-03 once pihole-01 is Healthy, also for values-only commits.
+# The values source also renders apps/pihole-01 (namespace, nebula-sync,
+# NetworkPolicy, PDB) with its own per-resource waves (-2, -1, 2).
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -31,9 +33,11 @@ spec:
         releaseName: pihole-03
         valueFiles:
           - $values/apps/pihole-03/helm-values.enc.yaml
+    # $values for both releases, and renders apps/pihole-01 (path)
     - repoURL: "example.com"
       targetRevision: HEAD
       ref: values
+      path: apps/pihole-01
   destination:
     server: "https://kubernetes.default.svc"
     namespace: dns
