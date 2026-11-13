@@ -198,6 +198,7 @@ podDnsConfig:
 #        initialDelaySeconds: 30
 #    readiness:
 #        initialDelaySeconds: 30
+# Never on the same node as pihole-03 (the other release, own name label)
 affinity:
     podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -206,7 +207,7 @@ affinity:
                     - key: app.kubernetes.io/name
                       operator: In
                       values:
-                        - pihole-02
+                        - pihole-03
               topologyKey: kubernetes.io/hostname
 # Reschedule faster on ungraceful node failure. Together with Longhorn's
 # nodeDownPodDeletionPolicy this lets the pod move off a dead node instead of
@@ -244,6 +245,6 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
-    lastmodified: "2026-11-13T16:19:17Z"
-    mac: ENC[AES256_GCM,data:+RdCHKhSZ5mfxhXM3Ou7Jxpu3I9QNtR1AwcSHlBvFJN0VGQ7WreHUF8clNaHoFHYPzAQgzKME1C7PlVYALBOle/TwmUUAunATSYsIPN7mGDJxcn17BS/A+ZzvO88a/XirNWRti0waAhMeNy778tUDrqPOKaoQW1WYVWXPPbTTa8=,iv:CjMOgkD50HYRtDvVgyMf8H2dMgOu4FNl/n0u2N7oYpU=,tag:I58yc4VbymkrdWQiEZrMwQ==,type:str]
+    lastmodified: "2026-11-13T17:44:24Z"
+    mac: ENC[AES256_GCM,data:AJsIBrOVi9xrMmLMZY4M6Aj1yg98lUn0K5f4AzU8pS4vsHvTpn1oTr6p3CoxazveJGuK1TesG0L5nGrefQ3s/qBiF2FageWiIxWqtE7pgm2S7KuN3gTaiahfpdZXvokPCNMN8rQicjAXgQmGtJvAnkhlD2Eo/DU1/za5FQH/jsE=,iv:GFuDul/EtHtoC/NaZA6M2+qhUlembe8r+C37wHxGMLE=,tag:BAIobpF2UYORnQNwayVmQw==,type:str]
     version: 3.13.3
