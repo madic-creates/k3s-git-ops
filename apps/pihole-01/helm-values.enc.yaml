@@ -43,6 +43,9 @@ resources:
         memory: 128Mi
 extraEnvVars:
     TZ: Europe/Berlin
+    # The node clock is set by the host. Setting it from a pod would need
+    # SYS_TIME, which is not namespaced and would change the whole node.
+    FTLCONF_ntp_sync_active: false
     #FTLCONF_LOCAL_IPV4: 192.168.1.232
     #FTLCONF_dns_dnssec: true
     FTLCONF_dns_bogusPriv: true
@@ -171,8 +174,7 @@ dnsmasq:
 capabilities:
     add:
         - NET_ADMIN
-        - CAP_SYS_TIME
-        - CAP_SYS_NICE
+        - SYS_NICE
 persistentVolumeClaim:
     enabled: true
     existingClaim: pihole
@@ -245,6 +247,6 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
-    lastmodified: "2026-11-13T17:44:24Z"
-    mac: ENC[AES256_GCM,data:AJsIBrOVi9xrMmLMZY4M6Aj1yg98lUn0K5f4AzU8pS4vsHvTpn1oTr6p3CoxazveJGuK1TesG0L5nGrefQ3s/qBiF2FageWiIxWqtE7pgm2S7KuN3gTaiahfpdZXvokPCNMN8rQicjAXgQmGtJvAnkhlD2Eo/DU1/za5FQH/jsE=,iv:GFuDul/EtHtoC/NaZA6M2+qhUlembe8r+C37wHxGMLE=,tag:BAIobpF2UYORnQNwayVmQw==,type:str]
+    lastmodified: "2026-11-13T18:11:38Z"
+    mac: ENC[AES256_GCM,data:qe/NYssZQ01OIr16ClY91feQ+py7J7VijoWSqe5twqeNs1fRbI/zEIZQ42gNBpjcRRI5zTRLMn9+RZXg2hAw4kDCKLjInpVnml58FL+6gDowjk1ceYP+3gT4rRsq32N92mkWxRW0qBinOxpdiazntcjGl+YDI/g0hLD8+KoIQyE=,iv:DDx5UyoD0mktqW3/dn7M6snmlNzVPynb+W4yGIq7Ssc=,tag:M0zodrhd89Qi5A/gsyUMWQ==,type:str]
     version: 3.13.3
