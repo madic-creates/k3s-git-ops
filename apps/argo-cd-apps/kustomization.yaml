@@ -16,7 +16,6 @@ resources:
   - 11-lldap.yaml
   - 12-pihole.yaml
   - 12-pihole-helm.yaml
-  - 13-pihole03.yaml
   - 13-node-feature-discovery.yaml
   - 14-external-snapshotter.yaml
   - 15-backup-rest-server.yaml
@@ -114,7 +113,6 @@ replacements:
           kind: Application
         reject:
           - name: 51-codeserver
-          - name: 13-pihole03
           - name: 12-pihole-helm
         fieldPaths:
           - spec.source.repoURL
@@ -124,14 +122,6 @@ replacements:
       - select:
           kind: Application
           name: 51-codeserver
-        fieldPaths:
-          - spec.sources.1.repoURL
-      # 13-pihole03 is a multi-source Application; only the $values source
-      # (index 1) points at this repo. The chart source (index 0) stays on the
-      # upstream github.com/madic-creates/pihole-kubernetes Git fork.
-      - select:
-          kind: Application
-          name: 13-pihole03
         fieldPaths:
           - spec.sources.1.repoURL
       - select:
