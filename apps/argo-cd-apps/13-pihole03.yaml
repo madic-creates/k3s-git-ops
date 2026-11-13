@@ -11,8 +11,9 @@ metadata:
 spec:
   project: default
   sources:
-    - repoURL: https://github.com/madic-creates/pihole-kubernetes.git
-      targetRevision: HEAD
+    # Tracks the upstream main branch on purpose (pihole-01 stays on a release)
+    - repoURL: https://github.com/MoJo2600/pihole-kubernetes.git
+      targetRevision: main
       path: charts/pihole
       helm:
         releaseName: pihole-03

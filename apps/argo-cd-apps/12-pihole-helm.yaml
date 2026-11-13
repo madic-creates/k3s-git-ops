@@ -11,9 +11,9 @@ metadata:
 spec:
   project: default
   sources:
-    - repoURL: https://github.com/madic-creates/pihole-kubernetes.git
-      targetRevision: HEAD
-      path: charts/pihole
+    - repoURL: https://mojo2600.github.io/pihole-kubernetes/
+      chart: pihole
+      targetRevision: 3.0.0-rc.2
       helm:
         releaseName: pihole
         valueFiles:

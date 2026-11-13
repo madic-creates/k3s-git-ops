@@ -20,6 +20,13 @@
       '/apps/.+/k8s\\..*\\.yaml$/',
     ],
   },
+  // ArgoCD Applications that pull a chart from an external Helm repo or git tag.
+  // 13-pihole03 tracks a branch (main) and is skipped by Renovate.
+  argocd: {
+    managerFilePatterns: [
+      '/apps/argo-cd-apps/.+-pihole.*\\.yaml$/',
+    ],
+  },
   automerge: true,
   automergeType: 'branch',
   ignoreTests: true,
@@ -39,7 +46,8 @@
         'apps/traefik/**',
         'apps/kubevip-ha/**',
         'apps/paperless-ai/**',
-        'apps/pihole/**',
+        'apps/pihole-*/**',
+        'apps/argo-cd-apps/*-pihole*.yaml',
         'apps/monitoring-checkmk-server/**',
         'apps/argo-cd-apps-helm/**',
         'apps/nvidia-device-plugin/**',
