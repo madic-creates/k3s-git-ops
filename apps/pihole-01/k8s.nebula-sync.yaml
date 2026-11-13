@@ -6,8 +6,12 @@ metadata:
   namespace: dns
   labels:
     app: nebula-sync
+  annotations:
+    # After both Pi-holes (pihole-01 wave 0, pihole-03 wave 1)
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   replicas: 1
+  revisionHistoryLimit: 3
   selector:
     matchLabels:
       app: nebula-sync

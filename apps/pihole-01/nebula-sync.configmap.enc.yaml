@@ -5,6 +5,7 @@ metadata:
     namespace: dns
     annotations:
         kustomize.config.k8s.io/needs-hash: "true"
+        argocd.argoproj.io/sync-wave: "2"
 data:
     PRIMARY: ENC[AES256_GCM,data:ZXMLT9fuvB6w+ELEj4YFvVY10pIR2YFI5pLwr4Z/tePi+wAKh1aOMV095RV4jK6lLjkLWr5DBJBrzwaWn74=,iv:FhmZwXOYObPIwkay7Tkh6mNjXf8jDJ1kS91iNW538wA=,tag:fLvSSrmhJWE3+AcRDjVZ8w==,type:str]
     #ENC[AES256_GCM,data:IIvd4CAM5A18XuLDQK2uGaydapq2OO5XbqV2lItSMnxyyPcxpjsMR9krmhbhW3oulu4B9BN0cWVV2/szpb1M7amOr2B8e/hPdUvNg/2AxHmirjRNzij21pAvjA6oQNSTVwsslqCoQH7J1qdgEhO2ihbcqt4bF50vrPPX1q+/xz6hF94MqDqQCUzFcHy7Rp3DB1kflvPmgKUMNNP4MS0mQo3x,iv:T2SbYwd29Edii7kfyFUa8MwuOtE1TnC9dcQmWZo8Wps=,tag:lCMDMejTti1xo0q4v5GWCw==,type:comment]
@@ -50,6 +51,6 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
-    lastmodified: "2026-11-13T16:05:58Z"
-    mac: ENC[AES256_GCM,data:JdL6Oj78mFaIUu7wVv3M0NgFLHqwq80ZCEbB+jIiKczrZlybAfFJCT1lkzOU9ZmDKq0o2Iz8RC3uQyEnAleabmSW30tUbnHZQ/TlIn/+lwMMCopT/v1kYlX61kKt3KejpfnJi/KV33L5vGtg2P+MB3etQyVCZ9Jipe79Wjdkq7M=,iv:yu5R4Y3Afz7uC4cLHRDfPudSb8poKkSeRrMaQhGwOwI=,tag:CFz9lCUhMEUItlopl9bskQ==,type:str]
+    lastmodified: "2026-11-13T18:03:50Z"
+    mac: ENC[AES256_GCM,data:BAB3lq4v+5IX19u2iZ+bPQYGf7I6JZ+Pwl263wd9c+tpXlXgc2NgmuA/f1l0Ws65ACTl3se6xi1eB8FrYiPJppZrXqpBjzEENtl5dLIhmK+Bt18I9qfH1Zod7zz5O54KAMvUs7itlm/6/cEO5MiSm1TLd0ZmLpnNkmoDO/FCei4=,iv:msfXdgOXRyyR0EMcwgMvy5rKpsfUNBp835BrLN7HFjs=,tag:+eoNqQZXgNkEhgeRbhV1ow==,type:str]
     version: 3.13.3

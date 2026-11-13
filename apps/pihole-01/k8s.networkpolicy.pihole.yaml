@@ -16,6 +16,9 @@ kind: NetworkPolicy
 metadata:
   name: pihole-web-restricted
   namespace: dns
+  annotations:
+    # In place before the Pi-hole pods (wave 0) start
+    argocd.argoproj.io/sync-wave: "-1"
 spec:
   podSelector:
     matchLabels:

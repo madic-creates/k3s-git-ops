@@ -10,6 +10,8 @@ kind: PodDisruptionBudget
 metadata:
   name: pihole-any
   namespace: dns
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
 spec:
   minAvailable: 1
   selector:

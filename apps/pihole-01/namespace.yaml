@@ -3,5 +3,8 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: dns
+  annotations:
+    # Before everything else in 12-pihole-helm
+    argocd.argoproj.io/sync-wave: "-2"
   labels:
     goldilocks.fairwinds.com/enabled: "true"

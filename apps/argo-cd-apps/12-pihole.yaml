@@ -4,8 +4,9 @@ kind: Application
 metadata:
   name: 12-pihole
   namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
+  # No resources finalizer: this Application is being merged into
+  # 12-pihole-helm. It owns the dns Namespace, so a cascading delete would
+  # remove both Pi-holes and their PVCs.
   annotations:
     argocd.argoproj.io/sync-wave: "12"
 spec:
