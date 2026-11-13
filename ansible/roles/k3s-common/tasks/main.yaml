@@ -59,8 +59,45 @@
     path: /etc/resolv.conf
   register: resolv_conf
 
+# With k3s_host_nameservers set, /etc/resolv.conf is a static file instead of the
+# systemd-resolved stub: resolved switches to the next server after a failure and
+# stays there, so a short Pi-hole outage would leave the node on the fallback.
+- name: "Common | Write static /etc/resolv.conf"
+  when: k3s_host_nameservers is defined
+  ansible.builtin.template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
+    owner: root
+    group: root
+    mode: "0644"
+    follow: false
+  vars:
+    nameservers: "{{ k3s_host_nameservers }}"
+    resolv_options: "{{ k3s_resolv_options | default('') }}"
+
+# nss-resolve would still send glibc lookups (getent, curl, pacman) to
+# systemd-resolved and bypass /etc/resolv.conf, so drop it from the hosts line.
+- name: "Common | Resolve hosts via /etc/resolv.conf instead of nss-resolve"
+  when: k3s_host_nameservers is defined
+  ansible.builtin.replace:
+    path: /etc/nsswitch.conf
+    regexp: '^(hosts:.*?)\s+resolve(\s+\[[^\]]*\])?'
+    replace: '\1'
+    backup: true
+
+# Nothing uses systemd-resolved any more; disabled so nothing queries 127.0.0.53.
+- name: "Common | Disable systemd-resolved"
+  when:
+    - k3s_host_nameservers is defined
+    - "'systemd-resolved.service' in ansible_facts.services"
+  ansible.builtin.systemd:
+    name: systemd-resolved.service
+    state: stopped
+    enabled: false
+
 - name: "Common | Configure systemd-resolved to manage /etc/resolv.conf"
   when:
+    - k3s_host_nameservers is not defined
     - ansible_facts.services.get('systemd-resolved.service', {}).get('status', 'disabled') == 'enabled'
     - resolv_conf.stat.exists
     - not resolv_conf.stat.islnk or resolv_conf.stat.lnk_source != '/run/systemd/resolve/stub-resolv.conf'
@@ -96,6 +133,20 @@
   with_items:
     - /etc/rancher/k3s
     - /root/.kube
+
+# Upstream servers for pods with dnsPolicy Default, i.e. CoreDNS (k3s resolv-conf).
+# CoreDNS picks a random upstream, so only list servers that may get any query.
+- name: "Common | Write resolv.conf for k3s pods"
+  when: k3s_pod_nameservers is defined
+  ansible.builtin.template:
+    src: resolv.conf.j2
+    dest: /etc/rancher/k3s/resolv.conf
+    owner: root
+    group: root
+    mode: "0644"
+  vars:
+    nameservers: "{{ k3s_pod_nameservers }}"
+    resolv_options: ""
 
 - name: "Common | Download K3s installation script"
   ansible.builtin.get_url:

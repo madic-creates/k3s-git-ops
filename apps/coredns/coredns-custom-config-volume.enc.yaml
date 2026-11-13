@@ -4,11 +4,10 @@ metadata:
     name: coredns-custom
     namespace: kube-system
 data:
-    conditional-forwarding.server: ENC[AES256_GCM,data:aRqUyJhwuHBoClgV/BVMQaQqHKESimVotvze3CmzThsIX8AAXo+sPY2SgEKo,iv:dEYceDvo5T2dUI0e5ol6SqTRF+wCi/HNCkgcZAY9W8E=,tag:15pE2yfZCa+SVXFWmOQdEg==,type:str]
+    conditional-forwarding.server: ENC[AES256_GCM,data:cpg0n6VUQE0kmr027YAID/l3TckCU+70xR/Fw+d8VVgAozQ6OfSdtT7RQeFnCYuJ4hwadpamO76T3s9NBj37dIhuQM+e1x7ytuqbiVom3dEqKUDQB2pelruJTk990H0MZ8cH9IF2g5TK7tcPhMmDMEg9FGYl6ERkkSjWKXbk07TGR5woZa43d+MEyudON4acezjWDxwP/1ZVydg=,iv:Dy7Hlii29vgtcAFizDiruI+gSLEXajByEswVBmMmRL4=,tag:vIOw4xdnSzrkVMD/Xz3lnQ==,type:str]
 sops:
     age:
-        - recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
-          enc: |
+        - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
             YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBRd1FTWEpXVkM1UlY2YVY2
             RnVWOGYybDd0S3BLZlpIRHdkY1hoTTR4TUNRClRnL1NXMzMvbTI2QWVmYXB0WVRt
@@ -16,8 +15,8 @@ sops:
             bktJaFhKZ0FRcUNrODhzdExvV01TRUEKeL9ugd42FFg68OvKnJDTK9OF9FbDhm8p
             2X8jeWSxi+QrBX9KrvGdgVD/U5VYnxCATJRd79YDGTQM6Gbl2yO5Ow==
             -----END AGE ENCRYPTED FILE-----
-        - recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
-          enc: |
+          recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+        - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
             YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBzS1BSZzdIVys5Um1nSi9T
             UnNNRzU3NFBQdnNJN3NOcXRCMUdHY0NYT2o4CjNwU3FRZEllU3paRHNUOEs0bSs1
@@ -25,7 +24,8 @@ sops:
             MUpTb3FDbGRmZ1pwYmYvb1Jub05BV1kKoglqgEulOJgfcrKdxA+EmuB2XBq65Ron
             Db4q/9WHzgGO50O2BItuJkePydgqVbLQPdizNoH42qxFYFkyWy7sjw==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-07-20T23:08:36Z"
-    mac: ENC[AES256_GCM,data:oL2/ib4zF7JUY99Cc7x+stAEKMG3KW4sqozUQNAPHpripzFV6XOzdF56CsilkZo5VPYUMtTp/KuW99OeDsb1DMTt/2MYlt9SeapEV3GFnVPd7bCHIP72/3aEa1JDBUkaIkMCS0EKvVo0tP7nT+umF+JJuQ+h4Cl6+EllKdILniU=,iv:zRX8b4TGCpHRIWVLC4Up2oGuIeaOrcd4XQiI/JMAXR8=,tag:fVxh8l57bYLJNGu9Efb5Tw==,type:str]
+          recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
-    version: 3.10.2
+    lastmodified: "2026-11-13T16:45:17Z"
+    mac: ENC[AES256_GCM,data:Z56g894cJzrE6Ksr/M46mHiKGrLTfVz9CdgFncAsmzIGr4N4FZscTWaBEpwlYLGvpyPHsT6GoYJJ32LTTjSKXlLxpHrdCW0u/TBsprU3QzTDbK6FQplEI7eKUIibyPK4ffDJNY4IwzrzXevXi/JmQ61zdVClRte4wVq4za4rNq0=,iv:D0UdJaN1UP6aq6jC+SkbFL3LFGITrWeip375/VFZZKw=,tag:JGEH9d91koDXx3RDqeNaKQ==,type:str]
+    version: 3.13.3

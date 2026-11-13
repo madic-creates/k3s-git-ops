@@ -1,0 +1,10 @@
+# Managed by Ansible (k3s-common). Do not edit by hand.
+# glibc and the Go resolver (k3s, containerd) start every query at the first
+# nameserver, so later entries are a per-query fallback and never "stick"
+# the way systemd-resolved does after a failover.
+{% for ns in nameservers %}
+nameserver {{ ns }}
+{% endfor %}
+{% if resolv_options | default('') %}
+options {{ resolv_options }}
+{% endif %}
