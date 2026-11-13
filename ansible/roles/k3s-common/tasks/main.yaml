@@ -86,14 +86,20 @@
     backup: true
 
 # Nothing uses systemd-resolved any more; disabled so nothing queries 127.0.0.53.
+# The sockets go too, otherwise a varlink client would start it again.
 - name: "Common | Disable systemd-resolved"
   when:
     - k3s_host_nameservers is defined
     - "'systemd-resolved.service' in ansible_facts.services"
   ansible.builtin.systemd:
-    name: systemd-resolved.service
+    name: "{{ item }}"
     state: stopped
     enabled: false
+  loop:
+    - systemd-resolved-varlink.socket
+    - systemd-resolved-monitor.socket
+    - systemd-resolved.service
+  failed_when: false
 
 - name: "Common | Configure systemd-resolved to manage /etc/resolv.conf"
   when:
