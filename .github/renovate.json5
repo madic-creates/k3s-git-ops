@@ -4,7 +4,22 @@
   requireConfig: 'ignored',
   extends: [
     'config:recommended',
+    // Tracks `# renovate: datasource=... depName=...` annotated *_VERSION
+    // variables in workflow files (e.g. renovate-config-validate.yaml).
+    'customManagers:githubActionsVersions',
   ],
+  labels: [
+    'dependencies',
+  ],
+  // GitHub's advisory feed only covers ecosystems GitHub tracks; OSV adds
+  // advisories for e.g. the pypi pins in requirements.txt. Security updates
+  // bypass minimumReleaseAge and are created immediately.
+  osvVulnerabilityAlerts: true,
+  vulnerabilityAlerts: {
+    addLabels: [
+      'security',
+    ],
+  },
   assignees: [
     'madic-creates',
   ],
@@ -32,6 +47,9 @@
   ignoreTests: true,
   major: {
     automerge: false,
+    addLabels: [
+      'major-update',
+    ],
   },
   minor: {
     automerge: true,

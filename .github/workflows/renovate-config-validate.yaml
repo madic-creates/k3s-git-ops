@@ -1,0 +1,41 @@
+---
+name: Validate Renovate config
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/renovate.json5"
+      - ".github/workflows/renovate-config-validate.yaml"
+  pull_request:
+    paths:
+      - ".github/renovate.json5"
+      - ".github/workflows/renovate-config-validate.yaml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Keep in sync with the Renovate version used by renovatebot/github-action,
+  # otherwise newly introduced options are reported as invalid.
+  # renovate: datasource=docker depName=ghcr.io/renovatebot/renovate
+  RENOVATE_VERSION: 44.238.3
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # --strict also fails on options that need migration, so deprecated
+      # settings surface here instead of silently in the scheduled run.
+      - name: Run renovate-config-validator
+        run: |
+          docker run --rm -v "$PWD:/repo:ro" -w /repo \
+            "ghcr.io/renovatebot/renovate:${RENOVATE_VERSION}" \
+            renovate-config-validator --strict .github/renovate.json5
