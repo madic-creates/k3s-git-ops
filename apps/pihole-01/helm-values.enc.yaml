@@ -229,6 +229,21 @@ tolerations:
 # Pod hostname = Service name: Pi-hole accepts its own hostname as Host
 # header without a password, so nebula-sync can use http://pihole-web
 hostname: ENC[AES256_GCM,data:sxkfl0r+uTx3lA==,iv:uSGFPN8YAuov5io8Jw1VDXrhJNscQ7Cjpip/NDQhpew=,tag:/9GuLtOa2hgbSc4AydmsEw==,type:str]
+# The API has no password (Authelia protects the UI), so only Traefik and
+# nebula-sync may reach the web port. DNS and DHCP stay open to every source.
+networkPolicy:
+    enabled: true
+    ingress:
+        from:
+            - namespaceSelector:
+                matchLabels:
+                    kubernetes.io/metadata.name: kube-system
+              podSelector:
+                matchLabels:
+                    app.kubernetes.io/name: traefik
+            - podSelector:
+                matchLabels:
+                    app: nebula-sync
 sops:
     age:
         - enc: |
@@ -250,6 +265,6 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
-    lastmodified: "2026-11-13T18:50:58Z"
-    mac: ENC[AES256_GCM,data:LRHeWcyhvjYZURzsmak4g0T++2mxHTm/xeWXXkMn/gNzZPSQl5TEPOozwkNrExLAOZ5qRkSUhThwByKWQUzLWICevNiJsiiQ+vU4hDSPk39lhOTHjqAlV5lTvICez2Fwk9rBgqUQXnlCL9ljkJu9l6/us8gc9fMMMVc/mrPjLSE=,iv:6aA5a+7NktRHtv6F5eA40hjzxLpSvFbaEaidl87AyqQ=,tag:kg3Z9WKEtBE1ra4j1jNVYg==,type:str]
+    lastmodified: "2026-11-14T12:43:14Z"
+    mac: ENC[AES256_GCM,data:nJ2+a2HQX1kyJ6hVutwVI9LZZYySdisTjTeSBv8lBE888yGhHNYPRGNMfLqcPQTr7EPJzD/kQuOeol4q/woAsPIyO2jLfD2i+Zon20ghFUlOpg/WTg93sQQi9nWQN8noA4tZ1DWUJEOCijMpjEKr3Z4lFIXQLBeNVkvQ3vFrMUo=,iv:7sFmPqbNxttTU1xRUkYyJ+jmRy/mEbG1USE1Ii5KrEc=,tag:MfsnCLcAziSBxESp1qDq8g==,type:str]
     version: 3.13.3

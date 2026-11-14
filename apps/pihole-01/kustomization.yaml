@@ -19,7 +19,6 @@ resources:
   #- k8s.pihole-exporter.yaml
   #- ks8.doh-service.yaml
   - k8s.nebula-sync.yaml
-  - k8s.networkpolicy.pihole.yaml
   - k8s.pdb.pihole.yaml
 
 generators:
@@ -27,4 +26,4 @@ generators:
 
 # Sync waves are set per resource: these manifests are rendered by
 # 12-pihole-helm together with both Pi-hole releases (wave 0 and 1).
-#   -2 namespace, -1 NetworkPolicy + PDB, 2 nebula-sync (after both Pi-holes)
+#   -2 namespace, -1 PDB, 2 nebula-sync (after both Pi-holes)

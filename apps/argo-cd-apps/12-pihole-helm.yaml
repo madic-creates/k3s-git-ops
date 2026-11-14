@@ -4,7 +4,7 @@
 # (deploymentAnnotations in apps/pihole-03/helm-values.enc.yaml). ArgoCD only
 # rolls pihole-03 once pihole-01 is Healthy, also for values-only commits.
 # The values source also renders apps/pihole-01 (namespace, nebula-sync,
-# NetworkPolicy, PDB) with its own per-resource waves (-2, -1, 2).
+# PDB) with its own per-resource waves (-2, -1, 2).
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -20,7 +20,7 @@ spec:
     # pihole-01: published chart release
     - repoURL: https://mojo2600.github.io/pihole-kubernetes/
       chart: pihole
-      targetRevision: 3.0.0-rc.2
+      targetRevision: 3.0.0-rc.3
       helm:
         releaseName: pihole
         valueFiles:
