@@ -6,7 +6,6 @@ namespace: dns
 resources:
   - namespace.yaml
   - k8s.dhcprelay.yaml
-  #- k8s.pihole-exporter.yaml
   - k8s.nebula-sync.yaml
   - k8s.pdb.pihole.yaml
 

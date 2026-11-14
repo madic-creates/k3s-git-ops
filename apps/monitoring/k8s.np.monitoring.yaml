@@ -383,6 +383,20 @@ spec:
     - ports:
       - port: "9641"
         protocol: TCP
+  # Allow Prometheus to scrape the pihole-exporter sidecars of both Pi-hole
+  # releases (PodMonitors from the chart), same reason as the rules above.
+  - toEndpoints:
+    - matchExpressions:
+      - key: k8s:io.kubernetes.pod.namespace
+        operator: In
+        values: [dns]
+      - key: k8s:app.kubernetes.io/name
+        operator: In
+        values: [pihole, pihole-03]
+    toPorts:
+    - ports:
+      - port: "9617"
+        protocol: TCP
   # Allow Prometheus to scrape the Open-Meteo irradiance exporter, for exactly
   # the same reason as the rule above. Omitting this does not look like a
   # policy problem from the target's side: the exporter's own ingress rule is

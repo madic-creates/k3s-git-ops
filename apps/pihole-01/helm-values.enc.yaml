@@ -229,8 +229,9 @@ tolerations:
 # Pod hostname = Service name: Pi-hole accepts its own hostname as Host
 # header without a password, so nebula-sync can use http://pihole-web
 hostname: ENC[AES256_GCM,data:sxkfl0r+uTx3lA==,iv:uSGFPN8YAuov5io8Jw1VDXrhJNscQ7Cjpip/NDQhpew=,tag:/9GuLtOa2hgbSc4AydmsEw==,type:str]
-# The API has no password (Authelia protects the UI), so only Traefik and
-# nebula-sync may reach the web port. DNS and DHCP stay open to every source.
+# The API has no password (Authelia protects the UI), so only Traefik,
+# nebula-sync and Prometheus (exporter port) may reach the web port.
+# DNS and DHCP stay open to every source.
 networkPolicy:
     enabled: true
     ingress:
@@ -244,6 +245,20 @@ networkPolicy:
             - podSelector:
                 matchLabels:
                     app: nebula-sync
+            # Metrics: the chart puts the exporter port into the same rule as the web port
+            - namespaceSelector:
+                matchLabels:
+                    kubernetes.io/metadata.name: monitoring
+              podSelector:
+                matchLabels:
+                    app.kubernetes.io/name: prometheus
+# pihole-exporter sidecar (talks to Pi-hole via the pod IP, no password needed)
+# and a PodMonitor; Prometheus egress to dns:9617 is in apps/monitoring
+monitoring:
+    sidecar:
+        enabled: true
+    podMonitor:
+        enabled: true
 sops:
     age:
         - enc: |
@@ -265,6 +280,6 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
-    lastmodified: "2026-11-14T12:49:58Z"
-    mac: ENC[AES256_GCM,data:hS3KxoxzM5r6kmsEJ3wsglGVmBBsAplDOdj1yOPthnpOXMdW0lHUe+HjnID+rb0txHVfwvB6FeGub3v2O9mdVFC2/d8Vb9DBdRyVW3lCJK/hNaIIe7Mor3zLrUU4oFVDA557fmWNamAThYVl1rUTQgFhsZ0lBReDVkb5EZQ6dfY=,iv:NyaqMtLryaZAg9gsDDhhSJNXH/Kd7jMssrIJINT+b1I=,tag:0P5o45rccnKj6UOrbiHBVw==,type:str]
+    lastmodified: "2026-11-14T13:28:56Z"
+    mac: ENC[AES256_GCM,data:3SAQUvPaA88jUW2KptHS9DTdiD8uAOdPdsdLg5NcuQHzuTiz4FFw5Dw5Q2wXx4CPiaoWvqxfcOCMekxU8VrBwyDLcHHUuWn9Cpwe+8Sd/hNETEE47Hy699WwCpY5/n0sSXxc2DRXTuu+mHumVd0E+sy7f3mOUJ5mmYHQR1F3QIM=,iv:UaO1cFCaOqeqIzQa6mGyCQkcuOBhrsrjxpQT/cnmhLs=,tag:LpGNPjOy9TybOa3i8KNYeQ==,type:str]
     version: 3.13.3
