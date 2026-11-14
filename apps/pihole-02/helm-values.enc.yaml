@@ -60,6 +60,10 @@ extraEnvVars:
     FTLCONF_dns_domain_name: neese-web.de
     FTLCONF_dhcp_rapidCommit: true
     FTLCONF_webserver_interface_boxed: false
+    # Same as pihole-01's misc.dnsmasq_lines (set in its pihole.toml). The API
+    # refuses to change this option, so a difference makes nebula-sync's config
+    # sync fail with 400; set here, the values match and the sync passes.
+    FTLCONF_misc_dnsmasq_lines: dns-forward-max=300
     #FTLCONF_MOZILLA_CANARY: true
     #FTLCONF_BLOCK_ICLOUD_PR: true
 DNS1: 127.0.0.1:5053
@@ -240,6 +244,6 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials|config)$
-    lastmodified: "2026-11-14T14:53:37Z"
-    mac: ENC[AES256_GCM,data:gjCNLj8YiLP6X0gvmvuDuN/WTUiKyknEIHhHDsgPaXzs5O4N+v9Vc6SbAKfQsYlOsEaax1TS+5KKeH6zurlERL3t0fwef31XuRelIhlpp2jV1Tj8IfViMmgxnAaZPS/Oj47Pc+7XFnD+KDc/XdkuZrvPr6rPXfWcb4ReUI60Epg=,iv:BOIYXw6RuMYY/HZ6avwrBj/K9KSamyrFw2lSpzARZ9I=,tag:LfyvyWNEDbOTClOxJ4/aVQ==,type:str]
+    lastmodified: "2026-11-14T15:01:58Z"
+    mac: ENC[AES256_GCM,data:sC0nCG2NGWS8RSx1xbRQ1dq2mG7Dikg9SNKjTinX+w3M8TlawsupPvl/qeaGBzJryZphnhDbTTdt7SWK1XHdZcA5JLkAG4hrtbngTiG2sYXUHFW1af1vGeErNN9/O3bm5I6fsk2NCftI+jC6VczlVL8g0ufjflGr3ODR8k1Y5QE=,iv:hr8+Oi3TKy/xW6S3aPdDfE3mphRNTSerfGp+uygDVj8=,tag:aNcn2CezA5b4BUVxOG0pSw==,type:str]
     version: 3.13.3
