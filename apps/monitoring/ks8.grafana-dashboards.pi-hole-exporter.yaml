@@ -2,6 +2,9 @@
 # Upstream dashboard of the exporter. It selects the data source through a
 # template variable, unlike the grafana.com export (ID 10176), whose
 # ${DS_PROMETHEUS} import input the Grafana sidecar never fills in.
+# Local change: the node variable and all queries use the job label instead
+# of hostname. The chart's exporter sidecar reports the pod IP as hostname,
+# which changes on every restart; job is dns/<release>-prometheus-exporter.
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -132,7 +135,7 @@ data:
           "targets": [
             {
               "datasource": "${datasource}",
-              "expr": "pihole_status{hostname=~'$node'}",
+              "expr": "pihole_status{job=~'$node'}",
               "instant": true,
               "interval": "",
               "legendFormat": "{{ legend }}",
@@ -206,7 +209,7 @@ data:
           "targets": [
             {
               "datasource": "${datasource}",
-              "expr": "pihole_domains_being_blocked{hostname=~'$node'}",
+              "expr": "pihole_domains_being_blocked{job=~'$node'}",
               "instant": false,
               "interval": "",
               "legendFormat": "",
@@ -280,7 +283,7 @@ data:
           "targets": [
             {
               "datasource": "${datasource}",
-              "expr": "pihole_unique_domains{hostname=~'$node'}",
+              "expr": "pihole_unique_domains{job=~'$node'}",
               "interval": "",
               "legendFormat": "",
               "refId": "A"
@@ -344,7 +347,7 @@ data:
           "targets": [
             {
               "datasource": "${datasource}",
-              "expr": "pihole_top_queries{hostname=~'$node'}",
+              "expr": "pihole_top_queries{job=~'$node'}",
               "instant": true,
               "interval": "",
               "legendFormat": "{{ domain }}",
@@ -414,7 +417,7 @@ data:
           "targets": [
             {
               "datasource": "${datasource}",
-              "expr": "pihole_reply{hostname='$node'}",
+              "expr": "pihole_reply{job=~'$node'}",
               "interval": "",
               "legendFormat": "{{ type }}",
               "refId": "A"
@@ -478,7 +481,7 @@ data:
           "targets": [
             {
               "datasource": "${datasource}",
-              "expr": "pihole_top_ads{hostname=~'$node'}",
+              "expr": "pihole_top_ads{job=~'$node'}",
               "interval": "",
               "legendFormat": "{{ domain }}",
               "refId": "A"
@@ -584,7 +587,7 @@ data:
           "targets": [
             {
               "datasource": "${datasource}",
-              "expr": "pihole_dns_queries_all_types{hostname=~'$node'}",
+              "expr": "pihole_dns_queries_all_types{job=~'$node'}",
               "interval": "",
               "legendFormat": "{{ job }}",
               "refId": "A"
@@ -655,7 +658,7 @@ data:
           "targets": [
             {
               "datasource": "${datasource}",
-              "expr": "pihole_ads_percentage_today{hostname=~'$node'}",
+              "expr": "pihole_ads_percentage_today{job=~'$node'}",
               "instant": false,
               "interval": "",
               "legendFormat": "",
@@ -762,7 +765,7 @@ data:
           "targets": [
             {
               "datasource": "${datasource}",
-              "expr": "pihole_ads_blocked_today{hostname=~'$node'}",
+              "expr": "pihole_ads_blocked_today{job=~'$node'}",
               "instant": false,
               "interval": "",
               "legendFormat": "{{ job }}",
@@ -853,14 +856,14 @@ data:
           "targets": [
             {
               "datasource": "${datasource}",
-              "expr": "pihole_queries_cached{hostname=~'$node'}",
+              "expr": "pihole_queries_cached{job=~'$node'}",
               "interval": "",
               "legendFormat": "Queries cached",
               "refId": "A"
             },
             {
               "datasource": "${datasource}",
-              "expr": "pihole_queries_forwarded{hostname=~'$node'}",
+              "expr": "pihole_queries_forwarded{job=~'$node'}",
               "interval": "",
               "legendFormat": "Queries forwarded",
               "refId": "B"
@@ -950,7 +953,7 @@ data:
           "targets": [
             {
               "datasource": "${datasource}",
-              "expr": "pihole_querytypes",
+              "expr": "pihole_querytypes{job=~'$node'}",
               "interval": "",
               "legendFormat": "{{ type }}",
               "refId": "A"
@@ -1056,7 +1059,7 @@ data:
           "targets": [
             {
               "datasource": "${datasource}",
-              "expr": "pihole_ads_percentage_today",
+              "expr": "pihole_ads_percentage_today{job=~'$node'}",
               "interval": "",
               "legendFormat": "{{ job }}",
               "refId": "A"
@@ -1144,7 +1147,7 @@ data:
           "targets": [
             {
               "datasource": "${datasource}",
-              "expr": "topk(15, pihole_top_queries)",
+              "expr": "topk(15, pihole_top_queries{job=~'$node'})",
               "instant": true,
               "interval": "30s",
               "intervalFactor": 1,
@@ -1240,7 +1243,7 @@ data:
           "targets": [
             {
               "datasource": "${datasource}",
-              "expr": "topk(15, pihole_top_ads)",
+              "expr": "topk(15, pihole_top_ads{job=~'$node'})",
               "instant": true,
               "interval": "",
               "legendFormat": "{{ domain }}",
@@ -1355,7 +1358,7 @@ data:
           "targets": [
             {
               "datasource": "${datasource}",
-              "expr": "pihole_forward_destinations{hostname=~'$node'}",
+              "expr": "pihole_forward_destinations{job=~'$node'}",
               "interval": "",
               "legendFormat": "{{ destination }}",
               "refId": "A"
@@ -1445,9 +1448,9 @@ data:
           "targets": [
             {
               "datasource": "${datasource}",
-              "expr": "pihole_unique_clients{hostname=~'$node'}",
+              "expr": "pihole_unique_clients{job=~'$node'}",
               "interval": "",
-              "legendFormat": "{{ hostname }}",
+              "legendFormat": "{{ job }}",
               "refId": "A"
             }
           ],
@@ -1482,13 +1485,13 @@ data:
               "value": "pihole.example.com"
             },
             "datasource": "${datasource}",
-            "definition": "label_values(pihole_ads_blocked_today, hostname)",
+            "definition": "label_values(pihole_ads_blocked_today, job)",
             "hide": 0,
             "includeAll": false,
             "multi": false,
             "name": "node",
             "options": [],
-            "query": "label_values(pihole_ads_blocked_today, hostname)",
+            "query": "label_values(pihole_ads_blocked_today, job)",
             "refresh": 1,
             "regex": "",
             "skipUrlSync": false,
