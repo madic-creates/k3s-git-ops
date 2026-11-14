@@ -3,21 +3,10 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: dns
 
-#helmCharts:
-#  - name: pihole
-#    repo: https://mojo2600.github.io/pihole-kubernetes/
-#    version: 2.35.0
-#    releaseName: pihole
-#    namespace: dns
-#    valuesFile: values.public.yaml
-#    additionalValuesFiles:
-#      - values.secrets.yaml
-
 resources:
   - namespace.yaml
-  #- k8s.dhcprelay.yaml
+  - k8s.dhcprelay.yaml
   #- k8s.pihole-exporter.yaml
-  #- ks8.doh-service.yaml
   - k8s.nebula-sync.yaml
   - k8s.pdb.pihole.yaml
 
@@ -26,4 +15,4 @@ generators:
 
 # Sync waves are set per resource: these manifests are rendered by
 # 12-pihole-helm together with both Pi-hole releases (wave 0 and 1).
-#   -2 namespace, -1 PDB, 2 nebula-sync (after both Pi-holes)
+#   -2 namespace, -1 PDB, 2 nebula-sync and dhcphelper (after the Pi-holes)

@@ -6,6 +6,9 @@ metadata:
     app.kubernetes.io/name: dhcphelper
   name: dhcphelper
   namespace: dns
+  annotations:
+    # After pihole-01 (wave 0): the required podAffinity needs its pod scheduled
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   selector:
     matchLabels:
@@ -43,6 +46,11 @@ spec:
             - labelSelector:
                 matchExpressions:
                   - key: app.kubernetes.io/name
+                    operator: In
+                    values:
+                      - pihole
+                  # Only the pihole-01 release serves DHCP
+                  - key: app.kubernetes.io/instance
                     operator: In
                     values:
                       - pihole
