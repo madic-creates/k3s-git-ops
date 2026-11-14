@@ -29,14 +29,14 @@ spec:
         - ports:
             - port: "8043"
               protocol: TCP
-    # Allow traffic from both Pi-hole releases (pihole-03 uses nameOverride)
+    # Allow traffic from all Pi-hole releases (pihole-02 and -03 use nameOverride)
     - fromEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: dns
           matchExpressions:
             - key: k8s:app.kubernetes.io/name
               operator: In
-              values: [pihole, pihole-03]
+              values: [pihole, pihole-02, pihole-03]
       toPorts:
         - ports:
             - port: "8043"

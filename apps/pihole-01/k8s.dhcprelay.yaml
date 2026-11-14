@@ -1,4 +1,25 @@
 ---
+# DHCP relays: one per Pi-hole that can serve DHCP. Exactly ONE of them may run
+# at a time: both relays receive every broadcast on the LAN, so two running
+# relays mean two DHCP servers answering with independent lease files.
+#
+#   dhcphelper     -> pihole-01 (192.168.1.232), 1 replica by default
+#   dhcphelper-02  -> pihole-02 (192.168.1.234), 0 replicas (standby)
+#
+# Switching is done by scaling, without a commit. 12-pihole-helm ignores
+# spec.replicas of both Deployments (ignoreDifferences + RespectIgnoreDifferences),
+# so ArgoCD neither reports nor reverts it:
+#
+#   Fail over to pihole-02:
+#     kubectl -n dns scale deploy/dhcphelper --replicas=0
+#     kubectl -n dns scale deploy/dhcphelper-02 --replicas=1
+#   Back to pihole-01:
+#     kubectl -n dns scale deploy/dhcphelper-02 --replicas=0
+#     kubectl -n dns scale deploy/dhcphelper --replicas=1
+#
+# Scale the running relay down first. pihole-02 knows pihole-01's leases from
+# nebula-sync (SYNC_GRAVITY_DHCP_LEASES, every 6 hours), so leases handed out
+# since the last sync are unknown to it.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -7,12 +28,13 @@ metadata:
   name: dhcphelper
   namespace: dns
   annotations:
-    # After pihole-01 (wave 0): the required podAffinity needs its pod scheduled
-    argocd.argoproj.io/sync-wave: "2"
+    # After the Pi-holes (waves 0-2): the required podAffinity needs their pods scheduled
+    argocd.argoproj.io/sync-wave: "3"
 spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: dhcphelper
+  # Initial value only, scaled by hand afterwards (see above)
   replicas: 1
   revisionHistoryLimit: 2
   template:
@@ -52,11 +74,67 @@ spec:
                     operator: In
                     values:
                       - pihole
-                  # Only the pihole-01 release serves DHCP
+                  # The pihole-01 release
                   - key: app.kubernetes.io/instance
                     operator: In
                     values:
                       - pihole
+              topologyKey: "kubernetes.io/hostname"
+  strategy:
+    type: Recreate
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: dhcphelper-02
+  name: dhcphelper-02
+  namespace: dns
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: dhcphelper-02
+  # Standby: initial value only, scaled by hand on failover (see above)
+  replicas: 0
+  revisionHistoryLimit: 2
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: dhcphelper-02
+    spec:
+      containers:
+        - name: dhcphelper
+          image: homeall/dhcphelper:latest@sha256:9906f6f3ca451925ca3fc41e1ce80edd4143446e39e169f4461b74178c3bdf82
+          env:
+            - name: IP
+              value: "192.168.1.234"
+            - name: TZ
+              value: "Europe/Berlin"
+          securityContext:
+            capabilities:
+              add:
+                - NET_ADMIN
+          resources:
+            limits:
+              cpu: 100m
+              memory: 32Mi
+            requests:
+              cpu: 100m
+              memory: 32Mi
+      hostNetwork: true
+      # See dhcphelper above
+      terminationGracePeriodSeconds: 1
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values:
+                      - pihole-02
               topologyKey: "kubernetes.io/hostname"
   strategy:
     type: Recreate

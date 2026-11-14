@@ -383,7 +383,7 @@ spec:
     - ports:
       - port: "9641"
         protocol: TCP
-  # Allow Prometheus to scrape the pihole-exporter sidecars of both Pi-hole
+  # Allow Prometheus to scrape the pihole-exporter sidecars of all Pi-hole
   # releases (PodMonitors from the chart), same reason as the rules above.
   - toEndpoints:
     - matchExpressions:
@@ -392,7 +392,7 @@ spec:
         values: [dns]
       - key: k8s:app.kubernetes.io/name
         operator: In
-        values: [pihole, pihole-03]
+        values: [pihole, pihole-02, pihole-03]
     toPorts:
     - ports:
       - port: "9617"

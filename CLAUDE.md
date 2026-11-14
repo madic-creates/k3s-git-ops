@@ -65,6 +65,7 @@ Exceptions where direct `kubectl` is acceptable:
 - Read-only inspection (`kubectl get`, `kubectl logs`, `kubectl describe`, `kubectl exec` for diagnostics)
 - One-off Job triggers from a managed CronJob (`kubectl create job --from=cronjob/...`) — these are not tracked by ArgoCD
 - Ephemeral debug pods (`kubectl run --rm`)
+- Scaling the DHCP relays `dns/dhcphelper` and `dns/dhcphelper-02` (`kubectl scale`) to fail DHCP over between pihole-01 and pihole-02. `12-pihole-helm` ignores their `spec.replicas`; only one of them may run at a time, see `apps/pihole-01/k8s.dhcprelay.yaml`
 - Cluster-state operations not represented in Git (e.g. forcing a pod restart via `kubectl delete pod` to pick up a new ConfigMap mounted via `subPath`)
 
 If a quick verification of a manifest change is needed before committing, do it in a scratch namespace or with a dry-run, not by mutating the live managed resource.

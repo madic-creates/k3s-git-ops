@@ -70,6 +70,7 @@ All Services of type `LoadBalancer` in the cluster (there are no plain `NodePort
 | `kube-system/traefik-vip239` (`.239`) | DaemonSet | `Local` | node01 / every node | Preserved | Yes, as above |
 | `dns/pihole-dns` + `pihole-dhcp` (`.232`) | 1 | `Local` | node03 / node03 | Preserved | Yes: per-client query log, group policies |
 | `dns/pihole-03-dns` (`.238`) | 1 | `Local` | node01 / node01 | Preserved | Yes, as above |
+| `dns/pihole-02-dns` + `pihole-02-dhcp` (`.234`) | 1 | `Local` | follows the pod | Preserved | Yes, as above (standby for pihole-01, added 2026-11-14) |
 | `minecraft/minecraft-crossplay` (`.235`) | 1 | `Local` | node04 / node04 | Preserved | Yes: bans, player IP logging |
 | `media/emby` (`.233`) | 1 | `Local` | follows the pod | Preserved | Yes: LAN vs. remote classification, remote bitrate limits, login logs |
 | `media/emby-tunnel` (NodePort only) | 1 | `Cluster` + `forwarding-mode: snat` | n/a / any node | TCP source lost; Emby uses `X-Real-IP` from the vps08 nginx | Via headers only |

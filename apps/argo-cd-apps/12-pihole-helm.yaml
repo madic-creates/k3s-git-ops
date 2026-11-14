@@ -1,10 +1,10 @@
 ---
-# Both Pi-hole releases in one Application, so a single sync handles them in
-# order: pihole-01's Deployment is wave 0, pihole-03's Deployment is wave 1
-# (deploymentAnnotations in apps/pihole-03/helm-values.enc.yaml). ArgoCD only
-# rolls pihole-03 once pihole-01 is Healthy, also for values-only commits.
+# All Pi-hole releases in one Application, so a single sync handles them in
+# order: pihole-01's Deployment is wave 0, pihole-03's wave 1 and pihole-02's
+# wave 2 (deploymentAnnotations in their helm-values.enc.yaml). ArgoCD only
+# rolls the next one once the previous is Healthy, also for values-only commits.
 # The values source also renders apps/pihole-01 (namespace, nebula-sync,
-# PDB) with its own per-resource waves (-2, -1, 2).
+# dhcphelpers, PDB) with its own per-resource waves (-2, -1, 3).
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -33,17 +33,41 @@ spec:
         releaseName: pihole-03
         valueFiles:
           - $values/apps/pihole-03/helm-values.enc.yaml
-    # $values for both releases, and renders apps/pihole-01 (path)
+    # $values for all releases, and renders apps/pihole-01 (path). Stays at
+    # index 2: the repoURL replacement in kustomization.yaml targets it.
     - repoURL: "example.com"
       targetRevision: HEAD
       ref: values
       path: apps/pihole-01
+    # pihole-02: standby for pihole-01, so the same chart version as pihole-01
+    - repoURL: https://mojo2600.github.io/pihole-kubernetes/
+      chart: pihole
+      targetRevision: 3.0.0-rc.3
+      helm:
+        releaseName: pihole-02
+        valueFiles:
+          - $values/apps/pihole-02/helm-values.enc.yaml
   destination:
     server: "https://kubernetes.default.svc"
     namespace: dns
+  # The DHCP relays are switched by scaling them (kubectl scale), not by a
+  # commit, see apps/pihole-01/k8s.dhcprelay.yaml. ArgoCD must neither show
+  # that as drift nor revert it.
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      name: dhcphelper
+      jsonPointers:
+        - /spec/replicas
+    - group: apps
+      kind: Deployment
+      name: dhcphelper-02
+      jsonPointers:
+        - /spec/replicas
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
+      - RespectIgnoreDifferences=true
     automated:
       prune: true
       selfHeal: true

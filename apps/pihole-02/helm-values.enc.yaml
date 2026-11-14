@@ -1,0 +1,245 @@
+# Standby for pihole-01: same rules, upstream and DHCP config, own IP (.234).
+# Its own name label (like pihole-03) keeps it out of pihole-01's selectors.
+nameOverride: pihole-02
+image:
+    repository: ghcr.io/pi-hole/pihole
+    #tag: 2025.11.1
+    pullPolicy: IfNotPresent
+revisionHistoryLimit: 2
+serviceDns:
+    mixedService: true
+    annotations:
+        lbipam.cilium.io/ips: 192.168.1.234
+        lbipam.cilium.io/sharing-key: pihole02dnsdhcp
+    # type LoadBalancer with externalTrafficPolicy Local
+    # requires 192.168.1.234 on the same node as the pod
+    type: LoadBalancer
+    #externalTrafficPolicy: Cluster
+    #type: ClusterIP
+serviceDhcp:
+    # Standby: only dhcphelper-02 relays here, and it runs at 0 replicas until
+    # pihole-01 fails (see apps/pihole-01/k8s.dhcprelay.yaml)
+    enabled: true
+    annotations:
+        lbipam.cilium.io/ips: 192.168.1.234
+        lbipam.cilium.io/sharing-key: pihole02dnsdhcp
+    type: LoadBalancer
+virtualHost: ENC[AES256_GCM,data:f89iAS1seT1T+bGCDXJ7ZGy79AbAbSfNjdG455CY,iv:skmtqv4mMEUH+9XVyullonlhvP2a0YPwGIttIanA9BM=,tag:thfg5BaJGSyzgX3RAx/FaQ==,type:str]
+ingress:
+    enabled: true
+    ingressClassName: traefik
+    hosts:
+        - ENC[AES256_GCM,data:raIqpH2aPgVk/xsuifyO/Vuew+TR+nDFpE17jjqO,iv:ZIWeTbUuOs/SB8PE3QejA+2bgCBH7mX2IRJvfDY2xv8=,tag:a/FeYq8tVIUm7NKRImUyWg==,type:str]
+    tls:
+        - secretName: wildcard-cloudflare-production-02
+          hosts:
+            - ENC[AES256_GCM,data:1PvE2CUPN5ttcaboLLFaxm7KU7/rSyfbtPFCZbJL,iv:ibt83EC45JJrcv9txOJbQkhu+UP41MzJd0tjG9Ebbec=,tag:Jm95DfW25LG6ij7jLgSZYg==,type:str]
+    annotations:
+        traefik.ingress.kubernetes.io/router.entrypoints: web239, websecure239
+        traefik.ingress.kubernetes.io/router.tls: "true"
+        traefik.ingress.kubernetes.io/router.middlewares: authelia-forwardauth-authelia@kubernetescrd, traefik-root-to-admin@kubernetescrd
+resources:
+    limits:
+        cpu: 1000m
+        memory: 1024Mi
+    requests:
+        cpu: 100m
+        memory: 128Mi
+extraEnvVars:
+    TZ: Europe/Berlin
+    # The node clock is set by the host. Setting it from a pod would need
+    # SYS_TIME, which is not namespaced and would change the whole node.
+    FTLCONF_ntp_sync_active: false
+    #FTLCONF_dns_dnssec: true
+    FTLCONF_dns_bogusPriv: true
+    FTLCONF_dns_domainNeeded: true
+    FTLCONF_dhcp_start: 192.168.1.50
+    FTLCONF_dhcp_end: 192.168.1.200
+    FTLCONF_dhcp_router: 192.168.1.1
+    FTLCONF_dhcp_leaseTime: 12d
+    FTLCONF_dns_domain_name: neese-web.de
+    FTLCONF_dhcp_rapidCommit: true
+    FTLCONF_webserver_interface_boxed: false
+    #FTLCONF_MOZILLA_CANARY: true
+    #FTLCONF_BLOCK_ICLOUD_PR: true
+DNS1: 127.0.0.1:5053
+# Not required because secured via authelia oidc
+admin:
+    enabled: false
+doh:
+    enabled: true
+    config: ENC[AES256_GCM,data:vr7Tk3Wo3YTUuAORQgMOtFq7h0orC83qTedkmaCpHAk3dOsg8uguPG001wnJVGTWfj2/I0q6qloIm/ISa1J5AJta11/JTDu7W9r5oeVuaRFiOT1hyYqOpsFBc30V3yAAFwphIVuLWp1OSobxq91nEoBHwubII7zVQ8wbPkkhPMkD82FN08Cw6NvbqP4Bu5lWQAywdcFY/w43UQBSDLpIKLt9/gk8T9OkZhoiMCBS1X+qXDFJhfj64ySmkkEuifSwLfDdFP1whEvzwQ5QJltuBTW3N3JzfyNn0MZy3kxV925PQBT/RjuQ0RJNucCYtASNXBc8arohfj8txpZ2as3kALD/jDLlVciuYWx8mS5ZKAL2J8SpM9nq1qUnORXZmwK6SMlsJOi6ch3c1Myqv3tX1J11FzzuQgrY9J4vpii/ZMp4w8HR0gczx59gjfbt/NEF5AFrgDrJMCSHxtNMFqD7NnFiBeSiLOav37YOyCWAtXLNc12C4q1Y6fSC+LcPUTjY9h+b694CsE3+zEUV8BJtmByVSmVLCBmE9bZZ/LrIfKLZqnYlwljh4/ehiqXdzlXENIIuMGG6lEidhkqaM3vLfgcG9zlVEJ/FCTJ/xSLBwQ8M+IEYRQNDiORs37iOioQ/TC0LA7UjoyDr0Y+uq1Ox+wZhmha1F87QiPs2iEyeHIIP9fLzQHzatz2/UjwAeAH5LLtgrkehhuQVpEBjEdYoilrl3LDHHefFr3+WlbQWDBGGmU4XHVonNbLeh7gOx/4LJIP82b17NFEZL3ChUY9GsHULcZudwVjZPOBTiyy4MyKfM8vKcu0sbDxj17TPS7pUSteDIBmc6T2x7N2IyOBJASLVx4Sq1FJvkr2EzCxftJqhzvJOXRZdedaxNHvzSFM/c3T5cR886rTyX7hdOGM+odzDBlPA+qekspSBaGMUqYHPA/9OKF8kkK8VzqA=,iv:yYhba8LKxJJTMQScGjXKVp+lxpQEUkSI/w01FMB7MNc=,tag:G4UXXGiAVNWrrks9C2jkEA==,type:str]
+dnsmasq:
+    # Contains internal wildcard domains (IPv4). The matching IPv6 (::) entries
+    # are intentionally disabled; do NOT re-add them as commented lines inside
+    # customDnsEntries below, as comments in an encrypted sequence break the
+    # SOPS MAC. Disabled IPv6 entries for reference:
+    #   - 'address=/.neese-web.de/::'
+    #   - 'address=/.k8s.neese-web.de/::'
+    #   - 'address=/.internal.neese-web.de/::'
+    customDnsEntries:
+        - ENC[AES256_GCM,data:y5nODoo4NhdPJX4CM9XWB25J58E2mcOd82HjXNI3PiDjKT0=,iv:LuPcXSGwMTT6CNlD0ZaSU2iX+N3JZJImcvkehwhuIBs=,tag:Dp4mZmlLsVb9KCHe/Vbgfg==,type:str]
+        - ENC[AES256_GCM,data:14lk13NiV3rcPtyzJCI/1wPevolNmpQW3gXBBXO5SrsumMly2fY1QA==,iv:cjJDJ42p8pPEIsX6A8NEe0cMyuMNgQvaeaiiQE/WK20=,tag:4OSmOKJGXLHSYyu/ytKzOg==,type:str]
+        - ENC[AES256_GCM,data:9ywnTDYaxtzrb6Y2BimKXept7h4KLflz1j4TJx3IRwLoupqG6UcfjFmpxOLI,iv:RUN8aiyBlWBTOt8AoDAoN6ZPNU2cn34VqQlXOYQKMh0=,tag:4gMbfswZB7sl5YMa8zuQhA==,type:str]
+        - ENC[AES256_GCM,data:O4jAxUh6HF9/pQpWREu0TIxaCcmH9tJ1nrRDacWy1TDUSh5J7UIJwhkTMyeaQKU=,iv:wwJEcfq+qSEEeKcBfw8wEWFbVVWrUMXsfQnry59Kk0k=,tag:y2hctvWRLCw/jdrgURpp+g==,type:str]
+        - ENC[AES256_GCM,data:+phkdue+gSTu32rUCk13w9mHK+8dFNzkqjcU+EQoGShurilf5XmAFJZCV3agZ86PY8AtJnxc,iv:fBpgYcy7lKIm7Kaymphr8olaC5JhMakv4zNM+jXyMzc=,tag:89Kj6iGi5Gy7ERuGAXK33A==,type:str]
+        - ENC[AES256_GCM,data:jZpO5hFiP6tpyNbbsJz+0+dmAdLqmx13fylg7nUtfbpplGEXo13v,iv:FJdkBJEpIDEABzgSUW3uD9mt/3AbKyU3gFJFuWtQeoU=,tag:A8vqu+EwJeCfjdmUeTbOgg==,type:str]
+        - ENC[AES256_GCM,data:Abkg4+BkuRyChmQhiYb7Kh9Y11nDqkTCYxkkncPxfiipNL2AF8rMimKB2bhtHQ==,iv:LaZW6gCYkt59IqNwQMhGGElYBvPUqjBvSHj/nXHM5l0=,tag:f65ve6ldIW4Fi+VoM1p/lQ==,type:str]
+        - ENC[AES256_GCM,data:xcJpeUg84CLyug27pES6MpYK5n0pZUk09ssUlGGv1H4qCCjkTQ==,iv:QNelRSMp+lDFGmC8CHEYj3sCfDkVaLLUNuKePxJqNqU=,tag:YeaCNmwry4AHv7LAZyvcsA==,type:str]
+        - ENC[AES256_GCM,data:873lbrgtyG/h5YyATTSSXQs3BLrgDgKskqt4BXzxw8fIlvGV7BJAkWNWltc=,iv:i6WkYEGc09k2xEas9Z+aqNPh1Q53YDWMYXMPL6UiSgE=,tag:Sxd7vGRv+NzdjRaP5X904g==,type:str]
+        - ENC[AES256_GCM,data:ldcM4TyVY85eRwgywwBP8Wvop/0Qtb70cuLhYvOsVLt+TR2D/3/SKFbhd4EkTg==,iv:EKdkV7hVeQQpekIe8nmmq9p/R82+wfXXH+PBac9CH+0=,tag:y+WhtbnBIYzDvQGFh5d2Vg==,type:str]
+        - ENC[AES256_GCM,data:H0czT/6CXwQ/cHLXBuf29wn1JMZ+Niaf8c4JxUmRRvmOrBkIuuYNyFyjtRfAvTjFwxq5Iow=,iv:tju7HpueIHOiNvLw44g8XqFTJ7qsm5T5SKV+WhxIz/8=,tag:wh63JCIU9IAYWxwL/0aEFQ==,type:str]
+        - ENC[AES256_GCM,data:9/SwnY3cZL9MHIyIdapGYk1Vwup7jou5JEBEwBqkQSi1EgOoZ/N6FyZIw8XJoHX5,iv:ZBcYk/EuQ03odgeKRxVBVHZgAL1YGiweWpmutb24ioY=,tag:UONQ8jLhU9zRSA7kTO8kYw==,type:str]
+        - ENC[AES256_GCM,data:xdE+fUCaOqv31FwsDrEcT22uY6Svwdb24E75zHvyxJw5rzfVceBdIdGCNCUbrkeVCDoASwfnsw==,iv:KLEtpVFzH8vfl+IlCTGpaeMuNVlJlBJZoaYzUMjJBho=,tag:iHHegZRK+lLYfoPb3M/05A==,type:str]
+    customSettings:
+        - dhcp-option=252,"\n"
+        - dhcp-option=vendor:MSFT,2,1i
+        # DNS
+        # pihole-01 and its standby pihole-02: same rules, so clients can fail over
+        - dhcp-option=6,192.168.1.232,192.168.1.234
+        # NTP
+        - dhcp-option=42,192.168.1.1
+        # Server-ID = relay address (dhcphelper node IP) instead of the pod IP,
+        # so unicast renewals reach the relay instead of an unroutable pod IP
+        - dhcp-proxy
+        - dhcp-range=::,ra-names
+        - server=/geekbundle.org/192.168.1.1
+        - ptr-record=1.1.168.192.in-addr.arpa.,"despair"
+        # TFTP Boot
+        - dhcp-match=set:ipxe,175
+        - dhcp-boot=tag:!ipxe,ipxe.pxe,dns01,192.168.1.45
+        - dhcp-match=set:efi-x86_64,option:client-arch,7
+        - dhcp-boot=tag:efi-x86_64,ipxe.efi,dns01,192.168.1.45
+        - dhcp-boot=http://192.168.1.45:8043/boot.ipxe
+        # DHCP Reservation with different dns server
+        - dhcp-option=net:customdns,6,9.9.9.9,1.1.1.1
+        - dhcp-option=net:googledns,6,8.8.8.8
+        - dhcp-host=net:customdns,EC:79:49:51:64:16,192.168.1.187,ipl06002-lan
+        - dhcp-host=net:customdns,F4:4E:E3:2C:C2:B6,192.168.1.56,ipl06002-wlan
+        #- dhcp-host=net:googledns,20:10:B1:59:EF:E5,192.168.1.131,firetv
+        # DHCP Reservation with unrestricted youtube dns server
+        - dhcp-option=net:youtubedns,6,192.168.1.238
+        - dhcp-host=net:youtubedns,AC:3E:B1:A6:AF:D6,Pixel-7-Pro
+        - dhcp-host=net:youtubedns,E0:80:6B:37:56:83,Redmi-Note-11
+        - dhcp-host=net:youtubedns,74:58:F3:E7:3A:04,Fire-Cube-lan
+        - dhcp-host=net:youtubedns,48:43:DD:6E:CC:2D,Fire-Cube-wlan
+        - dhcp-host=net:youtubedns,F0:27:2D:D7:41:97,Fire-Guest
+        - dhcp-host=net:youtubedns,00:e0:4c:7b:c2:98,Sanctuary
+        - dhcp-host=net:youtubedns,8c:8c:aa:32:ce:7a,IONB000201752-LAN
+        - dhcp-host=net:youtubedns,4e:80:5d:ae:a9:dd,IONB000201752-WLAN
+        # HTTP Boot
+        #- dhcp-match=set:efi-x86_64_http,option:vendor-class-identifier,0,10
+        #- dhcp-boot=tag:efi-x86_64_http,"http://192.168.1.45:8043/ipxe.efi"
+        #- dhcp-boot=tag:!ipxe,"http://192.168.1.45:8043/ipxe.pxe"
+    #customCnameEntries:
+    #- cname=www.youtube.com,restrict.youtube.com
+    #- cname=m.youtube.com,restrict.youtube.com
+    #- cname=youtubei.googleapis.com,restrict.youtube.com
+    #- cname=youtube.googleapis.com,restrict.youtube.com
+    #- cname=www.youtube-nocookie.com,restrict.youtube.com
+# Not required. We're running a dhcp relay via host network.
+#hostNetwork: "true"
+# capabilities is deprecated in the chart; containerSecurityContext replaces it
+containerSecurityContext:
+    privileged: false
+    capabilities:
+        add:
+            - NET_ADMIN
+            - SYS_NICE
+persistentVolumeClaim:
+    enabled: true
+    size: 5Gi
+    # helm.sh/resource-policy: keep, ArgoCD then leaves the PVC on app deletion
+    keep: true
+podDnsConfig:
+    enabled: true
+    policy: None
+    nameservers:
+        - 1.1.1.1
+        - 127.0.0.1
+# Never on the same node as pihole-01 (a node failure must not take both) or
+# pihole-03. Three Pi-holes on four nodes still fit with one node down.
+affinity:
+    podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - pihole
+                        - pihole-03
+              topologyKey: kubernetes.io/hostname
+# Reschedule faster on ungraceful node failure. Together with Longhorn's
+# nodeDownPodDeletionPolicy this lets the pod move off a dead node instead of
+# waiting for the default 300s unreachable/not-ready toleration.
+tolerations:
+    - key: node.kubernetes.io/unreachable
+      operator: Exists
+      effect: NoExecute
+      tolerationSeconds: 30
+    - key: node.kubernetes.io/not-ready
+      operator: Exists
+      effect: NoExecute
+      tolerationSeconds: 30
+# Pod hostname = Service name: Pi-hole accepts its own hostname as Host
+# header without a password, so nebula-sync can use http://pihole-02-web
+hostname: ENC[AES256_GCM,data:CjhZFo1jr5gOsggtCg==,iv:9JbC2wU/dt3xlqA/kn3LdsochxoJgH8rjGAX20NdzOY=,tag:8hc9yf8w/8NLvu/mWqUFew==,type:str]
+# Roll out only after pihole-01 (wave 0) and pihole-03 (wave 1) are Healthy,
+# so at most one Pi-hole restarts at a time, see 12-pihole-helm
+deploymentAnnotations:
+    argocd.argoproj.io/sync-wave: "2"
+# The API has no password (Authelia protects the UI), so only Traefik,
+# nebula-sync and Prometheus (exporter port) may reach the web port.
+# DNS and DHCP stay open to every source.
+networkPolicy:
+    enabled: true
+    ingress:
+        from:
+            - namespaceSelector:
+                matchLabels:
+                    kubernetes.io/metadata.name: kube-system
+              podSelector:
+                matchLabels:
+                    app.kubernetes.io/name: traefik
+            - podSelector:
+                matchLabels:
+                    app: nebula-sync
+            # Metrics: the chart puts the exporter port into the same rule as the web port
+            - namespaceSelector:
+                matchLabels:
+                    kubernetes.io/metadata.name: monitoring
+              podSelector:
+                matchLabels:
+                    app.kubernetes.io/name: prometheus
+# pihole-exporter sidecar (talks to Pi-hole via the pod IP, no password needed)
+# and a PodMonitor; Prometheus egress to dns:9617 is in apps/monitoring
+monitoring:
+    sidecar:
+        enabled: true
+    podMonitor:
+        enabled: true
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBBVEs4TVVwaTF5VXlhUE0r
+            STZ6V0ZyMzJibVFMZnQyVkU1aklra0xUaWpjCmw3c1JXWCtaZDM1cXo5TEh5aFNy
+            R0FDR1FTMHIrNlg5RmJVRzM0d0l1Z3MKLS0tIHRUcWJDRGVsUUtXeElrenpheXVH
+            cDFVRndRc3Ura1JrVG5IVjlWdm9WWWsKsoEQPbmI8Lz3q5GVNU8R2u8Ulk5DJj7d
+            o4Q3RTQ7LLFTPiybwqIe4vY85xu7FadY93UjN0Y98cgGrPWDojYsDA==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAxQ0NGRXNESUlVeXFNbHZ0
+            TVpyd3BaQ0tlVFNRVXZUeldPTWpKenBTZERBClBGZmcrczhSem5sOWc3UTZDdEEw
+            MFRrQVJwcVlmemRkbzJwZVRPd1hDdFkKLS0tIGVYU09teDIwTksvUHNVZkgxSmhZ
+            SFBsNWc3aFNmVGNuakU3QXdCVmRhdEUKaXVq0cSEu9FthW3CUm6z1ABXQVFT3ndH
+            J71z/yogQ13jn5tUKy+XG6DM2aecM2gznSL30cGstcJjWPA54I2HTw==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials|config)$
+    lastmodified: "2026-11-14T14:53:37Z"
+    mac: ENC[AES256_GCM,data:gjCNLj8YiLP6X0gvmvuDuN/WTUiKyknEIHhHDsgPaXzs5O4N+v9Vc6SbAKfQsYlOsEaax1TS+5KKeH6zurlERL3t0fwef31XuRelIhlpp2jV1Tj8IfViMmgxnAaZPS/Oj47Pc+7XFnD+KDc/XdkuZrvPr6rPXfWcb4ReUI60Epg=,iv:BOIYXw6RuMYY/HZ6avwrBj/K9KSamyrFw2lSpzARZ9I=,tag:LfyvyWNEDbOTClOxJ4/aVQ==,type:str]
+    version: 3.13.3

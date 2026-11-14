@@ -4,7 +4,7 @@ metadata:
     name: coredns-custom
     namespace: kube-system
 data:
-    conditional-forwarding.server: ENC[AES256_GCM,data:cpg0n6VUQE0kmr027YAID/l3TckCU+70xR/Fw+d8VVgAozQ6OfSdtT7RQeFnCYuJ4hwadpamO76T3s9NBj37dIhuQM+e1x7ytuqbiVom3dEqKUDQB2pelruJTk990H0MZ8cH9IF2g5TK7tcPhMmDMEg9FGYl6ERkkSjWKXbk07TGR5woZa43d+MEyudON4acezjWDxwP/1ZVydg=,iv:Dy7Hlii29vgtcAFizDiruI+gSLEXajByEswVBmMmRL4=,tag:vIOw4xdnSzrkVMD/Xz3lnQ==,type:str]
+    conditional-forwarding.server: ENC[AES256_GCM,data:bV2YGx44uFJZfGroEBbyYSfTdvFYh+FysoWlwDR80WnEkKH+RKK886CvMU4OtpKi1JBbr1B9ygB5zzJRy7nF4OthxpOF5d+Mf6cjRNOawtkpHcAEim4erTGaVJtQpUiHoCjtBCLti086n8t9gNdp6aQFdErcUUODj6jG0LR4UgN3iCTFRxDd6FK96eUSD8811FH6AlzMDtEEoRxeoiBD7NAmVAQW8haAunXTSik=,iv:1ejNac9/HvkzyBVHpyqTO7h9sja18WvYT4gAUslXE10=,tag:L29Y2NMCfG9Boo0Yb9miDw==,type:str]
 sops:
     age:
         - enc: |
@@ -26,6 +26,6 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash)$
-    lastmodified: "2026-11-13T16:45:17Z"
-    mac: ENC[AES256_GCM,data:Z56g894cJzrE6Ksr/M46mHiKGrLTfVz9CdgFncAsmzIGr4N4FZscTWaBEpwlYLGvpyPHsT6GoYJJ32LTTjSKXlLxpHrdCW0u/TBsprU3QzTDbK6FQplEI7eKUIibyPK4ffDJNY4IwzrzXevXi/JmQ61zdVClRte4wVq4za4rNq0=,iv:D0UdJaN1UP6aq6jC+SkbFL3LFGITrWeip375/VFZZKw=,tag:JGEH9d91koDXx3RDqeNaKQ==,type:str]
+    lastmodified: "2026-11-14T14:48:41Z"
+    mac: ENC[AES256_GCM,data:6Qms0UOj3pauoL3qkDo6Jbl6yer86V5w2MItGRHASHBLfbN1F1oYCCUbStEPQt0tyCy6Rnmn77hE3C/L9heuQvBTloXRMjycCaZWI+iJguggZT70f0jImWB4z5TATjVRXgwoM8Mxg1Cfl9LoCKuzm2MBiqWSvq2Y/dYrDkI9b9I=,iv:uM6BkaI9BB4QZpGXoZpq/ZEE0nWkPbTQXRCPgWBao0Y=,tag:Xw0ihfo22kukX6Af9D20CQ==,type:str]
     version: 3.13.3

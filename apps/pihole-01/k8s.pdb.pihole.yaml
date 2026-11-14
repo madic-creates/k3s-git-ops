@@ -1,10 +1,12 @@
 ---
-# Keep at least one of the two Pi-holes running during voluntary disruptions
-# (node drains, e.g. by system-upgrade-controller). Spans both Helm releases,
-# which carry different app.kubernetes.io/name labels (pihole-03 uses
-# nameOverride). The chart's own pdb.yaml only covers a single release, which
-# with one replica would block every drain.
-# Note: while one Pi-hole is down, draining the other one's node waits.
+# Keep at least two of the three Pi-holes running during voluntary disruptions
+# (node drains, e.g. by system-upgrade-controller), so pihole-01 and its
+# standby pihole-02 are never evicted together. Spans all Helm releases, which
+# carry different app.kubernetes.io/name labels (pihole-02 and pihole-03 use
+# nameOverride). One PDB only: the eviction API refuses pods covered by more
+# than one. The chart's own pdb.yaml only covers a single release, which with
+# one replica would block every drain.
+# Note: while one Pi-hole is down, drains of the other Pi-holes' nodes wait.
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
@@ -13,9 +15,9 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "-1"
 spec:
-  minAvailable: 1
+  minAvailable: 2
   selector:
     matchExpressions:
       - key: app.kubernetes.io/name
         operator: In
-        values: [pihole, pihole-03]
+        values: [pihole, pihole-02, pihole-03]

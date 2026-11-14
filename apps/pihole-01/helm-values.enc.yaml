@@ -20,16 +20,16 @@ serviceDhcp:
         lbipam.cilium.io/ips: 192.168.1.232
         lbipam.cilium.io/sharing-key: piholednsdhcp
     type: LoadBalancer
-virtualHost: ENC[AES256_GCM,data:/HWWWwQb7E8ZZVLmFbWYH99QJKiOerYs2ltlGQ==,iv:9aiBNvUR5R6tscppQ+rYw6LPXVUoprClQ1XfpDugWLo=,tag:hfENx22aPMVNcYYf+IDIxw==,type:str]
+virtualHost: ENC[AES256_GCM,data:jUEQ55/t0lLK2ofjVTlw+NCyjwyQ+voVGKhkBg==,iv:GNzeZoXQhxCWIcxTl++jgjg4GUrNaP0FsFsRbwIrvZA=,tag:8sq7mrMW6dn31/Ur57orHg==,type:str]
 ingress:
     enabled: true
     ingressClassName: traefik
     hosts:
-        - ENC[AES256_GCM,data:rGFYbD6OxXD2oq1pQftYgmaq8Mej2+pNExoMTg==,iv:WvbKFV4LeZzQ1anqN9yQs73QIGWgSVoss/cih4Hjm8k=,tag:jURMrqi26dVlOEVhLcIHgA==,type:str]
+        - ENC[AES256_GCM,data:DAylykjRZNMf6Ih65l/XiY73t80qmWnu9UHQ6w==,iv:/CTPyHY5+IXxiBdbNBGGDxZ7pj+PN+uesYiyLFk8xUc=,tag:lkje8UjQ/ig67osIr4Ttpw==,type:str]
     tls:
         - secretName: wildcard-cloudflare-production-02
           hosts:
-            - ENC[AES256_GCM,data:LK3BmBXqLXfQhzmPNHJ0DlaPvpUxu9LatFAN9A==,iv:lapY7H4ZkAEeWM8buGubi/AU7/sZb/sUaXkMEKgxY+A=,tag:mhLbw+dEvYqWhzPGg0vcFw==,type:str]
+            - ENC[AES256_GCM,data:vpx6dkhnqvgT9CDPqEkd5ILnfRwA7sKIHDw1xA==,iv:GSq/fChh+EL8xRG3V9eg90xeN0lRFebDC71UT4kCtEM=,tag:vNR413lyxTt6sD/OQsWZJw==,type:str]
     annotations:
         traefik.ingress.kubernetes.io/router.entrypoints: web239, websecure239
         traefik.ingress.kubernetes.io/router.tls: "true"
@@ -65,42 +65,7 @@ admin:
     enabled: false
 doh:
     enabled: true
-    config: |
-        listen_addresses = ['0.0.0.0:5053']
-        server_names = ['nextdns-135128']
-        require_dnssec = false
-        require_nolog = true
-        require_nofilter = true
-        dnscrypt_servers = true
-        doh_servers = true
-        odoh_servers = false
-        ipv6_servers = false
-        bootstrap_resolvers = ['9.9.9.9:53', '1.1.1.1:53']
-        timeout = 5000
-        keepalive = 30
-        log_level = 2
-        use_syslog = false
-        cache = true
-        cache_size = 4096
-        cache_min_ttl = 2400
-        cache_max_ttl = 86400
-        cache_neg_min_ttl = 60
-        cache_neg_max_ttl = 600
-
-        [sources]
-
-        [static]
-          [static.'nextdns-135128']
-            # https://dns.nextdns.io/135128/pihole03
-            # https://dnscrypt.info/stamps/
-            stamp = 'sdns://AgcAAAAAAAAADjIxNy4xNDYuMjIuMTYzAA5kbnMubmV4dGRucy5pbxAvMTM1MTI4L3BpaG9sZTAzAA'
-#doh:
-#    enabled: true
-#    pullPolicy: IfNotPresent
-#    repository: crazymax/cloudflared
-#    tag: latest
-#    envVars:
-#        TUNNEL_DNS_UPSTREAM: https://dns.nextdns.io/135128/pihole
+    config: ENC[AES256_GCM,data:QonR7kO7r3lQrJgp1FdJ21U8i1TqA194Bynd870LC5VdpCD1VGS22zdyZHqzWYixmiw05rQGECgv1NubJQYX7pGy1jGTutig399YVzpH+gfhbbC/uW3hf/5LypmGINO0tSkvtKNMyZvOhgdrkmSBIVcmU7Q1foJrKLWib37iLi+Wcj+M4rynTaDrlJs4S6HPaXl+bwFTg9Ot/R4Uf2/3qdv6AMmiIXG8iBBsjlZ27r+IupR01OpTG2j/O0YFInSqSfXaR3+SbNRXWkmR8vuzdbQsUctohO7IuOTr0Wh6GJP5PADpzEh2/8E5dpAgehvlkmSoWAKVrhMG7ZXGA1yUdSkG79juDWCe+fODjdVtCffKK7Z1kv7pMeSQw8VpJtMG9RiNPDVEWaqX2zrFigyZwDWAcVGBay/JVG5T1lRMQAXzr5rbM80ZnRJDrN1LklcEnuaUtjFKY+9xHlkla9RFWhdPzXRLdpVzyV7CaCcpKRLbTaIT7grzydpnC3hHQ6EN8ImdWT5N/w1myafN6wyELcPDQeJ8T8CjWQ+st7bNpOvlENIgevTij+wcyCVzOVsiUUWOWtMUPNZ+4KNnMURgkjoY8w6uMX1LMW31SzZDdyVcKzDLIT+9nf4Jm3FYOqDPC4KyAtqVVbQZT/ppJh+LfcobUygKm6ZYuy4DWfSWJQDSgBIgsRADzQXEHt6fN24SymsMiNmmvpJocHUOj8ZHEgEye4zvE99kR4RhFPLaL6e43f9Fw2tl5pe/s//BoOf0CPlnwvf6qm/Q+aene1eZeJE3EKwSsJkCbOlP2dm752mUJuObE3w9psDaGDflgmMAooYzHGX37eBl3NgMkpB7mwtACQwoYttvIH8nmGOde5EVVk1af04SENuFrwwGzwHWcZQqFYceA3eBp3SlfQBCEw==,iv:jk/LdUQ9Xk9wYfyTKmPrA8I1qOQbnN5vXhTc2AVYcPU=,tag:qLhhtdkmtiWmEzFwd+Naow==,type:str]
 dnsmasq:
     # Contains internal wildcard domains (IPv4). The matching IPv6 (::) entries
     # are intentionally disabled; do NOT re-add them as commented lines inside
@@ -110,25 +75,25 @@ dnsmasq:
     #   - 'address=/.k8s.neese-web.de/::'
     #   - 'address=/.internal.neese-web.de/::'
     customDnsEntries:
-        - ENC[AES256_GCM,data:cgpCNUMEMBY2eQZMPi9Mq43FRxdlGlzhlUuAn1Q2yFvgTZc=,iv:XCzpz5dOw9drBA4dLqKOKR0xZEOGdee2wgpwZTUnsng=,tag:+25k2Wo16yARRC0+qEvIfg==,type:str]
-        - ENC[AES256_GCM,data:nBqIKRvxA9bsch36doPYKkL9aDV8KEs5VaCEXGqqPGo9fZ4/2WmQ2A==,iv:D/x7SByB7Rx8ur+JdCoLzHcNylkgDI8etawXJTDSI6Y=,tag:+LcJkiqKji12jpws/Ub7uA==,type:str]
-        - ENC[AES256_GCM,data:sVI4N245nAe9BdjxNFaXFl30x7tPoqnv2d5JS3w0eeuP7ZtEpOiqHAr5L7OR,iv:1tdJx/hO49WoU5MXofi3nhwG5TfaqjKZUJWmJ9D4QWI=,tag:Ztf+cg0cTA3DpTe1hmCUpw==,type:str]
-        - ENC[AES256_GCM,data:d5UCg0FKrcH8ZAQRxzp/WPRD1DfY5E8kliLkbSg6VR+0+eZgpARh5UUkdT8eGEc=,iv:sNWhp9+iD0/NhkzS7SJ2i727tNb5p4lnr17wOmSPGsA=,tag:yQ5ozIvR+mQkBe/Pne600g==,type:str]
-        - ENC[AES256_GCM,data:D0e8u1gP48Xdxk96pN0jTpXO1jK6Vjbl70gWHAd8HNJZCcHSOC34kIx01ahbnEXYIBOX+5W9,iv:4dFNb+0Tlc93KPb8uBqxhlQcH5ALfnRT4PyfBaX3Jfw=,tag:U9Cld0kJKC5tOTe8abBcrw==,type:str]
-        - ENC[AES256_GCM,data:OnbwQHjKISTZwZ3+7KyHDRGEm/sQFEqg/unPScP8j9kokrcZV7jj,iv:rZukqnfG94xchJcgUZ81SwdzVoL8MmV93KWC3U51xEU=,tag:JPW1CTKGy5F/VVK2nVVbiQ==,type:str]
-        - ENC[AES256_GCM,data:WwXV2mtO5E62kfgwi4SDkEN99AfKUlzU6oAl3wxyuS7y4YnQXeHtucCsLkGwMg==,iv:+vwlPtHaKLw+5lCrQTbMbeiDqgzVFlYovrjX738G6qg=,tag:7i5CW1c73wKpKopdg9PkGQ==,type:str]
-        - ENC[AES256_GCM,data:qV5wPBM1xCrwUX9smCw0Dvb+AMgWzzi4qzZTverLOJj47m0rNg==,iv:XFSgGZvq4gBZm3k2JXEAaoEzMp8bfhOYejJ4Zond4Uc=,tag:Jp2ClOlWF8zRtvd7YtdVlA==,type:str]
-        - ENC[AES256_GCM,data:5Na93Mq9OgdG4scUuyayuZZj6rg0VZA2gyKuNiaIITi3BaW2zBuvuPpiXaw=,iv:kn5YUB2Oy5zdKUfnCtfBlEtLSCCVkg6Hjt667n+h/CI=,tag:4rZlAHukIluouA+tY857mA==,type:str]
-        - ENC[AES256_GCM,data:+IHnekryQFZHmOBo9TiRFJ5pg+h/EmBxr7eCUjQxLPRtj2dFj/yFM7cv1ajvBQ==,iv:zn6vcoyzl+4LAMRoKSNoscY+pFwqinusg5YPnF0Ptck=,tag:P8O1SayzQ/DCeeMVr0k3Rg==,type:str]
-        - ENC[AES256_GCM,data:HKZL8LJ2xaavbM/6uzAzwwnDt5/wdLLfYiG+B405RCGwNJfqcD2V4vTEOYOQnqHCH/t9M9Q=,iv:WAfZSpGjDRE9sRKz5gbojl9JAUQb8A0eWLWTS+uBMEQ=,tag:ingORK6WQ9N6y1cln7/o4Q==,type:str]
-        - ENC[AES256_GCM,data:tiP22aVZNl78zL71VThmJ1EhVMFyG3VKdEkbNEIiimZPqzoIS0w0zKIAcl5xX8bG,iv:kgwgSt05cOt/sY3rZN5Orpmpk33cqINvr6V0BdkuVfU=,tag:VrQaNx58g+SBsXNp/XIHkg==,type:str]
-        - ENC[AES256_GCM,data:yFIcn3fdlx0vR7UqvyKpI8o1i3BpVN6MeDaxTb8hNfHQ3sclmi8yN198mdD3BzTFsJjPU7XSEA==,iv:Rli1JfmhGaCdlyCS0NR/f901yKbUK5NXcH1GCGjWgB4=,tag:f079FmjGjwKckWibrZdzXQ==,type:str]
+        - ENC[AES256_GCM,data:gJhSIDZAu44MBRMj1s53siGQax22Vd1CjpGwZUscMl9730Y=,iv:kNApWqdUhIKLcOh6IomCIzmZGoom5EZP4nNWvopJTPc=,tag:EUiW42dU8OD+WiJnX7hnnA==,type:str]
+        - ENC[AES256_GCM,data:BaK0AuDz+zmGJg1GruKHzCcAmHRJYikGXfVd8DoPsA0mCd+9Qi2ung==,iv:p87wX+8iaafHa7TxoBWRUFIXHE2qSP8aVIgGlX9cho4=,tag:E5VECoXOkrTwaUhJNMitSA==,type:str]
+        - ENC[AES256_GCM,data:5JCy77w9ayaTj/8bWKM9wYaUcA0OH883IhMruJnxoC6BAn2sKVmWjUlqOSj1,iv:XrYL2h6xjGW15KwOJfh//uAX3m5BO9+0IXPdZoxYSQw=,tag:uj24vs5KZQuDwzm94fJAXA==,type:str]
+        - ENC[AES256_GCM,data:KkSSE/TAKp6pKAG4CahjpsSOT7jxey/BhvDI2L+9rYkeGa1qoF9aZcSgFm0us7g=,iv:U4MhoW4dvsX1dml0oTGvVj2s8TRmugHXF12+ELc/jRw=,tag:A2r2Dmjvbt6TRFJKx9g/hA==,type:str]
+        - ENC[AES256_GCM,data:37EWNWEI7Huqee5N8/5mfuf+WnaSzV33m06HtpXOXW7e59Sv/Bi33skqmJUEWOxzNHAcQD3C,iv:wtZ3XD3RahgzX/9gJR6j+YIJIU1LBcJE59x6B94l88w=,tag:CWotCHj67IrsJLmTQwcFcA==,type:str]
+        - ENC[AES256_GCM,data:8hwoiJaBm2zbUlWI5Qz4wXBKpS75pdXDav7t8RkKU/55/pKTwzwV,iv:VMaU+OBKOIGabppxw56/QuBIaQuHmKE4khSn3aJPJPM=,tag:Cy0ew64qUQifJTMrN0m0BQ==,type:str]
+        - ENC[AES256_GCM,data:vN65Gnl7PAGiBQERW2haTW1xOf5Un23bsZ0JarehaXjkrkXZSl8RQsha4U4QhQ==,iv:UfwiqQ1HCtm/J+vCY+PVfN/1MyvlnntsQz1csFuOVmw=,tag:4YFyJir8nxtUXARj30WXuA==,type:str]
+        - ENC[AES256_GCM,data:BR6qUx7lJ/+ZLOnY2ahqrAbhsXSGfazwLUJ7L4ATjMvKnfZ8Sg==,iv:xGU7EZWiUdxLOtjeGEcrxfYBw7ceZSf/ejjUvaOTDrs=,tag:Ban8Lzu9A6dfBIlqI4d4Rg==,type:str]
+        - ENC[AES256_GCM,data:AP/yzdjwY0VIAV+lDe6bAHlI22/Hd6adwEWt+ITPiNUitD03jFJP4gVV8cY=,iv:FEKY7agf6KPgP3xKeD0/Hj00ECI7oKK4eMAvKoii6Xg=,tag:P5zsesyYmDGHAlvNsTHhow==,type:str]
+        - ENC[AES256_GCM,data:4XB0Ky5LGPrn8ZpdbHmpbHftNCJlEfTe5Ds9JwjTwfUDNCUoxxf1HE8tpH7gFQ==,iv:Ey8Y/SKIeyJ1fmrNlXlyc2t0h/N6HGLIhQrHXMkM6lA=,tag:LoGJdaOOJ5XnnCZxv5McFA==,type:str]
+        - ENC[AES256_GCM,data:jwJ9M3sw6AREG3C2ooLdvSVhHZ+9aEAkA4A0oAZN9k52p5MAU+bZ/UflQ5mx0q4vm38di1Q=,iv:SgghKnjWN9PyZebgLmBN33Jg1XwXvVAjfwMOec0jSZM=,tag:HY5GsfSXl2pn72YSqLtG+w==,type:str]
+        - ENC[AES256_GCM,data:UuXnoo0FpoQEaa+38syLwEERvbUucqXDLp8zQ6CJBadsRw2c6YYRKQ/za98RPnJ9,iv:EGAZOwc/ztr1ZwrJ3XXJnX1JqbzB6vh7rpkNzS5Tj1E=,tag:mrHnqDiYbki/tYC2YSwFWw==,type:str]
+        - ENC[AES256_GCM,data:1QrMRJCX+wZzIReaqzbYeS4BDAc1/8SfIRo1xcLY8kO91ssaLYPZhkFKGPM227TYRBkk39e9kg==,iv:NKFj5ycx5byvwNIjwwqmCXekP0cGrDwp1nNq8P7VSzw=,tag:TZyDjY9ua2g8JkMTvNW5gg==,type:str]
     customSettings:
         - dhcp-option=252,"\n"
         - dhcp-option=vendor:MSFT,2,1i
         # DNS
-        #- dhcp-option=6,192.168.1.232,192.168.1.1
-        - dhcp-option=6,192.168.1.232
+        # pihole-01 and its standby pihole-02: same rules, so clients can fail over
+        - dhcp-option=6,192.168.1.232,192.168.1.234
         # NTP
         - dhcp-option=42,192.168.1.1
         # Server-ID = relay address (dhcphelper node IP) instead of the pod IP,
@@ -203,7 +168,8 @@ podDnsConfig:
 #        initialDelaySeconds: 30
 #    readiness:
 #        initialDelaySeconds: 30
-# Never on the same node as pihole-03 (the other release, own name label)
+# Never on the same node as pihole-02 (its standby: a node failure must not
+# take both) or pihole-03. Both use nameOverride, so their own name labels.
 affinity:
     podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -212,6 +178,7 @@ affinity:
                     - key: app.kubernetes.io/name
                       operator: In
                       values:
+                        - pihole-02
                         - pihole-03
               topologyKey: kubernetes.io/hostname
 # Reschedule faster on ungraceful node failure. Together with Longhorn's
@@ -228,7 +195,7 @@ tolerations:
       tolerationSeconds: 30
 # Pod hostname = Service name: Pi-hole accepts its own hostname as Host
 # header without a password, so nebula-sync can use http://pihole-web
-hostname: ENC[AES256_GCM,data:sxkfl0r+uTx3lA==,iv:uSGFPN8YAuov5io8Jw1VDXrhJNscQ7Cjpip/NDQhpew=,tag:/9GuLtOa2hgbSc4AydmsEw==,type:str]
+hostname: ENC[AES256_GCM,data:PIxb1sUXoMGtzg==,iv:d2NuFt9U048TvxlJzqJ/fHWHqUfS2cj81q5nr0i8MqE=,tag:kiDG4UFUeQU7xy1Ll+pajA==,type:str]
 # The API has no password (Authelia protects the UI), so only Traefik,
 # nebula-sync and Prometheus (exporter port) may reach the web port.
 # DNS and DHCP stay open to every source.
@@ -263,23 +230,23 @@ sops:
     age:
         - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBiQi9BYTdCRlNhTU1XK3Br
-            YUhoZXh4Tk85eXdKaFpsY1dGRC9HZmxQUHhBCkZuTXBKVmFXUmNEajZxcmJ3cFdX
-            U2ZBTzZ6NW1TN0Z0UUE3ZjdJVi9waWMKLS0tIDBDUzBsdndlaXJDVVRlbjVJOU9B
-            UDBxYXhzVlpJZThxLzZzY0JlTytSb2sKaKNgV+dF3m5tbDDcR0db4qq9fLtSDSZp
-            pduzC0fi1UY+8CEBcKb+L21//yXVRpsnxeXizIKl+cMDhvF5pQe5qQ==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBvZ2E3V2ZoaTU0T09FMTVC
+            MFhIeng0bjdQd0U1NkR4L1VlWGNhOG9lNUY0ClBVUnFLME4yc0pYT3pSZXZsaGVp
+            OVZtdEpVNHBrR2RuYmJySFo1NlNvU2MKLS0tIFh2ZGwwQkxiWEx4dDhTcjJ0QjVm
+            NGRpcHlkRFBtOE9od09COWFVdW96TVkKyXlu+2e+PivohpN+iLk7F2oprYlbAqBh
+            NWpUk8vvjp4qgNfDqaZXk4xGrMGQQ/7FcscGTZbhrQhtPOChImcQgQ==
             -----END AGE ENCRYPTED FILE-----
           recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
         - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB6Q25SRXd2RU83MHRxc281
-            aHRFRVhsQWY4RXFSd240cFZHKzhsQUJ3M3dFCkg0cFJhYnluR3pIdVZtTTRsam0y
-            WnQ0YWVBa3ZWUnhDSGpFa0dtZWpLNDgKLS0tIGhqbyswUzZDaVJLNkZzV005alhi
-            N25uYzB6d2JsTTIzYnlqSmJKd2ZaQmsK3A5SHhg5VCHTipJRzGkFU43PJLL0P0oz
-            wkJzpM4o5tabSos4NCMLXadCAoDkNdutqQVWojCKptOqSwTGiKFXbw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBZTy8ycWNveGMwL1Z4L0sw
+            b2dvOXBOZld3Zm9vaWlsS2dockJvYWtIMWhVCmY0MGxJZnJ6SEZTeFA2WENubktr
+            TDdwSEU4TlpxeFNGV2MxSU81QzlCOE0KLS0tIGg4UjAxT3k4dmVEUndkdktsanll
+            Nm9Td1dxcmFQYWhXZDN4djJaTWlhWTAKQbLKtKafgcvCHxiLXtvF7IeYUUddvYkR
+            o0qAJkmv0tNx+JIVXs1NTNgHdSW+D37WAq0QXHquJXbhAzv9oHaO4w==
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
-    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
-    lastmodified: "2026-11-14T13:28:56Z"
-    mac: ENC[AES256_GCM,data:3SAQUvPaA88jUW2KptHS9DTdiD8uAOdPdsdLg5NcuQHzuTiz4FFw5Dw5Q2wXx4CPiaoWvqxfcOCMekxU8VrBwyDLcHHUuWn9Cpwe+8Sd/hNETEE47Hy699WwCpY5/n0sSXxc2DRXTuu+mHumVd0E+sy7f3mOUJ5mmYHQR1F3QIM=,iv:UaO1cFCaOqeqIzQa6mGyCQkcuOBhrsrjxpQT/cnmhLs=,tag:LpGNPjOy9TybOa3i8KNYeQ==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials|config)$
+    lastmodified: "2026-11-14T14:53:47Z"
+    mac: ENC[AES256_GCM,data:XOHbx/3JNSxpDhRT/XsfG0WoiuA2rO/7f8OSFsPKKdOse16oQKIWfOJs2iVAvD3IjQ8hvaHMPBTaeimlvuR380EyiGYaYKbu1j7TnlPJ2yHaXTZ9hMX0KAyqLrrQ1tiy3qU+Nft0xn383Yx/wCctbwIsv2UbO+NPhs4ws+SxWhU=,iv:OY41uxCxu1iDeH0djJNNfVsuEDrhiWhE/Asbu0TF1j0=,tag:6NCEmAh9Dz7vXrfrfLI5rg==,type:str]
     version: 3.13.3
