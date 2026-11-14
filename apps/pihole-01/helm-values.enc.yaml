@@ -93,7 +93,7 @@ doh:
           [static.'nextdns-135128']
             # https://dns.nextdns.io/135128/pihole03
             # https://dnscrypt.info/stamps/
-            stamp = 'sdns://AgcAAAAAAAAAEjIxNy4xNDYuMjIuMTYzOjQ0MwAOZG5zLm5leHRkbnMuaW8QLzEzNTEyOC9waWhvbGUwMwA'
+            stamp = 'sdns://AgcAAAAAAAAADjIxNy4xNDYuMjIuMTYzAA5kbnMubmV4dGRucy5pbxAvMTM1MTI4L3BpaG9sZTAzAA'
 #doh:
 #    enabled: true
 #    pullPolicy: IfNotPresent
@@ -265,6 +265,6 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
-    lastmodified: "2026-11-14T12:43:14Z"
-    mac: ENC[AES256_GCM,data:nJ2+a2HQX1kyJ6hVutwVI9LZZYySdisTjTeSBv8lBE888yGhHNYPRGNMfLqcPQTr7EPJzD/kQuOeol4q/woAsPIyO2jLfD2i+Zon20ghFUlOpg/WTg93sQQi9nWQN8noA4tZ1DWUJEOCijMpjEKr3Z4lFIXQLBeNVkvQ3vFrMUo=,iv:7sFmPqbNxttTU1xRUkYyJ+jmRy/mEbG1USE1Ii5KrEc=,tag:MfsnCLcAziSBxESp1qDq8g==,type:str]
+    lastmodified: "2026-11-14T12:49:58Z"
+    mac: ENC[AES256_GCM,data:hS3KxoxzM5r6kmsEJ3wsglGVmBBsAplDOdj1yOPthnpOXMdW0lHUe+HjnID+rb0txHVfwvB6FeGub3v2O9mdVFC2/d8Vb9DBdRyVW3lCJK/hNaIIe7Mor3zLrUU4oFVDA557fmWNamAThYVl1rUTQgFhsZ0lBReDVkb5EZQ6dfY=,iv:NyaqMtLryaZAg9gsDDhhSJNXH/Kd7jMssrIJINT+b1I=,tag:0P5o45rccnKj6UOrbiHBVw==,type:str]
     version: 3.13.3
