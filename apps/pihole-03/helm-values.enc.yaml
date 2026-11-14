@@ -15,16 +15,16 @@ serviceDns:
     #type: ClusterIP
 serviceDhcp:
     enabled: false
-virtualHost: ENC[AES256_GCM,data:OJmsQJRzcF2mKit1yO2BT4NrFPdW2X0UWDaImpQ7,iv:lq8aNuUmoc9W6nYerzIziAVvckwg5TPcDyuiWEhzSwI=,tag:we85JTbIKAuvnIitvjrnHg==,type:str]
+virtualHost: ENC[AES256_GCM,data:5MQunhHinOSDNDI6QKubq5SoKZiMyecY2ZM95n67,iv:jcyqrvRas8bm7luNGEAy7Piy3hdYaVsLdHi7CIvv0Uk=,tag:c6M2sQaer4ReB3n+MaRX4A==,type:str]
 ingress:
     enabled: true
     ingressClassName: traefik
     hosts:
-        - ENC[AES256_GCM,data:8vcCjbsbtRHim28Mmt6Qh0ksfRk9C5aek0mgiurd,iv:8kQpVUrI0YqNX6LY/YO0DiKasJ5xsDDLuV6K5Hr+SlU=,tag:jN69d/cZRtus+9kY78CIjA==,type:str]
+        - ENC[AES256_GCM,data:QgLBgj2l/Xd1qhGM0WnId31vxMuzUuJrdj8AuB0e,iv:ZJ9RVgTn6sc710HGwYcxlmC1ztIur2nFECTSzapWin4=,tag:AixwiXGGcx/1g56tcfZo9g==,type:str]
     tls:
         - secretName: wildcard-cloudflare-production-02
           hosts:
-            - ENC[AES256_GCM,data:hg4AAVu+tRH1S33hJ30A6Swoayjxke9wn7jZb71R,iv:ako5BspwsGr2FB0N5S3wmPIKBVFuEfVXXNbdl9EXVPc=,tag:NAgR4WZnDxvjJqfgXCzfWw==,type:str]
+            - ENC[AES256_GCM,data:GDtOy8xfQW4TsMq6lXIJOjs9K0V5lgjzJqpc8WkK,iv:HzlfTQS/f97dtIOUsaIUsnrVWyWZegXmKYr0wr33MTQ=,tag:AwnwJxHc0bVG5s3TijQAMg==,type:str]
     annotations:
         traefik.ingress.kubernetes.io/router.entrypoints: web239, websecure239
         traefik.ingress.kubernetes.io/router.tls: "true"
@@ -52,35 +52,7 @@ admin:
     enabled: false
 doh:
     enabled: true
-    config: |
-        listen_addresses = ['0.0.0.0:5053']
-        server_names = ['nextdns-735278']
-        require_dnssec = false
-        require_nolog = true
-        require_nofilter = true
-        dnscrypt_servers = true
-        doh_servers = true
-        odoh_servers = false
-        ipv6_servers = false
-        bootstrap_resolvers = ['9.9.9.9:53', '1.1.1.1:53']
-        timeout = 5000
-        keepalive = 30
-        log_level = 2
-        use_syslog = false
-        cache = true
-        cache_size = 4096
-        cache_min_ttl = 2400
-        cache_max_ttl = 86400
-        cache_neg_min_ttl = 60
-        cache_neg_max_ttl = 600
-
-        [sources]
-
-        [static]
-          [static.'nextdns-735278']
-            # https://dns.nextdns.io/735278/pihole03
-            # https://dnscrypt.info/stamps/
-            stamp = 'sdns://AgcAAAAAAAAAAAAOZG5zLm5leHRkbnMuaW8QLzczNTI3OC9waWhvbGUwMw'
+    config: ENC[AES256_GCM,data:xS+g0mxS9jV4xg75U/sFwH84y7cJj/6T3E6sRa61zX6QfGIodCjJhaz/u3kcNxYisFwyyBuNX/3KwKQLqrNDNDSMog8TfM4/NPWa8ts+0/TiRASluBmxYzXtoQK47kvGUiN3Lx+99CA2PRnyFehogq/fDLkOGMlqLCFc+wPgO6YEOLKmDev0jzNA/lzWfc+eqwHRyaovz9poEiLkHZSuDcObdAsb0sJMjzPxuQ1RFpSHOmKaNy3lwz1DldTdebErghV7EAKuAc3sWYRsctpg/4cfPqiSskAc8YIvTUBXVHK5Q+abPeCT/DFSIUafPiWWjD27HDujShIEdJk4WcrAlsneLtVH6rXg5qhLU0qezmyl8vYSYbxP444TUtCc456p09t5rz8/qB+gmA4xtnGg9TGYrvQOb/rvadO/dRRXnlSzHQIhapmCCf+2TEqt8TtTNBKAPuTRS2AWh922xCXQG8ezYTET8N6y+KITwZlmBkDDsoMuRz0FtiqroWW5mpN1BtDtKLhX0SDXOC1TED1A4NlW2hSvV2YbaSbzMBMiQ4oUmMcR+yX4lV7LM5it1k0vydAvqCnobRJ5VsMbmlK3Lvpg9DCib3ZgEptyBjxhJOt60v2A3C37wycXdmV/OGLYEcfDNNMuF2QOOhQr4HzjFHgwyp47e7r4ZoCn97LQ1wmSr3kREep4bN/AMF83IJIGLY8RPs/7Aynp17mRQ7xkvl4PXJoG5Q6QtUmS1AzLod/XSVewnh9n6NkXxF8GL9QE8ttzRUYXZMdnqfeaub2R+33254GZ1vzTZuZ206l0N6N4sA7pIaElEACw/A1e9TBjEHEpp5rbdcVLc1OzCxS90NaKBAbHUlIZqebXX8qPz6TMI3zS6eFQQQoQGjU=,iv:ToM7SbqKwh5ecnYpKYX85PiOwQxDuo5x7dZrpcY2x7g=,tag:xdu1x+j2gGFklt6hi+5q0g==,type:str]
 #podDnsConfig:
 #    enabled: true
 #    policy: None
@@ -115,9 +87,9 @@ dnsmasq:
     #   - address=/www.youtube-nocookie.com/216.239.38.119
     #   - address=/www.youtube-nocookie.com/2001:4860:4802:32::77
     customDnsEntries:
-        - ENC[AES256_GCM,data:Sd2NYA4+4ea1IEQk7bhnAe2e3bvT9TH8Gv+uG95L2jhzyl8=,iv:iTJF8JHmjsv9QF89Zi7cUYg74i+jYsPDr9wL5wje578=,tag:qefbNym6hfGbwcSoB45jNw==,type:str]
-        - ENC[AES256_GCM,data:Py0uMBd6MkSe9ZQ5lVjf79jAwMHwokk1vV9S6eJadJCxQKAocSlg7w==,iv:4i235sgwlX8jEF0/ZD+LVI5n83GQ2qdqvFANrkyv/ow=,tag:MklRMu+GKlDX+DGV8BH2Kw==,type:str]
-        - ENC[AES256_GCM,data:MWp1DBLcrESez/APtwPOHKDwYMUcxTtihz9Sq2lC75jOgwapYkRbdfBOROsP,iv:n/ZxXdDBFxs3QZPHy6t+rQH1B3nLd6unuFSB90iEdss=,tag:DG0eouhY2TTpPo5TyeKYiQ==,type:str]
+        - ENC[AES256_GCM,data:VJRQx6a+6QqhTAWOQHOdS47H+jY3+MFwMpRBJF/Yhh86LD4=,iv:AqekDsFdilUXPXnDaZVfR8wh/OoQPExsXCAXYGWpq84=,tag:+Iifq8cV5/Xlbk09Z/djPg==,type:str]
+        - ENC[AES256_GCM,data:no/uDGst7th7+B75S6rflJuVIob/i+B98w8LJLz6xpQFTzPNA2Q8IQ==,iv:YiHBGiI9LFpupjNnMH7fHPrUYf40y0QAautF6m7cSuE=,tag:+RDnNlR1N3sJmPX6aXnRqw==,type:str]
+        - ENC[AES256_GCM,data:9/1x6dPBEqMLxoQVJcMirpB4rrRBURN4ZG1cLIvgiy0qPOkdD9ooJqB2hd9E,iv:9+KnmD6yaNcrqsrUKCY/bZci6zP2/GeoZt7sjl+0Hv0=,tag:nItsKozI2raCWy3QNMUT4A==,type:str]
     customSettings:
         - dhcp-option=252,"\n"
         - dhcp-option=vendor:MSFT,2,1i
@@ -186,7 +158,7 @@ tolerations:
       tolerationSeconds: 30
 # Pod hostname = Service name: Pi-hole accepts its own hostname as Host
 # header without a password, so nebula-sync can use http://pihole-03-web
-hostname: ENC[AES256_GCM,data:VZbu09TcPylCIGIhNg==,iv:nYaBdIj47BZcssTr6yj2E5QGjkyzprSLcKmgxhg8G+M=,tag:U7Q/ca/mkAdiuXidkTVbTg==,type:str]
+hostname: ENC[AES256_GCM,data:D07Tg25c8XJAmgHQdw==,iv:GZ4J2P6+4LEL70viLXLpzQUIO/Q7mHJEY+C57uZpCE0=,tag:t1/On9t8FdBm6rJYNdhn1w==,type:str]
 networkPolicy:
     enabled: true
     ingress:
@@ -233,23 +205,23 @@ sops:
     age:
         - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB0S0loekt3N3ZNSlJHMDcv
-            cmVqWEJ1L2Rrb1NLMXgxSnFsVHVpMDhNcHlFCnB6bmxuTmpZSEpNOU1aanBJaDRI
-            RmsxNnk2TVJlUGVFckFLN0JLYVFXeHcKLS0tIHRnRHNZK3lDZ1AzT3JHN05vOVky
-            ZVlxYU1wOFdaaWdaYTFBWCtmYWtaa1kKDgCmsRAwOA3hG4XCVqy1nZVYM4hhkXjV
-            OUvO4Gq7cnX9K6k0fSMXtMXtrg/1afxiPMkPFGBqli1+xWbFZr7Ixg==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB1L0gvanlRWEJRTWM1Rnc0
+            MmlTaithRFoyZEs4bHl2dlR2Vmt4ME9zRGxBCkpUU2hXa2RtOGZlcHgrZjRZalh3
+            OXdMM2xxYlcwN1o2S2YvYVNKV3hxVFkKLS0tIG5ycFlueENzbWM1VmZRV2poODFr
+            MXAxM0lYZlNCWmxXWHlPMnVxK09keGMKLMNK81MCUJDNlABcTiiwxtk+LE4SvkZK
+            2vhhookFy36nYIZzghRBA5X4UH+dolP/+G8dEG3NKtFSLajO3qMQsQ==
             -----END AGE ENCRYPTED FILE-----
           recipient: age1d2g7tgqpfvxulsusn3m608h60h2hne7yqwv5nh5nd24z6h0hgq0skjkhw8
         - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBjSDE0NUVDcUVhTkJSb0Fa
-            S2lSSk9EQ01wQUJJSm1tZEl6SFdZYXlBR2s4CjZXNElsUm9vZTFjc29qQmRqaERn
-            YTFhc1VwYTVpQUZ1bmZnR0VJNmhyYWMKLS0tIEQwbUxYb0FwSGwvMWMwd2RsV3Js
-            UnozZ3I2QVVnSjRBQVEzSmVYZlJCcEEK1ZYohFRv8IwK0n+M7Am600PlkDQKEM0F
-            jJKOj1a5904gHLwb6u3We7Djo97zecIARjbGYv16HO6vu9FMALVdsQ==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBOUlRLQjJHU2Fqa2JlTmhP
+            NkNPOC9PbHcrZlBmNlRDNWhRdFRuR0EzNlZ3ClV4M2NWMXdKTHhGeXFDWEZ6bDk2
+            WjJXWXdGVVc5MmNobnRENkhjWDBHU28KLS0tIFp6MXBPVy9KSXdLS3dWSUpJWkQr
+            VDZlRnk4Tk5XMzZrM2VrOWtvb0t0Z1EKeD7U2u1iy7K+QfJFD+Oqv426hYiPOWYZ
+            NPACjZ8TkkuntcxvVkKYBl++UZzuGpwZ6Z+wpP/BrsWVzmzbvvgYGQ==
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
-    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials)$
-    lastmodified: "2026-11-14T14:30:03Z"
-    mac: ENC[AES256_GCM,data:2t3O8244ij4Ng7jDIUaAbeGblje1Y/jJGZMzYhyLO2wPrP0/zqK1fySMdqD7fVMgUci+NHbgvN3T2L4vd2oIe4L67xkZe4xqf/YOjbGaAOgHuRN/BaMXOlAfHpSiUvHmrRsb0KAVF0YAYl5fBwu+KZlFzuq69pPAUBh0QveHZIs=,iv:0jj106wqvP2ey1366BmnfJ/0k2FYPFCQrW8/kodLSO8=,tag:UXEWoyiZkDPhRpLjEp19ig==,type:str]
+    encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials|config)$
+    lastmodified: "2026-11-14T14:53:37Z"
+    mac: ENC[AES256_GCM,data:7zpo+WSeeCodwZGRcdUwejKtijI6Hf8KAnyLtiVGsGkJEdRrxjHMt1x3xD728FLyOkAuSPSKIavgR3IzoLwNbwiu3Y7X41L1JahHyrARA6rvvtm86I6MveUfMmJy6vhBHXoRsbG3FzEkCwFNM1A2/jNVzSWRe7CKT2ncNre4jgs=,iv:X4pE3QCuisHzGENQ34tSDCD7PoQe3MZfkUg9lif6D/c=,tag:vAKWEMJve1PZLhMaXdVX+Q==,type:str]
     version: 3.13.3
