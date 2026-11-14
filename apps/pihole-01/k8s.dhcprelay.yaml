@@ -40,6 +40,9 @@ spec:
               cpu: 100m
               memory: 32Mi
       hostNetwork: true
+      # dhcp-helper runs as PID 1 without a SIGTERM handler, so it would only
+      # die after the full grace period. It is a stateless UDP relay.
+      terminationGracePeriodSeconds: 1
       affinity:
         podAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
