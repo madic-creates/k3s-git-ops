@@ -40,7 +40,7 @@ spec:
       containers:
         - name: postgres
           # Same image upstream pins in docker/docker-compose.yml
-          image: postgres:17-alpine@sha256:a77aa70e641402a21411b92b721c58d10f23b50ae5fdd2333efd22d166e1e5f7
+          image: postgres:18-alpine@sha256:b6972e1115a4ff8eba5d7f7d19184926d1e16d7d1136ae1e1a7ebf286da0f015
           imagePullPolicy: IfNotPresent
           env:
             - name: POSTGRES_USER
