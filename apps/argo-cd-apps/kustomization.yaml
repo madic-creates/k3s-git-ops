@@ -80,6 +80,8 @@ resources:
   #- 65-prox01-watchtower.yaml
   #- 65-wardrowbe.yaml
   #- 66-open-webui.yaml
+  # Enable once secrets.enc.yaml and ingress.enc.yaml exist in apps/mcp-memory-service.
+  #- 66-mcp-memory-service.yaml
   - 66-solar.yaml
   - 70-descheduler.yaml
   - 80-whoami.yaml

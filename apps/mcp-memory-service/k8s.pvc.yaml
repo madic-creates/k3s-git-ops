@@ -1,0 +1,17 @@
+---
+# SQLite database, backups and the embedding model cache of mcp-memory-service.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: longhorn-pvc-mcp-memory-data
+  namespace: mcp-memory
+  labels:
+    app.kubernetes.io/name: mcp-memory-service
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: longhorn
+  volumeMode: Filesystem

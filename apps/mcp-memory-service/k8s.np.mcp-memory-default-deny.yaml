@@ -1,0 +1,15 @@
+---
+# Default deny for the namespace. Selecting all pods (empty endpointSelector)
+# puts them under Cilium's default-deny semantics; k8s.np.mcp-memory.yaml adds
+# the specific allows.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: mcp-memory-default-deny
+  namespace: mcp-memory
+spec:
+  endpointSelector: {}
+  ingress:
+    - {}
+  egress:
+    - {}

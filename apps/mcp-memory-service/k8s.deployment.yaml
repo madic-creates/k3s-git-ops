@@ -1,0 +1,78 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mcp-memory-service
+  namespace: mcp-memory
+  labels:
+    app.kubernetes.io/name: mcp-memory-service
+spec:
+  # SQLite backend on a RWO volume: exactly one writer.
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mcp-memory-service
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mcp-memory-service
+    spec:
+      containers:
+        - name: mcp-memory-service
+          # "slim" = CPU-only image with sqlite-vec + ONNX embeddings.
+          image: doobidoo/mcp-memory-service:12.11.0-slim@sha256:4b690b1b7136a69cf56d5e9850cd3c2642d606e1a8188cef4d6ab53aca883182
+          env:
+            # HTTP/REST API mode (see tools/docker/docker-entrypoint-unified.sh).
+            - name: MCP_MODE
+              value: http
+            - name: MCP_HTTP_HOST
+              value: 0.0.0.0
+            - name: MCP_HTTP_PORT
+              value: "8000"
+            - name: MCP_MEMORY_STORAGE_BACKEND
+              value: sqlite_vec
+            - name: MCP_MEMORY_SQLITE_PATH
+              value: /app/data/sqlite_vec.db
+            - name: MCP_MEMORY_BACKUPS_PATH
+              value: /app/data/backups
+            # Persist the downloaded embedding model across restarts.
+            - name: HF_HOME
+              value: /app/data/hf-cache
+            - name: LOG_LEVEL
+              value: INFO
+          # MCP_API_KEY: one shared key for all clients of the single user.
+          envFrom:
+            - secretRef:
+                name: mcp-memory-env
+          ports:
+            - name: http
+              containerPort: 8000
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              memory: 2Gi
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            failureThreshold: 5
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: longhorn-pvc-mcp-memory-data
