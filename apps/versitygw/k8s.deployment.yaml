@@ -100,6 +100,28 @@ spec:
               value: "0750"
             - name: VGW_IAM_LDAP_TLS_SKIP_VERIFY
               value: "true"
+            # WebGUI on its own port, exposed only via the internal ingress
+            # (web239/websecure239). TLS is terminated by Traefik.
+            - name: VGW_WEBUI_PORT
+              value: ":7071"
+            - name: VGW_WEBUI_NO_TLS
+              value: "true"
+            # The browser signs S3 requests itself, so it needs a reachable
+            # S3 URL instead of the auto-detected pod address. The admin API
+            # shares the S3 port.
+            - name: VGW_WEBUI_GATEWAYS
+              value: "https://s3.k8s.neese-web.de"
+            - name: VGW_WEBUI_ADMIN_GATEWAYS
+              value: "https://s3.k8s.neese-web.de"
+            # The WebGUI origin calling the S3 API cross-origin. Without this,
+            # versitygw falls back to "*" once the WebGUI is enabled.
+            - name: VGW_CORS_ALLOW_ORIGIN
+              value: "https://versitygw.internal.neese-web.de"
+          ports:
+            - name: s3
+              containerPort: 7070
+            - name: webui
+              containerPort: 7071
           resources:
             requests:
               cpu: 50m
@@ -138,7 +160,12 @@ spec:
   selector:
     app.kubernetes.io/name: versitygw
   ports:
-    - protocol: TCP
+    - name: s3
+      protocol: TCP
       port: 7070
       targetPort: 7070
+    - name: webui
+      protocol: TCP
+      port: 7071
+      targetPort: 7071
   type: ClusterIP
