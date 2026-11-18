@@ -32,6 +32,15 @@ spec:
         - ports:
             - port: "8080"
               protocol: TCP
+    # Paperless-ngx uses llama-cpp as its OpenAI-compatible backend for AI suggestions
+    - fromEndpoints:
+        - matchLabels:
+            k8s:app.kubernetes.io/name: paperless
+            k8s:io.kubernetes.pod.namespace: paper
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
   egress:
     # DNS
     - toEndpoints:

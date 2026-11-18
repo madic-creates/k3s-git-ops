@@ -84,6 +84,15 @@ spec:
     - ports:
       - port: '3000'
         protocol: TCP
+  # Allow access to the self-hosted LLM (llama-cpp) for AI suggestions
+  - toEndpoints:
+    - matchLabels:
+        k8s:app: llama-cpp
+        k8s:io.kubernetes.pod.namespace: llama-cpp
+    toPorts:
+    - ports:
+      - port: '8080'
+        protocol: TCP
   # Allow IMAP access for email document import
   - toEntities:
     - world
