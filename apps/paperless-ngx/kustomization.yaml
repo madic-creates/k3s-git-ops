@@ -45,3 +45,26 @@ patches:
                 envFrom:
                   - secretRef:
                       name: paperless-env-secrets
+                # Paperless >= 3.5.0 rejects the pod IP as Host header once PAPERLESS_URL is set.
+                # localhost is always allowed.
+                startupProbe:
+                  httpGet:
+                    path: /
+                    port: http
+                    httpHeaders:
+                      - name: Host
+                        value: localhost
+                livenessProbe:
+                  httpGet:
+                    path: /
+                    port: http
+                    httpHeaders:
+                      - name: Host
+                        value: localhost
+                readinessProbe:
+                  httpGet:
+                    path: /
+                    port: http
+                    httpHeaders:
+                      - name: Host
+                        value: localhost

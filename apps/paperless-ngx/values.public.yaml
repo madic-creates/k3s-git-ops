@@ -26,6 +26,10 @@ env:
       value: deu
     - name: PAPERLESS_OCR_MODE
       value: skip
+    # Since 3.5.0 a set PAPERLESS_URL restricts ALLOWED_HOSTS to its hostname plus localhost.
+    # Keep the in-cluster service name reachable (Homepage widget).
+    - name: PAPERLESS_ALLOWED_HOSTS
+      value: paperless.paper.svc.cluster.local
     - name: PAPERLESS_USE_X_FORWARD_HOST
       value: true
     - name: PAPERLESS_USE_X_FORWARD_PORT
