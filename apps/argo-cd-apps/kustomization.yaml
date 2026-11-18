@@ -80,6 +80,7 @@ resources:
   #- 65-prox01-watchtower.yaml
   #- 65-wardrowbe.yaml
   #- 66-open-webui.yaml
+  - 66-mcp-memory-service.yaml
   - 66-solar.yaml
   - 70-descheduler.yaml
   - 80-whoami.yaml
