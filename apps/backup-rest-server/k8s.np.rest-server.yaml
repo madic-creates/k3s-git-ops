@@ -14,6 +14,15 @@ spec:
     matchLabels:
       app.kubernetes.io/name: rest-server
   ingress:
+    # Traefik for the internal-only ingress (restic access from the LAN).
+    - fromEndpoints:
+        - matchLabels:
+            k8s:app.kubernetes.io/instance: traefik-kube-system
+            k8s:io.kubernetes.pod.namespace: kube-system
+      toPorts:
+        - ports:
+            - port: "8000"
+              protocol: TCP
     # Ingress for backup writes from every backup workload namespace.
     # Sources are matched by the app.kubernetes.io/component=backup
     # label that all backup-* CronJobs carry.

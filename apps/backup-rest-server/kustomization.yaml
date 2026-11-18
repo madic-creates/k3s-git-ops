@@ -16,3 +16,4 @@ resources:
 
 generators:
   - kustomize-secret-generator.yaml
+  - ksops-ingress-generator.yaml

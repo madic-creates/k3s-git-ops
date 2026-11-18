@@ -1,0 +1,13 @@
+---
+# Separate ksops generator for the internal ingress. The hostname is
+# SOPS-encrypted like every other ingress in this repo.
+apiVersion: viaduct.ai/v1
+kind: ksops
+metadata:
+  name: rest-server-ingress-generator
+  annotations:
+    config.kubernetes.io/function: |
+      exec:
+        path: ksops
+files:
+  - ingress.enc.yaml
