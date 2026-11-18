@@ -210,6 +210,10 @@ spec:
     - matchLabels:
         k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: backup
         k8s:io.kubernetes.pod.namespace: backup
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: mcp-memory
+        k8s:io.kubernetes.pod.namespace: mcp-memory
   # Allow Traefik to communicate with services in kube-system namespace
   # This includes the Traefik dashboard service and other system services
   - toEndpoints:
