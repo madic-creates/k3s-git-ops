@@ -24,7 +24,7 @@ env:
   # Keep in sync with the Renovate version used by renovatebot/github-action,
   # otherwise newly introduced options are reported as invalid.
   # renovate: datasource=docker depName=ghcr.io/renovatebot/renovate
-  RENOVATE_VERSION: 44.253.0
+  RENOVATE_VERSION: 44.255.1
 
 jobs:
   validate:
