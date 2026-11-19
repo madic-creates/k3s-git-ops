@@ -80,7 +80,7 @@ spec:
                 privileged: false
           containers:
             - name: restic
-              image: ghcr.io/madic-creates/container-restic:latest@sha256:5882ed8d36b4381ee2e6a7dad1a0c99f0341653a262209d655c69cee89770e62
+              image: ghcr.io/madic-creates/container-restic:latest@sha256:0370748872a2ddcc932be6e31c33d0046cdee142cca9d2faa381885041a35fd1
               imagePullPolicy: IfNotPresent
               command:
                 - /bin/sh
