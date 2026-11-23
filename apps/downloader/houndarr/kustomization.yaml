@@ -5,7 +5,7 @@ namespace: downloader
 
 resources:
   - k8s.pvc.yaml
-  - k8s.statefulset.yaml
+  - k8s.deployment.yaml
   - k8s.service.yaml
   - k8s.np.houndarr.yaml
 

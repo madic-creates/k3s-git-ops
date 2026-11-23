@@ -4,7 +4,7 @@
 # UI and stored in SQLite on /data, together with the master key that
 # encrypts the stored *arr API keys. SQLite: never more than one replica.
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: houndarr
   namespace: downloader
@@ -13,9 +13,12 @@ metadata:
   labels:
     app.kubernetes.io/name: houndarr
 spec:
-  serviceName: houndarr-headless
   replicas: 1
   revisionHistoryLimit: 3
+  # The data volume is ReadWriteOnce and holds a SQLite database; a rolling
+  # update would let a second pod open it.
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app.kubernetes.io/name: houndarr

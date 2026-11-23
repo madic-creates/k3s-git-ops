@@ -17,23 +17,3 @@ spec:
       name: http
   selector:
     app.kubernetes.io/name: houndarr
----
-# Governing headless Service required by the StatefulSet.
-apiVersion: v1
-kind: Service
-metadata:
-  name: houndarr-headless
-  namespace: downloader
-  annotations:
-    argocd.argoproj.io/sync-wave: "30"
-  labels:
-    app.kubernetes.io/name: houndarr
-spec:
-  clusterIP: None
-  ports:
-    - port: 8877
-      targetPort: 8877
-      protocol: TCP
-      name: http
-  selector:
-    app.kubernetes.io/name: houndarr
