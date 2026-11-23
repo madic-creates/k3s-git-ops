@@ -66,17 +66,142 @@ radarr:
     # Capping until_score at the base score means an existing file already
     # meets the cutoff, so release-group tiers, German DL and boosters only
     # steer the first grab and never trigger a re-download.
+    #
+    # Quality order: TRaSH only lists the merged group, so Configarr ranked
+    # every other quality below it. Radarr then treated existing Remux-1080p,
+    # 2160p and BR-DISK files as below the cutoff and would have replaced them
+    # with any 1080p release. The disabled qualities that rank higher are
+    # listed above the merged group again (first entry = highest), matching
+    # the order the profiles had before Configarr. The full list is spelled
+    # out because Configarr moves unlisted qualities to the top.
     quality_profiles:
       - name: "German - 720p/1080p"
         min_format_score: 10000
         upgrade:
           allowed: true
           until_score: 10000
+        qualities:
+          - name: Raw-HD
+            enabled: false
+          - name: BR-DISK
+            enabled: false
+          - name: Remux-2160p
+            enabled: false
+          - name: Bluray-2160p
+            enabled: false
+          - name: WEBDL-2160p
+            enabled: false
+          - name: WEBRip-2160p
+            enabled: false
+          - name: HDTV-2160p
+            enabled: false
+          - name: Remux-1080p
+            enabled: false
+          - name: Merged QPs
+            qualities:
+              - Bluray-1080p
+              - WEBRip-1080p
+              - WEBDL-1080p
+              - Bluray-720p
+              - WEBDL-720p
+              - WEBRip-720p
+          - name: HDTV-1080p
+            enabled: false
+          - name: HDTV-720p
+            enabled: false
+          - name: Bluray-576p
+            enabled: false
+          - name: Bluray-480p
+            enabled: false
+          - name: WEBDL-480p
+            enabled: false
+          - name: WEBRip-480p
+            enabled: false
+          - name: DVD-R
+            enabled: false
+          - name: DVD
+            enabled: false
+          - name: SDTV
+            enabled: false
+          - name: DVDSCR
+            enabled: false
+          - name: REGIONAL
+            enabled: false
+          - name: TELECINE
+            enabled: false
+          - name: TELESYNC
+            enabled: false
+          - name: CAM
+            enabled: false
+          - name: WORKPRINT
+            enabled: false
+          - name: Unknown
+            enabled: false
       - name: "German - 4k"
         min_format_score: 10000
         upgrade:
           allowed: true
           until_score: 10000
+        qualities:
+          - name: Raw-HD
+            enabled: false
+          - name: BR-DISK
+            enabled: false
+          - name: Remux-2160p
+            enabled: false
+          - name: Merged QPs
+            qualities:
+              - Bluray-2160p
+              - WEBDL-2160p
+              - WEBRip-2160p
+          - name: HDTV-2160p
+            enabled: false
+          - name: Remux-1080p
+            enabled: false
+          - name: Bluray-1080p
+            enabled: false
+          - name: WEBDL-1080p
+            enabled: false
+          - name: WEBRip-1080p
+            enabled: false
+          - name: HDTV-1080p
+            enabled: false
+          - name: Bluray-720p
+            enabled: false
+          - name: WEBDL-720p
+            enabled: false
+          - name: WEBRip-720p
+            enabled: false
+          - name: HDTV-720p
+            enabled: false
+          - name: Bluray-576p
+            enabled: false
+          - name: Bluray-480p
+            enabled: false
+          - name: WEBDL-480p
+            enabled: false
+          - name: WEBRip-480p
+            enabled: false
+          - name: DVD-R
+            enabled: false
+          - name: DVD
+            enabled: false
+          - name: SDTV
+            enabled: false
+          - name: DVDSCR
+            enabled: false
+          - name: REGIONAL
+            enabled: false
+          - name: TELECINE
+            enabled: false
+          - name: TELESYNC
+            enabled: false
+          - name: CAM
+            enabled: false
+          - name: WORKPRINT
+            enabled: false
+          - name: Unknown
+            enabled: false
       - name: "English - 720p/1080p"
         upgrade:
           allowed: true
