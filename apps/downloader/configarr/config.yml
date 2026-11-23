@@ -1,0 +1,92 @@
+# Configarr configuration: syncs TRaSH-Guides quality profiles, custom formats
+# and quality sizes into the *arr apps.
+# Reference: https://configarr.de/docs/configuration/config-file
+
+trashGuideUrl: https://github.com/TRaSH-Guides/Guides
+
+# Radarr only for now. Sonarr and Lidarr follow in a later step.
+sonarrEnabled: false
+lidarrEnabled: false
+readarrEnabled: false
+whisparrEnabled: false
+
+radarr:
+  radarr:
+    base_url: http://radarr.downloader.svc.cluster.local:7878
+    api_key: !env RADARR_API_KEY
+
+    # TRaSH movie quality sizes (radarr/quality-size/movie.json)
+    quality_definition:
+      type: movie
+
+    # TRaSH quality profiles. Their default CF groups (unwanted formats,
+    # repack/proper, streaming services, HDR) are loaded automatically.
+    include:
+      - template: 2b90e905c99490edc7c7a5787443748b # [German] HD Bluray + WEB
+        source: TRASH
+      - template: 27cc3d153c0a799fd139ef1ff4c4cc42 # [German] UHD Bluray + WEB
+        source: TRASH
+      - template: d1d67249d3890e49bc12e275d989a7e9 # HD Bluray + WEB
+        source: TRASH
+      - template: 722b624f9af1e492284c4bc842153a38 # [Anime] Remux-1080p
+        source: TRASH
+
+    # Optional TRaSH HDR groups for the 4k profile. The default HDR group
+    # (HDR 500) is loaded automatically; these add the Dolby Vision and HDR10+
+    # boosts and reject DV releases without an HDR10 fallback, which not every
+    # player can show.
+    custom_format_groups:
+      - trash_guide:
+          - id: 1616617ab3a14397a2b2321bcbda44d1 # [HDR Formats] DV Boost
+          - id: b29413a7487478fe98228ce79e5689e4 # [HDR Formats] HDR10+ Boost
+          - id: 7fc2751eef7e6bdc70b74136e5e35c76 # [HDR Formats] DV (w/o HDR fallback)
+        assign_scores_to:
+          - name: "German - 4k"
+
+    # Map the TRaSH profiles onto the existing Radarr profiles so every movie
+    # keeps its profile assignment.
+    renameQualityProfiles:
+      - from: "[German] HD Bluray + WEB"
+        to: "German - 720p/1080p"
+      - from: "[German] UHD Bluray + WEB"
+        to: "German - 4k"
+      - from: "HD Bluray + WEB"
+        to: "English - 720p/1080p"
+      - from: "[Anime] Remux-1080p"
+        to: "Japanese - 720p/1080p"
+
+    # Overrides merged on top of the TRaSH profiles.
+    #
+    # German audio is mandatory: the German profiles use language "Any" and the
+    # "German" CF scores 10000, so a minimum score of 10000 rejects every
+    # release without German audio (TRaSH's documented German-only setup).
+    #
+    # No upgrade wave: TRaSH upgrades until 35000 (German) / 10000 (English,
+    # Anime).
+    # Capping until_score at the base score means an existing file already
+    # meets the cutoff, so release-group tiers, German DL and boosters only
+    # steer the first grab and never trigger a re-download.
+    quality_profiles:
+      - name: "German - 720p/1080p"
+        min_format_score: 10000
+        upgrade:
+          allowed: true
+          until_score: 10000
+      - name: "German - 4k"
+        min_format_score: 10000
+        upgrade:
+          allowed: true
+          until_score: 10000
+      - name: "English - 720p/1080p"
+        upgrade:
+          allowed: true
+          until_score: 0
+      # TRaSH anime profile: original (Japanese) audio, anime release groups.
+      # Its minimum score of 100 is kept, so only releases from known anime
+      # groups are grabbed. The quality cutoff stays at WEB 1080p (TRaSH:
+      # Remux 1080p) so existing WEB files are not upgraded to Remux.
+      - name: "Japanese - 720p/1080p"
+        upgrade:
+          allowed: true
+          until_quality: WEB 1080p
+          until_score: 0

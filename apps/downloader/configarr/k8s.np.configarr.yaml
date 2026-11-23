@@ -1,0 +1,70 @@
+---
+# Configarr Network Policy
+# Configarr clones the TRaSH-Guides and Recyclarr template repositories from
+# GitHub and writes profiles and custom formats through the *arr APIs. It
+# serves nothing, so there are no ingress rules (the namespace default-deny
+# applies).
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: configarr
+  namespace: downloader
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: configarr
+  egress:
+  # DNS via CoreDNS, through Cilium's DNS proxy so the toFQDNs rule below can
+  # learn the resolved addresses. matchPattern "*" because musl treats the
+  # proxy's REFUSED for search-domain candidates as fatal (see
+  # apps/solar/k8s.np.openmeteo-exporter.yaml).
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: kube-system
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+      rules:
+        dns:
+          - matchPattern: "*"
+  # git clone of TRaSH-Guides and recyclarr/config-templates
+  - toFQDNs:
+    - matchName: github.com
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+  # Radarr API
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: downloader
+        k8s:app.kubernetes.io/name: radarr
+    toPorts:
+    - ports:
+      - port: "7878"
+        protocol: TCP
+  # Sonarr API
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: downloader
+        k8s:app.kubernetes.io/name: sonarr
+    toPorts:
+    - ports:
+      - port: "8989"
+        protocol: TCP
+  # Lidarr API
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: downloader
+        k8s:app.kubernetes.io/name: lidarr
+    toPorts:
+    - ports:
+      - port: "8686"
+        protocol: TCP
