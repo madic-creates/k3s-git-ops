@@ -1,0 +1,69 @@
+---
+# Configarr syncs TRaSH-Guides quality profiles and custom formats into the
+# *arr apps. It runs once and exits, so it is scheduled as a CronJob.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: configarr
+  namespace: downloader
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+  labels:
+    app.kubernetes.io/name: configarr
+spec:
+  schedule: "30 4 * * *"
+  timeZone: Europe/Berlin
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 600
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      ttlSecondsAfterFinished: 86400
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: configarr
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: configarr
+              image: ghcr.io/raydak-labs/configarr:1.39.2
+              env:
+                - name: TZ
+                  value: "Europe/Berlin"
+                # Set to "true" to only print the diff report without writing
+                # anything to the *arr apps.
+                - name: DRY_RUN
+                  value: "false"
+              envFrom:
+                - secretRef:
+                    name: configarr-env
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 128Mi
+                limits:
+                  memory: 1Gi
+              # The image runs as root (upstream default).
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
+              volumeMounts:
+                - name: config
+                  mountPath: /app/config/config.yml
+                  subPath: config.yml
+                  readOnly: true
+                # TRaSH-Guides clone cache. A fresh sparse clone per run is
+                # small, so no persistent volume is needed.
+                - name: repos
+                  mountPath: /app/repos
+          volumes:
+            - name: config
+              configMap:
+                name: configarr-config
+            - name: repos
+              emptyDir: {}
