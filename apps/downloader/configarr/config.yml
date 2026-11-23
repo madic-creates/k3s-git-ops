@@ -4,11 +4,313 @@
 
 trashGuideUrl: https://github.com/TRaSH-Guides/Guides
 
-# Radarr only for now. Sonarr and Lidarr follow in a later step.
-sonarrEnabled: false
+# Lidarr follows in a later step.
 lidarrEnabled: false
 readarrEnabled: false
 whisparrEnabled: false
+
+sonarr:
+  sonarr:
+    base_url: http://sonarr.downloader.svc.cluster.local:8989
+    api_key: !env SONARR_API_KEY
+
+    # TRaSH series quality sizes (sonarr/quality-size/series.json)
+    quality_definition:
+      type: series
+
+    include:
+      - template: dca7e5e9e99c703bcbdaaa471dd40e98 # [German] HD Bluray + WEB
+        source: TRASH
+      - template: 3b0fa37fddaaefc931b75f2889d4b4f5 # [German] UHD Bluray + WEB
+        source: TRASH
+      - template: 72dae194fc92bf828f32cde7744e51a1 # WEB-1080p
+        source: TRASH
+      - template: 6fe5937e1dcc2269e23b49eb46dfe6d6 # [German] Anime HD Bluray + WEB
+        source: TRASH
+      - template: 20e0fc959f1f1704bed501f23bdae76f # [Anime] Remux-1080p
+        source: TRASH
+
+    # Same HDR handling as the Radarr 4k profile.
+    custom_format_groups:
+      - trash_guide:
+          - id: e0b2774083df4265f25c9e5bc6c80940 # [HDR Formats] DV Boost
+          - id: 7d366c213e5c23a052b157356fac1921 # [HDR Formats] HDR10+ Boost
+          - id: d776a1ea912a117d66d83b880ff2055d # [HDR Formats] DV (w/o HDR fallback)
+        assign_scores_to:
+          - name: "<=4k DE"
+
+    custom_formats:
+      # English shows: reject releases without English audio (replaces the
+      # old hand-made "Language: English" CF).
+      - trash_ids:
+          - 69aa1e159f97d860440b04cd6d590c4f # Language: Not English
+        assign_scores_to:
+          - name: "<=1080p EN"
+      # Japanese anime: reject releases without the original (Japanese) audio.
+      - trash_ids:
+          - ae575f95ab639ba5d15f663bf019e3e8 # Language: Not Original
+        assign_scores_to:
+          - name: "<=1080p Anime JP"
+
+    # The three existing profiles keep their names (series stay assigned);
+    # the two anime profiles are new and series have to be moved by hand.
+    renameQualityProfiles:
+      - from: "[German] HD Bluray + WEB"
+        to: "<=1080p DE"
+      - from: "[German] UHD Bluray + WEB"
+        to: "<=4k DE"
+      - from: "WEB-1080p"
+        to: "<=1080p EN"
+      - from: "[German] Anime HD Bluray + WEB"
+        to: "<=1080p Anime DE"
+      - from: "[Anime] Remux-1080p"
+        to: "<=1080p Anime JP"
+
+    # Same rules as for Radarr: German audio mandatory (min score 10000),
+    # until_score capped at the base score so existing files never trigger a
+    # re-download, and the full quality order spelled out so better disabled
+    # qualities stay above the allowed group (first entry = highest).
+    # SD, DVD, 480p and HDTV are no longer allowed (TRaSH); existing episodes
+    # in those qualities are below the cutoff and get replaced when RSS finds
+    # an allowed release.
+    quality_profiles:
+      - name: "<=1080p DE"
+        min_format_score: 10000
+        upgrade:
+          allowed: true
+          until_score: 10000
+        qualities:
+          - name: Bluray-2160p Remux
+            enabled: false
+          - name: Bluray-2160p
+            enabled: false
+          - name: WEBRip-2160p
+            enabled: false
+          - name: WEBDL-2160p
+            enabled: false
+          - name: HDTV-2160p
+            enabled: false
+          - name: Bluray-1080p Remux
+            enabled: false
+          - name: Merged QPs
+            qualities:
+              - Bluray-1080p
+              - WEBRip-1080p
+              - WEBDL-1080p
+              - Bluray-720p
+              - WEBDL-720p
+              - WEBRip-720p
+          - name: Raw-HD
+            enabled: false
+          - name: HDTV-1080p
+            enabled: false
+          - name: HDTV-720p
+            enabled: false
+          - name: Bluray-576p
+            enabled: false
+          - name: Bluray-480p
+            enabled: false
+          - name: DVD
+            enabled: false
+          - name: WEBRip-480p
+            enabled: false
+          - name: WEBDL-480p
+            enabled: false
+          - name: SDTV
+            enabled: false
+          - name: Unknown
+            enabled: false
+      - name: "<=4k DE"
+        min_format_score: 10000
+        upgrade:
+          allowed: true
+          until_score: 10000
+        qualities:
+          - name: Bluray-2160p Remux
+            enabled: false
+          - name: Merged QPs
+            qualities:
+              - Bluray-2160p
+              - WEBDL-2160p
+              - WEBRip-2160p
+          - name: HDTV-2160p
+            enabled: false
+          - name: Bluray-1080p Remux
+            enabled: false
+          - name: Bluray-1080p
+            enabled: false
+          - name: WEBRip-1080p
+            enabled: false
+          - name: WEBDL-1080p
+            enabled: false
+          - name: Bluray-720p
+            enabled: false
+          - name: WEBRip-720p
+            enabled: false
+          - name: WEBDL-720p
+            enabled: false
+          - name: Raw-HD
+            enabled: false
+          - name: HDTV-1080p
+            enabled: false
+          - name: HDTV-720p
+            enabled: false
+          - name: Bluray-576p
+            enabled: false
+          - name: Bluray-480p
+            enabled: false
+          - name: DVD
+            enabled: false
+          - name: WEBRip-480p
+            enabled: false
+          - name: WEBDL-480p
+            enabled: false
+          - name: SDTV
+            enabled: false
+          - name: Unknown
+            enabled: false
+      - name: "<=1080p EN"
+        upgrade:
+          allowed: true
+          until_score: 0
+        qualities:
+          - name: Bluray-2160p Remux
+            enabled: false
+          - name: Bluray-2160p
+            enabled: false
+          - name: WEBRip-2160p
+            enabled: false
+          - name: WEBDL-2160p
+            enabled: false
+          - name: HDTV-2160p
+            enabled: false
+          - name: Bluray-1080p Remux
+            enabled: false
+          - name: Bluray-1080p
+            enabled: false
+          - name: WEB 1080p
+            qualities:
+              - WEBRip-1080p
+              - WEBDL-1080p
+          - name: HDTV-1080p
+            enabled: false
+          - name: Bluray-720p
+            enabled: false
+          - name: WEBRip-720p
+            enabled: false
+          - name: WEBDL-720p
+            enabled: false
+          - name: Raw-HD
+            enabled: false
+          - name: HDTV-720p
+            enabled: false
+          - name: Bluray-576p
+            enabled: false
+          - name: Bluray-480p
+            enabled: false
+          - name: DVD
+            enabled: false
+          - name: WEBRip-480p
+            enabled: false
+          - name: WEBDL-480p
+            enabled: false
+          - name: SDTV
+            enabled: false
+          - name: Unknown
+            enabled: false
+      - name: "<=1080p Anime DE"
+        min_format_score: 10000
+        upgrade:
+          allowed: true
+          until_score: 10000
+        qualities:
+          - name: Bluray-2160p Remux
+            enabled: false
+          - name: Bluray-2160p
+            enabled: false
+          - name: WEBRip-2160p
+            enabled: false
+          - name: WEBDL-2160p
+            enabled: false
+          - name: HDTV-2160p
+            enabled: false
+          - name: Bluray-1080p Remux
+            enabled: false
+          - name: Merged QPs
+            qualities:
+              - Bluray-1080p
+              - WEBRip-1080p
+              - WEBDL-1080p
+              - Bluray-720p
+              - WEBDL-720p
+              - WEBRip-720p
+          - name: Raw-HD
+            enabled: false
+          - name: HDTV-1080p
+            enabled: false
+          - name: HDTV-720p
+            enabled: false
+          - name: Bluray-576p
+            enabled: false
+          - name: Bluray-480p
+            enabled: false
+          - name: DVD
+            enabled: false
+          - name: WEBRip-480p
+            enabled: false
+          - name: WEBDL-480p
+            enabled: false
+          - name: SDTV
+            enabled: false
+          - name: Unknown
+            enabled: false
+      # TRaSH minimum score 100 kept (known anime groups only). Cutoff
+      # WEB 1080p instead of TRaSH's Bluray 1080p so existing WEB episodes
+      # are not upgraded.
+      - name: "<=1080p Anime JP"
+        upgrade:
+          allowed: true
+          until_quality: WEB 1080p
+          until_score: 0
+        qualities:
+          - name: Bluray-2160p Remux
+            enabled: false
+          - name: Bluray-2160p
+            enabled: false
+          - name: WEBRip-2160p
+            enabled: false
+          - name: WEBDL-2160p
+            enabled: false
+          - name: HDTV-2160p
+            enabled: false
+          - name: Bluray 1080p
+            qualities:
+              - Bluray-1080p Remux
+              - Bluray-1080p
+          - name: WEB 1080p
+            qualities:
+              - HDTV-1080p
+              - WEBRip-1080p
+              - WEBDL-1080p
+          - name: Bluray-720p
+          - name: WEB 720p
+            qualities:
+              - HDTV-720p
+              - WEBRip-720p
+              - WEBDL-720p
+          - name: Raw-HD
+            enabled: false
+          - name: Bluray-576p
+            enabled: false
+          - name: Bluray-480p
+          - name: WEB 480p
+            qualities:
+              - WEBRip-480p
+              - WEBDL-480p
+          - name: DVD
+          - name: SDTV
+          - name: Unknown
+            enabled: false
 
 radarr:
   radarr:
