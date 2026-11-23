@@ -4,10 +4,75 @@
 
 trashGuideUrl: https://github.com/TRaSH-Guides/Guides
 
-# Lidarr follows in a later step.
-lidarrEnabled: false
+lidarrEnabled: true
 readarrEnabled: false
 whisparrEnabled: false
+
+# TRaSH has no Lidarr guide, so Lidarr custom formats are defined locally.
+# They follow Davo's community guide: https://wiki.servarr.com/lidarr/community-guide
+customFormatDefinitions:
+  - trash_id: lidarr-preferred-groups
+    name: Preferred Groups
+    includeCustomFormatWhenRenaming: false
+    specifications:
+      - name: DeVOiD
+        implementation: ReleaseGroupSpecification
+        negate: false
+        required: false
+        fields:
+          value: \bDeVOiD\b
+      - name: PERFECT
+        implementation: ReleaseGroupSpecification
+        negate: false
+        required: false
+        fields:
+          value: \bPERFECT\b
+      - name: ENRiCH
+        implementation: ReleaseGroupSpecification
+        negate: false
+        required: false
+        fields:
+          value: \bENRiCH\b
+  - trash_id: lidarr-cd
+    name: CD
+    includeCustomFormatWhenRenaming: false
+    specifications:
+      - name: CD
+        implementation: ReleaseTitleSpecification
+        negate: false
+        required: false
+        fields:
+          value: \bCD\b
+  - trash_id: lidarr-web
+    name: WEB
+    includeCustomFormatWhenRenaming: false
+    specifications:
+      - name: WEB
+        implementation: ReleaseTitleSpecification
+        negate: false
+        required: false
+        fields:
+          value: \bWEB\b
+  - trash_id: lidarr-lossless
+    name: Lossless
+    includeCustomFormatWhenRenaming: false
+    specifications:
+      - name: Flac
+        implementation: ReleaseTitleSpecification
+        negate: false
+        required: false
+        fields:
+          value: \blossless\b
+  - trash_id: lidarr-vinyl
+    name: Vinyl
+    includeCustomFormatWhenRenaming: false
+    specifications:
+      - name: Vinyl
+        implementation: ReleaseTitleSpecification
+        negate: false
+        required: false
+        fields:
+          value: \bVinyl\b
 
 sonarr:
   sonarr:
@@ -517,3 +582,74 @@ radarr:
           allowed: true
           until_quality: WEB 1080p
           until_score: 0
+
+lidarr:
+  lidarr:
+    base_url: http://lidarr.downloader.svc.cluster.local:8686
+    api_key: !env LIDARR_API_KEY
+    # quality_definition is not supported for Lidarr; sizes stay as set in the UI.
+
+    custom_formats:
+      - trash_ids:
+          - lidarr-preferred-groups
+        assign_scores_to:
+          - name: HQ
+            score: 10
+      - trash_ids:
+          - lidarr-cd
+        assign_scores_to:
+          - name: HQ
+            score: 2
+      - trash_ids:
+          - lidarr-web
+          - lidarr-lossless
+        assign_scores_to:
+          - name: HQ
+            score: 1
+      - trash_ids:
+          - lidarr-vinyl
+        assign_scores_to:
+          - name: HQ
+            score: -5
+
+    # Mirrors the existing profile. Groups are listed highest first; inside a
+    # group Configarr reverses the order, so members are listed lowest first.
+    quality_profiles:
+      - name: HQ
+        reset_unmatched_scores:
+          enabled: true
+        upgrade:
+          allowed: true
+          until_quality: FLAC
+          until_score: 0
+        qualities:
+          - name: FLAC
+          - name: MP3-320
+          - name: WAV
+            enabled: false
+          - name: Lossless
+            enabled: false
+            qualities: [ALAC 24bit, FLAC 24bit, WavPack, APE, ALAC]
+          - name: High Quality Lossy
+            enabled: false
+            qualities: [OGG Vorbis Q10, AAC-320, OGG Vorbis Q9, AAC-VBR, MP3-VBR-V0]
+          - name: Mid Quality Lossy
+            enabled: false
+            qualities: [AAC-256, OGG Vorbis Q8, MP3-256, MP3-VBR-V2, OGG Vorbis Q7]
+          - name: Low Quality Lossy
+            enabled: false
+            qualities: [MP3-224, WMA, AAC-192, OGG Vorbis Q6, MP3-192]
+          - name: Poor Quality Lossy
+            enabled: false
+            qualities: [MP3-160, OGG Vorbis Q5, MP3-128, MP3-112, MP3-96]
+          - name: Trash Quality Lossy
+            enabled: false
+            qualities: [MP3-80, MP3-64, MP3-56, MP3-48, MP3-40, MP3-32, MP3-24, MP3-16, MP3-8]
+          - name: Unknown
+            enabled: false
+
+    metadata_profiles:
+      - name: Standard
+        primary_types: [Album, EP, Single]
+        secondary_types: [Studio, Soundtrack, Remix, DJ-mix, Compilation]
+        release_statuses: [Official]
