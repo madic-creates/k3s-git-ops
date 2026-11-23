@@ -27,6 +27,10 @@ spec:
       labels:
         app.kubernetes.io/name: houndarr
     spec:
+      # The Service "houndarr" makes Kubernetes inject HOUNDARR_PORT=tcp://...,
+      # which collides with Houndarr's own HOUNDARR_PORT setting and stops it
+      # from starting. No service-link env vars are needed.
+      enableServiceLinks: false
       # Same node as the other downloader apps so the hourly downloader
       # backup job can mount this RWO volume alongside theirs.
       nodeSelector:
