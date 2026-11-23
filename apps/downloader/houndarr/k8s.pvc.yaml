@@ -1,0 +1,17 @@
+---
+# SQLite database and the master key for the stored *arr API keys.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: longhorn-pvc-houndarr-data
+  namespace: downloader
+  labels:
+    app.kubernetes.io/name: houndarr
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: longhorn
+  volumeMode: Filesystem

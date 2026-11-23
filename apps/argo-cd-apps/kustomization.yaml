@@ -62,6 +62,7 @@ resources:
   - 65-gostatic.yaml
   #- 65-prox01-grafana.yaml
   - 65-headphones.yaml
+  - 65-houndarr.yaml
   #- 65-prox01-ipmi-exporter.yaml
   - 65-llama-cpp.yaml
   #- 65-prox01-node-exporter.yaml

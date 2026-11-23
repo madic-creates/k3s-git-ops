@@ -76,6 +76,9 @@ spec:
                 - name: lidarr-config
                   mountPath: /backup/lidarr
                   readOnly: true
+                - name: houndarr-data
+                  mountPath: /backup/houndarr
+                  readOnly: true
               securityContext:
                 allowPrivilegeEscalation: false
                 capabilities:
@@ -108,6 +111,9 @@ spec:
             - name: lidarr-config
               persistentVolumeClaim:
                 claimName: longhorn-pvc-lidarr-config
+            - name: houndarr-data
+              persistentVolumeClaim:
+                claimName: longhorn-pvc-houndarr-data
 ---
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy

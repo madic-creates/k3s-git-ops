@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: downloader
+
+resources:
+  - k8s.pvc.yaml
+  - k8s.statefulset.yaml
+  - k8s.service.yaml
+  - k8s.np.houndarr.yaml
+
+generators:
+  - kustomize-secret-generator.yaml

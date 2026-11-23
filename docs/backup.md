@@ -280,10 +280,11 @@ restic restore latest --tag nextpvr --target /tmp/nextpvr-restore
 ls /tmp/nextpvr-restore/backup/nextpvr-config/
 ```
 
-### Downloader (Sonarr / Radarr / Lidarr / NZBGet / NZBHydra2 / Trailarr)
+### Downloader (Sonarr / Radarr / Lidarr / NZBGet / NZBHydra2 / Trailarr / Houndarr)
 
-The downloader snapshot contains all six app config trees in a single tag. Pick
-the subfolder you need.
+The downloader snapshot contains all seven app config trees in a single tag. Pick
+the subfolder you need. Houndarr's folder holds its SQLite database and the
+master key that encrypts the stored *arr API keys; restore both together.
 
 ```bash
 restic restore latest --tag downloader --target /tmp/restore-test
