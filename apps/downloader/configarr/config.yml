@@ -28,6 +28,8 @@ radarr:
         source: TRASH
       - template: d1d67249d3890e49bc12e275d989a7e9 # HD Bluray + WEB
         source: TRASH
+      - template: 722b624f9af1e492284c4bc842153a38 # [Anime] Remux-1080p
+        source: TRASH
 
     # Optional TRaSH HDR groups for the 4k profile. The default HDR group
     # (HDR 500) is loaded automatically; these add the Dolby Vision and HDR10+
@@ -50,6 +52,8 @@ radarr:
         to: "German - 4k"
       - from: "HD Bluray + WEB"
         to: "English - 720p/1080p"
+      - from: "[Anime] Remux-1080p"
+        to: "Japanese - 720p/1080p"
 
     # Overrides merged on top of the TRaSH profiles.
     #
@@ -57,7 +61,8 @@ radarr:
     # "German" CF scores 10000, so a minimum score of 10000 rejects every
     # release without German audio (TRaSH's documented German-only setup).
     #
-    # No upgrade wave: TRaSH upgrades until 35000 (German) / 10000 (English).
+    # No upgrade wave: TRaSH upgrades until 35000 (German) / 10000 (English,
+    # Anime).
     # Capping until_score at the base score means an existing file already
     # meets the cutoff, so release-group tiers, German DL and boosters only
     # steer the first grab and never trigger a re-download.
@@ -75,4 +80,13 @@ radarr:
       - name: "English - 720p/1080p"
         upgrade:
           allowed: true
+          until_score: 0
+      # TRaSH anime profile: original (Japanese) audio, anime release groups.
+      # Its minimum score of 100 is kept, so only releases from known anime
+      # groups are grabbed. The quality cutoff stays at WEB 1080p (TRaSH:
+      # Remux 1080p) so existing WEB files are not upgraded to Remux.
+      - name: "Japanese - 720p/1080p"
+        upgrade:
+          allowed: true
+          until_quality: WEB 1080p
           until_score: 0
