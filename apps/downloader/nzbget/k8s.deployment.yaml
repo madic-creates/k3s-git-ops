@@ -24,29 +24,6 @@ spec:
     spec:
       nodeSelector:
         node-role/workload: zfs
-      initContainers:
-      # One-time migration of a NZBGet 21.x config to nzbget-ng (v23+), which
-      # addresses extensions by name instead of by script path. Rewrites
-      # "FakeDetector/FakeDetector.py" to "FakeDetector" in the extension
-      # lists and "GetScripts/DeleteSamples.py:Opt=" to "DeleteSamples:Opt="
-      # for script options, and fixes MainDir, which 21.x ignored. Idempotent,
-      # so it is a no-op on every later start.
-      - name: migrate-config
-        image: forge.geekbundle.org/madic/docker-nzbget@sha256:72502e96d0f1ffa51a6cefb86c29f759150ff54b421aabad1e41edd2d602bce7
-        command:
-          - sh
-          - -euc
-          - |
-            conf=/config/nzbget.conf
-            [ -f "$conf" ] || exit 0
-            sed -i -E \
-              -e '/^(Category[0-9]+\.Extensions|Extensions|ScriptOrder)=/{s#[A-Za-z0-9_]+/##g;s#\.(py|sh)##g}' \
-              -e 's#^([A-Za-z0-9_]+/)?([A-Za-z0-9_]+)\.(py|sh):#\2:#' \
-              -e 's#^MainDir=\$\(AppDir\)$#MainDir=/config#' \
-              "$conf"
-        volumeMounts:
-          - name: config
-            mountPath: /config
       containers:
       - name: nzbget
         image: forge.geekbundle.org/madic/docker-nzbget@sha256:72502e96d0f1ffa51a6cefb86c29f759150ff54b421aabad1e41edd2d602bce7
