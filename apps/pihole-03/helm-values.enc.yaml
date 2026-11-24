@@ -156,13 +156,12 @@ tolerations:
       operator: Exists
       effect: NoExecute
       tolerationSeconds: 30
-# Pod hostname = Service name: Pi-hole accepts its own hostname as Host
-# header without a password, so nebula-sync can use http://pihole-03-web
-hostname: ENC[AES256_GCM,data:D07Tg25c8XJAmgHQdw==,iv:GZ4J2P6+4LEL70viLXLpzQUIO/Q7mHJEY+C57uZpCE0=,tag:t1/On9t8FdBm6rJYNdhn1w==,type:str]
 networkPolicy:
     enabled: true
     ingress:
         # Web interface: only Traefik (ingress) and nebula-sync (config sync).
+        # The chart sets the pod hostname to pihole-03-web (admin.enabled: false),
+        # so nebula-sync reaches the API by the web Service name.
         # The API runs without a password (Authelia protects the UI), so no
         # other pod may reach it. DNS stays open (dnsFrom is empty).
         from:
@@ -222,6 +221,6 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials|config)$
-    lastmodified: "2026-11-14T14:53:37Z"
-    mac: ENC[AES256_GCM,data:7zpo+WSeeCodwZGRcdUwejKtijI6Hf8KAnyLtiVGsGkJEdRrxjHMt1x3xD728FLyOkAuSPSKIavgR3IzoLwNbwiu3Y7X41L1JahHyrARA6rvvtm86I6MveUfMmJy6vhBHXoRsbG3FzEkCwFNM1A2/jNVzSWRe7CKT2ncNre4jgs=,iv:X4pE3QCuisHzGENQ34tSDCD7PoQe3MZfkUg9lif6D/c=,tag:vAKWEMJve1PZLhMaXdVX+Q==,type:str]
+    lastmodified: "2026-11-24T11:03:21Z"
+    mac: ENC[AES256_GCM,data:yHtQVyMG3gK4lKSDn/OmMSVK1s6CACDOYPgoFGZ7Mn3fYasY3tO09a3mEUf0+yPvi4QLUnQqcbuDOGpZzxq97xES2P57w+p/fQb0BUayJfDa03Vg6lCHRKsIty0cJMlqa1VRr1T8HpQD8dDq5cpDFgF4YM1EDoH0ZVrrKxo6DmU=,iv:T6x7hqjqt61F/SHImVY3g4mYPOJjNX7qukPbG8KjQnc=,tag:cW0sejC/02v/mfST2XowHQ==,type:str]
     version: 3.13.3
