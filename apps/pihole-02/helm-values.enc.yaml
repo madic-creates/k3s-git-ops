@@ -186,16 +186,14 @@ tolerations:
       operator: Exists
       effect: NoExecute
       tolerationSeconds: 30
-# Pod hostname = Service name: Pi-hole accepts its own hostname as Host
-# header without a password, so nebula-sync can use http://pihole-02-web
-hostname: ENC[AES256_GCM,data:CjhZFo1jr5gOsggtCg==,iv:9JbC2wU/dt3xlqA/kn3LdsochxoJgH8rjGAX20NdzOY=,tag:8hc9yf8w/8NLvu/mWqUFew==,type:str]
 # Roll out only after pihole-01 (wave 0) and pihole-03 (wave 1) are Healthy,
 # so at most one Pi-hole restarts at a time, see 12-pihole-helm
 deploymentAnnotations:
     argocd.argoproj.io/sync-wave: "2"
-# The API has no password (Authelia protects the UI), so only Traefik,
-# nebula-sync and Prometheus (exporter port) may reach the web port.
-# DNS and DHCP stay open to every source.
+# The API has no password (Authelia protects the UI), so only Traefik and
+# nebula-sync may reach the web port, and Prometheus only the metrics port.
+# DNS and DHCP stay open to every source. The chart sets the pod hostname to
+# the web Service name (admin.enabled: false), which nebula-sync relies on.
 networkPolicy:
     enabled: true
     ingress:
@@ -209,7 +207,8 @@ networkPolicy:
             - podSelector:
                 matchLabels:
                     app: nebula-sync
-            # Metrics: the chart puts the exporter port into the same rule as the web port
+        # Metrics ports (exporter sidecar): only Prometheus, without API access
+        metricsFrom:
             - namespaceSelector:
                 matchLabels:
                     kubernetes.io/metadata.name: monitoring
@@ -223,6 +222,14 @@ monitoring:
         enabled: true
     podMonitor:
         enabled: true
+        # The sidecar reports the pod IP as hostname; a stable name for the
+        # pihole-exporter dashboard, which selects instances by hostname
+        metricRelabelings:
+            - sourceLabels:
+                - __name__
+              regex: pihole_.+
+              targetLabel: hostname
+              replacement: pihole-02
 sops:
     age:
         - enc: |
@@ -244,6 +251,6 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials|config)$
-    lastmodified: "2026-11-17T16:47:05Z"
-    mac: ENC[AES256_GCM,data:4HxunPM4rYKbroZL3+yFxnRIJxYxdsWpEdPrJcnCCm8x3jlmlGP8y4itIWtzEccG3cPpAZbss2i/cC9kYgRC9AwmUWwrV++AsxtCm5cFvp4A6MlJ9d2ne3Xfwqw0Jlm70gIiDqW5XVKUjJcNMN95/BEk+fzLvrCTkt2LwqT01XQ=,iv:6RPpYBBsFHq+lUpZbe3GzNg5TyyRTIajoYzmFBK+TwE=,tag:JzhR6x3sNV7OmmnpgvK8Bg==,type:str]
+    lastmodified: "2026-11-24T11:03:21Z"
+    mac: ENC[AES256_GCM,data:eoTRKIFb8BOT1Ze80Sty/nBfSSjD5UcKq9oAv83irRasm0TlFT8fMYKXj+u6AmfNZORJvzHuWWDxc3fouStxnlYydpUwVU19R7uTKVjkR/7f3f38fUeEq8cIkM/MJ7GBSR5+B86ZXvIIsbArf9FGMRZFXM32J2qhBvp3XfNOJsQ=,iv:cOqgMnucz2xNFMKrNvHp9pJ8u6naH4F9LDvPeok7ebI=,tag:p7vlhV5GX62IC6ec7pmc3A==,type:str]
     version: 3.13.3

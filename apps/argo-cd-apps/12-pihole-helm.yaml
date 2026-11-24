@@ -20,7 +20,7 @@ spec:
     # pihole-01: published chart release
     - repoURL: https://mojo2600.github.io/pihole-kubernetes/
       chart: pihole
-      targetRevision: 3.0.0-rc.3
+      targetRevision: 3.0.0-rc.4
       helm:
         releaseName: pihole
         valueFiles:
@@ -42,7 +42,7 @@ spec:
     # pihole-02: standby for pihole-01, so the same chart version as pihole-01
     - repoURL: https://mojo2600.github.io/pihole-kubernetes/
       chart: pihole
-      targetRevision: 3.0.0-rc.3
+      targetRevision: 3.0.0-rc.4
       helm:
         releaseName: pihole-02
         valueFiles:

@@ -193,12 +193,10 @@ tolerations:
       operator: Exists
       effect: NoExecute
       tolerationSeconds: 30
-# Pod hostname = Service name: Pi-hole accepts its own hostname as Host
-# header without a password, so nebula-sync can use http://pihole-web
-hostname: ENC[AES256_GCM,data:PIxb1sUXoMGtzg==,iv:d2NuFt9U048TvxlJzqJ/fHWHqUfS2cj81q5nr0i8MqE=,tag:kiDG4UFUeQU7xy1Ll+pajA==,type:str]
-# The API has no password (Authelia protects the UI), so only Traefik,
-# nebula-sync and Prometheus (exporter port) may reach the web port.
-# DNS and DHCP stay open to every source.
+# The API has no password (Authelia protects the UI), so only Traefik and
+# nebula-sync may reach the web port, and Prometheus only the metrics port.
+# DNS and DHCP stay open to every source. The chart sets the pod hostname to
+# the web Service name (admin.enabled: false), which nebula-sync relies on.
 networkPolicy:
     enabled: true
     ingress:
@@ -212,7 +210,8 @@ networkPolicy:
             - podSelector:
                 matchLabels:
                     app: nebula-sync
-            # Metrics: the chart puts the exporter port into the same rule as the web port
+        # Metrics ports (exporter sidecar): only Prometheus, without API access
+        metricsFrom:
             - namespaceSelector:
                 matchLabels:
                     kubernetes.io/metadata.name: monitoring
@@ -226,6 +225,14 @@ monitoring:
         enabled: true
     podMonitor:
         enabled: true
+        # The sidecar reports the pod IP as hostname; a stable name for the
+        # pihole-exporter dashboard, which selects instances by hostname
+        metricRelabelings:
+            - sourceLabels:
+                - __name__
+              regex: pihole_.+
+              targetLabel: hostname
+              replacement: pihole-01
 sops:
     age:
         - enc: |
@@ -247,6 +254,6 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|server_name|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match|instance|X-API-KEY|credentials|config)$
-    lastmodified: "2026-11-17T16:47:05Z"
-    mac: ENC[AES256_GCM,data:Sz4EZnEGeRONdPMdO0dds0O5VACd9KqDoxWRY6bKRtUdE+eJslMVRCbMy5Cf3HuD4RK91le9YoQJ02JYo43bVcc/SxfsLiALHpARbAlJE0T44PIMAOcFuOVzcyq5UCvo06Bdt6fHx4tGFBQcpKZ4rH85FI0NeGa9zKrVhC6E0Og=,iv:8u3rbohC0SNSZNjyE+C3iP/VmtjLIgpqS7nWCBnyj0E=,tag:e2JfyqYv3guAJDd+UDWZjg==,type:str]
+    lastmodified: "2026-11-24T11:03:21Z"
+    mac: ENC[AES256_GCM,data:xQWwxJWcvtIClldd57/+GVysA77Mjg0D5waHyTtOu7xzbET8gM8eUsD/ckq8+yxorOD86e/dz15wlQYZK6IHVbS6hDNVDDu7Zdr8JaaNlfiNJpkWQBxelugaPLa62PUosAGewDvvGY/pB0eJ8obK3c/HKOOd/dphoMFXFJZoE2g=,iv:ctZqFNOfF1DYlHPV5rFiheK+VGIntPiyetPHm01zjig=,tag:e1qC6aISzrGpu4jaOwijWA==,type:str]
     version: 3.13.3
