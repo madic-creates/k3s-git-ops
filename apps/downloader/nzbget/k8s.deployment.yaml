@@ -24,9 +24,32 @@ spec:
     spec:
       nodeSelector:
         node-role/workload: zfs
+      initContainers:
+      # One-time migration of a NZBGet 21.x config to nzbget-ng (v23+), which
+      # addresses extensions by name instead of by script path. Rewrites
+      # "FakeDetector/FakeDetector.py" to "FakeDetector" in the extension
+      # lists and "GetScripts/DeleteSamples.py:Opt=" to "DeleteSamples:Opt="
+      # for script options, and fixes MainDir, which 21.x ignored. Idempotent,
+      # so it is a no-op on every later start.
+      - name: migrate-config
+        image: forge.geekbundle.org/madic/docker-nzbget@sha256:TODO
+        command:
+          - sh
+          - -euc
+          - |
+            conf=/config/nzbget.conf
+            [ -f "$conf" ] || exit 0
+            sed -i -E \
+              -e '/^(Category[0-9]+\.Extensions|Extensions|ScriptOrder)=/{s#[A-Za-z0-9_]+/##g;s#\.(py|sh)##g}' \
+              -e 's#^([A-Za-z0-9_]+/)?([A-Za-z0-9_]+)\.(py|sh):#\2:#' \
+              -e 's#^MainDir=\$\(AppDir\)$#MainDir=/config#' \
+              "$conf"
+        volumeMounts:
+          - name: config
+            mountPath: /config
       containers:
       - name: nzbget
-        image: forge.geekbundle.org/madic/docker-nzbget@sha256:ee0646d754647a65b0ef5992cf538c1538aea77a9c020660b90fbd4d5570912d
+        image: forge.geekbundle.org/madic/docker-nzbget@sha256:TODO
         env:
           - name: PUID
             value: "0"
@@ -45,9 +68,9 @@ spec:
         volumeMounts:
           - name: config
             mountPath: /config
+          # nzbget-ng checks that ScriptDir is writable (extension manager).
           - name: scripts
             mountPath: /app/nzbget/scripts
-            readOnly: true
           - name: video
             mountPath: /vol_raidz1/video
           - name: music
