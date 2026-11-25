@@ -34,6 +34,9 @@ spec:
             value: "1002"
           - name: TZ
             value: "Europe/Berlin"
+          # Group-writable folders (775) so trailarr (gid 1002, non-root) can create trailers/ in them
+          - name: UMASK
+            value: "002"
         resources:
           requests:
             cpu: 100m
