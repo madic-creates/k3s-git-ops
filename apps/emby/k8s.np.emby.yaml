@@ -77,6 +77,18 @@ spec:
     - ports:
       - port: '6360'
         protocol: TCP
+  # Allow NextPVR backend for Live TV (port 8866)
+  # NextPVR runs with hostNetwork, so its address is a node IP. Cilium labels
+  # node IPs as host (same node), remote-node, or kube-apiserver (control-plane
+  # nodes), depending on where the two pods are scheduled.
+  - toEntities:
+    - host
+    - remote-node
+    - kube-apiserver
+    toPorts:
+    - ports:
+      - port: '8866'
+        protocol: TCP
   # Allow backup sidecar to push metrics to Pushgateway
   - toEndpoints:
     - matchLabels:
