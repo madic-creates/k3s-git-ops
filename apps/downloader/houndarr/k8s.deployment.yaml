@@ -42,7 +42,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: houndarr
-          image: ghcr.io/av1155/houndarr:v1.13.3
+          image: ghcr.io/av1155/houndarr:v1.13.4
           ports:
             - containerPort: 8877
               name: http
