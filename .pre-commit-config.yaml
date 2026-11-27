@@ -28,7 +28,7 @@ repos:
       # Replace tabs by whitespaces before committing
       - id: remove-tabs
         args: [--whitespaces-count, "2"]
-        exclude: (go\.mod|go\.sum|\.patch)$
+        exclude: (go\.mod|go\.sum|\.go|\.patch)$
   - repo: https://github.com/sirosen/fix-smartquotes
     rev: 0.2.0
     hooks:

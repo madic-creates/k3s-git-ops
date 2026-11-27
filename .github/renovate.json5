@@ -153,6 +153,18 @@
       ],
       datasourceTemplate: 'docker',
     },
+    // Digest-pinned images in workflow env vars, annotated like
+    // `# renovate: datasource=docker depName=aquasec/trivy` above
+    // `TRIVY_IMAGE: aquasec/trivy:0.76.2@sha256:...`.
+    {
+      customType: 'regex',
+      managerFilePatterns: [
+        '/^\\.github/workflows/.+\\.ya?ml$/',
+      ],
+      matchStrings: [
+        '# renovate: datasource=(?<datasource>docker) depName=(?<depName>\\S+)\\s+[A-Z_]+_IMAGE:\\s*[^:\\s]+:(?<currentValue>[^@\\s]+)@(?<currentDigest>sha256:[a-f0-9]+)',
+      ],
+    },
     // Gateway API release manifests referenced as remote kustomize resources.
     // Example match: https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.6.1/standard-install.yaml
     {
