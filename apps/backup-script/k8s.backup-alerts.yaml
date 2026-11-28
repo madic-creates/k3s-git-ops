@@ -43,8 +43,13 @@ spec:
           # previous metrics for that target — a successful run wipes a
           # prior failure metric automatically. This rule therefore
           # reflects only the latest run's outcome.
+          # The value is the exit code, not 1: restic alone uses 3, 10,
+          # 11, 12 and 130, so the rule must match any non-zero value.
+          # apps/monitoring/k8s.prometheusrule.backup-script.yaml carries
+          # an equivalent rule with identical labels; Alertmanager
+          # deduplicates the two.
           expr: |
-            backup_status{status="failure"} == 1
+            backup_status{status="failure"} != 0
           for: 5m
           labels:
             severity: critical
