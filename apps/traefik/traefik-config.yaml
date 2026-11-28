@@ -46,6 +46,22 @@ spec:
     customResponseHeaders:
       Content-Security-Policy: "frame-src none;"
 ---
+## Remove a client-supplied Remote-User header. Attach it to every public route
+## (no forward auth) whose backend trusts Remote-User from Traefik, e.g. apps
+## with a reverse-proxy auth setting that trusts the pod CIDR. On routes with
+## forward auth, Authelia already overwrites the header. Example: Navidrome
+## /share/ routes, where a spoofed header yields a session for any user.
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: strip-remote-user
+  namespace: traefik
+spec:
+  headers:
+    customRequestHeaders:
+      # An empty value removes the header.
+      Remote-User: ""
+---
 ## Cluster internal expose prometheus metrics
 apiVersion: v1
 kind: Service

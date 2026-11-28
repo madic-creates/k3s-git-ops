@@ -75,6 +75,10 @@ spec:
               value: "/vol_raidz1/music/My Music"
             - name: ND_DATAFOLDER
               value: /data
+            # Trusts Remote-User from the whole pod CIDR, i.e. from Traefik on
+            # every route. Any IngressRoute without forward auth (the /share/
+            # routes) must use the traefik/strip-remote-user middleware, or a
+            # spoofed header logs the client in as any user.
             - name: ND_EXTAUTH_TRUSTEDSOURCES
               value: "10.42.0.0/16"
             - name: ND_ENABLEUSEREDITING
