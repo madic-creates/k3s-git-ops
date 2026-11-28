@@ -32,7 +32,7 @@ spec:
       labels:
         app.kubernetes.io/name: td-sync
     spec:
-      serviceAccount: td-sync
+      serviceAccountName: td-sync
       # The upstream image sets no USER and would run as root. fsGroup makes
       # the Longhorn volume writable for UID 1000 instead. OnRootMismatch skips
       # the recursive chown on every mount, which can race a still-running

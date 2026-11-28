@@ -28,7 +28,7 @@ spec:
       labels:
         app.kubernetes.io/name: omnitools
     spec:
-      serviceAccount: omnitools
+      serviceAccountName: omnitools
       containers:
         - name: omnitools
           # https://github.com/iib0011/omni-tools

@@ -27,7 +27,7 @@ spec:
       labels:
         app: whoami
     spec:
-      serviceAccount: whoami-server
+      serviceAccountName: whoami-server
       containers:
         - name: whoami
           # https://github.com/traefik/whoami
