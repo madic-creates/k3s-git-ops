@@ -49,8 +49,9 @@ spec:
 ## Remove a client-supplied Remote-User header. Attach it to every public route
 ## (no forward auth) whose backend trusts Remote-User from Traefik, e.g. apps
 ## with a reverse-proxy auth setting that trusts the pod CIDR. On routes with
-## forward auth, Authelia already overwrites the header. Example: Navidrome
-## /share/ routes, where a spoofed header yields a session for any user.
+## forward auth, Authelia already overwrites the header. Used by: Navidrome
+## /share/ routes and the paperless-ngx /api Ingress, where a spoofed header
+## yields a session for any user.
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:

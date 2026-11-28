@@ -18,6 +18,11 @@ env:
       value: PREFERRED
     - name: PAPERLESS_FILENAME_FORMAT_REMOVE_NONE
       value: true
+    # Trusts Remote-User from any peer. The frontend check only skips paths
+    # containing "/api/", so a request to exactly /api still logs the header
+    # user in with a persistent session that then works on the whole API.
+    # The paperless-api Ingress has no forward auth and therefore must keep
+    # the traefik-strip-remote-user middleware.
     - name: PAPERLESS_ENABLE_HTTP_REMOTE_USER
       value: true
     #- name: PAPERLESS_ENABLE_HTTP_REMOTE_USER_API
