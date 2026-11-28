@@ -49,13 +49,15 @@ data:
       # Variable for NTFY notification
       NTFY_TITLE=$(eval echo "${NTFY_TITLE}")
 
-      # Send notification via curl
+      # Send notification via curl. Non-fatal: under set -e a failing curl
+      # would end the script here and skip the cleanup in script_runtime.
       curl -s ${NTFY_CREDS} \
           -H "Title: ${NTFY_TITLE}" \
           -H "Priority: ${NTFY_PRIO}" \
           -H "Tags: ${NTFY_TAG}" \
           -d "$(cat /tmp/backup.log)" \
-          "${NTFY_SERVER}"/"${NTFY_TOPIC}" >/dev/null
+          "${NTFY_SERVER}"/"${NTFY_TOPIC}" >/dev/null \
+        || echo "$(date) WARNING: ntfy notification failed"
     }
 
     # Function to send metrics to Prometheus Pushgateway
@@ -76,13 +78,17 @@ data:
         # 15-second intervals so the value is captured into the TSDB
         # well before the next backup run replaces it, giving a full
         # time-series of per-snapshot restore size.
+        # The size is optional: under set -e and pipefail a failing
+        # `restic stats` (e.g. a lock held by another job) would otherwise
+        # abort the script after a successful backup, so it exits non-zero
+        # and pushes no metrics at all.
         SNAPSHOT_RESTORE_SIZE=""
         if [ "$1" = "0" ]; then
           SNAPSHOT_RESTORE_SIZE=$(restic stats latest \
               --host "${RESTIC_HOSTNAME}" \
               --mode restore-size \
               --json 2>/dev/null \
-            | sed -n 's/.*"total_size":\([0-9]*\).*/\1/p')
+            | sed -n 's/.*"total_size":\([0-9]*\).*/\1/p') || SNAPSHOT_RESTORE_SIZE=""
         fi
 
         # Construct the text data for the metrics
@@ -97,7 +103,9 @@ data:
 
         # Send the metrics to the Pushgateway
         echo "$(date) Sending metrics to Pushgateway"
-        echo "$metrics" | curl -s --data-binary @- "${PUSHGATEWAY_URL}/metrics/job/backup/instance/${RESTIC_HOSTNAME}"
+        # Non-fatal for the same reason; the backup's own exit code must win.
+        echo "$metrics" | curl -s --data-binary @- "${PUSHGATEWAY_URL}/metrics/job/backup/instance/${RESTIC_HOSTNAME}" \
+          || echo "$(date) WARNING: pushing metrics to Pushgateway failed"
     }
 
     # Show script runtime for stdout and logfile
