@@ -1,0 +1,22 @@
+@media screen {
+  .md-nav__item--section>.md-nav__link[for] {
+    color: black;
+  }
+}
+
+.md-nav__title {
+  color: black
+}
+
+h2 {
+  margin: .64em 0 .64em !important;
+}
+
+h3 {
+  margin: .8em 0 .8em !important;
+}
+
+/* Default: 61rem*/
+.md-main__inner.md-grid {
+  max-width: 64rem;
+}
