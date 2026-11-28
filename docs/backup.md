@@ -97,7 +97,7 @@ or roll the deployment).
 | Downloader (*arr-stack) | `downloader` | `:50` hourly | `downloader` | `downloader` | hostPath, ZFS node |
 | Paperless-ngx | `paper` | `:00` hourly | `paperless` | `paperless` | 3 SMB PVCs (data, media, export) |
 | Minecraft | `minecraft` | `:15` hourly | `minecraft` | `minecraft` | PVC `minecraft-crossplay-datadir`, RCON save-flush wrapper |
-| td-sync | `td-sync` | `35` hourly | `td-sync` | `td-sync` | PVC `longhorn-pvc-td-sync`, `sqlite3 .backup` snapshot of server.db + per-project databases |
+| td-sync | `td-sync` | `35` hourly | `td-sync` | `td-sync` | PVC `longhorn-pvc-td-sync-v2`, `sqlite3 .backup` snapshot of server.db + per-project databases |
 | Retention | `longhorn` | `03:05` daily | n/a | `restic-retentionpolicies` | (forget + prune + integrity check) |
 | Restore-test | `longhorn` | `04:00` Sun | n/a | `backup-restore-test` | restore every tag from local repo, verify |
 | Wasabi mirror | `backup` | `05:00` daily | n/a | `backup-mirror-wasabi` | rclone copy local → Wasabi |
