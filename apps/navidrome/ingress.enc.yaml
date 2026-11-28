@@ -41,8 +41,8 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match)$
-    lastmodified: "2026-11-28T07:59:53Z"
-    mac: ENC[AES256_GCM,data:FPjOBaMXMjrA+0a3GD0Q/+R4Xm5g5jvoWGjC/WWlxJsvLdhVolLJYFk1DTSd0JDGJKKYsODkcaXuOTA2aWl/6qrF7+QZNYRow6qSnlPtgzgaKzyaMkukGXaJA2pHr5U6+x9Y2iuVDPdTiUq1Sy4p6KjzxbsnERZF0P9yg73vqYg=,iv:0jGT9JRjHC7nCWEoMrH8TS8akzR1QpPa4dGYi52VAvY=,tag:VppMRsnsBay0fLdnje+KIQ==,type:str]
+    lastmodified: "2026-11-28T08:08:06Z"
+    mac: ENC[AES256_GCM,data:vd1Mx5zFLb3GAYsja9FsIv7ciKADmFYHeQFG9+7++r9ikz5i6bIXIoR+pVqU2icW1PkHRHwY6MV77Tm6RIQ/9OFSlbQA/tj3gJhH1BZb+dv+bUa9MXZuJD7CXVtAzE+fFf1cHwfzK409Nxo5Xjyy9fG5ZT0NbAtKEFciB3F7LqI=,iv:Cgukx7JCIJFhuer8/KAu/otJSeCtOh8GCD6Ost8kvrc=,tag:1tgGHdaCywRtiq/6CzSU7g==,type:str]
     version: 3.13.3
 ---
 apiVersion: traefik.io/v1alpha1
@@ -88,8 +88,8 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match)$
-    lastmodified: "2026-11-28T07:59:53Z"
-    mac: ENC[AES256_GCM,data:FPjOBaMXMjrA+0a3GD0Q/+R4Xm5g5jvoWGjC/WWlxJsvLdhVolLJYFk1DTSd0JDGJKKYsODkcaXuOTA2aWl/6qrF7+QZNYRow6qSnlPtgzgaKzyaMkukGXaJA2pHr5U6+x9Y2iuVDPdTiUq1Sy4p6KjzxbsnERZF0P9yg73vqYg=,iv:0jGT9JRjHC7nCWEoMrH8TS8akzR1QpPa4dGYi52VAvY=,tag:VppMRsnsBay0fLdnje+KIQ==,type:str]
+    lastmodified: "2026-11-28T08:08:06Z"
+    mac: ENC[AES256_GCM,data:vd1Mx5zFLb3GAYsja9FsIv7ciKADmFYHeQFG9+7++r9ikz5i6bIXIoR+pVqU2icW1PkHRHwY6MV77Tm6RIQ/9OFSlbQA/tj3gJhH1BZb+dv+bUa9MXZuJD7CXVtAzE+fFf1cHwfzK409Nxo5Xjyy9fG5ZT0NbAtKEFciB3F7LqI=,iv:Cgukx7JCIJFhuer8/KAu/otJSeCtOh8GCD6Ost8kvrc=,tag:1tgGHdaCywRtiq/6CzSU7g==,type:str]
     version: 3.13.3
 ---
 apiVersion: traefik.io/v1alpha1
@@ -107,7 +107,7 @@ spec:
             - name: redirect
               namespace: traefik
             - name: strip-remote-user
-              namespace: media
+              namespace: traefik
           services:
             - name: navidrome
               port: 4533
@@ -135,6 +135,6 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1q522xtgjrmvr43w7um5rh02ta3yfns635680hz4m7uhw0nfqj5zqgxnz27
     encrypted_regex: ^(data|stringData|email|dnsNames|.*(H|h)osts?|hostname|username|password|url|issuer|argocdServerAdminPassword|oidc.config|commonName|literals|.*awsAccessKeyId|.*awsSecretAccessKey|.*defaultAdminPassword|apiToken|accountId|rootPassword|replicationPassword|adminPassword|root_url|client_secret|auth_url|api_url|PIHOLE_DOMAIN|TUNNEL_DNS_UPSTREAM|customDnsEntries|securityTokenKey|emailRecipients|.*provider_url|.*redirect_url|.*accesskeyEncryption|SEMAPHORE_WEB_ROOT|token|cookieEncryption|cookieHash|^ldap|.*match)$
-    lastmodified: "2026-11-28T07:59:53Z"
-    mac: ENC[AES256_GCM,data:FPjOBaMXMjrA+0a3GD0Q/+R4Xm5g5jvoWGjC/WWlxJsvLdhVolLJYFk1DTSd0JDGJKKYsODkcaXuOTA2aWl/6qrF7+QZNYRow6qSnlPtgzgaKzyaMkukGXaJA2pHr5U6+x9Y2iuVDPdTiUq1Sy4p6KjzxbsnERZF0P9yg73vqYg=,iv:0jGT9JRjHC7nCWEoMrH8TS8akzR1QpPa4dGYi52VAvY=,tag:VppMRsnsBay0fLdnje+KIQ==,type:str]
+    lastmodified: "2026-11-28T08:08:06Z"
+    mac: ENC[AES256_GCM,data:vd1Mx5zFLb3GAYsja9FsIv7ciKADmFYHeQFG9+7++r9ikz5i6bIXIoR+pVqU2icW1PkHRHwY6MV77Tm6RIQ/9OFSlbQA/tj3gJhH1BZb+dv+bUa9MXZuJD7CXVtAzE+fFf1cHwfzK409Nxo5Xjyy9fG5ZT0NbAtKEFciB3F7LqI=,iv:Cgukx7JCIJFhuer8/KAu/otJSeCtOh8GCD6Ost8kvrc=,tag:1tgGHdaCywRtiq/6CzSU7g==,type:str]
     version: 3.13.3
