@@ -20,9 +20,20 @@ spec:
     spec:
       nodeSelector:
         node-role/workload: zfs
+      # The image already runs as the non-root user "appuser". runAsNonRoot is
+      # deliberately not set: kubelet cannot verify a non-numeric image user
+      # and would refuse to start the pod.
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
       - name: gostatic
         image: pierrezemb/gostatic@sha256:7e5718f98f2172f7c8dffd152ef0b203873ba889c8d838b2e730484fc71f6acd
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
         env:
           - name: TZ
             value: "Europe/Berlin"

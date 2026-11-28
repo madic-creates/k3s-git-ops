@@ -1,7 +1,8 @@
 ---
 # Network Policy for the Restic REST-server.
 # Ingress: port 8000 from every namespace that runs a backup CronJob,
-# plus prometheus for metrics scraping.
+# plus prometheus, kept for when /metrics is enabled (--prometheus is
+# currently off, see k8s.deployment.yaml).
 # Egress: DNS only — rest-server is a passive store, makes no
 # outbound calls. The mirror to Wasabi is a separate CronJob.
 apiVersion: cilium.io/v2
@@ -61,7 +62,7 @@ spec:
         - ports:
             - port: "8000"
               protocol: TCP
-    # Prometheus scrapes /metrics for request-rate observability.
+    # Prometheus, for /metrics once --prometheus is enabled (unused today).
     - fromEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: monitoring

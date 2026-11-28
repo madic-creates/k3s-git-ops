@@ -2,15 +2,21 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: kubedoom
+# No top-level `namespace:` here: every resource sets its own namespace
+# (upstream manifests and the policies use kubedoom), and the namespace
+# transformer would otherwise move the whoami Role/RoleBinding in
+# k8s.rbac.yaml into kubedoom.
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "86"
 
 resources:
-  - https://github.com/storax/kubedoom/manifest
+  # Pinned to the last upstream commit (0.6.0, 2022-02-06). An unpinned
+  # remote base deploys whatever lands on upstream master, including RBAC.
+  - https://github.com/storax/kubedoom/manifest?ref=bf4b045aa0810fdca48a12ee936a2e2d68e35c2e
   - k8s.np.kubedoom-default-deny.yaml
   - k8s.np.kube-doom.yaml
+  - k8s.rbac.yaml
 
 patches:
   - patch: |
@@ -31,3 +37,11 @@ patches:
                 env:
                   - name: NAMESPACE
                     value: whoami
+  # Upstream binds the kubedoom ServiceAccount to cluster-admin. It only needs
+  # pod get/list/delete in whoami, granted in k8s.rbac.yaml.
+  - patch: |
+      $patch: delete
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      metadata:
+        name: kubedoom

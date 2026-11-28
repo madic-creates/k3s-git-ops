@@ -15,9 +15,14 @@ spec:
       app.kubernetes.io/name: netshoot
   ingress:
   # Allow any pod in the cluster to connect to netshoot for network testing
-  # This includes the iperf server running on port 9999
+  # This includes the iperf server running on port 9999.
+  # An empty selector ({}) would only match pods in kube-system: in a
+  # namespaced CiliumNetworkPolicy an omitted namespace label defaults to the
+  # policy's own namespace. The Exists expression matches every namespace.
   - fromEndpoints:
-    - {}
+    - matchExpressions:
+      - key: k8s:io.kubernetes.pod.namespace
+        operator: Exists
     toPorts:
     - ports:
       - port: "9999"
@@ -37,17 +42,12 @@ spec:
         protocol: TCP
   # Allow egress to entire cluster for debugging purposes
   # Netshoot is a debugging tool that needs to test connectivity to all services
+  # (this also covers LDAPS to lldap in authelia). Same Exists expression as
+  # above, so the rule is not limited to kube-system.
   - toEndpoints:
-    - {}
-  # Allow egress to lldap in authelia namespace for LDAPS debugging
-  - toEndpoints:
-    - matchLabels:
-        k8s:app.kubernetes.io/name: lldap
-        k8s:io.kubernetes.pod.namespace: authelia
-    toPorts:
-    - ports:
-      - port: "6360"
-        protocol: TCP
+    - matchExpressions:
+      - key: k8s:io.kubernetes.pod.namespace
+        operator: Exists
   # Allow egress to external networks for debugging external connectivity
   # This is required for tools like curl, ping, traceroute, etc.
   - toEntities:

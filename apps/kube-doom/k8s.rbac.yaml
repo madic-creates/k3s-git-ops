@@ -1,0 +1,33 @@
+---
+# Least-privilege replacement for upstream's cluster-admin binding.
+#
+# kubedoom runs in the default "pods" mode (no -mode flag) with
+# NAMESPACE=whoami, so it only ever runs
+#   kubectl get pods --namespace whoami
+#   kubectl delete pod -n whoami <name>
+# (kubedoom.go at bf4b045). The namespaces mode, which would need to delete
+# namespaces, is not used. The upstream ClusterRoleBinding to cluster-admin is
+# removed by a patch in kustomization.yaml.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: kubedoom
+  namespace: whoami
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kubedoom
+  namespace: whoami
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: kubedoom
+subjects:
+  - kind: ServiceAccount
+    name: kubedoom
+    namespace: kubedoom
