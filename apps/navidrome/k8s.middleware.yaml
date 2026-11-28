@@ -1,0 +1,23 @@
+---
+# Removes a client-supplied Remote-User header before the request reaches
+# Navidrome.
+#
+# ND_EXTAUTH_TRUSTEDSOURCES trusts the whole pod CIDR, so Navidrome accepts
+# Remote-User from Traefik on every route. The Authelia routes are safe because
+# forward auth overwrites the header with the authenticated user. The /share/
+# routes are public and have no forward auth: without this middleware, a
+# request to a valid share link carrying "Remote-User: <name>" makes Navidrome
+# embed a session token for that user in the served index.html (and create the
+# user if it does not exist). Verified against the v0.64.2 source:
+# public.handleShares -> server.IndexWithShare -> serveIndex ->
+# handleLoginFromHeaders.
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: strip-remote-user
+  namespace: media
+spec:
+  headers:
+    customRequestHeaders:
+      # An empty value removes the header.
+      Remote-User: ""
