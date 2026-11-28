@@ -63,12 +63,10 @@ spec:
             # we keep the secret mount separate from the data volume,
             # so point at it explicitly.
             - --htpasswd-file=/etc/htpasswd/htpasswd
-          env:
-            # Expose Prometheus metrics on /metrics. Pushgateway already
-            # has scrape rules for the backup namespace — this gives us
-            # request rates and bytes-served for free.
-            - name: PROMETHEUS_NO_AUTH
-              value: "true"
+            # Prometheus metrics are off. rest-server only enables them via
+            # --prometheus (plus --prometheus-no-auth to skip Basic Auth on
+            # /metrics); it reads no environment variables, and nothing
+            # scrapes this service today.
           ports:
             - name: http
               containerPort: 8000
